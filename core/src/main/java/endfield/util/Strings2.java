@@ -52,28 +52,23 @@ public final class Strings2 {
 		return buf.toString();
 	}
 
-	@KotlinIn
 	public static String substringAfter(String str, String delimiter) {
 		return StringsKt.substringAfter(str, delimiter, str);
 	}
 
-	@KotlinIn
 	public static String substringAfterLast(String str, String delimiter) {
 		return StringsKt.substringAfterLast(str, delimiter, str);
 	}
 
-	@KotlinIn
 	public static String substringBeforeLast(String str, String delimiter) {
 		return StringsKt.substringBeforeLast(str, delimiter, str);
 	}
 
-	@KotlinIn
 	public static MatchResult matchAt(Pattern pattern, String input, int index) {
 		Matcher matcher = pattern.matcher(input).useAnchoringBounds(false).useTransparentBounds(true).region(index, input.length());
 		return matcher.lookingAt() ? matcher.toMatchResult() : null;
 	}
 
-	@KotlinIn
 	public static int sumOf(CharSequence cs, Selector selector) {
 		var sum = 0;
 		for (int i = 0; i < cs.length(); i++) {

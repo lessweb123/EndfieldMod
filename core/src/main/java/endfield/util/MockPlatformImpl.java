@@ -39,7 +39,7 @@ public class MockPlatformImpl implements PlatformImpl {
 	public <T> T clone(T object) {
 		Class<?> type = object.getClass();
 
-		if (type == Class.class || type == Field.class || type == Method.class || type == Constructor.class) return null;
+		if (type == Class.class || type == Field.class || type == Method.class || type == Constructor.class) return object;
 
 		try {
 			T result = (T) unsafe.allocateInstance(type);

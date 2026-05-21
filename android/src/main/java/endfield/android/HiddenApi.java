@@ -17,7 +17,7 @@ public final class HiddenApi {
 	 */
 	public static final long artMethodOffset = 24l;
 
-	static final String[] EXEMPTIONS = {"L"};
+	static final String[] exemptions = {"L"};
 	static final VMRuntime runtime = VMRuntime.getRuntime();
 
 	static Method method;
@@ -40,7 +40,7 @@ public final class HiddenApi {
 		method = findMethod();
 
 		method.setAccessible(true);
-		method.invoke(runtime, (Object) EXEMPTIONS);
+		method.invoke(runtime, (Object) exemptions);
 	}
 
 	private static Method findMethod() throws NoSuchMethodException {

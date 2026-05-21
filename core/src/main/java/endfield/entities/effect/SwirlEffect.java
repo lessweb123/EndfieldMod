@@ -52,7 +52,7 @@ public class SwirlEffect extends Effect {
 	 */
 	public float spinDirectionOverride = 0f;
 
-	public SwirlEffect(float lifetime, float clipsize, Color colorFrom, int length, float width, float minRot, float maxRot, float minDst, float maxDst) {
+	public SwirlEffect(float lifetime, float clipsize, @Nullable Color colorFrom, int length, float width, float minRot, float maxRot, float minDst, float maxDst) {
 		this();
 		this.lifetime = lifetime;
 		this.clip = clipsize;
@@ -73,7 +73,7 @@ public class SwirlEffect extends Effect {
 		this(lifetime, Color.black, length, width, minRot, maxRot, -1, -1);
 	}
 
-	public SwirlEffect(Color colorFrom) {
+	public SwirlEffect(@Nullable Color colorFrom) {
 		this();
 		this.colorFrom = colorFrom;
 	}
@@ -120,23 +120,24 @@ public class SwirlEffect extends Effect {
 		float dir = spinDirectionOverride != 0 ? Mathf.sign(spinDirectionOverride) : Mathf.sign(e.rotation);
 		float baseRot = Mathf.randomSeed(e.id + 1, 360f), addRot = Mathf.randomSeed(e.id + 2, minRot, maxRot) * dir;
 
-		Trail trail = (Trail) e.data;
-		if (!Vars.state.isPaused()) {
-			float f = 1f - (e.time / lifetime);
-			if (f > 0f) {
-				Tmp.v1.trns(baseRot + addRot * spinterp.apply(f), Mathf.maxZero(dst * fallterp.apply(f))).add(e.x, e.y);
-				trail.update(Tmp.v1.x, Tmp.v1.y);
-			} else {
-				trail.shorten();
+		if (e.data instanceof Trail trail) {
+			if (!Vars.state.isPaused()) {
+				float f = 1f - (e.time / lifetime);
+				if (f > 0f) {
+					Tmp.v1.trns(baseRot + addRot * spinterp.apply(f), Mathf.maxZero(dst * fallterp.apply(f))).add(e.x, e.y);
+					trail.update(Tmp.v1.x, Tmp.v1.y);
+				} else {
+					trail.shorten();
+				}
 			}
-		}
 
-		trail.drawCap(Tmp.c1, width);
+			trail.drawCap(Tmp.c1, width);
 
-		if (trail instanceof LightTrail lightTrail) {
-			lightTrail.draw(Tmp.c1, width, l);
-		} else {
-			trail.draw(Tmp.c1, width);
+			if (trail instanceof LightTrail lightTrail) {
+				lightTrail.draw(Tmp.c1, width, l);
+			} else {
+				trail.draw(Tmp.c1, width);
+			}
 		}
 	}
 

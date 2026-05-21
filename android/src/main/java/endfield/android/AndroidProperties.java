@@ -24,7 +24,7 @@ public final class AndroidProperties {
 
 			for (Method method : methods.get(VMRuntime.class)) {
 				if (method.getName().equals("setHiddenApiExemptions")) {
-					method.invoke(HiddenApi.runtime, (Object) HiddenApi.EXEMPTIONS);
+					method.invoke(HiddenApi.runtime, (Object) HiddenApi.exemptions);
 
 					HiddenApi.method = method;
 

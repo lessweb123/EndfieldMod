@@ -27,6 +27,7 @@ public final class PatternManager {
 	static final CollectionObjectMap<Block, Bits> visitedPool = new CollectionObjectMap<>(Block.class, Bits.class);
 	static final CollectionObjectMap<Block, Bits> claimedPool = new CollectionObjectMap<>(Block.class, Bits.class);
 	static final CollectionObjectMap<Block, Bits> processedPool = new CollectionObjectMap<>(Block.class, Bits.class);
+
 	static boolean updateQueued = false;
 	static boolean initialized = false;
 

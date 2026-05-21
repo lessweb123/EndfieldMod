@@ -72,7 +72,7 @@ public class DesktopImpl implements PlatformImpl {
 		}
 
 		lookupMap = new CollectionObjectMap<>(Class.class, Lookup.class);
-		lookupBuilder = clazz -> (Lookup) methodInvokeHelper.newInstanceTyped(clazz, LOOKUP_PARAMETER_TYPES, clazz, null, 95);
+		lookupBuilder = clazz -> methodInvokeHelper.newInstanceTyped(Lookup.class, LOOKUP_PARAMETER_TYPES, clazz, null, 95);
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public class DesktopImpl implements PlatformImpl {
 
 			Class<?> type = object.getClass();
 
-			if (type == Class.class || type == Field.class || type == Method.class || type == Constructor.class) return null;
+			if (type == Class.class || type == Field.class || type == Method.class || type == Constructor.class) return object;
 
 			T result = (T) unsafe.allocateInstance(object.getClass());
 			// The performance overhead may be high, but there is currently no other way.

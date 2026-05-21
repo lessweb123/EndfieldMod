@@ -285,7 +285,7 @@ public class ReflectClassAccessor implements ClassAccessor {
 			Map<Class<?>, List<Annotation>> typeAnnotations = new HashMap<>();
 
 			for (Class<?> type : Reflects.getDirectSuperclasses(clazz)) {
-				Collections.addAll(Collections2.getOrPut(typeAnnotations, type, ArrayList::new), type.getAnnotations());
+				Collections.addAll(MapsKt.getOrPut(typeAnnotations, type, ArrayList::new), type.getAnnotations());
 			}
 
 			List<AnnotatedType> javaTypes = new ArrayList<>();
@@ -296,7 +296,7 @@ public class ReflectClassAccessor implements ClassAccessor {
 			Collections.addAll(javaTypes, clazz.getAnnotatedInterfaces());
 
 			for (AnnotatedType type : javaTypes) {
-				Collections.addAll(Collections2.getOrPut(typeAnnotations, (Class<?>) type.getType(), ArrayList::new), type.getAnnotations());
+				Collections.addAll(MapsKt.getOrPut(typeAnnotations, (Class<?>) type.getType(), ArrayList::new), type.getAnnotations());
 			}
 
 			return MapsKt.map(typeAnnotations, entry -> {

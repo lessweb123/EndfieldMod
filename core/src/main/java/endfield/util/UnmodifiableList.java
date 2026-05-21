@@ -267,19 +267,19 @@ public class UnmodifiableList<E> extends AbstractList<E> implements Iterable<E>,
 	}
 
 	/** Sublist class, It also does not support any modification operations. */
-	public static class SubList<T> extends AbstractList<T> implements Eachable<T> {
-		final UnmodifiableList<T> parent;
+	public static class SubList<E> extends AbstractList<E> implements Eachable<E> {
+		final UnmodifiableList<E> parent;
 		final int offset;
 		final int size;
 
-		public SubList(UnmodifiableList<T> array, int from, int to) {
+		public SubList(UnmodifiableList<E> array, int from, int to) {
 			parent = array;
 			offset = from;
 			size = to - from;
 		}
 
 		@Override
-		public T get(int index) {
+		public E get(int index) {
 			return parent.get(offset + index);
 		}
 
@@ -289,7 +289,7 @@ public class UnmodifiableList<E> extends AbstractList<E> implements Iterable<E>,
 		}
 
 		@Override
-		public void each(Cons<? super T> cons) {
+		public void each(Cons<? super E> cons) {
 			parent.each(cons);
 		}
 
@@ -307,7 +307,7 @@ public class UnmodifiableList<E> extends AbstractList<E> implements Iterable<E>,
 		public int hashCode() {
 			int hashCode = 1;
 			for (int i = offset; i < size; i++) {
-				T item = parent.items[i];
+				E item = parent.items[i];
 				hashCode = 31 * hashCode + (item == null ? 0 : item.hashCode());
 			}
 			return hashCode;
@@ -328,7 +328,7 @@ public class UnmodifiableList<E> extends AbstractList<E> implements Iterable<E>,
 		}
 
 		@Override
-		public List<T> subList(int fromIndex, int toIndex) {
+		public List<E> subList(int fromIndex, int toIndex) {
 			int absoluteFromIndex = offset + fromIndex;
 			int absoluteToIndex = offset + toIndex;
 

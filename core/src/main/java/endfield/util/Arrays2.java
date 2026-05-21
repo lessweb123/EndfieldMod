@@ -70,7 +70,6 @@ public final class Arrays2 {
 	 * }
 	 * }</pre>
 	 */
-	@KotlinIn
 	@SafeVarargs
 	public static <T> T[] arrayOf(T... elements) {
 		return elements;
@@ -84,42 +83,34 @@ public final class Arrays2 {
 		return copy;
 	}
 
-	@KotlinIn
 	public static boolean[] boolOf(boolean... booleans) {
 		return booleans;
 	}
 
-	@KotlinIn
 	public static byte[] byteOf(byte... bytes) {
 		return bytes;
 	}
 
-	@KotlinIn
 	public static short[] shortOf(short... shorts) {
 		return shorts;
 	}
 
-	@KotlinIn
 	public static int[] intOf(int... ints) {
 		return ints;
 	}
 
-	@KotlinIn
 	public static long[] longOf(long... longs) {
 		return longs;
 	}
 
-	@KotlinIn
 	public static float[] floatOf(float... floats) {
 		return floats;
 	}
 
-	@KotlinIn
 	public static double[] doubleOf(double... doubles) {
 		return doubles;
 	}
 
-	@KotlinIn
 	public static char[] charOf(char... chars) {
 		return chars;
 	}
@@ -138,7 +129,6 @@ public final class Arrays2 {
 		return null;
 	}
 
-	@KotlinIn
 	public static <T> void forEachIndexed(T[] array, IndexedConsume<? super T> action) {
 		int i = 0;
 		for (T t : array) {

@@ -110,9 +110,9 @@ public class Devastation extends BaseEntity implements Poolable {
 		return false;
 	}
 
-	public void set(TextureRegion tex, float x, float y, float width, float height, float rotation) {
-		//main = tex;
-		main.set(tex);
+	public void set(TextureRegion region, float x, float y, float width, float height, float rotation) {
+		//main = region;
+		main.set(region);
 		this.x = x;
 		this.y = y;
 		this.width = width;

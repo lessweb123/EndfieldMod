@@ -10,10 +10,10 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class HierarchyList<T> extends AbstractList<T> implements Eachable<T>, Cloneable {
+public class HierarchyList<E> extends AbstractList<E> implements Eachable<E>, Cloneable {
 	public final Class<?> componentType;
 
-	public T[] array;
+	public E[] array;
 	public float[] scores;
 
 	public int size = 0;
@@ -28,14 +28,14 @@ public class HierarchyList<T> extends AbstractList<T> implements Eachable<T>, Cl
 	public HierarchyList(int size, Class<?> arrayType) {
 		componentType = arrayType;
 
-		array = (T[]) Array.newInstance(arrayType, size);
+		array = (E[]) Array.newInstance(arrayType, size);
 		scores = new float[size];
 	}
 
 	@SuppressWarnings("unchecked")
-	public HierarchyList<T> copy() {
+	public HierarchyList<E> copy() {
 		try {
-			HierarchyList<T> out = (HierarchyList<T>) super.clone();
+			HierarchyList<E> out = (HierarchyList<E>) super.clone();
 			out.array = Arrays.copyOf(array, size);
 			out.scores = Arrays.copyOf(scores, size);
 
@@ -48,29 +48,29 @@ public class HierarchyList<T> extends AbstractList<T> implements Eachable<T>, Cl
 	}
 
 	@Override
-	public T get(int idx) {
-		if (idx >= size) return null;
-		return array[idx];
+	public E get(int index) {
+		if (index >= size) return null;
+		return array[index];
 	}
 
-	public void add(T item, float score) {
+	public void add(E e, float score) {
 		if (size >= array.length) return;
 
 		for (int i = 0; i < array.length; i++) {
-			T c = array[i];
+			E c = array[i];
 			float s = scores[i];
 
 			if (c == null) {
-				array[i] = item;
+				array[i] = e;
 				scores[i] = score;
 				size++;
 				break;
 			} else {
 				if (score > s) {
-					array[i] = item;
+					array[i] = e;
 					scores[i] = score;
 
-					item = c;
+					e = c;
 					score = s;
 				}
 			}
@@ -78,10 +78,10 @@ public class HierarchyList<T> extends AbstractList<T> implements Eachable<T>, Cl
 	}
 
 	@Override
-	public boolean remove(Object item) {
+	public boolean remove(Object o) {
 		for (int i = 0; i < size; i++) {
-			T c = array[i];
-			if (c == item) {
+			E c = array[i];
+			if (c == o) {
 				remove(i);
 				return true;
 			}
@@ -90,11 +90,11 @@ public class HierarchyList<T> extends AbstractList<T> implements Eachable<T>, Cl
 	}
 
 	@Override
-	public T remove(int index) {
-		T last = array[index];
+	public E remove(int index) {
+		E last = array[index];
 
 		for (int i = index; i < size - 1; i++) {
-			T n = array[i + 1];
+			E n = array[i + 1];
 			float scr = scores[i + 1];
 			array[i] = n;
 			array[i + 1] = null;
@@ -116,7 +116,7 @@ public class HierarchyList<T> extends AbstractList<T> implements Eachable<T>, Cl
 	}
 
 	@Override
-	public void each(Cons<? super T> cons) {
+	public void each(Cons<? super E> cons) {
 		for (int i = 0; i < size; i++) {
 			cons.get(array[i]);
 		}
@@ -148,7 +148,7 @@ public class HierarchyList<T> extends AbstractList<T> implements Eachable<T>, Cl
 		return size;
 	}
 
-	public class HierarchyIterator implements Iterator<T> {
+	public class HierarchyIterator implements Iterator<E> {
 		protected int index = 0;
 		protected boolean done = true;
 
@@ -159,7 +159,7 @@ public class HierarchyList<T> extends AbstractList<T> implements Eachable<T>, Cl
 		}
 
 		@Override
-		public T next() {
+		public E next() {
 			if (index >= size) throw new NoSuchElementException(String.valueOf(index));
 			return array[index++];
 		}
