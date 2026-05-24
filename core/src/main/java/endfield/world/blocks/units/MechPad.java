@@ -181,7 +181,6 @@ public class MechPad extends Block {
 				time += edelta() * speedScl * Vars.state.rules.unitBuildSpeed(team);
 				progress += edelta() * Vars.state.rules.unitBuildSpeed(team);
 				speedScl = Mathf.lerpDelta(speedScl, 1f, 0.05f);
-				unit.ammo(unit.type().ammoCapacity * fraction());
 			} else {
 				if (!isControlled()) {
 					progress = 0f;

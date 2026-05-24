@@ -2,8 +2,6 @@ package endfield;
 
 import arc.struct.Seq;
 import arc.util.Log;
-import endfield.util.ObjectsKt;
-import endfield.util.aspector.AspectHelper;
 import endfield.core.EndFieldListener;
 import endfield.core.EndFieldMod;
 import endfield.files.InternalFileTree;
@@ -49,7 +47,6 @@ public final class Vars2 {
 	public static ClassHelper classHelper;
 	public static FieldAccessHelper fieldAccessHelper;
 	public static MethodInvokeHelper methodInvokeHelper;
-	public static AspectHelper aspectHelper;
 
 	public static SizedGraphics sizedGraphics;
 

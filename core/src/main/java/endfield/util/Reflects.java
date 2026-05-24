@@ -209,7 +209,7 @@ public final class Reflects {
 	}
 
 	public static List<Class<?>> getDirectSuperclasses(Class<?> clazz) {
-		List<Class<?>> result = new ArrayList<>();
+		ArrayList<Class<?>> result = new ArrayList<>();
 		Class<?> superclass = clazz.getSuperclass();
 
 		if (superclass != null && superclass != Object.class) {

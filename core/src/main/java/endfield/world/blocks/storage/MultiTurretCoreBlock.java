@@ -59,7 +59,7 @@ public class MultiTurretCoreBlock extends CoreBlock {
 
 				// To avoid terrible exception.
 				if (i * 2 + 1 < positions.length) {
-					payload.set(positions[i * 2], positions[i * 2 + 1], build.payloadRotation);
+					payload.set(positions[i * 2], positions[i * 2 + 1], build.rotation);
 				}
 			}
 		}

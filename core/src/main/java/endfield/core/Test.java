@@ -1,18 +1,11 @@
 package endfield.core;
 
 import arc.util.Log;
-import endfield.util.aspector.RuntimeAspector;
-import endfield.util.aspector.RuntimeAspector.AspectDelegate;
-import endfield.util.aspector.Aspector.Stub;
-import endfield.util.aspector.classes.BytecodeClassLoader;
-import endfield.util.aspector.generate.AspectMaker;
 import endfield.util.CollectionObjectMap;
 import endfield.util.ExtraVariable;
 import org.jetbrains.annotations.TestOnly;
 
 import java.util.Map;
-
-import static endfield.Vars2.aspectHelper;
 
 /** Classes for testing purposes only, do not use. */
 @TestOnly
@@ -29,14 +22,7 @@ public class Test implements Cloneable, ExtraVariable {
 		id = count++;
 	}
 
-	public static void test() throws Throwable {
-		BytecodeClassLoader loader = new BytecodeClassLoader(RuntimeAspector.class.getClassLoader());
-
-		AspectDelegate d = RuntimeAspector.withMaker(AspectMaker::new, aspectHelper::packageAccessHandler);
-		d.use(loader);
-		Aspect instance = (Aspect) d.applyAspect(LoaderAspect.class, d.open(ClassLoader.class)).instance();
-		instance.definePackage(Object.class);
-	}
+	public static void test() throws Throwable {}
 
 	public static void call() {
 		try {
@@ -67,14 +53,6 @@ public class Test implements Cloneable, ExtraVariable {
 		default Package definePackage(Class<?> c) {
 			Log.infoTag(toString(), "TODO");
 			return null;
-		}
-	}
-
-	public static class LoaderAspect extends @Stub ClassLoader implements @Stub AccessStub, Aspect {
-		@Override
-		public Package definePackage(Class<?> c) {
-			Log.infoTag(toString(), "definePackage: " + c);
-			return AccessStub.super.definePackage(c);
 		}
 	}
 }

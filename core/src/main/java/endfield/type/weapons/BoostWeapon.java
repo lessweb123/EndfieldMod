@@ -146,7 +146,6 @@ public class BoostWeapon extends Weapon {
 		//shoot if applicable
 		if (mount.shoot && //must be shooting
 				can && //must be able to shoot
-				(!useAmmo || unit.ammo > 0 || !Vars.state.rules.unitAmmo || unit.team.rules().infiniteAmmo) && //check ammo
 				(!alternate || wasFlipped == flipSprite) &&
 				mount.warmup >= minWarmup && //must be warmed up
 				unit.vel.len() >= minShootVelocity && //check velocity requirements
@@ -156,11 +155,6 @@ public class BoostWeapon extends Weapon {
 			shoot(unit, mount, bulletX, bulletY, shootAngle);
 
 			mount.reload = reload;
-
-			if (useAmmo) {
-				unit.ammo--;
-				if (unit.ammo < 0) unit.ammo = 0;
-			}
 		}
 	}
 }

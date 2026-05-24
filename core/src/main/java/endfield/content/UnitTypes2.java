@@ -101,7 +101,6 @@ import mindustry.entities.part.RegionPart;
 import mindustry.entities.part.ShapePart;
 import mindustry.entities.pattern.ShootAlternate;
 import mindustry.entities.pattern.ShootBarrel;
-import mindustry.entities.pattern.ShootPattern;
 import mindustry.entities.pattern.ShootSine;
 import mindustry.entities.pattern.ShootSpread;
 import mindustry.entities.units.WeaponMount;
@@ -119,8 +118,6 @@ import mindustry.graphics.Pal;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
-import mindustry.type.ammo.ItemAmmoType;
-import mindustry.type.ammo.PowerAmmoType;
 import mindustry.type.weapons.PointDefenseWeapon;
 import mindustry.type.weapons.RepairBeamWeapon;
 import mindustry.world.meta.BlockFlag;
@@ -170,7 +167,6 @@ public final class UnitTypes2 {
 			rotateSpeed = 3f;
 			speed = 2.4f;
 			hitSize = 9.5f;
-			ammoCapacity = 300;
 			health = 250f;
 			armor = 5f;
 			drag = 0.08f;
@@ -211,8 +207,6 @@ public final class UnitTypes2 {
 			canDrown = false;
 			speed = 1.8f;
 			hitSize = 18f;
-			ammoType = new ItemAmmoType(Items.graphite);
-			ammoCapacity = 80;
 			health = 660f;
 			armor = 5f;
 			drag = 0.08f;
@@ -283,8 +277,6 @@ public final class UnitTypes2 {
 			treadRects = new Rect[]{new Rect(-45f, -45f, 24f, 88f)};
 			speed = 1.3f;
 			hitSize = 20f;
-			ammoType = new ItemAmmoType(Items.blastCompound);
-			ammoCapacity = 80;
 			squareShape = true;
 			omniMovement = false;
 			rotateMoveFirst = false;
@@ -418,8 +410,6 @@ public final class UnitTypes2 {
 			treadPullOffset = 0;
 			treadFrames = 8;
 			treadRects = new Rect[]{new Rect(-67f, -84f, 39f, 167f)};
-			ammoType = new ItemAmmoType(Items.surgeAlloy);
-			ammoCapacity = 220;
 			targetAir = true;
 			health = 11000f;
 			armor = 16f;
@@ -585,8 +575,6 @@ public final class UnitTypes2 {
 			drownTimeMultiplier = 2.6f;
 			crushDamage = 6f;
 			treadRects = new Rect[]{new Rect(-86f, -108f, 42f, 112f), new Rect(-72f, -124f, 21f, 16f), new Rect(-86f, 9f, 42f, 119f)};
-			ammoType = new ItemAmmoType(Items.surgeAlloy);
-			ammoCapacity = 200;
 			targetAir = true;
 			health = 28000f;
 			armor = 28f;
@@ -721,8 +709,6 @@ public final class UnitTypes2 {
 			treadRects = new Rect[]{new Rect(-115f, 118f, 52f, 48f), new Rect(-118f, -160f, 79f, 144f)};
 			hitSize = 66f;
 			immunities.add(StatusEffects.burning);
-			ammoType = new ItemAmmoType(Items.surgeAlloy);
-			ammoCapacity = 300;
 			targetAir = true;
 			health = 82000f;
 			armor = 36f;
@@ -985,7 +971,6 @@ public final class UnitTypes2 {
 			range = 165f;
 			fallRotateSpeed = 2f;
 			rotateSpeed = 3.8f;
-			ammoType = new ItemAmmoType(Items.graphite);
 			weapons.add(new Weapon(name + "-gun") {{
 				layerOffset = -0.01f;
 				x = 4.25f;
@@ -1049,7 +1034,6 @@ public final class UnitTypes2 {
 			range = 165f;
 			lowAltitude = true;
 			rotateSpeed = 3.5f;
-			ammoType = new ItemAmmoType(Items.thorium);
 			weapons.add(new Weapon(name + "-gun-big") {{
 				layerOffset = -0.01f;
 				x = 8.25f;
@@ -1124,7 +1108,6 @@ public final class UnitTypes2 {
 			lowAltitude = true;
 			fallRotateSpeed = 0.8f;
 			rotateSpeed = 2.7f;
-			ammoType = new ItemAmmoType(Items.thorium);
 			weapons.add(new Weapon(name + "-gun") {{
 				layerOffset = -0.01f;
 				x = 14f;
@@ -1217,7 +1200,6 @@ public final class UnitTypes2 {
 			lowAltitude = true;
 			fallRotateSpeed = 0.8f;
 			rotateSpeed = 2.2f;
-			ammoType = new ItemAmmoType(Items.surgeAlloy);
 			Floatt3<Weapon> gun = (dx, dy, rel) -> new Weapon(name + "-gun") {{
 				mirror = true;
 				rotate = false;
@@ -1293,8 +1275,6 @@ public final class UnitTypes2 {
 			shadowElevation = 0.1f;
 			groundLayer = 74f;
 			itemCapacity = 200;
-			ammoType = new ItemAmmoType(Items.pyratite);
-			ammoCapacity = 600;
 			abilities.add(new TerritoryFieldAbility(20 * 8f, 90f, 210f) {{
 				open = true;
 			}});
@@ -1396,8 +1376,6 @@ public final class UnitTypes2 {
 			hovering = true;
 			shadowElevation = 0.23f;
 			allowLegStep = true;
-			ammoCapacity = 500;
-			ammoType = new PowerAmmoType(3500);
 			speed = 0.3f;
 			groundLayer = Layer.legUnit;
 			immunities.addAll(StatusEffects.sapped, StatusEffects.wet, StatusEffects.electrified);
@@ -1532,7 +1510,6 @@ public final class UnitTypes2 {
 			hovering = true;
 			allowLegStep = true;
 			shadowElevation = 0.95f;
-			ammoType = new ItemAmmoType(Items.graphite, 8);
 			groundLayer = Layer.legUnit;
 			itemCapacity = 200;
 			weapons.add(new LimitedAngleWeapon(name + "-launcher") {{
@@ -1642,7 +1619,6 @@ public final class UnitTypes2 {
 			hitSize = 62f;
 			armor = 45f;
 			targetFlags = new BlockFlag[]{BlockFlag.reactor, BlockFlag.battery, BlockFlag.core, null};
-			ammoType = new ItemAmmoType(Items2.uranium);
 			itemCapacity = 460;
 			abilities.add(new EnergyFieldAbility(220f, 90f, 192f) {{
 				color = new Color(0xffa665ff);
@@ -1759,8 +1735,6 @@ public final class UnitTypes2 {
 			buildBeamOffset = 43f;
 			itemCapacity = 540;
 			abilities.add(new ForceFieldAbility(180f, 6f, 12000f, 60f * 8, 6, 0f), new RepairFieldAbility(290f, 60f * 2, 160f));
-			ammoType = new PowerAmmoType(2500);
-			ammoCapacity = 100;
 			weapons.add(new HealConeWeapon(name + "-heal-mount") {{
 				x = 33.5f;
 				y = -7.75f;
@@ -1772,7 +1746,6 @@ public final class UnitTypes2 {
 				rotate = true;
 				rotateSpeed = 4;
 				alternate = false;
-				useAmmo = true;
 				continuous = true;
 				cooldownTime = 150;
 				shootY = 8;
@@ -1816,7 +1789,6 @@ public final class UnitTypes2 {
 			rotateSpeed = 0.9f;
 			health = 63000f;
 			itemCapacity = 350;
-			ammoType = new ItemAmmoType(Items2.uranium);
 			abilities.add(new ShieldRegenFieldAbility(100f, 1500f, 60f * 4, 200f), new TerritoryFieldAbility(220, -1, 150) {{
 				active = false;
 			}});
@@ -1972,7 +1944,6 @@ public final class UnitTypes2 {
 			rotateSpeed = 1f;
 			health = 62500f;
 			itemCapacity = 800;
-			ammoType = new PowerAmmoType(1800f);
 			buildSpeed = 12;
 			abilities.add(new SuppressionFieldAbility() {{
 				orbRadius = 5f;
@@ -2334,8 +2305,6 @@ public final class UnitTypes2 {
 				outline = false;
 			}});
 			fogRadius = 44f;
-			ammoCapacity = 500;
-			ammoType = new ItemAmmoType(Items.beryllium);
 		}};
 		oracle = new UnitType2("oracle") {{
 			erekir();
@@ -2361,8 +2330,6 @@ public final class UnitTypes2 {
 			legBaseOffset = 12f;
 			legStraightLength = 1.1f;
 			legMaxLength = 1.2f;
-			ammoType = new PowerAmmoType(2000);
-			ammoCapacity = 500;
 			legSplashDamage = 84;
 			legSplashRange = 46;
 			drownTimeMultiplier = 3f;
@@ -2649,8 +2616,6 @@ public final class UnitTypes2 {
 			}});
 			fogRadius = 56f;
 			setEnginesMirror(new UnitEngine(95f / 4f, -56f / 4, 5f, 330f), new UnitEngine(89f / 4, -95f / 4, 4f, 315f));
-			ammoCapacity = 500;
-			ammoType = new ItemAmmoType(Items.beryllium);
 		}};
 		//miner-erekir
 		miner = new UnitType2("miner") {{
@@ -2687,8 +2652,6 @@ public final class UnitTypes2 {
 			hittable = false;
 			targetPriority = -2;
 			setEnginesMirror(new UnitEngine(24 / 4f, -24 / 4f, 2.3f, 315f));
-			ammoCapacity = 100;
-			ammoType = new PowerAmmoType(600f);
 		}};
 		largeMiner = new UnitType2("large-miner") {{
 			requirements = ItemStack.empty;
@@ -2725,8 +2688,6 @@ public final class UnitTypes2 {
 			hittable = false;
 			targetPriority = -2;
 			setEnginesMirror(new UnitEngine(40 / 4f, -40 / 4f, 3f, 315f));
-			ammoCapacity = 300;
-			ammoType = new PowerAmmoType(1200f);
 		}};
 		legsMiner = new UnitType2("legs-miner") {{
 			requirements = ItemStack.empty;
@@ -2787,8 +2748,6 @@ public final class UnitTypes2 {
 			abilities.add(new RegenAbility() {{
 				percentAmount = 1f / (90f * 60f) * 100f;
 			}});
-			ammoCapacity = 100;
-			ammoType = new PowerAmmoType(800f);
 		}};
 		//other
 		vulture = new UnitType2("vulture") {{
@@ -2838,8 +2797,6 @@ public final class UnitTypes2 {
 				magX = 0.2f;
 				magY = 0.1f;
 			}});
-			ammoCapacity = 100;
-			ammoType = new PowerAmmoType(600f);
 			targetAir = false;
 			maxRange = 200;
 			engineOffset = 14f;
@@ -2912,7 +2869,6 @@ public final class UnitTypes2 {
 			engineOffset = 5;
 			engineSize = 3;
 			payloadCapacity = (256 * 256) * Vars.tilePayload;
-			ammoCapacity = 114514;
 			coreUnitDock = true;
 			mineWalls = true;
 			envDisabled = Env.none;
@@ -2947,8 +2903,6 @@ public final class UnitTypes2 {
 			mineWalls = true;
 			envDisabled = Env.none;
 			isEnemy = false;
-			ammoCapacity = 114514;
-			ammoType = new PowerAmmoType(114.514f);
 		}};
 		//elite
 		tiger = new UnitType2("tiger") {{
@@ -2965,8 +2919,6 @@ public final class UnitTypes2 {
 			buildSpeed = 4f;
 			armor = 53f;
 			envDisabled = Env.none;
-			ammoType = new PowerAmmoType(3000f);
-			ammoCapacity = 2400;
 			weapons.add(new Weapon(name + "-cannon") {{
 				top = false;
 				rotate = true;
@@ -3182,8 +3134,6 @@ public final class UnitTypes2 {
 			float xo = 231f / 2f, yo = 231f / 2f;
 			treadRects = new Rect[]{new Rect(27 - xo, 152 - yo, 56, 73), new Rect(24 - xo, 51 - 9 - yo, 29, 17), new Rect(59 - xo, 18 - 9 - yo, 39, 19)};
 			hoverable = hovering = true;
-			ammoType = new PowerAmmoType(3000);
-			ammoCapacity = 2600;
 			crushDamage = 20;
 			weapons.add(new Weapon(name + "-weapon") {{
 				x = 0f;

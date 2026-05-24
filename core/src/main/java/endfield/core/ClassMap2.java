@@ -90,7 +90,6 @@ import endfield.type.CrystalLiquid;
 import endfield.type.ExtraSectorPreset;
 import endfield.type.LiquidBottle;
 import endfield.type.Recipe;
-import endfield.type.ammo.VanityAmmoType;
 import endfield.type.unit.AncientUnitType;
 import endfield.type.unit.CopterUnitType;
 import endfield.type.unit.DoubleLegMechUnitType;
@@ -475,8 +474,6 @@ final class ClassMap2 {
 		classes.put("ConstructPart", ConstructPart.class);
 		classes.put("CustomPart", CustomPart.class);
 		classes.put("RangeCirclePart", RangeCirclePart.class);
-		//ammo
-		classes.put("VanityAmmoType", VanityAmmoType.class);
 		//patterns
 		classes.put("ShootBursts", ShootBursts.class);
 		classes.put("FlipShootHelix", FlipShootHelix.class);

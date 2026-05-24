@@ -86,7 +86,6 @@ public class MultiRouter extends LiquidRouter {
 		public Building getTileTarget(Item item, Tile from, boolean set) {
 			if (unit != null) {
 				unit.health(health);
-				unit.ammo(unit.type().ammoCapacity * (items.total() > 0 ? 1f : 0f));
 				unit.team(team);
 				unit.set(x, y);
 

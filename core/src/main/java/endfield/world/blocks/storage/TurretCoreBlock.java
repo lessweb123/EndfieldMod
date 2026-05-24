@@ -55,7 +55,7 @@ public class TurretCoreBlock extends CoreBlock {
 					build.handleItem(this, ammo);
 				}
 			}
-			payload.set(x, y, build.payloadRotation);
+			payload.set(x, y, build.rotation);
 		}
 
 		@Override

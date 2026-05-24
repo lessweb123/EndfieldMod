@@ -18,11 +18,6 @@ public class ReloadingAI extends AIController {
 	}
 
 	@Override
-	public boolean useFallback() {
-		return !(Vars.state.rules.unitAmmo && (unit.ammo / unit.type.ammoCapacity) < 0.2f);
-	}
-
-	@Override
 	public AIController fallback() {
 		return provider.get();
 	}

@@ -25,7 +25,6 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import static endfield.Vars2.accessibleHelper;
-import static endfield.Vars2.aspectHelper;
 import static endfield.Vars2.classHelper;
 import static endfield.Vars2.fieldAccessHelper;
 import static endfield.Vars2.methodInvokeHelper;
@@ -53,8 +52,6 @@ public class DesktopImpl implements PlatformImpl {
 			fieldAccessHelper = new UnsafeFieldAccessHelper();
 			methodInvokeHelper = new MethodHandleMethodInvokeHelper();
 			accessibleHelper = new DesktopAccessibleHelper();
-
-			aspectHelper = new DesktopAspectHelper();
 		} catch (Throwable e) {
 			Log.err("It seems you platform is special. (But don't worry)", e);
 

@@ -6,13 +6,11 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import endfield.world.meta.Stats2;
 import mindustry.ai.types.MissileAI;
-import mindustry.content.Items;
 import mindustry.gen.Sounds;
 import mindustry.gen.Unit;
 import mindustry.graphics.Pal;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
-import mindustry.type.ammo.ItemAmmoType;
 import mindustry.world.meta.Env;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,7 +35,6 @@ public class UnitType2 extends UnitType {
 	public void erekir() {
 		outlineColor = Pal.darkOutline;
 		envDisabled = Env.space;
-		ammoType = new ItemAmmoType(Items.beryllium);
 		researchCostMultiplier = 10f;
 	}
 

@@ -129,11 +129,6 @@ public class LaserWeapon extends Weapon {
 			shoot(unit, mount, bulletX, bulletY, shootAngle);
 
 			mount.reload = reload;
-
-			if (useAmmo) {
-				unit.ammo--;
-				if (unit.ammo < 0) unit.ammo = 0;
-			}
 		}
 	}
 
