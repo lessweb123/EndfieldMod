@@ -7,6 +7,7 @@ import arc.struct.IntSeq;
 import arc.struct.Seq;
 import arc.util.ArcRuntimeException;
 import arc.util.Eachable;
+import endfield.func.Intg;
 import endfield.math.Mathm;
 import endfield.util.holder.IntHolder;
 
@@ -339,6 +340,15 @@ public class IntMap2<V> implements Iterable<IntHolder<V>>, Eachable<IntHolder<V>
 		V out = get(key);
 		if (out == null) {
 			out = defaultValue.get();
+			put(key, out);
+		}
+		return out;
+	}
+
+	public V get(int key, Intg<? extends V> defaultValue) {
+		V out = get(key);
+		if (out == null) {
+			out = defaultValue.get(key);
 			put(key, out);
 		}
 		return out;

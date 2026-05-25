@@ -24,7 +24,7 @@ public class InternalFileTree implements FileHandleResolver {
 	public InternalFileTree(Class<?> owner) {
 		anchorClass = owner;
 
-		URL res = anchorClass.getResource("");
+		URL res = owner.getResource("");
 
 		if (res == null) throw new IllegalArgumentException("Unable to retrieve resource: " + owner.getName());
 

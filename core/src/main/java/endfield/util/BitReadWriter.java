@@ -11,6 +11,8 @@ public class BitReadWriter {
 	protected byte current, next;
 
 	public BitReadWriter(byte[] raw) {
+		if (raw.length == 0) throw new IllegalArgumentException("raw cannot be an empty array");
+
 		this.raw = raw;
 		resetPointer();
 	}

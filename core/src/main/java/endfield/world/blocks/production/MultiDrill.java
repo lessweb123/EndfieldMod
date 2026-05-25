@@ -47,9 +47,7 @@ public class MultiDrill extends Block {
 
 	public Color heatColor = new Color(0xff5512);
 
-	public TextureRegion rimRegion;
-	public TextureRegion rotatorRegion;
-	public TextureRegion topRegion;
+	public TextureRegion rimRegion, rotatorRegion, topRegion;
 
 	public MultiDrill(String name) {
 		super(name);
@@ -181,8 +179,8 @@ public class MultiDrill extends Block {
 
 		@Override
 		public void drawSelect() {
-			var off = 0;
-			for (var ore : ores.keys()) {
+			int off = 0;
+			for (Item ore : ores.keys()) {
 				var dx = x - size * Vars.tilesize / 2f;
 				var dy = y + size * Vars.tilesize / 2f;
 				Draw.mixcol(Color.darkGray, 1f);
@@ -253,6 +251,7 @@ public class MultiDrill extends Block {
 			float ts = 0.6f;
 
 			Draw.rect(region, x, y);
+
 			super.drawCracks();
 
 			Draw.color(heatColor);

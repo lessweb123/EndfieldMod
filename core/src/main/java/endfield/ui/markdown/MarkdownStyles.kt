@@ -43,7 +43,7 @@ object MarkdownStyles {
 			(f as DistanceFieldFont).distanceFieldSmoothing = 1f
 		}
 	private val mono = try {
-		Vars2.internalTree.child("fonts/jetbrainsmonomedium.ttf").let { fi ->
+		Vars2.internalTree.child("fonts").child("jetbrainsmonomedium.ttf").let { fi ->
 			val gen = FreeTypeFontGenerator(fi)
 			gen.generateFont(FreeTypeFontGenerator.FreeTypeFontParameter().apply {
 				size = Scl.scl(19f).toInt()
