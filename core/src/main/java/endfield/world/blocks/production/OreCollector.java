@@ -63,7 +63,7 @@ import static mindustry.Vars.world;
 
 /**
  * @author LaoHuaJi
- * @author Eipusino
+ * @author LarkspurVale
  */
 public class OreCollector extends MultiBlock {
 	public static List<Tile> tmpClusters = new CollectionList<>(Tile.class);

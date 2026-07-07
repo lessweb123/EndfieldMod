@@ -27,7 +27,7 @@ import static mindustry.Vars.world;
 /**
  * Compared to CoveredConverter, its upper layer texture has been changed to one that can have light and shadow effects.
  *
- * @author Eipusino
+ * @author LarkspurVale
  */
 public class TubeConveyor extends Conveyor2 {
 	static final float itemSpace = 0.4f;

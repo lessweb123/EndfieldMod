@@ -7,7 +7,7 @@ import mindustry.type.Item;
 /**
  * Defines the {@linkplain Item item} this mod offers.
  *
- * @author Eipusino
+ * @author LarkspurVale
  */
 public final class Items2 {
 	public static Item stone, agglomerateSalt, rareEarth;

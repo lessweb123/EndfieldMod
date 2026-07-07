@@ -128,7 +128,7 @@ import static endfield.Vars2.MOD_NAME;
 /**
  * Defines the {@linkplain UnitType units} this mod offers.
  *
- * @author Eipusino
+ * @author LarkspurVale
  */
 public final class UnitTypes2 {
 	public static final String EPHEMERAS = "ephemeras";

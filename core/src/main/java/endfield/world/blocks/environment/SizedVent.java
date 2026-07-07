@@ -22,7 +22,7 @@ import static mindustry.Vars.world;
  * A {@link SteamVent} that can be of any size. Spans multiple tiles; only the middle tile (or in case of {@code size % 2 == 0},
  * the bottom-left middle) should update and draw the actual sprite.
  *
- * @author Eipusino
+ * @author LarkspurVale
  */
 public class SizedVent extends SteamVent {
 	protected static Point2[][] offsets = new Point2[0][];

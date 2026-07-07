@@ -21,7 +21,7 @@ import static endfield.desktop.DesktopImpl.lookup;
  * and it is only available on the desktop platform. Any behavior of this class is not allowed on the
  * Android platform.</strong>
  *
- * @author Eipusino
+ * @author LarkspurVale
  */
 public final class Demodulator {
 	static final MethodHandle implAddOpens;

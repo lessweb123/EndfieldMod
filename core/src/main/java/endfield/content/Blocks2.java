@@ -282,7 +282,7 @@ import static endfield.Vars2.MOD_NAME;
  * <p>It is now quite large in a scale, even approaching the size of vanilla's {@link Blocks}.
  * But I don't want to divide it into multiple classes.
  *
- * @author Eipusino
+ * @author LarkspurVale
  */
 public final class Blocks2 {
 	//environment

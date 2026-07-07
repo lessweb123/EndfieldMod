@@ -13,7 +13,7 @@ import mindustry.world.meta.StatUnit;
 /**
  * Same as GeneratorCrafter, but power output is affected by Attribute.
  *
- * @author Eipusino
+ * @author LarkspurVale
  */
 public class AttributeGenerator extends AttributeCrafter {
 	public float powerProduction = 1f;

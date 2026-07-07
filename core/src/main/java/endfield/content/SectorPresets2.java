@@ -6,7 +6,7 @@ import mindustry.type.SectorPreset;
 /**
  * Defines the {@linkplain SectorPreset maps} this mod offers.
  *
- * @author Eipusino
+ * @author LarkspurVale
  */
 public final class SectorPresets2 {
 	//serpulo

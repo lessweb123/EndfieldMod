@@ -6,9 +6,7 @@ import rhino.Scriptable;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
-import java.lang.reflect.Method;
 
-import static endfield.Vars2.platformImpl;
 import static endfield.util.script.Scripts2.convertArgs;
 
 /**
@@ -20,14 +18,6 @@ public class NativeJavaMethodHandle extends BaseFunction {
 	protected final int paramCount;
 	protected final Class<?> returnType;
 	protected final Class<?>[] parameterArray;
-
-	public NativeJavaMethodHandle(Scriptable scope, Class<?> declaringClass, String name, Class<?>... parameterTypes) throws NoSuchMethodException, IllegalAccessException {
-		this(scope, declaringClass.getDeclaredMethod(name, parameterTypes));
-	}
-
-	public NativeJavaMethodHandle(Scriptable scope, Method method) throws IllegalAccessException {
-		this(scope, platformImpl.lookup(method.getDeclaringClass()).unreflect(method));
-	}
 
 	public NativeJavaMethodHandle(Scriptable scope, MethodHandle method) {
 		super(scope, null);
@@ -56,9 +46,9 @@ public class NativeJavaMethodHandle extends BaseFunction {
 	}
 
 	@Override
-	public Object call(Context context, Scriptable scope, Scriptable scriptable, Object[] args) {
+	public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
 		try {
-			return context.getWrapFactory().wrap(context, scope, spreadHandle.invokeExact(convertArgs(args, parameterArray)), returnType);
+			return cx.getWrapFactory().wrap(cx, scope, spreadHandle.invokeExact(convertArgs(args, parameterArray)), returnType);
 		} catch (RuntimeException | Error e) {
 			throw e;
 		} catch (Throwable e) {

@@ -13,7 +13,7 @@ import mindustry.world.meta.StatUnit;
 /**
  * A factory that can produce electricity.
  *
- * @author Eipusino
+ * @author LarkspurVale
  */
 public class GeneratorCrafter extends GenericCrafter {
 	public float powerProduction = 1f;

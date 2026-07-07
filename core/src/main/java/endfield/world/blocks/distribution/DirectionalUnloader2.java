@@ -5,7 +5,7 @@ import mindustry.world.blocks.distribution.DirectionalUnloader;
 /**
  * A directional unloader that is not affected by game frame rates.
  *
- * @author Eipusino
+ * @author LarkspurVale
  */
 public class DirectionalUnloader2 extends DirectionalUnloader {
 	public DirectionalUnloader2(String name) {

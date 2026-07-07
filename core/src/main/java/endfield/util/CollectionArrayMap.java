@@ -23,7 +23,7 @@ import java.util.Set;
  * element is moved to the removed element's position).
  *
  * @author Nathan Sweet
- * @author Eipusino
+ * @author LarkspurVale
  */
 public class CollectionArrayMap<K, V> extends AbstractMap<K, V> implements Iterable<ObjectHolder<K, V>>, Eachable<ObjectHolder<K, V>>, Cloneable {
 	public final Class<K> keyComponentType;

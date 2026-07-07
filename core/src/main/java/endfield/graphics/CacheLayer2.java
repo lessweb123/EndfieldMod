@@ -6,7 +6,7 @@ import mindustry.graphics.CacheLayer.ShaderLayer;
 /**
  * Defines the {@linkplain CacheLayer cache layer}s this mod offers.
  *
- * @author Eipusino
+ * @author LarkspurVale
  */
 public final class CacheLayer2 {
 	public static ShaderLayer brine, glacium, crystalFluid, deepCrystalFluid, pit, waterPit;

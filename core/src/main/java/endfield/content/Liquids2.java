@@ -16,7 +16,7 @@ import mindustry.type.Liquid;
 /**
  * Defines the {@linkplain Liquid liquid} this mod offers.
  *
- * @author Eipusino
+ * @author LarkspurVale
  */
 public final class Liquids2 {
 	static final int crystalFluidId = Draws.nextTaskId();

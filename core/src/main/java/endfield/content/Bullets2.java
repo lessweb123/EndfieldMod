@@ -75,7 +75,7 @@ import static endfield.Vars2.MOD_NAME;
 /**
  * Some preset bullets. Perhaps it will be used multiple times.
  *
- * @author Eipusino
+ * @author LarkspurVale
  */
 public final class Bullets2 {
 	public static BulletType basicMissile, boidMissile, sapArtilleryFrag, continuousSapLaser;

@@ -1,16 +1,3 @@
-/*
-	Copyright (c) Eipusino 2021
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-	You should have received a copy of the GNU General Public License
-	along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
 package endfield.util;
 
 import arc.Core;
@@ -73,7 +60,7 @@ import org.jetbrains.annotations.Nullable;
  * Input-output utilities, providing very specific functions that aren't really commonly used, but often
  * enough to require me to write a class for it.
  *
- * @author Eipusino
+ * @author LarkspurVale
  */
 public final class Get {
 	public static final Color c1 = new Color(), c2 = new Color(), c3 = new Color(), c4 = new Color(), c5 = new Color();

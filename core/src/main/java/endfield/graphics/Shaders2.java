@@ -26,7 +26,7 @@ import static endfield.Vars2.MOD_NAME;
 /**
  * Defines the {@linkplain Shader shader}s this mod offers.
  *
- * @author Eipusino
+ * @author LarkspurVale
  */
 public final class Shaders2 {
 	public static Fi shadersDir = Vars2.internalTree.child("shaders");

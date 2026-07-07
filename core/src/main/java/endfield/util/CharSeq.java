@@ -10,7 +10,7 @@ import java.util.Arrays;
  * avoids a memory copy when removing elements (the last element is moved to the removed element's position).
  *
  * @author Nathan Sweet
- * @author Eipusino
+ * @author LarkspurVale
  */
 public class CharSeq implements CharSequence, Appendable, Cloneable {
 	public char[] items;

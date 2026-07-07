@@ -32,8 +32,9 @@ public interface Transform extends IPosition {
 			for (int i = tmpStack.size - 1; i >= 0; i--) {
 				Transform obj = tmpStack.items[i];
 				Transform par = obj.parent();
-				if (par == null) obj.parentTrans().idt();
-				else {
+				if (par == null) {
+					obj.parentTrans().idt();
+				} else {
 					Mat3D objTrn = obj.parentTrans();
 					Mat3D parTrn = par.parentTrans();
 
@@ -48,11 +49,11 @@ public interface Transform extends IPosition {
 
 	Quat tmpQuat();//tmpQuat, new arc.math.geom.Quat()
 
-	float getX();//x
+	//float getX();//x
 
 	void setX(float x);//x
 
-	float getY();//y
+	//float getY();//y
 
 	void setY(float y);//y
 

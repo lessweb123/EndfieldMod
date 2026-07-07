@@ -57,14 +57,6 @@ public class ConsumeFluid extends Consume {
 		this.amount = amount;
 	}
 
-	public HasPressure cast(Building build) {
-		if (build instanceof HasPressure pressure) {
-			return pressure;
-		}
-
-		throw new ClassCastException("This consumer should be used on a building that implements HasPressure");
-	}
-
 	@Override
 	public void apply(Block block) {
 		block.hasLiquids = true;
@@ -83,33 +75,35 @@ public class ConsumeFluid extends Consume {
 
 	@Override
 	public float efficiency(Building build) {
-		if (!shouldConsume(cast(build))) return 0f;
+		if (!shouldConsume(build)) return 0f;
 		return 1f;
 	}
 
 	@Override
 	public float efficiencyMultiplier(Building build) {
-		if (!shouldConsume(cast(build))) return 0f;
-		return curve.apply(1f, efficiencyMultiplier, Mathf.clamp(Mathf.map(cast(build).getPressure(fluid), startRange, endRange, 0f, 1f)));
+		if (!shouldConsume(build)) return 0f;
+		return curve.apply(1f, efficiencyMultiplier, Mathf.clamp(Mathf.map(((HasPressure) build).getPressure(fluid), startRange, endRange, 0f, 1f)));
 	}
 
-	public boolean shouldConsume(HasPressure build) {
-		if (fluid != null && amount > 0 && build.getFluid(fluid) <= amount) return false;
+	public boolean shouldConsume(Building build) {
+		if (!(build instanceof HasPressure pressure)) return false;
+
+		if (fluid != null && amount > 0 && pressure.getFluid(fluid) <= amount) return false;
 		if (startRange == endRange) return true;
-		return startRange <= build.getPressure(fluid) && build.getPressure(fluid) <= endRange && (fluid == null || build.pressure().liquids[fluid.id] > amount);
+		return startRange <= pressure.getPressure(fluid) && pressure.getPressure(fluid) <= endRange && (fluid == null || pressure.pressure().liquids[fluid.id] > amount);
 	}
 
 	@Override
 	public void trigger(Building build) {
-		if (!continuous && shouldConsume(cast(build))) {
-			cast(build).removeFluid(fluid, amount);
+		if (!continuous && shouldConsume(build)) {
+			((HasPressure) build).removeFluid(fluid, amount);
 		}
 	}
 
 	@Override
 	public void update(Building build) {
-		if (continuous && shouldConsume(cast(build))) {
-			cast(build).removeFluid(fluid, amount * Time.delta);
+		if (continuous && shouldConsume(build)) {
+			((HasPressure) build).removeFluid(fluid, amount * Time.delta);
 		}
 	}
 }

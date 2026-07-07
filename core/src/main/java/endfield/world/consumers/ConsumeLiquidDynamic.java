@@ -9,6 +9,8 @@ import mindustry.ui.ReqImage;
 import mindustry.world.Block;
 import mindustry.world.consumers.Consume;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 public class ConsumeLiquidDynamic extends Consume {
 	public final Func<Building, LiquidStack> liquids;
 
@@ -24,13 +26,13 @@ public class ConsumeLiquidDynamic extends Consume {
 
 	@Override
 	public void build(Building build, Table table) {
-		LiquidStack[] current = {liquids.get(build)};
+		AtomicReference<LiquidStack> current = new AtomicReference<>(liquids.get(build));
 
 		table.table(cont -> {
 			table.update(() -> {
-				if (current[0] != liquids.get(build)) {
+				if (current.get() != liquids.get(build)) {
 					rebuild(build, cont);
-					current[0] = liquids.get(build);
+					current.set(liquids.get(build));
 				}
 			});
 
@@ -48,10 +50,10 @@ public class ConsumeLiquidDynamic extends Consume {
 
 	@Override
 	public void update(Building build) {
-		float mult = multiplier.get(build);
+		float multiple = multiplier.get(build);
 
 		LiquidStack stack = liquids.get(build);
-		build.liquids.remove(stack.liquid, stack.amount * build.edelta() * mult);
+		build.liquids.remove(stack.liquid, stack.amount * build.edelta() * multiple);
 	}
 
 	@Override

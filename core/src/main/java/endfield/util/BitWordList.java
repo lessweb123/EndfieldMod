@@ -13,12 +13,12 @@ public class BitWordList {
 	 *
 	 * @param nwords the initial size of the word set
 	 */
-	public BitWordList(int nwords, WordLength wordLen) {
-		checkCapacity(nwords * wordLen.value >>> 6);
+	public BitWordList(int nwords, WordLength wordLength) {
+		checkCapacity(nwords * wordLength.value >>> 6);
 		initialWordsAmount = nwords;
 
-		this.wordLen = wordLen.value;
-		wordMask = (short) ~(~1 << (wordLen.value - 1));
+		wordLen = wordLength.value;
+		wordMask = (short) ~(~1 << (wordLength.value - 1));
 	}
 
 	/** Sets this bits to have the same bits as another. Both sets should have the same length. */
@@ -140,7 +140,6 @@ public class BitWordList {
 		return nonZeroLength() == other.nonZeroLength();
 	}
 
-
 	/**
 	 * for one bit use {@link arc.struct.Bits}
 	 * for eight bits use {@link arc.struct.ByteSeq}
@@ -149,14 +148,14 @@ public class BitWordList {
 	 * for sixty-four two bits use {@link arc.struct.LongSeq}
 	 */
 	public enum WordLength {
-		two(2), four(4);
+		two((byte) 2), four((byte) 4);
 
 		public final byte value;
 
 		public static final WordLength[] all = values();
 
-		WordLength(int val) {
-			value = (byte) val;
+		WordLength(byte v) {
+			value = v;
 		}
 	}
 }

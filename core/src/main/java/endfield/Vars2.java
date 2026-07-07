@@ -29,9 +29,9 @@ public final class Vars2 {
 	public static final String MOD_NAME = "endfield";
 	public static final String MOD_PREFIX = MOD_NAME + '-';
 	/** The author of this mod. */
-	public static final String AUTHOR = "Eipusino";
+	public static final String AUTHOR = "LarkspurVale";
 	/** The GitHub address of this mod. */
-	public static final String LINK_GIT_HUB = "https://github.com/Eipusino/EndfieldMod";
+	public static final String LINK_GIT_HUB = "https://github.com/LarkspurVale/EndfieldMod";
 
 	public static PlatformImpl platformImpl;
 
@@ -81,7 +81,7 @@ public final class Vars2 {
 	 * Clear all occupied sectors of the specified Planet. Use with caution, as this will completely disrupt the
 	 * player's game progress.
 	 */
-	public static void resetSaves(Seq<Sector> sectors) {
+	public static void resetSaves(Seq<? extends Sector> sectors) {
 		for (Sector sector : sectors) {
 			if (sector.hasSave()) {
 				sector.save.delete();
