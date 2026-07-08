@@ -21,6 +21,7 @@ public class OverchargeDuct extends Duct {
 	public TextureRegion[] glowRegions;
 	public float glowAlpha = 1f;
 	public Color glowColor = Pal.redLight;
+	public Color transparentColor = Color.white;
 
 	public float baseEfficiency = 0f;
 

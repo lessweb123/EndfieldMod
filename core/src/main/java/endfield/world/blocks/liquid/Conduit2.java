@@ -65,15 +65,15 @@ public class Conduit2 extends Conduit {
 		public boolean armored = false;
 
 		@Override
-		public void draw() {
+		public void draw(boolean under) {
 			Draw.z(Layer.block);
 			Draw.scl(xscl, yscl);
-			drawAt(x, y, blendbits, rotation, SliceMode.none);
+			drawAt(x, y, blendbits, rotation, SliceMode.none, under);
 			Draw.reset();
 		}
 
 		@Override
-		protected void drawAt(float x, float y, int bits, int rotation, SliceMode slice) {
+		protected void drawAt(float x, float y, int bits, int rotation, SliceMode slice, boolean under) {
 			float angle = rotation * 90f;
 			Draw.color(botColor);
 			Draw.rect(sliced(botRegions[bits], slice), x, y, angle);

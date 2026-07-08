@@ -46,7 +46,7 @@ public class DuctNode extends Duct {
 		public int chainCount, lastChainCount;
 
 		@Override
-		public void draw() {
+		public void draw(boolean under) {
 			Draw.rect(region, x, y);
 			Draw.color(lastChainCount >= chainLimit ? Pal.remove : Pal.accent);
 			Draw.rect(topRegion, x, y, rotdeg());
@@ -54,7 +54,7 @@ public class DuctNode extends Duct {
 		}
 
 		@Override
-		protected void drawAt(float x, float y, int bits, float rotation, SliceMode slice) {}
+		protected void drawAt(float x, float y, int bits, float rotation, SliceMode slice, boolean under) {}
 
 		@Override
 		public void update() {

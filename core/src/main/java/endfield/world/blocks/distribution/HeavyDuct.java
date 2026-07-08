@@ -78,7 +78,7 @@ public class HeavyDuct extends Duct {
 		public boolean frontUnder, backUnder;
 
 		@Override
-		public void draw() {
+		public void draw(boolean under) {
 			Draw.z(Layer.blockUnder);
 			Draw.rect(regions[0], x, y, 0f);
 			if (frontUnder) draughted(regions[0], false);
@@ -108,7 +108,7 @@ public class HeavyDuct extends Duct {
 		}
 
 		@Override
-		protected void drawAt(float x, float y, int bits, float rotation, SliceMode slice) {}
+		protected void drawAt(float x, float y, int bits, float rotation, SliceMode slice, boolean under) {}
 
 		public void draughted(TextureRegion region, boolean back) {
 			Draw.rect(region, (back ? backPos.x : frontPos.x) * 8f + x, (back ? backPos.y : frontPos.y) * 8f + y, 8f, rotation == 2 ? -8f : 8f, rotdeg());

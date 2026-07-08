@@ -355,7 +355,7 @@ public class Spawner extends BaseEntity implements Syncc, Timedc, IScaled, Rotc 
 	public void interpolate() {}
 
 	@Override
-	public boolean isSyncHidden(Player player) {
+	public boolean isSyncHidden(Team team) {
 		return false;
 	}
 

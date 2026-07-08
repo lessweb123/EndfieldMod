@@ -22,6 +22,7 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.logic.Ranged;
+import mindustry.ui.Menus;
 import mindustry.ui.Styles;
 import mindustry.world.Tile;
 import mindustry.world.blocks.storage.CoreBlock;
@@ -29,7 +30,6 @@ import mindustry.world.blocks.storage.CoreBlock;
 import static mindustry.Vars.player;
 import static mindustry.Vars.state;
 import static mindustry.Vars.tilesize;
-import static mindustry.Vars.ui;
 import static mindustry.Vars.world;
 
 /**
@@ -141,7 +141,7 @@ public class DetectorCoreBlock extends CoreBlock {
 			}
 
 			if (timer > 0) {
-				ui.showLabel(String.valueOf(Mathf.ceil(timer / 60f)), -1, 1f / 60f, x, y + 16f);
+				Menus.label(String.valueOf(Mathf.ceil(timer / 60f)), -1, 1f / 60f, x, y + 16f);
 
 				Draw.z(Layer.overlayUI);
 				Draw.color(Pal.gray);

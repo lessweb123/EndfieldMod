@@ -49,6 +49,7 @@ public class OrnitopterUnit extends Unit2 implements Ornitopterc {
 		OrnitopterUnitType oType = asType(type);
 
 		blades = new BladeMount[oType.blades.size];
+
 		for (int i = 0; i < blades.length; i++) {
 			Blade bladeType = oType.blades.get(i);
 			blades[i] = new BladeMount(bladeType);

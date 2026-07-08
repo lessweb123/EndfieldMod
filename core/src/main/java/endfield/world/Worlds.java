@@ -17,6 +17,7 @@ import mindustry.Vars;
 import mindustry.game.EventType.ResetEvent;
 import mindustry.io.SaveFileReader;
 import mindustry.io.SaveVersion;
+import mindustry.ui.FileChooser;
 import mindustry.world.Block;
 
 import java.io.IOException;
@@ -100,7 +101,17 @@ public final class Worlds {
 					.append(block.mapColor.rgba() >>> 8).append('\n');
 		}
 
-		Vars.platform.showFileChooser(false, Core.bundle.get("text.export-data"), "dat", file -> {
+		/*Vars.platform.showFileChooser(false, Core.bundle.get("text.export-data"), "dat", file -> {
+			try {
+				file.writeBytes(data.toString().getBytes(Strings.utf8), false);
+				Core.app.post(() -> Vars.ui.showInfo(Core.bundle.format("text.export-data-format", file.name())));
+			} catch (Throwable e) {
+				Log.err(e);
+
+				Vars.ui.showException(e);
+			}
+		});*/
+		FileChooser.save("dat").title(Core.bundle.get("text.export-data")).submit(file -> {
 			try {
 				file.writeBytes(data.toString().getBytes(Strings.utf8), false);
 				Core.app.post(() -> Vars.ui.showInfo(Core.bundle.format("text.export-data-format", file.name())));

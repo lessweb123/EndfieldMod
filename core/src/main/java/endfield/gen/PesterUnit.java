@@ -37,7 +37,6 @@ import mindustry.gen.Entityc;
 import mindustry.gen.Groups;
 import mindustry.gen.Healthc;
 import mindustry.gen.Hitboxc;
-import mindustry.gen.Player;
 import mindustry.gen.Teamc;
 import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
@@ -471,11 +470,6 @@ public class PesterUnit extends Unit2 implements Pesterc {
 		salvoReloadTarget = salvoReload;
 		bossWeaponReloadLast = bossWeaponReload;
 		bossWeaponReloadTarget = bossWeaponReload;
-	}
-
-	@Override
-	public boolean isSyncHidden(Player player) {
-		return nextTargets.isEmpty() && hatred.isEmpty() && !isShooting() && inFogTo(player.team());
 	}
 
 	@Override

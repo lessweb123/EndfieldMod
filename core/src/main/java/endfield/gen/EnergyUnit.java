@@ -76,7 +76,6 @@ public class EnergyUnit extends Unit2 implements Energyc {
 	@Override
 	public void add() {
 		if (added) return;
-		index__all = Groups.all.addIndex(this);
 		index__unit = Groups.unit.addIndex(this);
 		index__sync = Groups.sync.addIndex(this);
 		index__draw = Groups.draw.addIndex(this);

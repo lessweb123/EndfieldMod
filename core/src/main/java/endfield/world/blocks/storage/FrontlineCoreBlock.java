@@ -6,6 +6,7 @@ import arc.graphics.g2d.Lines;
 import mindustry.Vars;
 import mindustry.game.Team;
 import mindustry.graphics.Layer;
+import mindustry.ui.Menus;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.storage.CoreBlock;
@@ -49,7 +50,7 @@ public class FrontlineCoreBlock extends CoreBlock {
 				if (Vars.state.teams.cores(team).size > max + 3) kill = true;
 				if (kill) {
 					if (!Vars.headless) {
-						Vars.ui.showLabel(showLabel, -1, 0.015f, x, y);
+						Menus.label(showLabel, -1, 0.015f, x, y);
 					}
 					time--;
 					if (time == 0) {

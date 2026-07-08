@@ -777,7 +777,6 @@ public final class Entitys2 {
 				}
 			}
 
-			unit.setIndex__all(-1);
 			unit.setIndex__unit(-1);
 			unit.setIndex__draw(-1);
 			unit.setIndex__sync(-1);
@@ -804,14 +803,12 @@ public final class Entitys2 {
 				}
 			});
 
-			build.setIndex__all(-1);
 			build.setIndex__build(-1);
 		} else if (entity instanceof Bullet bullet) {
 			Groups.bullet.remove(bullet);
 
 			setAdded(bullet, false);
 
-			bullet.setIndex__all(-1);
 			bullet.setIndex__draw(-1);
 			bullet.setIndex__bullet(-1);
 		}
