@@ -111,15 +111,21 @@ public final class Worlds {
 				Vars.ui.showException(e);
 			}
 		});*/
-		FileChooser.save("dat").title(Core.bundle.get("text.export-data")).submit(file -> {
-			try {
-				file.writeBytes(data.toString().getBytes(Strings.utf8), false);
-				Core.app.post(() -> Vars.ui.showInfo(Core.bundle.format("text.export-data-format", file.name())));
-			} catch (Throwable e) {
-				Log.err(e);
+		try {
+			FileChooser.save("dat").title(Core.bundle.get("text.export-data")).submit(file -> {
+				try {
+					file.writeBytes(data.toString().getBytes(Strings.utf8), false);
+					Core.app.post(() -> Vars.ui.showInfo(Core.bundle.format("text.export-data-format", file.name())));
+				} catch (Throwable e) {
+					Log.err(e);
 
-				Vars.ui.showException(e);
-			}
-		});
+					Vars.ui.showException(e);
+				}
+			});
+		} catch (Throwable e) {
+			Log.err(e);
+
+			Vars.ui.showException(e);
+		}
 	}
 }

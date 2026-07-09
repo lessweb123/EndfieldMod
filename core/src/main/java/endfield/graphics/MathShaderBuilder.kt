@@ -30,8 +30,7 @@ abstract class MathShaderBuilder {
 		if (this::gradient.isInitialized) gradient
 		else vec2(function.diff(variable("x")), function.diff(variable("y")))
 
-		return Shader(
-			"""
+		return Shader("""
 attribute vec4 a_position;
 attribute vec4 a_color;
 attribute vec2 a_texCoord0;
@@ -53,6 +52,10 @@ void main() {
 varying vec2 v_texCoords;
 varying vec4 v_mix_color;
 varying vec4 v_texCoords;
+
+void main() {
+
+}
 """)
 	}
 
