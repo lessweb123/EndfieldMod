@@ -16,7 +16,7 @@ public class TrailMoveLightning implements Poolable {
 		flushDelta(0);
 	}
 
-	private void flushDelta(int i) {
+	void flushDelta(int i) {
 		offDelta = Mathf.random(i <= 0 ? -range : 0, i >= 0 ? range : 0);
 	}
 

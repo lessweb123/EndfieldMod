@@ -9,10 +9,11 @@ import endfield.util.BitWordList;
 
 public class CustomPatternShape implements Shape {
 	public final String maskName;
-	private int width = 1;
-	private int height = 1;
-	private BitWordList blocks;
-	private boolean built = false;
+
+	int width = 1;
+	int height = 1;
+	BitWordList blocks;
+	boolean built = false;
 
 	public CustomPatternShape(String name) {
 		maskName = name;

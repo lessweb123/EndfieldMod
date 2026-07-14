@@ -105,8 +105,7 @@ public class LightningEffect implements Poolable {
 		return result;
 	}
 
-	private LightningEffect() {
-	}
+	LightningEffect() {}
 
 	/** Update the lightning status once. */
 	public void update() {

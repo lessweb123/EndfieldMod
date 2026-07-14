@@ -25,8 +25,8 @@ import mindustry.ui.Styles;
 import org.jetbrains.annotations.Nullable;
 
 public class HailStormWeather extends SpawnWeather {
-	private static BulletType picked;
-	private static float threshold;
+	static BulletType picked;
+	static float threshold;
 
 	// spawn
 	public ObjectFloatMap2<BulletType> bullets = new ObjectFloatMap2<>(BulletType.class);
@@ -60,7 +60,8 @@ public class HailStormWeather extends SpawnWeather {
 	public float noiseLayerSpeedM = 1.1f, noiseLayerAlphaM = 0.8f, noiseLayerSclM = 0.99f, noiseLayerColorM = 1f;
 	public String noisePath = "noiseAlpha";
 	public @Nullable Texture noise;
-	private float minIntensity = Float.POSITIVE_INFINITY;
+
+	float minIntensity = Float.POSITIVE_INFINITY;
 
 	public HailStormWeather(String name) {
 		super(name);

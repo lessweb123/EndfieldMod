@@ -206,8 +206,8 @@ public class Cobweb extends TractorBeamTurret {
 	}
 
 	public static class TurretManager {
-		private final CollectionList<CobwebBuild> turrets;
-		private final CollectionList<Unit> enemies;
+		final CollectionList<CobwebBuild> turrets;
+		final CollectionList<Unit> enemies;
 
 		public TurretManager() {
 			turrets = new CollectionList<>(CobwebBuild.class);

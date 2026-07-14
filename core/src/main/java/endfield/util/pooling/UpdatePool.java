@@ -5,7 +5,7 @@ import endfield.util.CollectionObjectMap;
 import mindustry.game.EventType.Trigger;
 
 public final class UpdatePool {
-	private static final CollectionObjectMap<String, Runnable> updateTasks = new CollectionObjectMap<>(String.class, Runnable.class);
+	static final CollectionObjectMap<String, Runnable> updateTasks = new CollectionObjectMap<>(String.class, Runnable.class);
 
 	static {
 		Events.run(Trigger.update, UpdatePool::update);

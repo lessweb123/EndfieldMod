@@ -14,11 +14,11 @@ import static mindustry.Vars.headless;
 import static mindustry.Vars.renderer;
 
 public final class Perspective {
-	private static final Vec2 offsetPos = new Vec2();
-	private static final Vec3 scalingPos = new Vec3();
+	static final Vec2 offsetPos = new Vec2();
+	static final Vec3 scalingPos = new Vec3();
 	/** z values below this are considered on the ground, and bypass calculations. */
-	private static final float groundTolerance = 0.001f;
-	private static final Vec2 viewportSize = new Vec2();
+	static final float groundTolerance = 0.001f;
+	static final Vec2 viewportSize = new Vec2();
 
 	/** Viewport offset from the camera height in world units. */
 	public static float viewportOffset = 80f;
@@ -28,8 +28,8 @@ public final class Perspective {
 	public static float fov = -1f;
 	public static float fadeDst = 1024f;
 
-	private static float lastScale;
-	private static float cameraZ;
+	static float lastScale;
+	static float cameraZ;
 
 	static {
 		if (!headless) {
@@ -154,7 +154,7 @@ public final class Perspective {
 	}
 
 	/** Calculates the size of the viewport. */
-	private static void viewportSize() {
+	static void viewportSize() {
 		float v1 = (float) (Math.tan(fov / 2f * Mathf.degRad) * viewportOffset * 2f);
 		if (Core.camera.width >= Core.camera.height) {
 			float v2 = v1 * (Core.camera.height / Core.camera.width);
@@ -170,7 +170,7 @@ public final class Perspective {
 	 *
 	 * @return camera z coordinate
 	 */
-	private static float calcCameraZ() {
+	static float calcCameraZ() {
 		float width = Math.max(Core.camera.width, Core.camera.height) / 2f;
 		//TOA
 		return (float) (width / Math.tan(fov / 2f * Mathf.degRad));

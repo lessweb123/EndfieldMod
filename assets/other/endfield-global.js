@@ -104,37 +104,37 @@ function extend() {
 // __javaObject__
 
 function getClass(name) {
-	return java.lang.Class.forName(name, true, Vars.mods.mainLoader());
+	return Class.forName(name, true, Vars.mods.mainLoader());
 }
 
 // ------------- to java number -------------
 
 function toByte(value) {
-	return java.lang.Byte.valueOf(value);
+	return Byte.valueOf(value);
 }
 
 function toShort(value) {
-	return java.lang.Short.valueOf(value);
+	return Short.valueOf(value);
 }
 
 function toInt(value) {
-	return java.lang.Integer.valueOf(value);
+	return Integer.valueOf(value);
 }
 
 function toLong(value) {
-	return java.lang.Long.valueOf(value);
+	return Long.valueOf(value);
 }
 
 function toFloat(value) {
-	return java.lang.Float.valueOf(value);
+	return Float.valueOf(value);
 }
 
 function toDouble(value) {
-	return java.lang.Double.valueOf(value);
+	return Double.valueOf(value);
 }
 
 function toChar(value) {
-	return java.lang.Character.valueOf(value);
+	return Character.valueOf(value);
 }
 
 function toObjectArray(type, value) {

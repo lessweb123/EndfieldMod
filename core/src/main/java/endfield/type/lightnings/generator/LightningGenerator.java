@@ -56,7 +56,7 @@ public abstract class LightningGenerator implements Iterable<LightningVertex>, I
 	protected LightningVertex last;
 	protected boolean isEnding;
 
-	private float offsetX, offsetY;
+	float offsetX, offsetY;
 
 	public static final Pool<LightningVertex> vertexPool;
 

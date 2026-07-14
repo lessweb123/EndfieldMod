@@ -26,15 +26,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ComboBox extends Table {
-	private final Table mySelectionTable;
+	final Table mySelectionTable;
 
 	public CollectionList<ComboBoxItem> items = new CollectionList<>(ComboBoxItem.class);
 	public CollectionList<ComboBoxItemSelectListener> listeners = new CollectionList<>(ComboBoxItemSelectListener.class);
 
-	private TextField myField;
-	private Button myButton;
-	private int prevSize = 0;
-	private int selectedItem = 0;
+	TextField myField;
+	Button myButton;
+	int prevSize = 0;
+	int selectedItem = 0;
 
 	public ComboBox() {
 		mySelectionTable = new Table();
@@ -79,7 +79,7 @@ public class ComboBox extends Table {
 		});
 	}
 
-	private void toggleSelectionTable() {
+	void toggleSelectionTable() {
 		if (mySelectionTable.hasParent()) {
 			hideSelectionTable();
 		} else {
@@ -99,11 +99,11 @@ public class ComboBox extends Table {
 		return item;
 	}
 
-	private void hideSelectionTable() {
+	void hideSelectionTable() {
 		mySelectionTable.remove();
 	}
 
-	private void showSelectionTable() {
+	void showSelectionTable() {
 		if (mySelectionTable.hasParent()) {
 			hideSelectionTable();
 //            return;
@@ -147,8 +147,7 @@ public class ComboBox extends Table {
 
 	}
 
-
-	private void rebuildItems() {
+	void rebuildItems() {
 		mySelectionTable.clearChildren();
 
 		for (int i = 0; i < items.size; i++) {

@@ -10,7 +10,7 @@ import java.util.Map;
 /** Classes for testing purposes only, do not use. */
 @TestOnly
 public class Test implements Cloneable, ExtraVariable {
-	private static short count;
+	static short count;
 
 	public Map<String, Object> extraVar = new CollectionObjectMap<>(String.class, Object.class);
 	public short id;

@@ -33,6 +33,7 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.MultiPacker;
 import mindustry.graphics.Pal;
 import mindustry.logic.Ranged;
+import mindustry.mod.NoPatch;
 import mindustry.type.Liquid;
 import mindustry.type.StatusEffect;
 import mindustry.world.Block;
@@ -47,7 +48,8 @@ import mindustry.world.meta.StatValues;
 import static mindustry.Vars.tilesize;
 
 public class TeslaTurret extends Block {
-	private final Seq<Healthc> targets = new Seq<>(Healthc.class);
+	public @NoPatch Seq<Healthc> targets = new Seq<>(Healthc.class);
+
 	public final int timerCheck = timers++;
 	public int checkInterval = 20;
 

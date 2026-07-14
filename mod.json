@@ -9,7 +9,7 @@
 	"repo": "LarkspurVale/EndfieldMod",
 	"java": true,
 	"hidden": false,
-	"minGameVersion": 158,
+	"minGameVersion": 159.5,
 	"dependencies": [],
 	"hideBrowser": true
 }

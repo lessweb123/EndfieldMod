@@ -154,7 +154,7 @@ public final class Shaders2 {
 	 * cost of performance.
 	 */
 	public static class DepthAtmosphereShader extends Shader {
-		private static final Mat3D mat = new Mat3D();
+		static final Mat3D mat = new Mat3D();
 
 		public Camera3D camera;
 		public AtmospherePlanet planet;
@@ -210,7 +210,7 @@ public final class Shaders2 {
 			setUniformf("u_campos", Vars.renderer.planets.cam.position);
 		}
 
-		private void setPlanetInfo(String name, Planet planet) {
+		void setPlanetInfo(String name, Planet planet) {
 			Vec3 position = planet.position;
 			setUniformf(name, position.x, position.y, position.z, planet.radius);
 		}

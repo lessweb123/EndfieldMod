@@ -20,9 +20,9 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 public abstract class Chart<T extends StatGroup> extends Element {
-	private static final int[] STEP_BASE = {2, 5, 10};
+	static final int[] STEP_BASE = {2, 5, 10};
 
-	private final int maxValuesCount;
+	final int maxValuesCount;
 
 	protected Seq<T> data = new Seq<>();
 
@@ -329,7 +329,7 @@ public abstract class Chart<T extends StatGroup> extends Element {
 			System.arraycopy(values, 0, displayValues, 0, values.length);
 		}
 
-		private void checkIndex(int index) {
+		public void checkIndex(int index) {
 			if (index > values.length || index < 0)
 				throw new IndexOutOfBoundsException("index must be >= 0 and < " + values.length + ", given: " + index);
 		}

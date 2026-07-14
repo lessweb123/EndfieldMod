@@ -20,8 +20,8 @@ public class ShaderTextureRegion extends TextureRegion {
 		});
 	}
 
-	private final Cons2<Shader, Object[]> shaderPrepare;
-	private final FrameBuffer frameBuffer = new FrameBuffer();
+	final Cons2<Shader, Object[]> shaderPrepare;
+	final FrameBuffer frameBuffer = new FrameBuffer();
 
 	public Texture original;
 	/** Texture update frequency, in frames. */
@@ -30,7 +30,7 @@ public class ShaderTextureRegion extends TextureRegion {
 	/** Use to transfer shader parameters to {@link ShaderTextureRegion#shaderPrepare}. */
 	public Object[] shaderPrepareParams;
 
-	private int counter = 0;
+	int counter = 0;
 
 	public ShaderTextureRegion(Shader shader, Texture original, Cons2<Shader, Object[]> shaderPrepare, int shaderPrepareParamsSize) {
 		regions.add(this);

@@ -63,16 +63,18 @@ public final class Draws {
 			Draw.draw(Layer2.mirrorField + 0.51f, () -> {
 				effectBuffer.end();
 
-				Shaders2.mirrorField.waveMix = Tmp.c1.set(Pal2.matrixNet);
-				Shaders2.mirrorField.waveScl = 0.03f;
-				Shaders2.mirrorField.gridStroke = 0.8f;
-				Shaders2.mirrorField.maxThreshold = 1f;
-				Shaders2.mirrorField.minThreshold = 0.7f;
-				Shaders2.mirrorField.stroke = 2;
-				Shaders2.mirrorField.sideLen = 10;
-				Shaders2.mirrorField.offset.set(Time.time / 10, Time.time / 10);
+				var mirrorField = Shaders2.mirrorField;
 
-				effectBuffer.blit(Shaders2.mirrorField);
+				mirrorField.waveMix = Tmp.c1.set(Pal2.matrixNet);
+				mirrorField.waveScl = 0.03f;
+				mirrorField.gridStroke = 0.8f;
+				mirrorField.maxThreshold = 1f;
+				mirrorField.minThreshold = 0.7f;
+				mirrorField.stroke = 2;
+				mirrorField.sideLen = 10;
+				mirrorField.offset.set(Time.time / 10, Time.time / 10);
+
+				effectBuffer.blit(mirrorField);
 			});
 		});
 	}
@@ -259,11 +261,11 @@ public final class Draws {
 			bloom = blooms[taskId] = new Bloom(true);
 		}
 
-		drawTask(taskId, bloom, e -> {
-			e.resize(Core.graphics.getWidth(), Core.graphics.getHeight());
-			e.setBloomIntensity(Core.settings.getInt("bloomintensity", 6) / 4f + 1f);
-			e.blurPasses = Core.settings.getInt("bloomblur", 1);
-			e.capture();
+		drawTask(taskId, bloom, b -> {
+			b.resize(Core.graphics.getWidth(), Core.graphics.getHeight());
+			b.setBloomIntensity(Core.settings.getInt("bloomintensity", 6) / 4f + 1f);
+			b.blurPasses = Core.settings.getInt("bloomblur", 1);
+			b.capture();
 		}, Bloom::render, draw);
 	}
 
@@ -318,9 +320,9 @@ public final class Draws {
 	 * @param draw	   Draw task.
 	 */
 	public static <T> void drawDistortion(int taskId, T target, Distortion distortion, DrawAcceptor<T> draw) {
-		drawTask(taskId, target, distortion, e -> {
-			e.resize();
-			e.capture();
+		drawTask(taskId, target, distortion, d -> {
+			d.resize();
+			d.capture();
 		}, Distortion::render, draw);
 	}
 
@@ -496,7 +498,9 @@ public final class Draws {
 			if (line) {
 				Lines.linePoint(x + v1.x - v2.x, y + v1.y - v2.y);
 				Lines.linePoint(x + v1.x + v2.x, y + v1.y + v2.y);
-			} else Fill.tri(x, y, x + v1.x - v2.x, y + v1.y - v2.y, x + v1.x + v2.x, y + v1.y + v2.y);
+			} else {
+				Fill.tri(x, y, x + v1.x - v2.x, y + v1.y - v2.y, x + v1.x + v2.x, y + v1.y + v2.y);
+			}
 		}
 		if (line) Lines.endLine(true);
 	}
