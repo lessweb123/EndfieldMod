@@ -26,23 +26,23 @@ public class HorizontalCollapser extends WidgetGroup {
 		cons.get(table);
 	}
 
-	public HorizontalCollapser(Table tab, boolean col) {
-		table = tab;
-		collapsed = col;
+	public HorizontalCollapser(Table table, boolean collapsed) {
+		this.table = table;
+		this.collapsed = collapsed;
 		setTransform(true);
 
 		updateTouchable();
-		addChild(tab);
+		addChild(table);
 	}
 
-	public HorizontalCollapser setDuration(float sec) {
-		seconds = sec;
+	public HorizontalCollapser setDuration(float seconds) {
+		this.seconds = seconds;
 		return this;
 	}
 
-	public HorizontalCollapser setCollapsed(boolean aut, Boolp col) {
-		collapsedFunc = col;
-		autoAnimate = aut;
+	public HorizontalCollapser setCollapsed(boolean autoAnimate, Boolp collapsedFunc) {
+		this.collapsedFunc = collapsedFunc;
+		this.autoAnimate = autoAnimate;
 		return this;
 	}
 
