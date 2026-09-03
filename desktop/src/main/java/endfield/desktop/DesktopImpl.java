@@ -90,7 +90,7 @@ public class DesktopImpl implements PlatformImpl {
 
 			if (type == Class.class || type == Field.class || type == Method.class || type == Constructor.class) return object;
 
-			T result = (T) unsafe.allocateInstance(object.getClass());
+			T result = (T) unsafe.allocateInstance(type);
 			// The performance overhead may be high, but there is currently no other way.
 			ObjectHandler.copyField(object, result);
 			return result;

@@ -71,7 +71,7 @@ public class AndroidImpl implements PlatformImpl {
 
 		try {
 			return (T) clone.invoke(object);
-		} catch (Exception e) {
+		} catch (IllegalAccessException | InvocationTargetException e) {
 			throw new RuntimeException(e);
 		}
 	}

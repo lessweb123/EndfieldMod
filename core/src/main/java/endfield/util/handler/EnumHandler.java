@@ -143,4 +143,9 @@ public class EnumHandler<T extends Enum<T>> {
 
 		NAME_ACCESSOR.set(instance, newName);
 	}
+
+	/** Directly return the shared array of {@code values()}, do not easily change its contents. */
+	public T[] values() {
+		return valuesAccessor.getObject(null);
+	}
 }

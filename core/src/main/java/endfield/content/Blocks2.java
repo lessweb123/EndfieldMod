@@ -493,7 +493,7 @@ public final class Blocks2 {
 	public static RepairTower largeUnitRepairTower;
 	public static UnitAssemblerModule seniorAssemblerModule;
 	//logic
-	public static CanvasBlock digitalCanvas12, digitalCanvas16;
+	public static CanvasBlock digitalCanvas2, digitalCanvas3, digitalCanvas6;
 	public static LogicBlock matrixProcessor;
 	public static LogicDisplay hugeLogicDisplay;
 	public static CopyMemoryBlock buffrerdMemoryCell, buffrerdMemoryBank;
@@ -3246,18 +3246,25 @@ public final class Blocks2 {
 			consumePower(5.5f);
 		}};
 		//logic
-		digitalCanvas12 = new CanvasBlock("digital-canvas-12") {{
-			requirements(Category.logic, ItemStack.with(Items.silicon, 100, Items.metaglass, 250, Items.titanium, 150, Items.plastanium, 25));
-			size = 12;
-			canvasSize = 384;
-			padding = 3.5f;
+		digitalCanvas2 = new CanvasBlock("digital-canvas-2") {{
+			requirements(Category.logic, ItemStack.with(Items.silicon, 15, Items.metaglass, 10, Items.titanium, 5, Items.plastanium, 3));
+			size = 2;
+			canvasSize = 64;
+			padding = 7f / 4f * 2f;
 			palette = Pal2.palette216;
 		}};
-		digitalCanvas16 = new CanvasBlock("digital-canvas-16") {{
-			requirements(Category.logic, ItemStack.with(Items.silicon, 150, Items.metaglass, 350, Items.titanium, 175, Items.plastanium, 45));
-			size = 16;
-			canvasSize = 512;
-			padding = 3.5f;
+		digitalCanvas3 = new CanvasBlock("digital-canvas-3") {{
+			requirements(Category.logic, ItemStack.with(Items.silicon, 20, Items.metaglass, 15, Items.titanium, 10, Items.plastanium, 5));
+			size = 3;
+			canvasSize = 96;
+			padding = 7f / 4f * 2f;
+			palette = Pal2.palette216;
+		}};
+		digitalCanvas6 = new CanvasBlock("digital-canvas-6") {{
+			requirements(Category.logic, ItemStack.with(Items.silicon, 50, Items.metaglass, 75, Items.titanium, 60, Items.plastanium, 25));
+			size = 6;
+			canvasSize = 192;
+			padding = 7f / 4f * 2f;
 			palette = Pal2.palette216;
 		}};
 		matrixProcessor = new LogicBlock("matrix-processor") {{

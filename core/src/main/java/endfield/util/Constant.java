@@ -38,6 +38,8 @@ public final class Constant {
 	public static final Boolp BOOLP_FALSE = () -> false;
 	public static final Boolf<?> BOOLF_FALSE = o -> false;
 	public static final Boolf<?> BOOLF_TRUE = o -> true;
+	public static final Boolf2<?, ?> BOOLF2_FALSE = (p1, p2) -> false;
+	public static final Boolf2<?, ?> BOOLF2_TRUE = (p1, p2) -> true;
 	public static final Boolf<Building> BOOLF_BUILDING_TRUE = boolf(true);
 	public static final Boolf<Unit> BOOLF_UNIT_TRUE = boolf(true);
 	public static final Boolf<Healthc> BOOLF_HEALTHC_FALSE = boolf(false);
@@ -72,8 +74,9 @@ public final class Constant {
 		return (Boolf<T>) (value ? BOOLF_TRUE : BOOLF_FALSE);
 	}
 
+	@SuppressWarnings("unchecked")
 	public static <P1, P2> Boolf2<P1, P2> boolf2(boolean value) {
-		return (p1, p2) -> value;
+		return (Boolf2<P1, P2>) (value ? BOOLF2_TRUE : BOOLF2_FALSE);
 	}
 
 	public static <P, R> Func<P, R> func(R value) {

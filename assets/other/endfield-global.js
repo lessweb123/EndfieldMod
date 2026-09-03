@@ -44,7 +44,7 @@ importPackage(endfield.ui);
 importPackage(endfield.ui.chart);
 importPackage(endfield.ui.dialogs);
 importPackage(endfield.util);
-importPackage(endfield.util.concurrent);
+importPackage(endfield.util.atomic);
 importPackage(endfield.util.handler);
 importPackage(endfield.util.holder);
 importPackage(endfield.util.path);

@@ -7,7 +7,7 @@ public final class Pal2 {
 	public static final Color[] spectrum = {Color.red, Color.coral, Color.yellow, Color.lime, Color.green, Color.teal, Color.blue, Color.purple, Color.magenta};
 
 	public static final int[] palette216 = new int[216];
-	public static final int[] values = {0, 51, 102, 153, 204, 255};
+	public static final int[] palette216Values = {0, 51, 102, 153, 204, 255};
 
 	/** Static read-only palettes that are used throughout the mod. */
 	public static final Color miku = new Color(0x39c5bbff);
@@ -96,9 +96,10 @@ public final class Pal2 {
 
 	static {
 		int index = 0;
-		for (int a : values) {          // Alpha
-			for (int r : values) {      // Red
-				for (int g : values) {  // Green
+
+		for (int a : palette216Values) {          // Alpha
+			for (int r : palette216Values) {      // Red
+				for (int g : palette216Values) {  // Green
 					palette216[index++] = (a << 24) | (r << 16) | (g << 8) | 255;
 				}
 			}
