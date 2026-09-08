@@ -1,6 +1,7 @@
 package endfield.util;
 
 import arc.func.Cons;
+import arc.func.Func;
 import arc.func.Prov;
 import endfield.util.handler.ClassHandler;
 import endfield.util.handler.FieldHandler;
@@ -19,9 +20,13 @@ import java.util.Objects;
 public final class Objects2 {
 	private Objects2() {}
 
-	public static <T> T let(T obj, Cons<? super T> cons) {
+	public static <T> T also(T obj, Cons<? super T> cons) {
 		cons.get(obj);
 		return obj;
+	}
+
+	public static <T, R> R let(T t, Func<T, R> func) {
+		return func.get(t);
 	}
 
 	/**

@@ -36,6 +36,7 @@ import endfield.entities.bullet.AccelBulletType;
 import endfield.entities.bullet.AimToPosBulletType;
 import endfield.entities.bullet.AntiBulletFlakBulletType;
 import endfield.entities.bullet.ArrowBulletType;
+import endfield.entities.bullet.BallLightningBulletType;
 import endfield.entities.bullet.BlackHoleBulletType;
 import endfield.entities.bullet.BoidBulletType;
 import endfield.entities.bullet.ChainBulletType;
@@ -102,11 +103,15 @@ import endfield.type.unit.TractorBeamUnitType;
 import endfield.type.unit.UnitType2;
 import endfield.type.weapons.AcceleratingWeapon;
 import endfield.type.weapons.BoostWeapon;
+import endfield.type.weapons.CanBuildingBuildWeapon;
 import endfield.type.weapons.EnergyChargeWeapon;
 import endfield.type.weapons.FilterWeapon;
+import endfield.type.weapons.HealConeWeapon;
+import endfield.type.weapons.LaserWeapon;
 import endfield.type.weapons.LimitedAngleWeapon;
 import endfield.type.weapons.MortarWeapon;
 import endfield.type.weapons.MultiBarrelWeapon;
+import endfield.type.weapons.OverdriveWeapon;
 import endfield.type.weapons.PointDefenceMultiBarrelWeapon;
 import endfield.type.weather.EffectWeather;
 import endfield.type.weather.HailStormWeather;
@@ -422,6 +427,7 @@ final class ClassMap2 {
 		classes.put("AimToPosBulletType", AimToPosBulletType.class);
 		classes.put("AntiBulletFlakBulletType", AntiBulletFlakBulletType.class);
 		classes.put("ArrowBulletType", ArrowBulletType.class);
+		classes.put("BallLightningBulletType", BallLightningBulletType.class);
 		classes.put("BlackHoleBulletType", BlackHoleBulletType.class);
 		classes.put("BoidBulletType", BoidBulletType.class);
 		classes.put("ChainBulletType", ChainBulletType.class);
@@ -491,11 +497,15 @@ final class ClassMap2 {
 		//types-weapon
 		classes.put("AcceleratingWeapon", AcceleratingWeapon.class);
 		classes.put("BoostWeapon", BoostWeapon.class);
+		classes.put("CanBuildingBuildWeapon", CanBuildingBuildWeapon.class);
 		classes.put("EnergyChargeWeapon", EnergyChargeWeapon.class);
 		classes.put("FilterWeapon", FilterWeapon.class);
+		classes.put("HealConeWeapon", HealConeWeapon.class);
+		classes.put("LaserWeapon", LaserWeapon.class);
 		classes.put("LimitedAngleWeapon", LimitedAngleWeapon.class);
 		classes.put("MortarWeapon", MortarWeapon.class);
 		classes.put("MultiBarrelWeapon", MultiBarrelWeapon.class);
+		classes.put("OverdriveWeapon", OverdriveWeapon.class);
 		classes.put("PointDefenceMultiBarrelWeapon", PointDefenceMultiBarrelWeapon.class);
 		//types-item
 		classes.put("LiquidBottle", LiquidBottle.class);

@@ -1,5 +1,6 @@
 package endfield.util;
 
+import arc.func.Boolf;
 import arc.func.Prov;
 import arc.util.Structs;
 import endfield.util.handler.ClassHandler;
@@ -61,6 +62,14 @@ public final class Reflects {
 			//case "void", "java.lang.Void" -> null;
 			default -> null;
 		};
+	}
+
+	public static FieldAccessor newFieldAccessor(Class<?> type, String name) {
+		return newFieldAccessor(ClassHandler.getField(type, name));
+	}
+
+	public static FieldAccessor newFieldAccessor(Class<?> type, Boolf<Field> filler) {
+		return newFieldAccessor(ClassHandler.getField(type, filler));
 	}
 
 	/**
@@ -125,26 +134,6 @@ public final class Reflects {
 			throw new IllegalArgumentException(Arrays.toString(toTypes(args)) + " cannot be assigned to " + Arrays.toString(parameterTypes));
 
 		return () -> accessor.newInstance(args);
-	}
-
-	/**
-	 * @throws NullPointerException If name is null
-	 * @throws IllegalArgumentException If the primitive type cannot be specified by name
-	 */
-	@SuppressWarnings("unchecked")
-	public static <T> Class<T> getPrimitiveClass(String name) {
-		return (Class<T>) switch (name) {
-			case "boolean", "java.lang.Boolean" -> boolean.class;
-			case "int", "java.lang.Integer" -> int.class;
-			case "float", "java.lang.Float" -> float.class;
-			case "byte", "java.lang.Byte" -> byte.class;
-			case "short", "java.lang.Short" -> short.class;
-			case "long", "java.lang.Long" -> long.class;
-			case "double", "java.lang.Double" -> double.class;
-			case "char", "java.lang.Character" -> char.class;
-			case "void", "java.lang.Void" -> void.class;
-			default -> throw new IllegalArgumentException(name);
-		};
 	}
 
 	/**

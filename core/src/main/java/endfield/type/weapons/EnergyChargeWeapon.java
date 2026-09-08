@@ -23,7 +23,7 @@ public class EnergyChargeWeapon extends Weapon {
 	public Cons2<Unit, WeaponMount> chargeCondition;
 	public boolean drawTop = true, startUncharged = true, drawRegion = true;
 
-	int sequenceNum;
+	public int sequenceNum;
 
 	public EnergyChargeWeapon() {
 		this("");

@@ -8,7 +8,7 @@ import mindustry.entities.EntityGroup;
 import mindustry.gen.Entityc;
 import mindustry.gen.Groups;
 
-import static endfield.util.Objects2.let;
+import static endfield.util.Objects2.also;
 
 public class PressureGraphUpdater implements Entityc {
 	public transient boolean added;
@@ -22,7 +22,7 @@ public class PressureGraphUpdater implements Entityc {
 
 	@Override
 	public void update() {
-		if (graph != null && !let(graph.builds, builds -> builds.retainAll(IBuilding::isValid)).isEmpty()) {
+		if (graph != null && !also(graph.builds, builds -> builds.retainAll(IBuilding::isValid)).isEmpty()) {
 			graph.update();
 		} else {
 			remove();

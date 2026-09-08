@@ -29,8 +29,8 @@ public class EnumHandler<T extends Enum<T>> {
 	public final Class<T> clazz;
 
 	static {
-		ORDINAL_ACCESSOR = Reflects.newFieldAccessor(ClassHandler.getField(Enum.class, "ordinal"));
-		NAME_ACCESSOR = Reflects.newFieldAccessor(ClassHandler.getField(Enum.class, "name"));
+		ORDINAL_ACCESSOR = Reflects.newFieldAccessor(Enum.class, "ordinal");
+		NAME_ACCESSOR = Reflects.newFieldAccessor(Enum.class, "name");
 	}
 
 	/**
@@ -44,7 +44,7 @@ public class EnumHandler<T extends Enum<T>> {
 	public EnumHandler(Class<T> c) {
 		clazz = c;
 
-		valuesAccessor = Reflects.newFieldAccessor(ClassHandler.getField(clazz, field -> field.getName().contains("$VALUES")));
+		valuesAccessor = Reflects.newFieldAccessor(clazz, field -> field.getName().contains("$VALUES"));
 	}
 
 	/**

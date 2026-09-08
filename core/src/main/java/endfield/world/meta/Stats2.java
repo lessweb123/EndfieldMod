@@ -52,6 +52,8 @@ public final class Stats2 {
 	public static Stat pumpStrength = new Stat("pump-strength");
 	public static Stat pressureGradient = new Stat("pressure-gradient");
 
+	public static Stat overdrive = new Stat("overdrive", StatCat.function);
+
 	/** Don't let anyone instantiate this class. */
 	private Stats2() {}
 

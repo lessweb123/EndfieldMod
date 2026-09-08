@@ -613,6 +613,7 @@ public class IntMap2<V> implements Iterable<IntHolder<V>>, Eachable<IntHolder<V>
 		return (h ^ h >>> hashShift) & mask;
 	}
 
+	@Override
 	public int hashCode() {
 		int h = 0;
 		if (hasZeroValue && zeroValue != null) {

@@ -20,7 +20,7 @@ public final class Collections2 {
 		return null;
 	}
 
-	public static <T> void forEachIndexed(Iterable<T> iterable, IndexedConsume<? super T> action) {
+	public static <T> void forEachIndexed(Iterable<T> iterable, IntTBiConsume<? super T> action) {
 		int i = 0;
 		for (T t : iterable) {
 			action.get(i++, t);
@@ -49,7 +49,7 @@ public final class Collections2 {
 	}
 
 	@FunctionalInterface
-	public interface IndexedConsume<T> {
+	public interface IntTBiConsume<T> {
 		void get(int index, T t);
 	}
 }
