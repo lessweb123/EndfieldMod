@@ -1,5 +1,6 @@
 package endfield.util.aspector.classes;
 
+import endfield.util.Collections2;
 import endfield.util.Constant;
 import endfield.util.IntMap2;
 import kotlin.Metadata;
@@ -17,6 +18,7 @@ import kotlin.metadata.jvm.JvmExtensionsKt;
 import kotlin.metadata.jvm.JvmFieldSignature;
 import kotlin.metadata.jvm.JvmMethodSignature;
 import kotlin.metadata.jvm.KotlinClassMetadata;
+import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -44,9 +46,9 @@ import java.util.zip.ZipFile;
 
 public class ASMClassAccessor implements ClassAccessor {
 	ClassLoader loaderPath;
-	File filePath;
+	@Nullable File filePath;
 
-	final Map<ClassName, ClassDecl<?>> loadedDeclMap;
+	Map<ClassName, ClassDecl<?>> loadedDeclMap;
 
 	public ASMClassAccessor(Object... paths) {
 		for (Object path : paths) {
@@ -56,6 +58,8 @@ public class ASMClassAccessor implements ClassAccessor {
 				filePath = file;
 			}
 		}
+
+		if (loaderPath == null) loaderPath = getClass().getClassLoader();
 
 		loadedDeclMap = new HashMap<>();
 	}
@@ -91,7 +95,7 @@ public class ASMClassAccessor implements ClassAccessor {
 
 		InputStream stream = loaderPath.getResourceAsStream(path);
 
-		if (stream == null) {
+		if (stream == null && filePath != null) {
 			if (filePath.isDirectory()) {
 				File target = new File(filePath, path);
 
@@ -180,6 +184,8 @@ public class ASMClassAccessor implements ClassAccessor {
 	}
 
 	static class BytecodeClassDecl<T> extends ClassDecl<T> {
+		static ClassName metadataT = ClassName.byClass(Metadata.class);
+
 		ClassAccessor accessor;
 		byte[] bytecode;
 
@@ -266,12 +272,12 @@ public class ASMClassAccessor implements ClassAccessor {
 			ClassNode classRoot = new ClassNode(Opcodes.ASM9);
 			classReader.accept(classRoot, ClassReader.SKIP_CODE | ClassReader.SKIP_FRAMES);
 
-			annotations = handleAnnotations(CollectionsKt.plus(classRoot.visibleAnnotations, classRoot.invisibleAnnotations));
-			EAnnotation ktMetadata = CollectionsKt.firstOrNull(annotations, it -> it.type.equals(ClassName.byClass(Metadata.class)));
+			annotations = handleAnnotations(Collections2.plus(classRoot.visibleAnnotations, classRoot.invisibleAnnotations));
+			EAnnotation ktMetadata = CollectionsKt.firstOrNull(annotations, it -> it.type.equals(metadataT));
 			Metadata metadata = ktMetadata == null ? null : new Metadata() {
 				@Override
 				public Class<? extends Annotation> annotationType() {
-					return getClass();
+					return Metadata.class;
 				}
 
 				@Override
@@ -326,7 +332,7 @@ public class ASMClassAccessor implements ClassAccessor {
 				kmClass = md.getKmClass();
 			}
 
-			IntMap2<List<EAnnotation>> typeRefAnnoMap = handleTypeAnnotations(CollectionsKt.plus(classRoot.visibleTypeAnnotations, classRoot.invisibleTypeAnnotations));
+			IntMap2<List<EAnnotation>> typeRefAnnoMap = handleTypeAnnotations(Collections2.plus(classRoot.visibleTypeAnnotations, classRoot.invisibleTypeAnnotations));
 			if (kmClass != null) {
 				for (KmType kmType : kmClass.getSupertypes()) {
 					ClassName className;
@@ -387,9 +393,7 @@ public class ASMClassAccessor implements ClassAccessor {
 				}
 			}
 			for (FieldNode field : classRoot.fields) {
-				IntMap2<List<EAnnotation>> typeRefAnnoMap2 = handleTypeAnnotations(
-						CollectionsKt.plus(field.visibleTypeAnnotations, field.invisibleTypeAnnotations)
-				);
+				IntMap2<List<EAnnotation>> typeRefAnnoMap2 = handleTypeAnnotations(Collections2.plus(field.visibleTypeAnnotations, field.invisibleTypeAnnotations));
 
 				IntMap2<List<EAnnotation>> refs = kmFieldAnnoRef.get(field.name);
 				for (var entry : refs) {
@@ -405,7 +409,7 @@ public class ASMClassAccessor implements ClassAccessor {
 						),
 						field.access,
 						field.value,
-						handleAnnotations(CollectionsKt.plus(classRoot.visibleAnnotations, classRoot.invisibleAnnotations))
+						handleAnnotations(Collections2.plus(classRoot.visibleAnnotations, classRoot.invisibleAnnotations))
 				));
 			}
 
@@ -422,7 +426,7 @@ public class ASMClassAccessor implements ClassAccessor {
 						EAnnotation annotation = handleKmAnnotation(kmAnnotation);
 						map.get(TypeReference.newTypeReference(TypeReference.METHOD_RETURN).getValue(), () -> new ArrayList<>()).add(annotation);
 					}
-					List<KmType> types = CollectionsKt.plus(CollectionsKt.listOfNotNull(function.getReceiverParameterType()),
+					List<KmType> types = Collections2.plus(CollectionsKt.listOfNotNull(function.getReceiverParameterType()),
 							CollectionsKt.map(function.getValueParameters(), it -> it.type));
 					for (int i = 0; i < types.size(); i++) {
 						KmType type = types.get(i);
@@ -434,7 +438,7 @@ public class ASMClassAccessor implements ClassAccessor {
 			}
 			for (MethodNode method : classRoot.methods) {
 				MethodSignature signature = MethodSignature.parse(method.name, method.desc);
-				IntMap2<List<EAnnotation>> typeRefAnnoMap2 = handleTypeAnnotations(CollectionsKt.plus(method.visibleTypeAnnotations, method.invisibleTypeAnnotations));
+				IntMap2<List<EAnnotation>> typeRefAnnoMap2 = handleTypeAnnotations(Collections2.plus(method.visibleTypeAnnotations, method.invisibleTypeAnnotations));
 
 				@SuppressWarnings("unchecked")
 				List<EAnnotation>[] paramAnnotations = new List[signature.paramTypes.size()];
@@ -485,14 +489,14 @@ public class ASMClassAccessor implements ClassAccessor {
 									typeRefAnnoMap2.get(TypeReference.newTypeReference(TypeReference.METHOD_RETURN).getValue(), () -> new ArrayList<>())
 							),
 							method.access,
-							handleAnnotations(CollectionsKt.plus(method.visibleAnnotations, method.invisibleAnnotations))
+							handleAnnotations(Collections2.plus(method.visibleAnnotations, method.invisibleAnnotations))
 					));
 				} else {
 					constructors.add(new EConstructor<>(
 							this,
 							params,
 							method.access,
-							handleAnnotations(CollectionsKt.plus(method.visibleAnnotations, method.invisibleAnnotations))
+							handleAnnotations(Collections2.plus(method.visibleAnnotations, method.invisibleAnnotations))
 					));
 				}
 			}
@@ -500,7 +504,7 @@ public class ASMClassAccessor implements ClassAccessor {
 			initialized = true;
 		}
 
-		IntMap2<List<EAnnotation>> handleTypeAnnotations(List<TypeAnnotationNode> nodes) {
+		static IntMap2<List<EAnnotation>> handleTypeAnnotations(List<TypeAnnotationNode> nodes) {
 			IntMap2<List<EAnnotation>> typeRefAnnoMap = new IntMap2<>(List.class);
 			for (TypeAnnotationNode annotation : nodes) {
 				int ref = annotation.typeRef;
@@ -510,11 +514,11 @@ public class ASMClassAccessor implements ClassAccessor {
 			return typeRefAnnoMap;
 		}
 
-		List<EAnnotation> handleAnnotations(List<AnnotationNode> nodes) {
+		static List<EAnnotation> handleAnnotations(List<AnnotationNode> nodes) {
 			return CollectionsKt.map(nodes, it -> handleAnnotation(it));
 		}
 
-		EAnnotation handleAnnotation(AnnotationNode node) {
+		static EAnnotation handleAnnotation(AnnotationNode node) {
 			ClassName annotationName = ClassName.byDescriptor(node.desc);
 
 			Map<String, AnnotationValue<?, ?>> annoValues = new HashMap<>();
@@ -530,7 +534,7 @@ public class ASMClassAccessor implements ClassAccessor {
 			return new EAnnotation(annotationName, MapsKt.toMap(annoValues));
 		}
 
-		EAnnotation handleKmAnnotation(KmAnnotation kmAnnotation) {
+		static EAnnotation handleKmAnnotation(KmAnnotation kmAnnotation) {
 			ClassName annotationName = ClassName.byInternalName(kmAnnotation.getClassName());
 
 			Map<String, AnnotationValue<?, ?>> annoValues = new HashMap<>();
@@ -545,7 +549,7 @@ public class ASMClassAccessor implements ClassAccessor {
 			return new EAnnotation(annotationName, MapsKt.toMap(annoValues));
 		}
 
-		AnnotationValue<?, ?> handleKmAnnoArg(KmAnnotationArgument argument) {
+		static AnnotationValue<?, ?> handleKmAnnoArg(KmAnnotationArgument argument) {
 			if (argument instanceof KmAnnotationArgument.LiteralValue<?> value) {
 				return new Value<>(value.getValue());
 			} else if (argument instanceof KmAnnotationArgument.EnumValue value) {
@@ -588,7 +592,7 @@ public class ASMClassAccessor implements ClassAccessor {
 		}
 
 		@SuppressWarnings("unchecked")
-		AnnotationValue<?, ?> handleAnnotationValue(Object raw) {
+		static AnnotationValue<?, ?> handleAnnotationValue(Object raw) {
 			if (raw instanceof Type type) {
 				return new TypeValue(ClassName.byInternalName(type.getInternalName()));
 			} else if (raw instanceof Object[] array) {

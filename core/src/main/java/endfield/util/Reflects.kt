@@ -5,34 +5,23 @@ import java.lang.invoke.MethodHandle
 import java.lang.invoke.MethodType
 import java.lang.invoke.VarHandle
 
-fun findSetter(clazz: Class<*>, name: String, type: Class<*>): MethodHandle {
-	val lookup = platformImpl.lookup(clazz)
+fun findSetter(clazz: Class<*>, name: String, type: Class<*>): MethodHandle =
+	platformImpl.lookup(clazz).findSetter(clazz, name, type)
 
-	return lookup.findSetter(clazz, name, type)
-}
+fun findGetter(clazz: Class<*>, name: String, type: Class<*>): MethodHandle =
+	platformImpl.lookup(clazz).findGetter(clazz, name, type)
 
-fun findGetter(clazz: Class<*>, name: String, type: Class<*>): MethodHandle {
-	val lookup = platformImpl.lookup(clazz)
+fun findStaticSetter(clazz: Class<*>, name: String, type: Class<*>): MethodHandle =
+	platformImpl.lookup(clazz).findStaticSetter(clazz, name, type)
 
-	return lookup.findGetter(clazz, name, type)
-}
+fun findStaticGetter(clazz: Class<*>, name: String, type: Class<*>): MethodHandle =
+	platformImpl.lookup(clazz).findStaticGetter(clazz, name, type)
 
-fun findVarHandle(clazz: Class<*>, name: String, type: Class<*>): VarHandle {
-	val lookup = platformImpl.lookup(clazz)
+fun findVarHandle(clazz: Class<*>, name: String, type: Class<*>): VarHandle =
+	platformImpl.lookup(clazz).findVarHandle(clazz, name, type)
 
-	return lookup.findVarHandle(clazz, name, type)
-}
+fun findVirtual(clazz: Class<*>, name: String, returnType: Class<*>, parameterTypes: Array<Class<*>>): MethodHandle =
+	platformImpl.lookup(clazz).findVirtual(clazz, name, MethodType.methodType(returnType, parameterTypes))
 
-fun findVirtual(clazz: Class<*>, name: String, returnType: Class<*>, parameterTypes: Array<Class<*>>): MethodHandle {
-	val lookup = platformImpl.lookup(clazz)
-	val methodType = MethodType.methodType(returnType, parameterTypes)
-
-	return lookup.findVirtual(clazz, name, methodType)
-}
-
-fun findStatic(clazz: Class<*>, name: String, returnType: Class<*>, parameterTypes: Array<Class<*>>): MethodHandle {
-	val lookup = platformImpl.lookup(clazz)
-	val methodType = MethodType.methodType(returnType, parameterTypes)
-
-	return lookup.findStatic(clazz, name, methodType)
-}
+fun findStatic(clazz: Class<*>, name: String, returnType: Class<*>, parameterTypes: Array<Class<*>>): MethodHandle =
+	platformImpl.lookup(clazz).findStatic(clazz, name, MethodType.methodType(returnType, parameterTypes))

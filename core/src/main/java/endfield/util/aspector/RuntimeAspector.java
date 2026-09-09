@@ -25,6 +25,10 @@ public final class RuntimeAspector {
 		return new AspectDelegate(accessor, aspector, packageAccessor);
 	}
 
+	public static <T> T withMaker(Func<ClassAccessor, AspectFactory> makerFactory, @Nullable Func<ClassAccessor, PackageAccessHandler> accessorFactory, Func<AspectDelegate, T> scope, ClassLoader... loaderPaths) {
+		return scope.get(withMaker(makerFactory, accessorFactory, loaderPaths));
+	}
+
 	public static class AspectDelegate {
 		ClassAccessor accessor;
 		Aspector aspector;
@@ -72,6 +76,7 @@ public final class RuntimeAspector {
 			}
 
 			public Class<T> aspectClass() {
+				load();
 				return aspectClass;
 			}
 
@@ -88,11 +93,13 @@ public final class RuntimeAspector {
 			}
 
 			public void load(BytecodeLoader loader) {
-				aspectClass = decl.load(loader);
+				if (aspectClass == null) {
+					aspectClass = decl.load(loader);
+				}
 			}
 
 			public T instance(Object... args) {
-				return MethodHandler.newInstanceDefault(aspectClass, args);
+				return MethodHandler.newInstanceDefault(aspectClass(), args);
 			}
 		}
 	}

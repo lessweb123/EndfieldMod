@@ -24,11 +24,7 @@ public class NestedAnnotationValue extends AnnotationValue<Annotation, EAnnotati
 				value = (Annotation) Proxy.newProxyInstance(annoType.getClassLoader(), new Class[]{annoType}, (obj, method, args) -> {
 					AnnotationValue<?, ?> annoValue = rawValue.getValue(method.getName());
 
-					if (annoValue != null) {
-						return annoValue.value();
-					}
-
-					return method.invoke(obj, args);
+					return annoValue == null ? method.invoke(obj, args) : annoValue.value();
 				});
 			} catch (ClassNotFoundException e) {
 				throw new RuntimeException(e);

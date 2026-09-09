@@ -1,5 +1,8 @@
 package endfield.util;
 
+import endfield.util.aspector.accesses.PackageAccessHandler;
+import endfield.util.aspector.classes.ClassAccessor;
+
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -25,6 +28,10 @@ public interface PlatformImpl {
 
 	default <T> ConstructorAccessor<T> constructorAccessor(Constructor<T> constructor) {
 		return new ReflectionConstructorAccessor<>(constructor);
+	}
+
+	default PackageAccessHandler packageAccessHandler(ClassAccessor accessor) {
+		throw new UnsupportedOperationException();
 	}
 
 	void put(long srcAddress, long destAddress, long bytes);

@@ -8,15 +8,15 @@ import java.util.Map;
 public interface ClassAccessor {
 	Map<ClassName, byte[]> sharedClassByte = new HashMap<>();
 
-	ClassDecl<Void> voidDecl = new PrimitiveClassDecl<>(Void.TYPE);
-	ClassDecl<Byte> byteDecl = new PrimitiveClassDecl<>(Byte.class);
-	ClassDecl<Short> shortDecl = new PrimitiveClassDecl<>(Short.class);
-	ClassDecl<Integer> intDecl = new PrimitiveClassDecl<>(Integer.class);
-	ClassDecl<Long> longDecl = new PrimitiveClassDecl<>(Long.class);
-	ClassDecl<Float> floatDecl = new PrimitiveClassDecl<>(Float.class);
-	ClassDecl<Double> doubleDecl = new PrimitiveClassDecl<>(Double.class);
-	ClassDecl<Character> charDecl = new PrimitiveClassDecl<>(Character.class);
-	ClassDecl<Boolean> booleanDecl = new PrimitiveClassDecl<>(Boolean.class);
+	ClassDecl<Void> voidDecl = new PrimitiveClassDecl<>(void.class);
+	ClassDecl<Byte> byteDecl = new PrimitiveClassDecl<>(byte.class);
+	ClassDecl<Short> shortDecl = new PrimitiveClassDecl<>(short.class);
+	ClassDecl<Integer> intDecl = new PrimitiveClassDecl<>(int.class);
+	ClassDecl<Long> longDecl = new PrimitiveClassDecl<>(long.class);
+	ClassDecl<Float> floatDecl = new PrimitiveClassDecl<>(float.class);
+	ClassDecl<Double> doubleDecl = new PrimitiveClassDecl<>(double.class);
+	ClassDecl<Character> charDecl = new PrimitiveClassDecl<>(char.class);
+	ClassDecl<Boolean> booleanDecl = new PrimitiveClassDecl<>(boolean.class);
 
 	<T> ClassDecl<T> getClassDecl(ClassName className);
 

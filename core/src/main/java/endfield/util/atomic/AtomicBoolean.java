@@ -1,8 +1,7 @@
 package endfield.util.atomic;
 
-import endfield.util.ReflectsKt;
-
 import java.io.Serializable;
+import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 
 public class AtomicBoolean implements Serializable {
@@ -12,7 +11,13 @@ public class AtomicBoolean implements Serializable {
 	private volatile boolean value;
 
 	static {
-		handle = ReflectsKt.findVarHandle(AtomicBoolean.class, "value", boolean.class);
+		try {
+			MethodHandles.Lookup lookup = MethodHandles.lookup();
+
+			handle = lookup.findVarHandle(AtomicBoolean.class, "value", boolean.class);
+		} catch (NoSuchFieldException | IllegalAccessException e) {
+			throw new AssertionError(e);
+		}
 	}
 
 	public AtomicBoolean(boolean initialValue) {

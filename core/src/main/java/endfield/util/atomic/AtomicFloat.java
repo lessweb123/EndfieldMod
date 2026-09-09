@@ -2,8 +2,8 @@ package endfield.util.atomic;
 
 import arc.func.FloatFloatf;
 import endfield.func.FloatFloatf2;
-import endfield.util.ReflectsKt;
 
+import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 
 /**
@@ -17,7 +17,13 @@ public class AtomicFloat extends Number {
 	private static final VarHandle handle;
 
 	static {
-		handle = ReflectsKt.findVarHandle(AtomicFloat.class, "value", float.class);
+		try {
+			MethodHandles.Lookup lookup = MethodHandles.lookup();
+
+			handle = lookup.findVarHandle(AtomicFloat.class, "value", float.class);
+		} catch (NoSuchFieldException | IllegalAccessException e) {
+			throw new AssertionError(e);
+		}
 	}
 
 	private volatile float value;

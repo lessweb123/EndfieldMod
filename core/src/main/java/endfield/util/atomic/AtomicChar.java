@@ -2,9 +2,9 @@ package endfield.util.atomic;
 
 import endfield.func.CharCharf;
 import endfield.func.CharCharf2;
-import endfield.util.ReflectsKt;
 
 import java.io.Serializable;
+import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 
 public class AtomicChar implements Serializable {
@@ -14,7 +14,13 @@ public class AtomicChar implements Serializable {
 	private volatile char value;
 
 	static {
-		handle = ReflectsKt.findVarHandle(AtomicChar.class, "value", char.class);
+		try {
+			MethodHandles.Lookup lookup = MethodHandles.lookup();
+
+			handle = lookup.findVarHandle(AtomicChar.class, "value", char.class);
+		} catch (NoSuchFieldException | IllegalAccessException e) {
+			throw new AssertionError(e);
+		}
 	}
 
 	public AtomicChar() {}

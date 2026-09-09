@@ -7,7 +7,6 @@ import endfield.util.aspector.classes.ClassElement;
 import endfield.util.aspector.classes.ClassName;
 import endfield.util.aspector.classes.EConstructor;
 import endfield.util.aspector.classes.EMethod;
-import endfield.util.aspector.classes.MethodSignature;
 import endfield.util.aspector.generate.ProxyAspectFactory;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
@@ -117,48 +116,6 @@ public class UnsafePackageAccessHandler extends PackageAccessHandler {
 				className.name(),
 				bytecode, 0, bytecode.length,
 				accessTarget.getClassLoader(), accessTargetDomain
-		);
-	}
-
-	void returnValue(MethodVisitor write, EMethod method) {
-		ClassName returnType = method.signature().returnType;
-
-		if (returnType.equals(ClassName.V)) {
-			write.visitInsn(Opcodes.RETURN);
-		} else if (returnType.equals(ClassName.B) || returnType.equals(ClassName.S) || returnType.equals(ClassName.I) || returnType.equals(ClassName.Z) || returnType.equals(ClassName.C)) {
-			write.visitInsn(Opcodes.IRETURN);
-		} else if (returnType.equals(ClassName.J)) {
-			write.visitInsn(Opcodes.LRETURN);
-		} else if (returnType.equals(ClassName.F)) {
-			write.visitInsn(Opcodes.FRETURN);
-		} else if (returnType.equals(ClassName.D)) {
-			write.visitInsn(Opcodes.DRETURN);
-		} else {
-			write.visitInsn(Opcodes.ARETURN);
-		}
-	}
-
-	void invokeMethod(MethodVisitor write, ClassName owner, MethodSignature method, boolean isInterface) {
-		write.visitVarInsn(Opcodes.ALOAD, 0);
-
-		for (int n = 0; n < method.paramTypes.size(); n++) {
-			ClassName param = method.paramTypes.get(n);
-
-			int varIndex = n + 1;
-			switch (param.descriptor()) {
-				case "B", "S", "I", "Z", "C" -> write.visitVarInsn(Opcodes.ILOAD, varIndex);
-				case "J" -> write.visitVarInsn(Opcodes.LLOAD, varIndex);
-				case "F" -> write.visitVarInsn(Opcodes.FLOAD, varIndex);
-				case "D" -> write.visitVarInsn(Opcodes.DLOAD, varIndex);
-				default -> write.visitVarInsn(Opcodes.ALOAD, varIndex);
-			}
-		}
-		write.visitMethodInsn(
-				Opcodes.INVOKESPECIAL,
-				owner.internalName(),
-				method.methodName,
-				method.jvmDescriptor(),
-				isInterface
 		);
 	}
 }

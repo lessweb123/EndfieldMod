@@ -12,6 +12,8 @@ import endfield.util.FieldAccessor;
 import endfield.util.MethodAccessor;
 import endfield.util.PlatformImpl;
 import endfield.util.Reflects;
+import endfield.util.aspector.accesses.PackageAccessHandler;
+import endfield.util.aspector.classes.ClassAccessor;
 import endfield.util.handler.ObjectHandler;
 import sun.reflect.ReflectionFactory;
 
@@ -114,6 +116,11 @@ public class DesktopImpl implements PlatformImpl {
 	@Override
 	public <T> ConstructorAccessor<T> constructorAccessor(Constructor<T> constructor) {
 		return new MethodHandleConstructorAccessor<>(constructor);
+	}
+
+	@Override
+	public PackageAccessHandler packageAccessHandler(ClassAccessor accessor) {
+		return new UnsafePackageAccessHandler(accessor);
 	}
 
 	@Override

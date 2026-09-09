@@ -12,6 +12,7 @@ import endfield.util.aspector.classes.EField;
 import endfield.util.aspector.classes.EMethod;
 import endfield.util.aspector.classes.MethodSignature;
 import kotlin.Pair;
+import kotlin.collections.ArraysKt;
 import kotlin.collections.CollectionsKt;
 import kotlin.collections.MapsKt;
 import org.objectweb.asm.ClassReader;
@@ -41,7 +42,19 @@ public class ProxyAspectFactory extends AspectFactory {
 
 	@Override
 	public ClassName generateClassName(ClassDecl<?> targetClass, ClassDecl<?>... aspectClasses) {
-		return null;
+		String name = targetClass.name.name();
+
+		if (name.startsWith("java.")) name = name.replace("java.", "java_.");
+		else if (name.startsWith("javax.")) name = name.replace("javax.", "javax_.");
+		else if (name.startsWith("sun.")) name = name.replace("sun.", "sun_.");
+		else if (name.startsWith("jdk.")) name = name.replace("jdk.", "jdk_.");
+		else if (name.startsWith("android.")) name = name.replace("android.", "android_.");
+		else if (name.startsWith("androidx.")) name = name.replace("androidx.", "androidx_.");
+		else if (name.startsWith("libcore.")) name = name.replace("libcore.", "libcore_.");
+		else if (name.startsWith("com.sun.")) name = name.replace("com.sun.", "com.sun_.");
+		else if (name.startsWith("com.android.")) name = name.replace("com.android.", "com.android_.");
+
+		return ClassName.byName(name + "$" + Integer.toHexString(ArraysKt.map(aspectClasses, it -> it.name).hashCode()));
 	}
 
 	@Override

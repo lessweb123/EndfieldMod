@@ -124,6 +124,11 @@ public class ClassName {
 	}
 
 	@Override
+	public int hashCode() {
+		return descriptor.hashCode();
+	}
+
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
 		if (!(obj instanceof ClassName cn)) return false;

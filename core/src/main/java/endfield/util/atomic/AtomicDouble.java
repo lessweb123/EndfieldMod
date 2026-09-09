@@ -2,8 +2,8 @@ package endfield.util.atomic;
 
 import endfield.func.DoubleDoublef;
 import endfield.func.DoubleDoublef2;
-import endfield.util.ReflectsKt;
 
+import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 
 /**
@@ -17,7 +17,13 @@ public class AtomicDouble extends Number {
 	private static final VarHandle handle;
 
 	static {
-		handle = ReflectsKt.findVarHandle(AtomicDouble.class, "value", double.class);
+		try {
+			MethodHandles.Lookup lookup = MethodHandles.lookup();
+
+			handle = lookup.findVarHandle(AtomicDouble.class, "value", double.class);
+		} catch (NoSuchFieldException | IllegalAccessException e) {
+			throw new AssertionError(e);
+		}
 	}
 
 	private volatile double value;

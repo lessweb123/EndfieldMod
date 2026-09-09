@@ -27,6 +27,25 @@ public final class Collections2 {
 		}
 	}
 
+	public static <T> List<T> plus(Collection<T> ca, Collection<T> cb) {
+		ArrayList<T> result = new ArrayList<>((ca == null ? 0 : ca.size()) + (cb == null ? 0 : cb.size()));
+
+		if (ca != null) result.addAll(ca);
+		if (cb != null) result.addAll(cb);
+
+		return result;
+	}
+
+	public static <T> List<T> plus(Collection<T> ca, Collection<T> cb, Collection<T> cc) {
+		ArrayList<T> result = new ArrayList<>((ca == null ? 0 : ca.size()) + (cb == null ? 0 : cb.size()) + (cc == null ? 0 : cc.size()));
+
+		if (ca != null) result.addAll(ca);
+		if (cb != null) result.addAll(cb);
+		if (cc != null) result.addAll(cc);
+
+		return result;
+	}
+
 	@SuppressWarnings("unchecked")
 	public static <T> List<T> filterIsInstance(Object[] array, Class<T> type) {
 		ArrayList<T> result = new ArrayList<>();

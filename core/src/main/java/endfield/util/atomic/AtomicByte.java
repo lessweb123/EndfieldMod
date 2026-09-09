@@ -1,7 +1,6 @@
 package endfield.util.atomic;
 
-import endfield.util.ReflectsKt;
-
+import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 
 public class AtomicByte extends Number {
@@ -11,7 +10,13 @@ public class AtomicByte extends Number {
 	private volatile byte value;
 
 	static {
-		handle = ReflectsKt.findVarHandle(AtomicByte.class, "value", byte.class);
+		try {
+			MethodHandles.Lookup lookup = MethodHandles.lookup();
+
+			handle = lookup.findVarHandle(AtomicByte.class, "value", byte.class);
+		} catch (NoSuchFieldException | IllegalAccessException e) {
+			throw new AssertionError(e);
+		}
 	}
 
 	public AtomicByte() {}
