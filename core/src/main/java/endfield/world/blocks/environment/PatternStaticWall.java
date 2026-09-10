@@ -8,14 +8,17 @@ import arc.math.geom.Point2;
 import endfield.world.patterns.Pattern;
 import endfield.world.patterns.PatternManager;
 import endfield.world.patterns.Patterned;
-import mindustry.Vars;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.StaticWall;
+
+import static mindustry.Vars.tilesize;
+import static mindustry.Vars.world;
 
 public class PatternStaticWall extends StaticWall implements Patterned {
 	public Pattern pattern;
 	public boolean drawOnTop = true;
 	public boolean isPattern = false;
+	public boolean usePatternName = false;
 	public boolean drawParentUnder = false;
 
 	public PatternStaticWall(String name) {
@@ -25,7 +28,7 @@ public class PatternStaticWall extends StaticWall implements Patterned {
 	@Override
 	public void init() {
 		super.init();
-		if (isPattern && pattern != null) {
+		if (usePatternName && pattern != null) {
 			localizedName = pattern.localizedName();
 			description = pattern.description();
 		}
@@ -105,7 +108,7 @@ public class PatternStaticWall extends StaticWall implements Patterned {
 		int rx = tile.x / 2 * 2;
 		int ry = tile.y / 2 * 2;
 
-		if (Core.atlas.isFound(large) && equals(rx, ry) && Mathf.randomSeed(Point2.pack(rx, ry)) < 0.5 && split.length >= 2 && split[0].length >= 2) {
+		if (Core.atlas.isFound(large) && eq(rx, ry) && Mathf.randomSeed(Point2.pack(rx, ry)) < 0.5 && split.length >= 2 && split[0].length >= 2) {
 			Draw.rect(split[tile.x % 2][1 - tile.y % 2], tile.worldx(), tile.worldy());
 		} else {
 			int baseVariants = Math.max(1, variants);
@@ -123,22 +126,25 @@ public class PatternStaticWall extends StaticWall implements Patterned {
 		int relY = tile.y - anchor.y;
 		int vIdx = pattern.variants > 0 ? pattern.variant(anchor.x, anchor.y, pattern.variants) : 0;
 		int sliceIdx = baseVariants + pattern.getSliceIndex(relX, relY, vIdx);
-		Draw.rect(variantRegions[sliceIdx], tile.worldx(), tile.worldy(), Vars.tilesize + 0.01f, Vars.tilesize + 0.01f);
+		Draw.rect(variantRegions[sliceIdx], tile.worldx(), tile.worldy(), tilesize, tilesize);
 	}
 
 	protected Tile getAnchorIfComplete(Tile tile) {
 		if (tile == null || pattern == null) return null;
 		Tile anchor = PatternManager.getAnchor(tile, this);
-		if (anchor != null && PatternManager.isPatternComplete(this, anchor)) return anchor;
+		if (anchor != null) {
+			if (PatternManager.isPatternComplete(this, anchor)) return anchor;
+			PatternManager.updateAround(tile, this);
+		}
 		return null;
 	}
 
-	protected boolean equals(int rx, int ry) {
-		return rx < Vars.world.width() - 1 && ry < Vars.world.height() - 1
-				&& Vars.world.tile(rx + 1, ry).block() == this
-				&& Vars.world.tile(rx, ry + 1).block() == this
-				&& Vars.world.tile(rx, ry).block() == this
-				&& Vars.world.tile(rx + 1, ry + 1).block() == this;
+	protected boolean eq(int rx, int ry) {
+		return rx < world.width() - 1 && ry < world.height() - 1
+				&& world.tile(rx + 1, ry).block() == this
+				&& world.tile(rx, ry + 1).block() == this
+				&& world.tile(rx, ry).block() == this
+				&& world.tile(rx + 1, ry + 1).block() == this;
 	}
 
 	@Override

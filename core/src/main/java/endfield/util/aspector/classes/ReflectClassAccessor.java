@@ -1,9 +1,6 @@
 package endfield.util.aspector.classes;
 
-import kotlin.Pair;
 import kotlin.collections.ArraysKt;
-import kotlin.collections.CollectionsKt;
-import kotlin.collections.MapsKt;
 import kotlin.jvm.JvmClassMappingKt;
 import kotlin.reflect.KClass;
 import kotlin.reflect.KType;
@@ -11,8 +8,13 @@ import kotlin.reflect.KType;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedType;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -117,23 +119,26 @@ public class ReflectClassAccessor implements ClassAccessor {
 
 	static EAnnotation asEAnnotation(Annotation annotation) {
 		Class<?> annoType = annotation.getClass().getInterfaces()[0];
-		List<Pair<String, AnnotationValue<?, ?>>> pairs = CollectionsKt.map(ArraysKt.filter(annoType.getMethods(), it -> it.getParameters().length == 0
-				&& !it.getName().equals("toString") && !it.getName().equals("hashCode") && !it.getName().equals("annotationType")), method -> {
-			Object value;
-			try {
-				value = method.invoke(annotation);
-			} catch (IllegalAccessException | InvocationTargetException e) {
-				Object defaultValue = method.getDefaultValue();
-				if (defaultValue != null) {
-					value = defaultValue;
-				} else {
-					throw new IllegalStateException("Failed to invoke annotation method " + method.getName() + " and no default value found.");
-				}
-			}
-			return new Pair<>(method.getName(), handleAnnotationValue(value));
-		});
 
-		return new EAnnotation(ClassName.byClass(annoType), MapsKt.toMap(pairs));
+		Map<String, AnnotationValue<?, ?>> valueMap = new HashMap<>();
+
+		for (Method method : annoType.getMethods())
+			if (method.getParameters().length == 0 && !method.getName().equals("toString") && !method.getName().equals("hashCode") && !method.getName().equals("annotationType")) {
+				Object value;
+				try {
+					value = method.invoke(annotation);
+				} catch (IllegalAccessException | InvocationTargetException e) {
+					Object defaultValue = method.getDefaultValue();
+					if (defaultValue != null) {
+						value = defaultValue;
+					} else {
+						throw new IllegalStateException("Failed to invoke annotation method " + method.getName() + " and no default value found.");
+					}
+				}
+				valueMap.put(method.getName(), handleAnnotationValue(value));
+			}
+
+		return new EAnnotation(ClassName.byClass(annoType), valueMap);
 	}
 
 	static AnnotationValue<?, ?> handleAnnotationValue(Object value) {
@@ -171,7 +176,7 @@ public class ReflectClassAccessor implements ClassAccessor {
 		}
 
 		@Override
-		public AnnotatedType<?> annotatedSuperClass() {
+		public EAnnotatedType<?> annotatedSuperClass() {
 			return null;
 		}
 
@@ -181,7 +186,7 @@ public class ReflectClassAccessor implements ClassAccessor {
 		}
 
 		@Override
-		public List<AnnotatedType<?>> annotatedInterfaces() {
+		public List<EAnnotatedType<?>> annotatedInterfaces() {
 			return List.of();
 		}
 
@@ -190,7 +195,7 @@ public class ReflectClassAccessor implements ClassAccessor {
 			return List.of(new EField(
 					this,
 					"length",
-					new AnnotatedType<>(ClassAccessor.intDecl, List.of()),
+					new EAnnotatedType<>(ClassAccessor.intDecl, List.of()),
 					Modifier.PUBLIC | Modifier.FINAL,
 					null,
 					List.of()
@@ -218,9 +223,9 @@ public class ReflectClassAccessor implements ClassAccessor {
 		Class<T> clazz;
 
 		ClassDecl<?> superClass;
-		AnnotatedType<?> annotatedSuperClass;
+		EAnnotatedType<?> annotatedSuperClass;
 		List<ClassDecl<?>> interfaces;
-		List<AnnotatedType<?>> annotatedInterfaces;
+		List<EAnnotatedType<?>> annotatedInterfaces;
 		List<EField> fields;
 		List<EMethod> methods;
 		List<EConstructor<T>> constructors;
@@ -248,7 +253,7 @@ public class ReflectClassAccessor implements ClassAccessor {
 		}
 
 		@Override
-		public AnnotatedType<?> annotatedSuperClass() {
+		public EAnnotatedType<?> annotatedSuperClass() {
 			if (annotatedSuperClass == null) {
 				annotatedSuperClass = getSuperClassWithAnnotations(clazz);
 			}
@@ -258,16 +263,24 @@ public class ReflectClassAccessor implements ClassAccessor {
 		@Override
 		public List<ClassDecl<?>> interfaces() {
 			if (interfaces == null) {
-				interfaces = ArraysKt.map(clazz.getInterfaces(), it -> accessor.getClassDecl(ClassName.byClass(it)));
+				interfaces = new ArrayList<>();
+
+				for (Class<?> inter : clazz.getInterfaces()) {
+					interfaces.add(accessor.getClassDecl(ClassName.byClass(inter)));
+				}
 			}
 			return interfaces;
 		}
 
 		@Override
-		public List<AnnotatedType<?>> annotatedInterfaces() {
+		public List<EAnnotatedType<?>> annotatedInterfaces() {
 			if (annotatedInterfaces == null) {
-				List<AnnotatedType<?>> supertypes = getSuperTypesWithAnnotations(clazz);
-				annotatedInterfaces = CollectionsKt.filter(supertypes, it -> it.type().isInterface());
+				annotatedInterfaces = new ArrayList<>();
+
+				List<EAnnotatedType<?>> supertypes = getSuperTypesWithAnnotations(clazz);
+				for (EAnnotatedType<?> supertype : supertypes) {
+					if (supertype.type().isInterface()) annotatedInterfaces.add(supertype);
+				}
 			}
 			return annotatedInterfaces;
 		}
@@ -275,14 +288,22 @@ public class ReflectClassAccessor implements ClassAccessor {
 		@Override
 		public List<EField> fields() {
 			if (fields == null) {
-				fields = ArraysKt.map(clazz.getDeclaredFields(), field -> new EField(
-						accessor.getClassDecl(ClassName.byClass(field.getDeclaringClass())),
-						field.getName(),
-						toAnnoType(field.getAnnotatedType()),
-						field.getModifiers(),
-						null,
-						ArraysKt.map(field.getAnnotations(), annotation -> asEAnnotation(annotation))
-				));
+				fields = new ArrayList<>();
+
+				for (Field field : clazz.getDeclaredFields()) {
+					List<EAnnotation> annotations = new ArrayList<>();
+
+					for (Annotation annotation : field.getAnnotations()) annotations.add(asEAnnotation(annotation));
+
+					fields.add(new EField(
+							accessor.getClassDecl(ClassName.byClass(field.getDeclaringClass())),
+							field.getName(),
+							toAnnoType(field.getAnnotatedType()),
+							field.getModifiers(),
+							null,
+							annotations
+					));
+				}
 			}
 			return fields;
 		}
@@ -290,18 +311,32 @@ public class ReflectClassAccessor implements ClassAccessor {
 		@Override
 		public List<EMethod> methods() {
 			if (methods == null) {
-				methods = ArraysKt.map(clazz.getDeclaredMethods(), method -> new EMethod(
-						accessor.getClassDecl(ClassName.byClass(method.getDeclaringClass())),
-						method.getName(),
-						ArraysKt.map(method.getParameters(), parameter -> new EParameter(
-								parameter.getName(),
-								toAnnoType(parameter.getAnnotatedType()),
-								ArraysKt.map(parameter.getAnnotations(), annotation -> asEAnnotation(annotation))
-						)),
-						toAnnoType(method.getAnnotatedReturnType()),
-						method.getModifiers(),
-						ArraysKt.map(method.getAnnotations(), annotation -> asEAnnotation(annotation))
-				));
+				methods = new ArrayList<>();
+
+				for (Method method : clazz.getDeclaredMethods()) {
+					List<EParameter> parameters = new ArrayList<>();
+
+					for (Parameter parameter : method.getParameters()) {
+						List<EAnnotation> annotations = new ArrayList<>();
+
+						for (Annotation annotation : parameter.getAnnotations()) annotations.add(asEAnnotation(annotation));
+
+						parameters.add(new EParameter(parameter.getName(), toAnnoType(parameter.getAnnotatedType()), annotations));
+					}
+
+					List<EAnnotation> annotations = new ArrayList<>();
+
+					for (Annotation annotation : method.getAnnotations()) annotations.add(asEAnnotation(annotation));
+
+					methods.add(new EMethod(
+							accessor.getClassDecl(ClassName.byClass(method.getDeclaringClass())),
+							method.getName(),
+							parameters,
+							toAnnoType(method.getAnnotatedReturnType()),
+							method.getModifiers(),
+							annotations
+					));
+				}
 			}
 			return methods;
 		}
@@ -309,16 +344,30 @@ public class ReflectClassAccessor implements ClassAccessor {
 		@Override
 		public List<EConstructor<T>> constructors() {
 			if (constructors == null) {
-				constructors = ArraysKt.map(clazz.getDeclaredConstructors(), constructor -> new EConstructor<>(
-						accessor.getClassDecl(ClassName.byClass(constructor.getDeclaringClass())),
-						ArraysKt.map(constructor.getParameters(), parameter -> new EParameter(
-								parameter.getName(),
-								toAnnoType(parameter.getAnnotatedType()),
-								ArraysKt.map(parameter.getAnnotations(), annotation -> asEAnnotation(annotation))
-						)),
-						constructor.getModifiers(),
-						ArraysKt.map(constructor.getAnnotations(), annotation -> asEAnnotation(annotation))
-				));
+				constructors = new ArrayList<>();
+
+				for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
+					List<EParameter> parameters = new ArrayList<>();
+
+					for (Parameter parameter : constructor.getParameters()) {
+						List<EAnnotation> annotations = new ArrayList<>();
+
+						for (Annotation annotation : parameter.getAnnotations()) annotations.add(asEAnnotation(annotation));
+
+						parameters.add(new EParameter(parameter.getName(), toAnnoType(parameter.getAnnotatedType()), annotations));
+					}
+
+					List<EAnnotation> annotations = new ArrayList<>();
+
+					for (Annotation annotation : constructor.getAnnotations()) annotations.add(asEAnnotation(annotation));
+
+					constructors.add(new EConstructor<>(
+							accessor.getClassDecl(ClassName.byClass(constructor.getDeclaringClass())),
+							parameters,
+							constructor.getModifiers(),
+							annotations
+					));
+				}
 			}
 			return constructors;
 		}
@@ -326,13 +375,15 @@ public class ReflectClassAccessor implements ClassAccessor {
 		@Override
 		public List<EAnnotation> annotations() {
 			if (annotations == null) {
-				annotations = ArraysKt.map(clazz.getDeclaredAnnotations(), it -> asEAnnotation(it));
+				annotations = new ArrayList<>();
+
+				for (Annotation annotation : clazz.getDeclaredAnnotations()) annotations.add(asEAnnotation(annotation));
 			}
 			return annotations;
 		}
 
 		@SuppressWarnings("unchecked")
-		<U> AnnotatedType<U> toAnnoType(java.lang.reflect.AnnotatedType at) {
+		<U> EAnnotatedType<U> toAnnoType(AnnotatedType at) {
 			Type t = at.getType();
 
 			Class<U> c;
@@ -344,31 +395,36 @@ public class ReflectClassAccessor implements ClassAccessor {
 				throw new UnsupportedOperationException("Unsupported type " + t.getClass().getName());
 			}
 
-			return new AnnotatedType<>(accessor.getClassDecl(ClassName.byClass(c)), ArraysKt.map(at.getAnnotations(), it -> asEAnnotation(it)));
+			return new EAnnotatedType<>(accessor.getClassDecl(ClassName.byClass(c)), ArraysKt.map(at.getAnnotations(), it -> asEAnnotation(it)));
 		}
 
-		AnnotatedType<?> getSuperClassWithAnnotations(Class<?> clazz) {
+		EAnnotatedType<?> getSuperClassWithAnnotations(Class<?> clazz) {
 			Class<?> superClazz = clazz.getSuperclass();
 
 			if (superClazz == null) return null;
 
 			List<Annotation> list = new ArrayList<>();
 
-			KType superClass = CollectionsKt.firstOrNull(JvmClassMappingKt.getKotlinClass(clazz).getSupertypes(),
-					t -> !JvmClassMappingKt.getJavaClass((KClass<?>) t.getClassifier()).isInterface());
-			if (superClass != null) {
-				list.addAll(superClass.getAnnotations());
+			for (KType superClass : JvmClassMappingKt.getKotlinClass(clazz).getSupertypes()) {
+				if (!JvmClassMappingKt.getJavaClass((KClass<?>) superClass.getClassifier()).isInterface()) {
+					list.addAll(superClass.getAnnotations());
+					break;
+				}
 			}
 
-			java.lang.reflect.AnnotatedType annotatedSuperclass = clazz.getAnnotatedSuperclass();
+			AnnotatedType annotatedSuperclass = clazz.getAnnotatedSuperclass();
 			if (annotatedSuperclass != null) {
 				Collections.addAll(list, annotatedSuperclass.getAnnotations());
 			}
 
-			return new AnnotatedType<>(accessor.getClassDecl(ClassName.byClass(superClazz)), CollectionsKt.map(list, it -> asEAnnotation(it)));
+			List<EAnnotation> annotations = new ArrayList<>();
+
+			for (Annotation annotation : list) annotations.add(asEAnnotation(annotation));
+
+			return new EAnnotatedType<>(accessor.getClassDecl(ClassName.byClass(superClazz)), annotations);
 		}
 
-		List<AnnotatedType<?>> getSuperTypesWithAnnotations(Class<?> clazz) {
+		List<EAnnotatedType<?>> getSuperTypesWithAnnotations(Class<?> clazz) {
 			Map<Class<?>, List<Annotation>> typeAnnotations = new HashMap<>();
 
 			for (KType it : JvmClassMappingKt.getKotlinClass(clazz).getSupertypes()) {
@@ -376,16 +432,29 @@ public class ReflectClassAccessor implements ClassAccessor {
 				typeAnnotations.computeIfAbsent(JvmClassMappingKt.getJavaClass((KClass<?>) it.getClassifier()), c -> new ArrayList<>()).addAll(annotations);
 			}
 
-			List<java.lang.reflect.AnnotatedType> javaTypes = CollectionsKt.plus(CollectionsKt.listOfNotNull(clazz.getAnnotatedSuperclass()), clazz.getAnnotatedInterfaces());
-			for (java.lang.reflect.AnnotatedType it : javaTypes) {
+			List<AnnotatedType> javaTypes = new ArrayList<>();
+
+			AnnotatedType superclass = clazz.getAnnotatedSuperclass();
+
+			if (superclass != null) javaTypes.add(superclass);
+
+			Collections.addAll(javaTypes, clazz.getAnnotatedInterfaces());
+
+			for (AnnotatedType it : javaTypes) {
 				Collections.addAll(typeAnnotations.computeIfAbsent((Class<?>) it.getType(), c -> new ArrayList<>()), it.getAnnotations());
 			}
 
-			return MapsKt.map(typeAnnotations, it -> {
-				Class<?> c = it.getKey();
-				List<EAnnotation> as = CollectionsKt.map(it.getValue(), a -> asEAnnotation(a));
-				return new AnnotatedType<>(accessor.getClassDecl(ClassName.byClass(c)), as);
-			});
+			List<EAnnotatedType<?>> result = new ArrayList<>();
+
+			for (var it : typeAnnotations.entrySet()) {
+				List<EAnnotation> annotations = new ArrayList<>();
+
+				for (Annotation annotation : it.getValue()) annotations.add(asEAnnotation(annotation));
+
+				result.add(new EAnnotatedType<>(accessor.getClassDecl(ClassName.byClass(it.getKey())), annotations));
+			}
+
+			return result;
 		}
 	}
 }

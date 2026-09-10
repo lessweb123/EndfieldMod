@@ -4,10 +4,10 @@ import java.util.List;
 
 public class EParameter {
 	String name;
-	AnnotatedType<?> annotatedType;
+	EAnnotatedType<?> annotatedType;
 	List<EAnnotation> annotations;
 
-	public EParameter(String pn, AnnotatedType<?> annoType, List<EAnnotation> annos) {
+	public EParameter(String pn, EAnnotatedType<?> annoType, List<EAnnotation> annos) {
 		name = pn;
 		annotatedType = annoType;
 		annotations = annos;
@@ -17,7 +17,7 @@ public class EParameter {
 		return name;
 	}
 
-	public AnnotatedType<?> annotatedType() {
+	public EAnnotatedType<?> annotatedType() {
 		return annotatedType;
 	}
 

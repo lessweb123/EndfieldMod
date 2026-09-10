@@ -41,6 +41,7 @@ public class BytecodeClassLoader extends ClassLoader implements BytecodeLoader {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected URL findResource(String name) {
 		byte[] bytecode = bytecodesPaths.get(name);

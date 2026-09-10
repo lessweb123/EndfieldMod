@@ -12,6 +12,7 @@ import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.math.geom.Vec2;
 import arc.struct.Seq;
+import arc.util.Eachable;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
@@ -120,6 +121,7 @@ public class TubeItemBridge extends ItemBridge {
 		Draw.xscl = Draw.yscl = 1f;
 	}
 
+	@Override
 	public Tile findLink(int x, int y) {
 		return findLinkTile(x, y, true);
 	}
@@ -162,6 +164,17 @@ public class TubeItemBridge extends ItemBridge {
 		}
 
 		Draw.reset();
+	}
+
+	@Override
+	public void drawPlanConfigTop(BuildPlan plan, Eachable<BuildPlan> list) {
+		if (plan.config instanceof Point2 p) {
+			BuildPlan otherReq = findPlan(list, plan.x + p.x, plan.y + p.y, other -> other.block == this && plan != other && plan.x + p.x == other.x && plan.y + p.y == other.y);
+
+			if (otherReq != null) {
+				drawBridge(plan, otherReq.drawx(), otherReq.drawy(), 0);
+			}
+		}
 	}
 
 	/** Change its connection method to range connection. */

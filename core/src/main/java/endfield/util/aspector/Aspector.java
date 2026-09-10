@@ -1,6 +1,6 @@
 package endfield.util.aspector;
 
-import endfield.util.aspector.classes.AnnotatedType;
+import endfield.util.aspector.classes.EAnnotatedType;
 import endfield.util.aspector.classes.ArrayValue;
 import endfield.util.aspector.classes.ClassDecl;
 import endfield.util.aspector.classes.ClassName;
@@ -144,7 +144,7 @@ public class Aspector {
 			if (decl.isPrimitive() || decl.isEnum() || decl.isArray() || decl.isInterface())
 				throw new IllegalArgumentException("Aspect implement class " + decl.name + " must be a normal class");
 
-			AnnotatedType<?> superClass = decl.annotatedSuperClass();
+			EAnnotatedType<?> superClass = decl.annotatedSuperClass();
 			if (superClass != null && superClass.type().name.equals(ClassName.jObject) && !CollectionsKt.any(superClass.annotations(), a -> a.type.equals(stubT)))
 				throw new IllegalArgumentException("Super class of aspect implement must be annotated by @Stub");
 		}

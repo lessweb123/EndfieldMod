@@ -8,15 +8,13 @@ import endfield.type.shape.RectanglePatternShape;
 import endfield.type.shape.Shape;
 
 public class Pattern {
-	public String name;
+	public final String name;
 	public Shape shape = new RectanglePatternShape();
 	public int variants = 0;
 
 	public TextureRegion region;
 	public TextureRegion[] variantRegions;
 	public transient TextureRegion[][][] slicedRegions;
-
-	public Pattern() {}
 
 	public Pattern(String name) {
 		this.name = name;
@@ -38,17 +36,23 @@ public class Pattern {
 		loadRegion();
 		shape.load();
 
-		if (region != null && region.texture != null && region.found()) {
+		if (region != null && region.found()) {
 			int tilePixelWidth = region.width / shape.width();
 			int tilePixelHeight = region.height / shape.height();
 
 			slicedRegions = new TextureRegion[Math.max(1, variants)][][];
 			for (int i = 0; i < slicedRegions.length; i++) {
-				// Arc's split returns regions[column][row]
 				slicedRegions[i] = variantRegions[i].split(tilePixelWidth, tilePixelHeight);
 				for (var columns : slicedRegions[i]) {
 					for (var slice : columns) {
 						slice.scale = region.scale;
+
+						float halfTexelU = 0.5f / slice.texture.width;
+						float halfTexelV = 0.5f / slice.texture.height;
+						slice.u += halfTexelU;
+						slice.v += halfTexelV;
+						slice.u2 -= halfTexelU;
+						slice.v2 -= halfTexelV;
 					}
 				}
 			}

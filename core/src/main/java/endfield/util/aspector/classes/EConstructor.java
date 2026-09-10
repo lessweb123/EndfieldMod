@@ -27,7 +27,7 @@ public class EConstructor<T> extends ClassElement {
 		return CollectionsKt.map(parameters, it -> it.annotatedType().type());
 	}
 
-	public List<AnnotatedType<?>> annotatedParameterTypes() {
+	public List<EAnnotatedType<?>> annotatedParameterTypes() {
 		return CollectionsKt.map(parameters, it -> it.annotatedType());
 	}
 }

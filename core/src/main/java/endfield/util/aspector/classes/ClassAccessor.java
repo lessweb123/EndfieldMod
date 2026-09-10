@@ -38,7 +38,7 @@ public interface ClassAccessor {
 		}
 
 		@Override
-		public AnnotatedType<?> annotatedSuperClass() {
+		public EAnnotatedType<?> annotatedSuperClass() {
 			return null;
 		}
 
@@ -48,7 +48,7 @@ public interface ClassAccessor {
 		}
 
 		@Override
-		public List<AnnotatedType<?>> annotatedInterfaces() {
+		public List<EAnnotatedType<?>> annotatedInterfaces() {
 			return List.of();
 		}
 

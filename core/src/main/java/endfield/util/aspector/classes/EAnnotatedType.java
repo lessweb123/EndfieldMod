@@ -2,11 +2,11 @@ package endfield.util.aspector.classes;
 
 import java.util.List;
 
-public class AnnotatedType<T> {
+public class EAnnotatedType<T> {
 	ClassDecl<T> type;
 	List<EAnnotation> annotations;
 
-	public AnnotatedType(ClassDecl<T> decl, List<EAnnotation> annos) {
+	public EAnnotatedType(ClassDecl<T> decl, List<EAnnotation> annos) {
 		type = decl;
 		annotations = annos;
 	}

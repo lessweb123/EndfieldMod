@@ -3,14 +3,13 @@ package endfield.ai;
 import arc.math.geom.Vec2;
 import endfield.world.blocks.production.UnitMinerDepot;
 import mindustry.Vars;
+import mindustry.ai.ControlPathfinder;
 import mindustry.entities.units.AIController;
 import mindustry.gen.BuildingTetherc;
 import mindustry.gen.Call;
 import mindustry.world.Tile;
 
 public class MinerDepotAI extends AIController {
-	protected static final boolean[] noFound = {false};
-
 	protected final Vec2 targetPos = new Vec2(), vecOut = new Vec2(), vecMovePos = new Vec2();
 
 	public boolean mining = true;
@@ -87,8 +86,11 @@ public class MinerDepotAI extends AIController {
 		} else {
 			vecOut.set(targetPos);
 
-			boolean move = Vars.controlPath.getPathPosition(unit, vecMovePos, targetPos, vecOut, noFound);
-			if (move) {
+			ControlPathfinder.PathfindResult result = Vars.controlPath.getPathPosition(unit, vecMovePos, targetPos);
+
+			vecOut.set(result.dest);
+
+			if (result.move) {
 				moveTo(vecOut, mining && unit.within(targetPos, unit.type.mineRange / 2) ? unit.type.mineRange : 0.5f, 8f);
 			}
 		}

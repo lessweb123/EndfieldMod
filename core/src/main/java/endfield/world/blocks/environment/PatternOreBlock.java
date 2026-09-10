@@ -10,37 +10,31 @@ import arc.math.Mathf;
 import endfield.world.patterns.Pattern;
 import endfield.world.patterns.PatternManager;
 import endfield.world.patterns.Patterned;
-import mindustry.Vars;
 import mindustry.graphics.MultiPacker;
 import mindustry.graphics.MultiPacker.PageType;
 import mindustry.type.Item;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.OreBlock;
 
+import static mindustry.Vars.tilesize;
+
 public class PatternOreBlock extends OreBlock implements Patterned {
 	public Pattern pattern;
 	public boolean drawParentUnder = false;
 	public boolean isPattern = false;
+	public boolean usePatternName = false;
 
 	public PatternOreBlock(String name, Item ore) {
 		super(name, ore);
 	}
 
-	public PatternOreBlock(Item ore) {
-		super(ore);
-	}
-
-	public PatternOreBlock(String name) {
-		super(name);
-	}
-
 	@Override
 	public void init() {
 		super.init();
-		/*if (isPattern && pattern != null) {
+		if (usePatternName && pattern != null) {
 			localizedName = pattern.localizedName();
 			description = pattern.description();
-		}*/
+		}
 	}
 
 	@Override
@@ -96,7 +90,7 @@ public class PatternOreBlock extends OreBlock implements Patterned {
 				PixmapRegion shadowRegion = Core.atlas.getPixmap(pName);
 				Pixmap image = shadowRegion.crop();
 
-				int offset = Math.max(1, image.width / Vars.tilesize - 1);
+				int offset = Math.max(1, image.width / tilesize - 1);
 				int shadowColor = Color.rgba8888(0, 0, 0, 0.3f);
 
 				for (int x = 0; x < image.width; x++) {
@@ -131,7 +125,7 @@ public class PatternOreBlock extends OreBlock implements Patterned {
 			int vIdx = pattern.variants > 0 ? pattern.variant(anchor.x, anchor.y, pattern.variants) : 0;
 			int sliceIdx = Math.max(1, variants) + pattern.getSliceIndex(relX, relY, vIdx);
 
-			Draw.rect(variantRegions[sliceIdx], tile.worldx(), tile.worldy(), Vars.tilesize + 0.01f, Vars.tilesize + 0.01f);
+			Draw.rect(variantRegions[sliceIdx], tile.worldx(), tile.worldy(), tilesize, tilesize);
 		} else {
 			drawBaseTile(tile);
 		}
@@ -145,7 +139,10 @@ public class PatternOreBlock extends OreBlock implements Patterned {
 	protected Tile getAnchorIfComplete(Tile tile) {
 		if (tile == null || pattern == null) return null;
 		Tile anchor = PatternManager.getAnchor(tile, this);
-		if (anchor != null && PatternManager.isPatternComplete(this, anchor)) return anchor;
+		if (anchor != null) {
+			if (PatternManager.isPatternComplete(this, anchor)) return anchor;
+			PatternManager.updateAround(tile, this);
+		}
 		return null;
 	}
 

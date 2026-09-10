@@ -21,11 +21,11 @@ public abstract class ClassDecl<T> {
 
 	public abstract ClassDecl<?> superClass();
 
-	public abstract AnnotatedType<?> annotatedSuperClass();
+	public abstract EAnnotatedType<?> annotatedSuperClass();
 
 	public abstract List<ClassDecl<?>> interfaces();
 
-	public abstract List<AnnotatedType<?>> annotatedInterfaces();
+	public abstract List<EAnnotatedType<?>> annotatedInterfaces();
 
 	public abstract List<EField> fields();
 

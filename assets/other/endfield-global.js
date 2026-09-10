@@ -43,6 +43,8 @@ importPackage(endfield.type.weather);
 importPackage(endfield.ui);
 importPackage(endfield.ui.chart);
 importPackage(endfield.ui.dialogs);
+importPackage(endfield.ui.markdown);
+importPackage(endfield.ui.markdown.url);
 importPackage(endfield.util);
 importPackage(endfield.util.aspector);
 importPackage(endfield.util.aspector.accesses);

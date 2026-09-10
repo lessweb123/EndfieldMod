@@ -35,7 +35,7 @@ public class Test extends @Stub Random {
 		return a;
 	}
 
-	public static void test() {
+	public static void test1() {
 		try {
 			BytecodeClassLoader loader = new BytecodeClassLoader(RuntimeAspector.class.getClassLoader());
 
@@ -44,9 +44,8 @@ public class Test extends @Stub Random {
 
 				DeclDelegate<?> aspectDecl = it.apply(it.open(ClassLoader.class), LoaderAspect.class);
 
-				Object inst = aspectDecl.instance();
-				Aspect instAsp = (Aspect) inst;
-				return instAsp.definePackage(Object.class);
+				Aspect instance = (Aspect) aspectDecl.instance();
+				return instance.definePackage(Object.class);
 			});
 		} catch (Throwable e) {
 			Log.err(e);
@@ -57,8 +56,8 @@ public class Test extends @Stub Random {
 		try {
 			ASMClassAccessor accessor = new ASMClassAccessor();
 
-			ClassDecl<Test> c = accessor.getClassDecl(ClassName.byClass(Test.class));
-			c.methods();
+			ClassDecl<Test> classDecl = accessor.getClassDecl(ClassName.byClass(LoaderAspect.class));
+			classDecl.annotatedSuperClass();
 		} catch (Throwable e) {
 			Log.err(e);
 		}

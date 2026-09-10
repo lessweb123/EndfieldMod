@@ -20,8 +20,9 @@ import mindustry.world.Tile;
 import org.jetbrains.annotations.Nullable;
 
 public class DepthCliff extends Block {
-	protected static final int[] upFaces = {0, 1, 2, 9, 3, 3, 10, 10, 4, 12, 4, 12, 11, 12, 11, 12};
-	protected static final int[] downFaces = {0, 0, 0, 5, 0, 0, 6, 2, 0, 8, 0, 1, 7, 4, 3, 0};
+	//                            0  1  2  3  4  5   6   7  8   9  10  11  12  13  14  15
+	static final int[] upFaces = {0, 1, 2, 9, 3, 3, 10, 10, 4, 12, 4, 12, 11, 12, 11, 12};
+	static final int[] downFaces = {0, 0, 0, 5, 0, 0, 6, 2, 0, 8, 0, 1, 7, 4, 3, 0};
 
 	public float colorMultiplier = 1.5f;
 	public boolean useMapColor = true;
@@ -37,12 +38,12 @@ public class DepthCliff extends Block {
 		editorConfigurable = true;
 	}
 
-	/** @return face index (1-12) based on neighbors, or 0 if none. */
+	/** @return face index (1-12) based on neighbours, or 0 if none. */
 	public static int face(Tile tile, boolean downward) {
 		return downward ? downFace(tile) : upFace(tile);
 	}
 
-	protected static int upFace(Tile tile) {
+	static int upFace(Tile tile) {
 		int mask = 0;
 		for (int i = 0; i < 4; i++) if (!cliff(tile.nearby(i))) mask |= (1 << i);
 		if (mask != 0) return upFaces[mask];
@@ -53,7 +54,7 @@ public class DepthCliff extends Block {
 		return 0;
 	}
 
-	protected static int downFace(Tile tile) {
+	static int downFace(Tile tile) {
 		int mask = 0;
 		for (int i = 0; i < 4; i++) if (cliff(tile.nearby(i))) mask |= (1 << i);
 		if (mask != 0b1111) return downFaces[mask];
@@ -65,7 +66,7 @@ public class DepthCliff extends Block {
 		return 0;
 	}
 
-	protected static boolean cliff(@Nullable Tile t) {
+	static boolean cliff(Tile t) {
 		return t != null && t.block() instanceof DepthCliff;
 	}
 
@@ -77,7 +78,7 @@ public class DepthCliff extends Block {
 			boolean down = d >= 13;
 			if (d != 0 && d != 13) return;
 
-			Vars.editor.addTileOp(TileOp.get(tile.x, tile.y, 5, TileOpData.get(tile.data, tile.floorData, tile.overlayData)));
+			Vars.editor.addTileOp(TileOp.get(tile.x, tile.y, (byte) 5 /*opData*/, TileOpData.get(tile.data, tile.floorData, tile.overlayData)));
 
 			int f = face(tile, down);
 			if (f == 0) {

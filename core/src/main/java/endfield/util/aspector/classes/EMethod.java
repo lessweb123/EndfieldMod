@@ -6,11 +6,11 @@ import java.util.List;
 
 public class EMethod extends ClassElement {
 	public final List<EParameter> parameters;
-	public final AnnotatedType<?> annotatedReturnType;
+	public final EAnnotatedType<?> annotatedReturnType;
 
 	MethodSignature signature;
 
-	public EMethod(ClassDecl<?> declaring, String name, List<EParameter> pars, AnnotatedType<?> annoReturnType, int accessFlag, List<EAnnotation> annotations) {
+	public EMethod(ClassDecl<?> declaring, String name, List<EParameter> pars, EAnnotatedType<?> annoReturnType, int accessFlag, List<EAnnotation> annotations) {
 		super(declaring, name, accessFlag, annotations);
 
 		parameters = pars;

@@ -6,8 +6,6 @@ import arc.util.Strings;
 import kotlin.text.StringsKt;
 
 import java.util.Arrays;
-import java.util.regex.MatchResult;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class Strings2 {
@@ -62,11 +60,6 @@ public final class Strings2 {
 
 	public static String substringBeforeLast(String str, String delimiter) {
 		return StringsKt.substringBeforeLast(str, delimiter, str);
-	}
-
-	public static MatchResult matchAt(Pattern pattern, String input, int index) {
-		Matcher matcher = pattern.matcher(input).useAnchoringBounds(false).useTransparentBounds(true).region(index, input.length());
-		return matcher.lookingAt() ? matcher.toMatchResult() : null;
 	}
 
 	public static int sumOf(CharSequence cs, Selector selector) {

@@ -13,16 +13,18 @@ import java.util.Map;
 import java.util.Properties;
 
 public interface SharedObject {
-	//Properties PROPERTIES = new Properties();
-
 	String sharedID();
 
 	default List<Field> sharedReferenceFields() {
-		Field[] fields = getClass().getDeclaredFields();
 		List<Field> result = new CollectionList<>(Field.class);
 
-		for (Field field : fields) {
-			if (field.getAnnotation(SharedField.class) != null) result.add(field);
+		Class<?> type = getClass();
+
+		while (SharedObject.class.isAssignableFrom(type)) {
+			for (Field field : type.getDeclaredFields()) {
+				if (field.getAnnotation(SharedField.class) != null) result.add(field);
+			}
+			type = type.getSuperclass();
 		}
 
 		return result;
