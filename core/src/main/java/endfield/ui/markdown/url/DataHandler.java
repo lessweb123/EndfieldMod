@@ -1,11 +1,11 @@
 package endfield.ui.markdown.url;
 
 import endfield.ui.markdown.UrlHandler;
-import kotlin.text.Charsets;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -49,7 +49,7 @@ public class DataHandler implements UrlHandler {
 
 		@Override
 		public InputStream openStream() {
-			return Base64.getDecoder().wrap(new ByteArrayInputStream(base64.getBytes(Charsets.UTF_8)));
+			return Base64.getDecoder().wrap(new ByteArrayInputStream(base64.getBytes(StandardCharsets.UTF_8)));
 		}
 	}
 
@@ -59,7 +59,7 @@ public class DataHandler implements UrlHandler {
 
 		public StringHandle(String s) {
 			string = s;
-			charset = Charsets.UTF_8;
+			charset = StandardCharsets.UTF_8;
 		}
 
 		public StringHandle(String s, Charset c) {

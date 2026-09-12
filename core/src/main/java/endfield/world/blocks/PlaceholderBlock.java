@@ -126,7 +126,7 @@ public class PlaceholderBlock extends Block {
 
 		@Override
 		public boolean canPickup() {
-			return canPickup;
+			return allowedInPayloads;
 		}
 
 		@Override

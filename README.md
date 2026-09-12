@@ -18,7 +18,7 @@
 
 **The current mod is in the development stage, and most APIs are extremely unstable and may change at any time in future updates. It is not recommended to use it as a dependency for now.**
 
-+ **Mod Version: 1.0.9-beta**
++ **Mod Version: 1.0.10-beta**
 + **Mod Type: Java**
 
 ---
@@ -28,7 +28,7 @@
 **Before playing this mod, please ensure that your device environment meets the requirements for the mod's operating environment.**
 **Otherwise, the module cannot function properly.**
 
-+ **Minimum  Mindustry Version Requirement: 157**
++ **Minimum  Mindustry Version Requirement: 160.1**
 + **{Desktop, Linux, and MAC OS} Minimum Java version requirement: 17**
 + **{Android} Minimum Android version requirement: 9 (API Level 28)**
 + **Not compatible with IOS**

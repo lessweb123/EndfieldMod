@@ -165,7 +165,6 @@ public class SwirlEffect extends Effect {
 		@Override
 		public void add() {
 			if (!added) {
-				index__all = Groups.all.addIndex(this);
 				index__draw = Groups.draw.addIndex(this);
 				if (parent != null) {
 					offsetX = x - parent.x();

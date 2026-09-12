@@ -6,8 +6,9 @@ import mindustry.world.blocks.storage.Unloader;
 /**
  * AN unloader that is not affected by game frame rates.
  *
- * @author LarkspurVale
+ * @author LessWeb
  */
+@Deprecated
 public class Unloader2 extends Unloader {
 	public Unloader2(String name) {
 		super(name);

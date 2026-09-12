@@ -64,7 +64,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * MultiCrafter. You can freely choose to change the production formula.
  *
- * @author LarkspurVale
+ * @author LessWeb
  * @see endfield.world.blocks.heat.HeatMultiCrafter heat
  * @since 1.0.6
  */

@@ -26,7 +26,7 @@ import mindustry.world.meta.StatUnit;
 /**
  * Sets up content {@link StatusEffect status effects}. Loaded after every other content is instantiated.
  *
- * @author LarkspurVale
+ * @author LessWeb
  */
 public final class StatusEffects2 {
 	public static StatusEffect2 overheat, regenerating, breached, radiation, flamePoint, ultFireBurn;

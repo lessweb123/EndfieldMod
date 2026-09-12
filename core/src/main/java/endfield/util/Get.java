@@ -60,7 +60,7 @@ import org.jetbrains.annotations.Nullable;
  * Input-output utilities, providing very specific functions that aren't really commonly used, but often
  * enough to require me to write a class for it.
  *
- * @author LarkspurVale
+ * @author LessWeb
  */
 public final class Get {
 	public static final Color c1 = new Color(), c2 = new Color(), c3 = new Color(), c4 = new Color(), c5 = new Color();

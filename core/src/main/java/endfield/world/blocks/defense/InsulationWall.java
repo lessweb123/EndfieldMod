@@ -21,7 +21,7 @@ import mindustry.world.blocks.defense.Wall;
 /**
  * A wall with insulation properties that change with opening and closing.
  *
- * @author LarkspurVale
+ * @author LessWeb
  */
 public class InsulationWall extends Wall {
 	public final int timerToggle = timers++;

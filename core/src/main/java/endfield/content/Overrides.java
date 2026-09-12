@@ -60,7 +60,7 @@ import mindustry.world.meta.BuildVisibility;
  * <p> An overwriter class designed to easily modify vanilla contents. This has to be used with <em>huge
  * responsibility</em>, we do not want to break other mods or even the vanilla Mindustry itself.
  *
- * @author LarkspurVale
+ * @author LessWeb
  */
 public final class Overrides {
 	/** Don't let anyone instantiate this class. */

@@ -63,7 +63,7 @@ import static endfield.Vars2.MOD_NAME;
 /**
  * Defines the {@linkplain Effect visual effects} this mod offers.
  *
- * @author LarkspurVale
+ * @author LessWeb
  */
 public final class Fx2 {
 	public static final float lightningAlign = 0.5f;

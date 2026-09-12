@@ -193,7 +193,6 @@ public class UltFire extends Fire {
 			Groups.all.remove(this);
 			Groups.sync.remove(this);
 			Groups.draw.remove(this);
-			Groups.fire.remove(this);
 			removeEffect();
 
 			if (Vars.net.client()) {

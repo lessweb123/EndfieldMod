@@ -64,6 +64,8 @@ public class PayloadLegsUnit extends LegsUnit2 implements Payloadc {
 			pay.set(x, y, rotation);
 			pay.update(this, null);
 		}
+		//remove dead payloads after they explode
+		payloads.removeAll(Payload::isDead);
 	}
 
 	@Override
@@ -158,10 +160,11 @@ public class PayloadLegsUnit extends LegsUnit2 implements Payloadc {
 			Vars.netClient.clearRemovedEntity(u.unit.id);
 		}
 
-		//drop off payload on acceptor if possible
+		//drop off payload on an acceptor if possible
 		if (on != null && on.build != null && on.build.team == team && on.build.acceptPayload(on.build, payload)) {
 			Fx.unitDrop.at(on.build);
 			on.build.handlePayload(on.build, payload);
+			playPayloadDropSound(payload);
 			return true;
 		}
 
@@ -197,14 +200,14 @@ public class PayloadLegsUnit extends LegsUnit2 implements Payloadc {
 
 	@Override
 	public boolean dropUnit(UnitPayload payload) {
-		Unit unit = payload.unit;
+		Unit u = payload.unit;
 
 		//add random offset to prevent unit stacking
 		Tmp.v1.rnd(Mathf.random(2f));
 
 		//can't drop ground units
 		//allow stacking for small units for now - otherwise, unit transfer would get annoying
-		if (!unit.canPass(World.toTile(x + Tmp.v1.x), World.toTile(y + Tmp.v1.y)) || Units.count(x, y, unit.physicSize(), o -> o.isGrounded() && o.hitSize > 14f) > 1) {
+		if (!u.canPass(World.toTile(x + Tmp.v1.x), World.toTile(y + Tmp.v1.y)) || Units.count(x, y, u.physicSize(), o -> o.isGrounded() && o.hitSize > 14f) > 1) {
 			return false;
 		}
 
@@ -213,20 +216,16 @@ public class PayloadLegsUnit extends LegsUnit2 implements Payloadc {
 		//clients do not drop payloads
 		if (Vars.net.client()) return true;
 
-		unit.set(x + Tmp.v1.x, y + Tmp.v1.y);
-		unit.rotation(rotation);
+		u.set(x + Tmp.v1.x, y + Tmp.v1.y);
+		u.rotation(rotation);
 		//reset the ID to a new value to make sure it's synced
-		unit.id = EntityGroup.nextId();
+		u.id = EntityGroup.nextId();
 		//decrement count to prevent double increment
-		if (!unit.isAdded()) unit.team.data().updateCount(unit.type, -1);
-		unit.add();
-		unit.unloaded();
-		Sound dropSound =
-				payload.size() <= 12f ? Sounds.payloadDrop1 :
-						payload.size() <= 20f ? Sounds.payloadDrop2 :
-								Sounds.payloadDrop3;
-		dropSound.at(self(), Mathf.random(0.9f, 1.1f));
-		Events.fire(new PayloadDropEvent(this, unit));
+		if (!u.isAdded()) u.team.data().updateCount(u.type, -1);
+		u.add();
+		u.unloaded();
+		Events.fire(new PayloadDropEvent(this, u));
+		playPayloadDropSound(payload);
 
 		return true;
 	}
@@ -259,6 +258,15 @@ public class PayloadLegsUnit extends LegsUnit2 implements Payloadc {
 	@Override
 	public Seq<Payload> payloads() {
 		return payloads;
+	}
+
+	@Override
+	public void playPayloadDropSound(Payload payload) {
+		Sound dropSound =
+				payload.size() <= 12f ? Sounds.payloadDrop1 :
+						payload.size() <= 20f ? Sounds.payloadDrop2 :
+								Sounds.payloadDrop3;
+		dropSound.at(this, Mathf.random(0.9f, 1.1f));
 	}
 
 	@Override

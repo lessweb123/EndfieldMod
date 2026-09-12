@@ -26,7 +26,7 @@ import static mindustry.Vars.world;
 /**
  * A wall that can self restore life.
  *
- * @author LarkspurVale
+ * @author LessWeb
  */
 public class RegenWall extends Wall {
 	protected static final IntSet taken = new IntSet();

@@ -27,7 +27,7 @@ import static endfield.Vars2.platformImpl;
 /**
  * Reflection utilities, mainly for wrapping reflective operations to eradicate checked exceptions.
  *
- * @author LarkspurVale
+ * @author LessWeb
  * @since 1.0.6
  */
 public final class Reflects {

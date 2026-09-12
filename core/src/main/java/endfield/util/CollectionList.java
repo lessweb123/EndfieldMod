@@ -34,7 +34,7 @@ import java.util.function.UnaryOperator;
  * last element is moved to the removed element's position).
  *
  * @author Nathan Sweet
- * @author LarkspurVale
+ * @author LessWeb
  */
 public class CollectionList<E> extends AbstractList<E> implements Eachable<E>, Cloneable {
 	/** Debugging variable to count total number of iterators allocated. */

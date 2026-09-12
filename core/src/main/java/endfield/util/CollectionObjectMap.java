@@ -27,7 +27,7 @@ import static endfield.util.Constant.PRIME3;
  * used in places that require Java specifications and the feature of not creating nodes in ObjectMap.
  * <p><strong>It is not recommended to use primitive types.</strong>
  *
- * @author LarkspurVale
+ * @author LessWeb
  */
 public class CollectionObjectMap<K, V> extends AbstractMap<K, V> implements Iterable<ObjectHolder<K, V>>, Eachable<ObjectHolder<K, V>>, Cloneable {
 	public int size;

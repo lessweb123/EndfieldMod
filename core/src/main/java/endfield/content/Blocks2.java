@@ -59,7 +59,6 @@ import endfield.world.blocks.defense.turrets.SpeedupTurret;
 import endfield.world.blocks.defense.turrets.TeslaTurret;
 import endfield.world.blocks.distribution.Conveyor2;
 import endfield.world.blocks.distribution.CoveredRouter;
-import endfield.world.blocks.distribution.DirectionalUnloader2;
 import endfield.world.blocks.distribution.InvertedJunction;
 import endfield.world.blocks.distribution.MultiJunction;
 import endfield.world.blocks.distribution.MultiRouter;
@@ -115,7 +114,6 @@ import endfield.world.blocks.sandbox.NextWave;
 import endfield.world.blocks.sandbox.RandomSource;
 import endfield.world.blocks.storage.CoreStorageBlock;
 import endfield.world.blocks.storage.CrashCore;
-import endfield.world.blocks.storage.Unloader2;
 import endfield.world.blocks.units.PayloadSource2;
 import endfield.world.blocks.units.UnitIniter;
 import endfield.world.draw.DrawAnim;
@@ -203,6 +201,7 @@ import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.blocks.defense.turrets.LiquidTurret;
 import mindustry.world.blocks.defense.turrets.PointDefenseTurret;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
+import mindustry.world.blocks.distribution.DirectionalUnloader;
 import mindustry.world.blocks.distribution.DuctBridge;
 import mindustry.world.blocks.distribution.DuctJunction;
 import mindustry.world.blocks.distribution.StackConveyor;
@@ -282,7 +281,7 @@ import static endfield.Vars2.MOD_NAME;
  * <p>It is now quite large in a scale, even approaching the size of vanilla's {@link Blocks}.
  * But I don't want to divide it into multiple classes.
  *
- * @author LarkspurVale
+ * @author LessWeb
  */
 public final class Blocks2 {
 	//environment
@@ -381,14 +380,14 @@ public final class Blocks2 {
 	public static RailItemBridge chromiumItemBridge;
 	public static NodeBridge phaseItemNode;
 	public static Unloader machineryUnloader;
-	public static Unloader2 rapidUnloader;
-	public static DirectionalUnloader2 rapidDirectionalUnloader;
+	public static Unloader rapidUnloader;
+	public static DirectionalUnloader rapidDirectionalUnloader;
 	//distribution-erekir
 	public static DuctJunction ductJunction;
 	public static CoveredRouter ductDistributor;
 	public static MultiSorter ductMultiSorter;
 	public static DuctBridge armoredDuctBridge;
-	public static DirectionalUnloader2 rapidDuctUnloader;
+	public static DirectionalUnloader rapidDuctUnloader;
 	//liquid
 	public static SortLiquidRouter liquidSorter, liquidValve;
 	public static LiquidOverflowValve liquidOverflowValve, liquidUnderflowValve;
@@ -1672,12 +1671,12 @@ public final class Blocks2 {
 			speed = 60f / 4.2f;
 			group = BlockGroup.transportation;
 		}};
-		rapidUnloader = new Unloader2("rapid-unloader") {{
+		rapidUnloader = new Unloader("rapid-unloader") {{
 			requirements(Category.distribution, ItemStack.with(Items.silicon, 35, Items.plastanium, 15, Items2.crystallineCircuit, 10, Items2.chromium, 15));
 			speed = 1f;
 			group = BlockGroup.transportation;
 		}};
-		rapidDirectionalUnloader = new DirectionalUnloader2("rapid-directional-unloader") {{
+		rapidDirectionalUnloader = new DirectionalUnloader("rapid-directional-unloader") {{
 			requirements(Category.distribution, ItemStack.with(Items.silicon, 40, Items.plastanium, 25, Items2.chromium, 15, Items.phaseFabric, 5));
 			speed = 1f;
 			squareSprite = false;
@@ -1709,7 +1708,7 @@ public final class Blocks2 {
 			speed = 4;
 			buildCostMultiplier = 2;
 		}};
-		rapidDuctUnloader = new DirectionalUnloader2("rapid-duct-unloader") {{
+		rapidDuctUnloader = new DirectionalUnloader("rapid-duct-unloader") {{
 			requirements(Category.distribution, ItemStack.with(Items.graphite, 25, Items.silicon, 30, Items.tungsten, 20, Items.oxide, 15));
 			health = 240;
 			speed = 2f;

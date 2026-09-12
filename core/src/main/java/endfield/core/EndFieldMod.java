@@ -72,7 +72,7 @@ import static endfield.Vars2.platformImpl;
  * Main entry point of the mod. Handles startup things like content loading, entity registering, and utility
  * bindings.
  *
- * @author LarkspurVale
+ * @author LessWeb
  * @see Vars2
  */
 public final class EndFieldMod extends Mod {

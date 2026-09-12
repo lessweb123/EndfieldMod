@@ -32,7 +32,7 @@ import java.util.Arrays;
  * Combining the characteristics of laser nodes and diodes.
  * <p>Stitching it up is enough.
  *
- * @author LarkspurVale
+ * @author LessWeb
  */
 public class BeamDiode extends Block {
 	public int range = 5;

@@ -29,9 +29,9 @@ public final class Vars2 {
 	public static final String MOD_NAME = "endfield";
 	public static final String MOD_PREFIX = MOD_NAME + '-';
 	/** The author of this mod. */
-	public static final String AUTHOR = "LarkspurVale";
+	public static final String AUTHOR = "LessWeb";
 	/** The GitHub address of this mod. */
-	public static final String LINK_GIT_HUB = "https://github.com/LarkspurVale/EndfieldMod";
+	public static final String LINK_GIT_HUB = "https://github.com/lessweb123/EndfieldMod";
 
 	public static PlatformImpl platformImpl;
 

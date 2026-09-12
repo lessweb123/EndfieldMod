@@ -20,7 +20,7 @@ import static endfield.Vars2.MOD_NAME;
 /**
  * Defines the {@linkplain Weather weather} this mod offers.
  *
- * @author LarkspurVale
+ * @author LessWeb
  */
 public final class Weathers2 {
 	public static EffectWeather wind;

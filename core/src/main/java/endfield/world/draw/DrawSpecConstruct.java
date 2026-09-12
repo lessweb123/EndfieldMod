@@ -14,7 +14,7 @@ import mindustry.world.draw.DrawBlock;
 /**
  * Display multi-layer textures in sequence according to the progress of the building.
  *
- * @author LarkspurVale
+ * @author LessWeb
  */
 public class DrawSpecConstruct extends DrawBlock {
 	/** Color of Item Surface Construction. */

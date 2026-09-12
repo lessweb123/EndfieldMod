@@ -10,7 +10,7 @@ import java.util.NoSuchElementException;
  * {@link CollectionOrderedSet#orderedItems()}.
  *
  * @author Nathan Sweet
- * @author LarkspurVale
+ * @author LessWeb
  */
 public class CollectionOrderedSet<E> extends CollectionObjectSet<E> {
 	public CollectionList<E> orderedItems;

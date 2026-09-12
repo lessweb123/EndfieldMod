@@ -14,7 +14,7 @@ import java.util.Objects;
 /**
  * A utility assembly for objects.
  *
- * @author LarkspurVale
+ * @author LessWeb
  * @since 1.0.8
  */
 public final class Objects2 {

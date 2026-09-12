@@ -23,7 +23,7 @@ import static mindustry.content.UnitTypes.*;
 /**
  * Sets up content {@link TechNode tech tree nodes}. Loaded after every other content is instantiated.
  *
- * @author LarkspurVale
+ * @author LessWeb
  */
 public final class TechTrees {
 	public static TechNode context = null;

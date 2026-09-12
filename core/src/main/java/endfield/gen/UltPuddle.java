@@ -160,7 +160,6 @@ public class UltPuddle extends Puddle {
 			//force removal without pool free
 			Groups.all.remove(this);
 			Groups.draw.remove(this);
-			Groups.puddle.remove(this);
 			added = false;
 			return;
 		}
