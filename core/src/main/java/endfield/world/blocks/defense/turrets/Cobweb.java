@@ -4,11 +4,11 @@ import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.math.Angles;
 import arc.math.Mathf;
+import arc.struct.Seq;
 import arc.util.Strings;
 import arc.util.Time;
 import arc.util.Tmp;
 import endfield.math.Mathm;
-import endfield.util.CollectionList;
 import mindustry.content.StatusEffects;
 import mindustry.entities.Units;
 import mindustry.gen.Unit;
@@ -45,7 +45,7 @@ public class Cobweb extends TractorBeamTurret {
 	}
 
 	public class CobwebBuild extends TractorBeamBuild {
-		public CollectionList<Unit> webs = new CollectionList<>(Unit.class);
+		public Seq<Unit> webs = new Seq<>(Unit.class);
 		public float rotTimer = 0;
 		public float cod = 1f;
 
@@ -147,7 +147,7 @@ public class Cobweb extends TractorBeamTurret {
 			}
 		}
 
-		public void updateTarget(CollectionList<? extends Unit> enemies, CollectionList<? extends Unit> lockedEnemies) {
+		public void updateTarget(Seq<Unit> enemies, Seq<Unit> lockedEnemies) {
 			float realRange = range * power.status;
 			target = null;
 			for (Unit enemy : enemies) {
@@ -206,12 +206,12 @@ public class Cobweb extends TractorBeamTurret {
 	}
 
 	public static class TurretManager {
-		final CollectionList<CobwebBuild> turrets;
-		final CollectionList<Unit> enemies;
+		final Seq<CobwebBuild> turrets;
+		final Seq<Unit> enemies;
 
 		public TurretManager() {
-			turrets = new CollectionList<>(CobwebBuild.class);
-			enemies = new CollectionList<>(Unit.class);
+			turrets = new Seq<>(CobwebBuild.class);
+			enemies = new Seq<>(Unit.class);
 		}
 
 		public void addTurret(CobwebBuild turret) {
@@ -233,7 +233,7 @@ public class Cobweb extends TractorBeamTurret {
 		}
 
 		public void updateTurrets() {
-			CollectionList<Unit> lockedEnemies = new CollectionList<>(Unit.class);
+			Seq<Unit> lockedEnemies = new Seq<>(Unit.class);
 
 			for (CobwebBuild turret : turrets) {
 				turret.updateTarget(enemies, lockedEnemies);

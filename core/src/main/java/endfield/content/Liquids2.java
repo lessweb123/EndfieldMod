@@ -2,12 +2,12 @@ package endfield.content;
 
 import arc.graphics.Color;
 import arc.math.Mathf;
+import arc.struct.ObjectFloatMap;
 import endfield.entities.effect.WrapperEffect;
 import endfield.graphics.Draws;
 import endfield.graphics.Pal2;
 import endfield.graphics.Shaders2;
 import endfield.type.CrystalLiquid;
-import endfield.util.ObjectFloatMap2;
 import mindustry.content.Liquids;
 import mindustry.content.StatusEffects;
 import mindustry.gen.Puddle;
@@ -19,13 +19,13 @@ import mindustry.type.Liquid;
  * @author LessWeb
  */
 public final class Liquids2 {
-	static final int crystalFluidId = Draws.nextTaskId();
+	static final int coldPlasmaId = Draws.nextTaskId();
 
-	public static ObjectFloatMap2<Liquid> densities = new ObjectFloatMap2<>(Liquid.class), viscosities = new ObjectFloatMap2<>(Liquid.class);
+	public static ObjectFloatMap<Liquid> densities = new ObjectFloatMap<>(), viscosities = new ObjectFloatMap<>();
 
 	public static Liquid brine;
 	public static Liquid gas, lightOil, nitratedOil, blastReagent;
-	public static CrystalLiquid crystalFluid;
+	public static CrystalLiquid coldPlasma;
 
 	/** Don't let anyone instantiate this class. */
 	private Liquids2() {}
@@ -87,7 +87,7 @@ public final class Liquids2 {
 			densities.put(this, 1 / 8f);
 			viscosities.put(this, 1f);
 		}};
-		crystalFluid = new CrystalLiquid("crystal-fluid", Pal2.crystalAmmoBack) {{
+		coldPlasma = new CrystalLiquid("cold-plasma", Pal2.crystalAmmoBack) {{
 			heatCapacity = 2.5f;
 			lightColor = color.cpy().a(0.3f);
 			colorFrom = color.cpy().a(0.5f);
@@ -101,7 +101,7 @@ public final class Liquids2 {
 		}
 			@Override
 			public void drawPuddle(Puddle puddle) {
-				Draws.drawTask(crystalFluidId, puddle, Shaders2.wave, s -> {
+				Draws.drawTask(coldPlasmaId, puddle, Shaders2.wave, s -> {
 					s.waveMix = Pal2.crystalAmmoBright;
 					s.mixAlpha = 0.2f + Mathf.absin(5, 0.2f);
 					s.waveScl = 0.2f;

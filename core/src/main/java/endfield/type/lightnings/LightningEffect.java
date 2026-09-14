@@ -7,12 +7,12 @@ import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
+import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.pooling.Pool.Poolable;
 import arc.util.pooling.Pools;
 import endfield.type.lightnings.generator.LightningGenerator;
-import endfield.util.CollectionList;
 import mindustry.graphics.Drawf;
 
 /**
@@ -25,7 +25,7 @@ import mindustry.graphics.Drawf;
 public class LightningEffect implements Poolable {
 	private static final Vec2 last = new Vec2(), self = new Vec2(), next = new Vec2();
 
-	public final CollectionList<LightningVertex> vertices = new CollectionList<>(LightningVertex.class);
+	public final Seq<LightningVertex> vertices = new Seq<>(LightningVertex.class);
 	/** The duration of lightning. */
 	public float lifeTime;
 	/** The transition time of lightning disappearing. */

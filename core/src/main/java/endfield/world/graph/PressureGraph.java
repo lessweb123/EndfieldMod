@@ -1,13 +1,12 @@
 package endfield.world.graph;
 
 import arc.struct.FloatSeq;
+import arc.struct.ObjectIntMap;
 import arc.struct.Seq;
 import arc.util.Time;
 import endfield.content.Liquids2;
 import endfield.gen.PressureGraphUpdater;
 import endfield.math.Physics;
-import endfield.util.CollectionList;
-import endfield.util.ObjectIntMap2;
 import endfield.util.holder.ObjectHolder;
 import endfield.world.blocks.HasPressure;
 import endfield.world.meta.PressureTank;
@@ -18,13 +17,13 @@ import mindustry.type.Liquid;
  * @author Liz
  */
 public class PressureGraph {
-	static CollectionList<HasPressure> tmp = new CollectionList<>(HasPressure.class), tmp2 = new CollectionList<>(HasPressure.class), tmp3 = new CollectionList<>(HasPressure.class);
+	static Seq<HasPressure> tmp = new Seq<>(HasPressure.class), tmp2 = new Seq<>(HasPressure.class), tmp3 = new Seq<>(HasPressure.class);
 
-	static CollectionList<ObjectHolder<HasPressure, HasPressure>> edges = new CollectionList<>(ObjectHolder.class);
-	static ObjectIntMap2<HasPressure> connections = new ObjectIntMap2<>(HasPressure.class);
+	static Seq<ObjectHolder<HasPressure, HasPressure>> edges = new Seq<>(ObjectHolder.class);
+	static ObjectIntMap<HasPressure> connections = new ObjectIntMap<>();
 	static FloatSeq flows = new FloatSeq(Vars.content.liquids().size + 1);
 
-	public CollectionList<HasPressure> builds = new CollectionList<>(false, HasPressure.class);
+	public Seq<HasPressure> builds = new Seq<>(false, 16, HasPressure.class);
 
 	public boolean changed;
 

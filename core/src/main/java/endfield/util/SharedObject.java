@@ -1,5 +1,7 @@
 package endfield.util;
 
+import arc.struct.ObjectMap;
+import arc.struct.Seq;
 import endfield.util.handler.FieldHandler;
 import org.jetbrains.annotations.ApiStatus.NonExtendable;
 
@@ -8,15 +10,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 public interface SharedObject {
 	String sharedID();
 
-	default List<Field> sharedReferenceFields() {
-		List<Field> result = new CollectionList<>(Field.class);
+	default Seq<Field> sharedReferenceFields() {
+		Seq<Field> result = new Seq<>(Field.class);
 
 		Class<?> type = getClass();
 
@@ -47,7 +47,7 @@ public interface SharedObject {
 	}
 
 	default void setupProperties(Properties properties) {
-		List<Field> sharedFields = sharedReferenceFields();
+		Seq<Field> sharedFields = sharedReferenceFields();
 		properties.put("shared-" + sharedID(), this);
 		properties.put("shared-" + sharedID() + "-fields", sharedFields);
 	}
@@ -55,9 +55,9 @@ public interface SharedObject {
 	@SuppressWarnings("unchecked")
 	default void getByProperties(Properties properties) {
 		Object existingSharedObject = properties.get("shared-" + sharedID());
-		List<Field> sharedFields = (List<Field>) properties.get("shared-" + sharedID() + "-fields");
+		Seq<Field> sharedFields = (Seq<Field>) properties.get("shared-" + sharedID() + "-fields");
 
-		Map<String, Field> fieldMap = new CollectionObjectMap<>(String.class, Field.class);
+		ObjectMap<String, Field> fieldMap = new ObjectMap<>();
 
 		for (Field field : sharedFields) {
 			fieldMap.put(field.getName(), field);

@@ -5,7 +5,16 @@ import endfield.util.Reflects;
 import mindustry.world.blocks.logic.MemoryBlock;
 
 public class CopyMemoryBlock extends MemoryBlock {
-	public static final FieldAccessor numberMemoryAccessor = Reflects.newFieldAccessor(MemoryBuild.class, "numberMemory");
+	public static final FieldAccessor numberMemoryAccessor, objectMemoryAccessor;
+
+	static {
+		try {
+			numberMemoryAccessor = Reflects.newFieldAccessor(MemoryBuild.class.getDeclaredField("numberMemory"));
+			objectMemoryAccessor = Reflects.newFieldAccessor(MemoryBuild.class.getDeclaredField("objectMemory"));
+		} catch (NoSuchFieldException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	public CopyMemoryBlock(String name) {
 		super(name);

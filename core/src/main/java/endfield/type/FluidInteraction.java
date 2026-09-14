@@ -1,11 +1,11 @@
 package endfield.type;
 
-import endfield.util.CollectionList;
+import arc.struct.Seq;
 import endfield.world.blocks.HasPressure;
 import mindustry.type.Liquid;
 
 public abstract class FluidInteraction {
-	public static final CollectionList<FluidInteraction> interactions = new CollectionList<>(FluidInteraction.class);
+	public static final Seq<FluidInteraction> interactions = new Seq<>(FluidInteraction.class);
 
 	public FluidInteraction() {
 		interactions.add(this);

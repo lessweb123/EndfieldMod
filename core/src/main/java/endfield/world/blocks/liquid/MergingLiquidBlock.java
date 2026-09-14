@@ -3,15 +3,12 @@ package endfield.world.blocks.liquid;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.struct.Seq;
-import endfield.util.CollectionList;
 import endfield.util.CollectionQueue;
 import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.type.Liquid;
 import mindustry.world.blocks.liquid.LiquidBlock;
 import mindustry.world.modules.LiquidModule;
-
-import java.util.List;
 
 public class MergingLiquidBlock extends LiquidBlock {
 	public static final CollectionQueue<MergingLiquidBuild> buildQueue = new CollectionQueue<>(16, MergingLiquidBuild.class);
@@ -28,7 +25,7 @@ public class MergingLiquidBlock extends LiquidBlock {
 	}
 
 	public class MergingLiquidBuild extends LiquidBuild {
-		public List<MergingLiquidBuild> chained = new CollectionList<>(MergingLiquidBuild.class);
+		public Seq<MergingLiquidBuild> chained = new Seq<>(MergingLiquidBuild.class);
 		public float totalCapacity;
 		// idk if this is even an issue anymore
 		public boolean removing;
@@ -126,10 +123,10 @@ public class MergingLiquidBlock extends LiquidBlock {
 		}
 
 		public void updateChained() {
-			List<MergingLiquidBuild> prev = chained;
+			Seq<MergingLiquidBuild> prev = chained;
 
 			float capacity = 0f;
-			chained = new CollectionList<>(MergingLiquidBuild.class);
+			chained = new Seq<>(MergingLiquidBuild.class);
 			buildQueue.clear();
 			buildQueue.add(this);
 

@@ -1,14 +1,14 @@
 package endfield.util.pooling;
 
 import arc.func.Prov;
+import arc.struct.ObjectMap;
 import arc.util.pooling.Pool;
-import endfield.util.CollectionObjectMap;
 
 import java.util.List;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public final class ThreadSafePools {
-	static final CollectionObjectMap<Class<?>, ThreadSafePool> typePools = new CollectionObjectMap<>(Class.class, ThreadSafePool.class);
+	static final ObjectMap<Class<?>, ThreadSafePool> typePools = new ObjectMap<>();
 	static final Object poolCreateLock = new Object();
 	static final Object poolSetLock = new Object();
 

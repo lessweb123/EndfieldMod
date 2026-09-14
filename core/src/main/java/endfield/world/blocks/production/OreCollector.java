@@ -11,6 +11,9 @@ import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import arc.math.geom.Rect;
 import arc.struct.EnumSet;
+import arc.struct.ObjectFloatMap;
+import arc.struct.ObjectSet;
+import arc.struct.Seq;
 import arc.util.Eachable;
 import arc.util.Scaling;
 import arc.util.Strings;
@@ -20,11 +23,9 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import endfield.graphics.Drawn;
 import endfield.math.Mathm;
-import endfield.util.CollectionList;
-import endfield.util.CollectionObjectSet;
-import endfield.util.ObjectFloatMap2;
 import endfield.world.blocks.MultiBlock;
 import endfield.world.consumers.ConsumePowerMultiplier;
+import endfield.world.meta.Attributes2;
 import mindustry.content.Fx;
 import mindustry.entities.units.BuildPlan;
 import mindustry.game.Team;
@@ -53,9 +54,6 @@ import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValues;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.Set;
-
 import static mindustry.Vars.content;
 import static mindustry.Vars.indexer;
 import static mindustry.Vars.tilesize;
@@ -66,8 +64,8 @@ import static mindustry.Vars.world;
  * @author LessWeb
  */
 public class OreCollector extends MultiBlock {
-	public static List<Tile> tmpClusters = new CollectionList<>(Tile.class);
-	public static ObjectFloatMap2<Item> returnCount = new ObjectFloatMap2<>(Item.class);
+	public static Seq<Tile> tmpClusters = new Seq<>(Tile.class);
+	public static ObjectFloatMap<Item> returnCount = new ObjectFloatMap<>();
 
 	public TextureRegion[] innerRegions, outerRegions;
 	public TextureRegion baseRegion;
@@ -77,11 +75,11 @@ public class OreCollector extends MultiBlock {
 	public float drillTime = 30f;
 	public float warmupSpeed = 0.075f;
 	public @Nullable Item blockedItem;
-	public @Nullable Set<Item> blockedItems;
+	public @Nullable ObjectSet<Item> blockedItems;
 	public float optionalBoostIntensity = 2f;
 	public float hardnessDrillMultiplier = 10f;
 
-	public ObjectFloatMap2<Item> drillMultipliers = new ObjectFloatMap2<>(Item.class);
+	public ObjectFloatMap<Item> drillMultipliers = new ObjectFloatMap<>();
 
 	//public float baseDrillCount = 1f;
 
@@ -132,12 +130,12 @@ public class OreCollector extends MultiBlock {
 
 	@Override
 	public void init() {
-		for (Consume c : consumeBuilder) c.multiplier = b -> ((OreCollectorBuild) b).oreClusters.size() / (float) (collectSize * collectSize);
+		for (Consume c : consumeBuilder) c.multiplier = b -> ((OreCollectorBuild) b).oreClusters.size / (float) (collectSize * collectSize);
 
 		super.init();
 
 		if (blockedItems == null && blockedItem != null) {
-			blockedItems = CollectionObjectSet.with(blockedItem);
+			blockedItems = ObjectSet.with(blockedItem);
 		}
 	}
 
@@ -271,7 +269,7 @@ public class OreCollector extends MultiBlock {
 		return rect;
 	}
 
-	public void getOreClusters(List<Tile> out, int x, int y, int rotation) {
+	public void getOreClusters(Seq<Tile> out, int x, int y, int rotation) {
 		out.clear();
 
 		int cx = x + Geometry.d4x(rotation) * collectOffset;
@@ -285,14 +283,14 @@ public class OreCollector extends MultiBlock {
 		}
 	}
 
-	public void getOreOutput(List<Tile> out, int x, int y, int rotation) {
+	public void getOreOutput(Seq<Tile> out, int x, int y, int rotation) {
 		getOreClusters(out, x, y, rotation);
 		returnCount.clear();
 		for (Tile tile : out) {
 			Item drops = tile.wallDrop();
 
 			if (drops != null && drops.hardness <= tier && (blockedItems == null || !blockedItems.contains(drops))) {
-				returnCount.increment(drops, 0f, 60f / getDrillTime(drops));
+				returnCount.increment(drops, 0f, 60f / getDrillTime(drops) * (tile.block().attributes.get(Attributes2.density) + 1));
 			}
 		}
 	}
@@ -306,7 +304,7 @@ public class OreCollector extends MultiBlock {
 	}
 
 	public class OreCollectorBuild extends MultiBuild {
-		public List<Tile> oreClusters = new CollectionList<>(Tile.class);
+		public Seq<Tile> oreClusters = new Seq<>(Tile.class);
 		public float progress;
 		public float warmup;
 
@@ -558,7 +556,7 @@ public class OreCollector extends MultiBlock {
 			write.f(progress);
 			write.f(warmup);
 
-			write.i(oreClusters.size());
+			write.i(oreClusters.size);
 			for (Tile tile : oreClusters) {
 				TypeIO.writeTile(write, tile);
 			}

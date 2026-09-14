@@ -6,20 +6,19 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.math.Angles;
 import arc.math.geom.Vec2;
+import arc.struct.ObjectSet;
+import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.pooling.Pool.Poolable;
 import arc.util.pooling.Pools;
-import endfield.util.CollectionList;
 import endfield.util.CollectionObjectMap;
-import endfield.util.CollectionObjectSet;
 import endfield.util.ExtraVariable;
 import mindustry.entities.EntityGroup;
 import mindustry.gen.Decal;
 import mindustry.gen.Groups;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,8 +36,8 @@ public class ParticleEffect extends Decal implements ExtraVariable, Iterable<Par
 	 */
 	public static int maxAmount = 1024;
 
-	protected static final CollectionObjectSet<ParticleEffect> all = new CollectionObjectSet<>(ParticleEffect.class);
-	protected static final CollectionList<ParticleEffect> temp = new CollectionList<>(ParticleEffect.class);
+	protected static final ObjectSet<ParticleEffect> all = new ObjectSet<>();
+	protected static final Seq<ParticleEffect> temp = new Seq<>(ParticleEffect.class);
 
 	protected Vec2 startPos = new Vec2();
 	protected float clipSize;
@@ -50,7 +49,7 @@ public class ParticleEffect extends Decal implements ExtraVariable, Iterable<Par
 
 	public ParticleEffect parent;
 
-	public Map<String, Object> extraVar = new CollectionObjectMap<>(String.class, Object.class);
+	public CollectionObjectMap<String, Object> extraVar = new CollectionObjectMap<>(String.class, Object.class);
 
 	/** ParticleEffect velocity, vector. */
 	public Vec2 speed = new Vec2();
@@ -65,14 +64,14 @@ public class ParticleEffect extends Decal implements ExtraVariable, Iterable<Par
 	public float layer;
 
 	public static int count() {
-		return all.size();
+		return all.size;
 	}
 
 	public float cloudCount() {
 		return cloudCount;
 	}
 
-	public static List<ParticleEffect> get(Boolf<ParticleEffect> filter) {
+	public static Seq<ParticleEffect> get(Boolf<ParticleEffect> filter) {
 		temp.clear();
 		for (ParticleEffect particle : all) {
 			if (filter.get(particle)) temp.add(particle);

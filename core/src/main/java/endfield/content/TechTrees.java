@@ -51,7 +51,7 @@ public final class TechTrees {
 		});
 		vanillaNode(Items.copper, () -> nodeProduce(Items2.gold));
 		vanillaNode(Items.silicon, () -> {
-			nodeProduce(Items2.crystallineCircuit, () -> nodeProduce(Liquids2.crystalFluid));
+			nodeProduce(Items2.crystallineCircuit, () -> nodeProduce(Liquids2.coldPlasma));
 			nodeProduce(Items2.galliumNitride);
 		});
 		vanillaNode(Items.thorium, () -> nodeProduce(Items2.uranium, () -> nodeProduce(Items2.chromium)));
@@ -163,6 +163,8 @@ public final class TechTrees {
 		vanillaNode(powerNode, () -> node(smartPowerNode, () -> node(powerAnalyzer)));
 		vanillaNode(powerNodeLarge, () -> node(heavyArmoredPowerNode, () -> node(microArmoredPowerNode)));
 		vanillaNode(steamGenerator, () -> node(coalPyrolyzer, () -> node(gasGenerator)));
+		vanillaNode(solarPanel, () -> node(solarPad));
+		vanillaNode(largeSolarPanel, () -> node(photonPanel));
 		vanillaNode(thermalGenerator, () -> node(largeThermalGenerator));
 		vanillaNode(thoriumReactor, () -> node(uraniumReactor));
 		vanillaNode(impactReactor, () -> node(hyperMagneticReactor));
@@ -191,10 +193,7 @@ public final class TechTrees {
 		});
 		vanillaNode(surgeSmelter, () -> node(heavyAlloySmelter));
 		vanillaNode(disassembler, () -> node(metalAnalyzer, Seq.with(new OnSector(SectorPresets.desolateRift))));
-		vanillaNode(cryofluidMixer, () -> {
-			node(largeCryofluidMixer, Seq.with(new SectorComplete(SectorPresets.impact0078)));
-			node(crystalActivator);
-		});
+		vanillaNode(cryofluidMixer, () -> node(largeCryofluidMixer, Seq.with(new SectorComplete(SectorPresets.impact0078))));
 		vanillaNode(pyratiteMixer, () -> node(largePyratiteMixer, Seq.with(new SectorComplete(SectorPresets.facility32m))));
 		vanillaNode(blastMixer, () -> node(largeBlastMixer));
 		vanillaNode(cultivator, () -> node(largeCultivator, Seq.with(new SectorComplete(SectorPresets.taintedWoods))));
@@ -301,7 +300,6 @@ public final class TechTrees {
 		vanillaNode(salvo, () -> {
 			node(autocannonB6);
 			node(autocannonF2);
-			node(shellshock, () -> node(minigun));
 		});
 		vanillaNode(parallax, () -> node(cobweb));
 		vanillaNode(segment, () -> node(dissipation));

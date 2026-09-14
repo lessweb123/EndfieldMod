@@ -17,6 +17,7 @@ import endfield.ui.markdown.elemdraw.DrawImg;
 import endfield.util.Strings2;
 import kotlin.collections.CollectionsKt;
 import kotlin.text.StringsKt;
+import mindustry.ui.Fonts;
 import org.commonmark.node.Node;
 import org.jetbrains.annotations.Nullable;
 
@@ -421,10 +422,10 @@ public abstract class RendererContext {
 		}
 
 		public void applyFont(Markdown.FontEntry entry) {
-			font = entry.fontModifier;
+			font = entry.fontModifier == null ? parent != null ? parent.font : Fonts.def : entry.fontModifier;
 			fontIsItalic = entry.isItalic;
-			fontColor = entry.colorModifier;
-			fontScale = entry.scaleModifier;
+			fontColor = entry.colorModifier == null ? parent != null ? parent.fontColor : Color.clear : entry.colorModifier;
+			fontScale = Float.isInfinite(entry.scaleModifier) ? parent != null ? parent.fontScale : 0f : entry.scaleModifier;
 		}
 	}
 }

@@ -15,14 +15,14 @@ import arc.scene.ui.ImageButton;
 import arc.scene.ui.ScrollPane;
 import arc.scene.ui.layout.Table;
 import arc.struct.EnumSet;
+import arc.struct.OrderedMap;
+import arc.struct.Seq;
 import arc.util.Eachable;
 import arc.util.Structs;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import endfield.ui.Elements;
-import endfield.util.CollectionList;
-import endfield.util.CollectionOrderedMap;
 import endfield.util.ObjectBoolMap;
 import endfield.world.consumers.ConsumeItem;
 import mindustry.Vars;
@@ -58,7 +58,6 @@ import mindustry.world.meta.StatValues;
 import mindustry.world.meta.Stats;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -75,7 +74,7 @@ public class MultiCrafter extends Block {
 	public int[] liquidOutputDirections = {-1};
 
 	/** PayloadRecipe {@link CraftPlan}. */
-	public List<CraftPlan> craftPlans = new CollectionList<>(CraftPlan.class);
+	public Seq<CraftPlan> craftPlans = new Seq<>(CraftPlan.class);
 	/** If {@link MultiCrafter#useBlockDrawer} is false, use the drawer in the recipe for the block. */
 	public DrawBlock drawer = new DrawDefault();
 	/** Do you want to use the {@link MultiCrafter#drawer} inside the block itself. */
@@ -141,7 +140,7 @@ public class MultiCrafter extends Block {
 
 		super.init();
 
-		hasConsumers = !craftPlans.isEmpty();
+		hasConsumers = craftPlans.any();
 	}
 
 	@Override
@@ -237,7 +236,7 @@ public class MultiCrafter extends Block {
 
 	@Override
 	protected TextureRegion[] icons() {
-		return useBlockDrawer ? drawer.icons(this) : craftPlans.isEmpty() ? super.icons() : craftPlans.get(0).drawer.icons(this);
+		return useBlockDrawer ? drawer.icons(this) : craftPlans.isEmpty() ? new TextureRegion[]{region} : craftPlans.get(0).drawer.icons(this);
 	}
 
 	public class MultiCrafterBuild extends Building {
@@ -444,12 +443,12 @@ public class MultiCrafter extends Block {
 		public void displayConsumption(Table table) {
 			if (craftPlan == null) return;
 			table.left();
-			CraftPlan[] lastCraftPlan = {craftPlan};
+			AtomicReference<CraftPlan> lastCraftPlan = new AtomicReference<>(craftPlan);
 			table.table(t -> {
 				table.update(() -> {
-					if (lastCraftPlan[0] != craftPlan) {
+					if (lastCraftPlan.get() != craftPlan) {
 						rebuild(t);
-						lastCraftPlan[0] = craftPlan;
+						lastCraftPlan.set(craftPlan);
 					}
 				});
 				rebuild(t);
@@ -761,9 +760,9 @@ public class MultiCrafter extends Block {
 		public MultiCrafter owner = null;
 
 		/** List for building-up consumption before init(). */
-		public CollectionList<Consume> consumeBuilder = new CollectionList<>(Consume.class);
+		public Seq<Consume> consumeBuilder = new Seq<>(Consume.class);
 		/** Map of bars by name. */
-		public CollectionOrderedMap<String, Func<Building, Bar>> barMap = new CollectionOrderedMap<>(String.class, Func.class);
+		public OrderedMap<String, Func<Building, Bar>> barMap = new OrderedMap<>();
 
 		public void init() {
 			consumers = consumeBuilder.toArray(Consume.class);

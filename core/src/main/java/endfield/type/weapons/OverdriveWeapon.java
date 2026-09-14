@@ -35,7 +35,7 @@ public class OverdriveWeapon extends Weapon {
 	public float lockedTime = 60;
 	public float lockedRange = 25 * 8f;
 	public Effect lockedEffect = Fx.healBlockFull;
-	public Color color = Color.valueOf("fea274");
+	public Color color = new Color(0xfea274ff);
 
 	public OverdriveWeapon(String name) {
 		super(name);

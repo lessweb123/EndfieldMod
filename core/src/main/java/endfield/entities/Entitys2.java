@@ -27,7 +27,6 @@ import arc.util.pooling.Pools;
 import endfield.content.Fx2;
 import endfield.gen.Spawner;
 import endfield.math.Mathm;
-import endfield.util.CollectionList;
 import endfield.util.CollectionObjectMap;
 import endfield.util.Reflects;
 import endfield.util.handler.ClassHandler;
@@ -69,18 +68,18 @@ public final class Entitys2 {
 	public static final Rect rect = new Rect(), hitRect = new Rect(), rect1 = new Rect(), rect2 = new Rect();
 	public static final Rand rand = new Rand();
 
-	static final CollectionList<Building> buildings = new CollectionList<>(Building.class);
-	static final CollectionList<Unit> units = new CollectionList<>(Unit.class);
+	static final Seq<Building> buildings = new Seq<>(Building.class);
+	static final Seq<Unit> units = new Seq<>(Unit.class);
 
 	static final IntSet collided = new IntSet(), collided2 = new IntSet();
 	static final IntSet collidedBlocks = new IntSet();
 
 	static Tile tileParma;
 
-	static final CollectionList<Entityc> toRemove = new CollectionList<>(Entityc.class);
+	static final Seq<Entityc> toRemove = new Seq<>(Entityc.class);
 
 	static final IntSet exclude = new IntSet();
-	static final CollectionList<Unit> excludeSeq = new CollectionList<>(Unit.class), queueExcludeRemoval = new CollectionList<>(Unit.class), excludeReAdd = new CollectionList<>(Unit.class);
+	static final Seq<Unit> excludeSeq = new Seq<>(Unit.class), queueExcludeRemoval = new Seq<>(Unit.class), excludeReAdd = new Seq<>(Unit.class);
 	static final IntIntMap excludeTime = new IntIntMap();
 
 	static Boolf<Tile> flyingFormat = t -> Vars.world.getQuadBounds(Tmp.r1).contains(t.getBounds(Tmp.r2));

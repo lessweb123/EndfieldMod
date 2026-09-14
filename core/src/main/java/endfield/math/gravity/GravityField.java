@@ -3,9 +3,9 @@ package endfield.math.gravity;
 import arc.func.Boolf;
 import arc.func.Func;
 import arc.math.geom.Vec2;
+import arc.struct.ObjectMap;
+import arc.struct.ObjectSet;
 import arc.util.Time;
-import endfield.util.CollectionObjectMap;
-import endfield.util.CollectionObjectSet;
 
 /**
  * A container for simulating the gravitational field,
@@ -20,8 +20,8 @@ public class GravityField {
 
 	public final GravitySystem system;
 
-	final CollectionObjectSet<GravityField> otherFields = new CollectionObjectSet<>(GravityField.class);
-	final CollectionObjectMap<GravityField, Vec2> bufferAccelerations = new CollectionObjectMap<>(GravityField.class, Vec2.class);
+	final ObjectSet<GravityField> otherFields = new ObjectSet<>();
+	final ObjectMap<GravityField, Vec2> bufferAccelerations = new ObjectMap<>();
 
 	public GravityField(GravitySystem sys) {
 		system = sys;

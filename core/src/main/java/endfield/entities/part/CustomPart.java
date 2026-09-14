@@ -2,18 +2,16 @@ package endfield.entities.part;
 
 import arc.graphics.g2d.Draw;
 import arc.math.geom.Vec2;
+import arc.struct.Seq;
 import endfield.math.Mathm;
-import endfield.util.CollectionList;
 import mindustry.entities.part.DrawPart;
-
-import java.util.List;
 
 public class CustomPart extends DrawPart {
 	protected final Vec2 vec = new Vec2();
 	protected final Vec2 vec2 = new Vec2();
 
 	public Drawer draw = (x, y, rotation, progress) -> {};
-	public List<PartMove> moves = new CollectionList<>(PartMove.class);
+	public Seq<PartMove> moves = new Seq<>(PartMove.class);
 	public PartProgress progress = HPartProgress.one;
 
 	public float layer = -1;

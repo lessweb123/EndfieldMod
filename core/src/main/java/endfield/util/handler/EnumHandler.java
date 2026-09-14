@@ -1,6 +1,6 @@
 package endfield.util.handler;
 
-import endfield.util.CollectionList;
+import arc.struct.Seq;
 import endfield.util.FieldAccessor;
 import endfield.util.Reflects;
 
@@ -110,15 +110,15 @@ public class EnumHandler<T extends Enum<T>> {
 	 */
 	public void rearrange(T instance, int ordinal) {
 		T[] arr = valuesAccessor.getObject(null);
-		CollectionList<T> values = CollectionList.with(arr);
-		if (values.contains(instance) && ordinal >= values.size())
-			throw new IndexOutOfBoundsException("rearrange a exist item, ordinal should be less than amount of all items, (ordinal: " + ordinal + ", amount: " + values.size() + ")");
-		else if (ordinal > values.size())
-			throw new IndexOutOfBoundsException("add a new item, ordinal should be equal or less than amount of all items, (ordinal: " + ordinal + ", amount: " + values.size() + ")");
+		Seq<T> values = Seq.with(arr);
+		if (values.contains(instance) && ordinal >= values.size)
+			throw new IndexOutOfBoundsException("rearrange a exist item, ordinal should be less than amount of all items, (ordinal: " + ordinal + ", amount: " + values.size + ")");
+		else if (ordinal > values.size)
+			throw new IndexOutOfBoundsException("add a new item, ordinal should be equal or less than amount of all items, (ordinal: " + ordinal + ", amount: " + values.size + ")");
 
 		values.remove(instance);
 
-		values.add(ordinal, instance);
+		values.insert(ordinal, instance);
 
 		valuesAccessor.setObject(null, values.toArray(clazz));
 	}

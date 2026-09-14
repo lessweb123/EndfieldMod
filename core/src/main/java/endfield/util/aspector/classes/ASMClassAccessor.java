@@ -1,8 +1,8 @@
 package endfield.util.aspector.classes;
 
+import arc.struct.IntMap;
 import endfield.util.Collections2;
 import endfield.util.Constant;
-import endfield.util.IntMap2;
 import kotlin.Metadata;
 import kotlin.collections.CollectionsKt;
 import kotlin.io.FilesKt;
@@ -333,7 +333,7 @@ public class ASMClassAccessor implements ClassAccessor {
 				kmClass = md.getKmClass();
 			}
 
-			IntMap2<List<EAnnotation>> typeRefAnnoMap = handleTypeAnnotations(Collections2.plus(classRoot.visibleTypeAnnotations, classRoot.invisibleTypeAnnotations));
+			IntMap<List<EAnnotation>> typeRefAnnoMap = handleTypeAnnotations(Collections2.plus(classRoot.visibleTypeAnnotations, classRoot.invisibleTypeAnnotations));
 			if (kmClass != null) {
 				for (KmType kmType : kmClass.getSupertypes()) {
 					ClassName className;
@@ -372,42 +372,42 @@ public class ASMClassAccessor implements ClassAccessor {
 				annotatedInterfaces.add(new EAnnotatedType<>(interfaces.get(i), typeRefAnnoMap.get(TypeReference.newSuperTypeReference(i).getValue(), () -> new ArrayList<>())));
 			}
 
-			Map<String, IntMap2<List<EAnnotation>>> kmFieldAnnoRef = new HashMap<>();
-			Map<MethodSignature, IntMap2<List<EAnnotation>>> kmMethodAnnoRef = new HashMap<>();
+			Map<String, IntMap<List<EAnnotation>>> kmFieldAnnoRef = new HashMap<>();
+			Map<MethodSignature, IntMap<List<EAnnotation>>> kmMethodAnnoRef = new HashMap<>();
 			if (kmClass != null) {
 				for (KmProperty property : kmClass.getProperties()) {
 					JvmFieldSignature fieldSignature = JvmExtensionsKt.getFieldSignature(property);
 					if (fieldSignature != null) {
 						String name = fieldSignature.getName();
 						KmType type = property.returnType;
-						kmFieldAnnoRef.computeIfAbsent(name, s -> new IntMap2<>(List.class))
+						kmFieldAnnoRef.computeIfAbsent(name, s -> new IntMap<>())
 								.get(TypeReference.newTypeReference(TypeReference.FIELD).getValue(), () -> new ArrayList<>())
 								.addAll(CollectionsKt.map(JvmExtensionsKt.getAnnotations(type), it -> handleKmAnnotation(it)));
 					}
 					JvmMethodSignature getterSignature = JvmExtensionsKt.getGetterSignature(property);
 					if (getterSignature != null) {
 						MethodSignature signature = MethodSignature.parse(getterSignature.getName(), getterSignature.getDescriptor());
-						kmMethodAnnoRef.computeIfAbsent(signature, s -> new IntMap2<>(List.class))
+						kmMethodAnnoRef.computeIfAbsent(signature, s -> new IntMap<>())
 								.get(TypeReference.newTypeReference(TypeReference.METHOD_RETURN).getValue(), () -> new ArrayList<>())
 								.addAll(CollectionsKt.map(JvmExtensionsKt.getAnnotations(property.returnType), it -> handleKmAnnotation(it)));
 					}
 					JvmMethodSignature setterSignature = JvmExtensionsKt.getSetterSignature(property);
 					if (setterSignature != null) {
 						MethodSignature signature = MethodSignature.parse(setterSignature.getName(), setterSignature.getDescriptor());
-						kmMethodAnnoRef.computeIfAbsent(signature, s -> new IntMap2<>(List.class))
+						kmMethodAnnoRef.computeIfAbsent(signature, s -> new IntMap<>())
 								.get(TypeReference.newFormalParameterReference(0).getValue(), () -> new ArrayList<>())
 								.addAll(CollectionsKt.map(JvmExtensionsKt.getAnnotations(property.returnType), it -> handleKmAnnotation(it)));
 					}
 				}
 			}
 			for (FieldNode field : classRoot.fields) {
-				IntMap2<List<EAnnotation>> typeRefAnnoMap2 = handleTypeAnnotations(Collections2.plus(field.visibleTypeAnnotations, field.invisibleTypeAnnotations));
+				IntMap<List<EAnnotation>> typeRefAnnoMap2 = handleTypeAnnotations(Collections2.plus(field.visibleTypeAnnotations, field.invisibleTypeAnnotations));
 
-				IntMap2<List<EAnnotation>> refs = kmFieldAnnoRef.get(field.name);
+				IntMap<List<EAnnotation>> refs = kmFieldAnnoRef.get(field.name);
 
 				if (refs != null) {
 					for (var entry : refs) {
-						typeRefAnnoMap2.get(entry.key, i -> new ArrayList<>()).addAll(entry.value);
+						typeRefAnnoMap2.get(entry.key, () -> new ArrayList<>()).addAll(entry.value);
 					}
 				}
 
@@ -431,7 +431,7 @@ public class ASMClassAccessor implements ClassAccessor {
 					if (funcSign == null) continue;
 
 					MethodSignature sign = MethodSignature.parse(funcSign.getName(), funcSign.getDescriptor());
-					IntMap2<List<EAnnotation>> map = kmMethodAnnoRef.computeIfAbsent(sign, s -> new IntMap2<>(List.class));
+					IntMap<List<EAnnotation>> map = kmMethodAnnoRef.computeIfAbsent(sign, s -> new IntMap<>());
 
 					for (KmAnnotation kmAnnotation : JvmExtensionsKt.getAnnotations(function.returnType)) {
 						EAnnotation annotation = handleKmAnnotation(kmAnnotation);
@@ -456,7 +456,7 @@ public class ASMClassAccessor implements ClassAccessor {
 			}
 			for (MethodNode method : classRoot.methods) {
 				MethodSignature signature = MethodSignature.parse(method.name, method.desc);
-				IntMap2<List<EAnnotation>> typeRefAnnoMap2 = handleTypeAnnotations(Collections2.plus(method.visibleTypeAnnotations, method.invisibleTypeAnnotations));
+				IntMap<List<EAnnotation>> typeRefAnnoMap2 = handleTypeAnnotations(Collections2.plus(method.visibleTypeAnnotations, method.invisibleTypeAnnotations));
 
 				@SuppressWarnings("unchecked")
 				List<EAnnotation>[] paramAnnotations = new List[signature.paramTypes.size()];
@@ -476,7 +476,7 @@ public class ASMClassAccessor implements ClassAccessor {
 					}
 				}
 
-				IntMap2<List<EAnnotation>> refs = kmMethodAnnoRef.get(signature);
+				IntMap<List<EAnnotation>> refs = kmMethodAnnoRef.get(signature);
 				if (refs != null) {
 					for (var entry : refs) {
 						typeRefAnnoMap2.get(entry.key, () -> new ArrayList<>()).addAll(entry.value);
@@ -522,11 +522,11 @@ public class ASMClassAccessor implements ClassAccessor {
 			initialized = true;
 		}
 
-		static IntMap2<List<EAnnotation>> handleTypeAnnotations(List<TypeAnnotationNode> nodes) {
-			IntMap2<List<EAnnotation>> typeRefAnnoMap = new IntMap2<>(List.class);
+		static IntMap<List<EAnnotation>> handleTypeAnnotations(List<TypeAnnotationNode> nodes) {
+			IntMap<List<EAnnotation>> typeRefAnnoMap = new IntMap<>();
 			for (TypeAnnotationNode annotation : nodes) {
 				int ref = annotation.typeRef;
-				typeRefAnnoMap.get(ref, i -> new ArrayList<>()).add(handleAnnotation(annotation));
+				typeRefAnnoMap.get(ref, () -> new ArrayList<>()).add(handleAnnotation(annotation));
 			}
 
 			return typeRefAnnoMap;

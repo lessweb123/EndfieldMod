@@ -11,7 +11,7 @@ import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
 
 public class EverythingSourceVoid extends Block {
-	public TextureRegion[] center = new TextureRegion[2];
+	public TextureRegion center0, center1;
 
 	public EverythingSourceVoid(String name) {
 		super(name);
@@ -29,8 +29,8 @@ public class EverythingSourceVoid extends Block {
 	public void load() {
 		super.load();
 
-		center[0] = Core.atlas.find(name + "-center-0");
-		center[1] = Core.atlas.find(name + "-center-1");
+		center0 = Core.atlas.find(name + "-center-0");
+		center1 = Core.atlas.find(name + "-center-1");
 	}
 
 	@Override

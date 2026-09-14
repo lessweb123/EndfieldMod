@@ -47,7 +47,7 @@ public class StackBridge extends ItemBridge {
 		public void doDump() {
 			for (int i = 0; i < 4; i++) {
 				Building other = nearby(i);
-				if (other instanceof StackConveyorBuild ot && ot.team == team && ot.link == -1) ot.cooldown = 0;
+				if (other instanceof StackConveyorBuild c && c.team == team && c.link == -1) c.cooldown = 0;
 				dumpAccumulate();
 			}
 		}

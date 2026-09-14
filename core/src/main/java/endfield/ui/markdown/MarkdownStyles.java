@@ -30,6 +30,8 @@ public final class MarkdownStyles {
 	static Font strong;
 	static Font defDistanced;
 
+	private MarkdownStyles() {}
+
 	public static void load() {
 		strong = new FreeTypeFontGenerator(Core.files.internal("fonts/font.woff")).generateFont(new FreeTypeFontGenerator.FreeTypeFontParameter() {{
 			size = (int) Scl.scl(18f);
@@ -49,8 +51,6 @@ public final class MarkdownStyles {
 			distanceFieldSpread = 6;
 		}});
 	}
-
-	private MarkdownStyles() {}
 
 	public static MarkdownStyle makeDefault() {
 		MarkdownStyle style = new MarkdownStyle();

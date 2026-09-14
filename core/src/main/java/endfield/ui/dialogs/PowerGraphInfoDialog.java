@@ -3,13 +3,13 @@ package endfield.ui.dialogs;
 import arc.Core;
 import arc.func.Prov;
 import arc.scene.ui.layout.Table;
+import arc.struct.IntMap;
 import arc.struct.IntSeq;
 import arc.struct.IntSet;
 import arc.struct.Seq;
 import arc.util.Time;
 import endfield.ui.PowerInfoGroup;
 import endfield.ui.PowerInfoGroup.InfoToggled;
-import endfield.util.IntMap2;
 import mindustry.gen.Building;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
@@ -23,9 +23,9 @@ public class PowerGraphInfoDialog extends BaseDialog {
 	public static final Prov<Seq<Building>> prov = () -> new Seq<>(Building.class);
 
 	protected final IntSet opened = new IntSet();
-	protected final IntMap2<Seq<Building>> producers = new IntMap2<>(Seq.class);
-	protected final IntMap2<Seq<Building>> consumers = new IntMap2<>(Seq.class);
-	protected final IntMap2<Seq<Building>> batteries = new IntMap2<>(Seq.class);
+	protected final IntMap<Seq<Building>> producers = new IntMap<>();
+	protected final IntMap<Seq<Building>> consumers = new IntMap<>();
+	protected final IntMap<Seq<Building>> batteries = new IntMap<>();
 	protected final InfoToggled collToggled = (int id, boolean open) -> {
 		if (open) {
 			opened.add(id);

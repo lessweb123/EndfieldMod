@@ -1,12 +1,12 @@
 package endfield.world.blocks.payload;
 
 import arc.math.geom.Vec2;
+import arc.struct.ObjectSet;
+import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import endfield.type.Recipe;
-import endfield.util.CollectionList;
-import endfield.util.CollectionObjectSet;
 import endfield.world.blocks.production.AdaptiveCrafter;
 import mindustry.content.Fx;
 import mindustry.ctype.UnlockableContent;
@@ -24,13 +24,10 @@ import mindustry.world.blocks.payloads.Payload;
 import mindustry.world.blocks.units.UnitAssembler;
 import mindustry.world.meta.StatValue;
 
-import java.util.List;
-import java.util.Set;
-
 public class PayloadCrafter extends AdaptiveCrafter {
-	public Set<UnlockableContent> payloadFilter = new CollectionObjectSet<>(UnlockableContent.class);
+	public ObjectSet<UnlockableContent> payloadFilter = new ObjectSet<>();
 
-	public List<UnlockableContent> payloadOutput = new CollectionList<>(UnlockableContent.class);
+	public Seq<UnlockableContent> payloadOutput = new Seq<>(UnlockableContent.class);
 
 	public int payloadCapacity = 10;
 
@@ -56,7 +53,7 @@ public class PayloadCrafter extends AdaptiveCrafter {
 		return table -> {
 			table.row();
 			table.table(cont -> {
-				for (int i = 0; i < recipes.size(); i++) {
+				for (int i = 0; i < recipes.size; i++) {
 					Recipe recipe = recipes.get(i);
 					int j = i;
 					cont.table(t -> {
@@ -107,7 +104,7 @@ public class PayloadCrafter extends AdaptiveCrafter {
 
 		@Override
 		public void updateRecipe() {
-			for (int i = recipes.size() - 1; i >= 0; i--) {
+			for (int i = recipes.size - 1; i >= 0; i--) {
 				boolean valid = true;
 
 				Recipe recipe = recipes.get(i);

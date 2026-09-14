@@ -17,7 +17,6 @@ import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import endfield.util.CollectionList;
 import endfield.util.ObjectBoolOrderedMap;
 import endfield.util.holder.ObjectBoolHolder;
 import mindustry.core.Renderer;
@@ -36,8 +35,6 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import org.jetbrains.annotations.ApiStatus.Obsolete;
 
-import java.util.List;
-
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
 
@@ -49,11 +46,11 @@ import static mindustry.Vars.world;
 public class TubeItemBridge extends ItemBridge {
 	//public final int timerAccept = timers++;
 
-	public Prov<List<Block>> connectBlocksGetter = () -> new CollectionList<>(Block.class);
+	public Prov<Seq<Block>> connectBlocksGetter = () -> new Seq<>(Block.class);
 	public byte maxConnections = 3;
 	public int bufferCapacity;
 
-	protected List<Block> connectibleBlocks = new CollectionList<>(Block.class);
+	protected Seq<Block> connectibleBlocks = new Seq<>(Block.class);
 
 	public Boolf<Building> connectFilter = build -> connectibleBlocks.contains(build.block);
 
@@ -71,8 +68,8 @@ public class TubeItemBridge extends ItemBridge {
 	@Override
 	public void init() {
 		super.init();
-		List<Block> blocks = connectBlocksGetter.get();
-		if (blocks == null) blocks = new CollectionList<>(Block.class);
+		Seq<Block> blocks = connectBlocksGetter.get();
+		if (blocks == null) blocks = new Seq<>(Block.class);
 		blocks.add(this);
 		connectibleBlocks = blocks;
 		maxConnections++;

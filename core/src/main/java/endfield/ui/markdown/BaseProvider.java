@@ -10,6 +10,7 @@ import arc.scene.event.ClickListener;
 import arc.scene.style.BaseDrawable;
 import arc.scene.style.Drawable;
 import arc.scene.style.TextureRegionDrawable;
+import arc.scene.ui.Button;
 import arc.scene.ui.TextButton;
 import arc.scene.ui.layout.Scl;
 import arc.scene.ui.layout.Table;
@@ -83,7 +84,15 @@ import java.util.concurrent.atomic.AtomicReference;
 import static endfield.ui.markdown.elemdraw.DrawText2.drawTextWrap;
 
 public class BaseProvider implements MarkdownProvider, CurtainProvider, InsProvider, StrikethroughProvider, TableProvider {
-	public static final FieldAccessor clickListenerAccessor = Reflects.newFieldAccessor(ClickListener.class, "clickListener");
+	public static final FieldAccessor clickListenerAccessor;
+
+	static {
+		try {
+			clickListenerAccessor = Reflects.newFieldAccessor(Button.class.getDeclaredField("clickListener"));
+		} catch (NoSuchFieldException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	@Override
 	public List<Extension> extensions() {

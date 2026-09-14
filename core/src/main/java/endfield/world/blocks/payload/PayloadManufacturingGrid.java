@@ -13,6 +13,7 @@ import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import arc.math.geom.Vec2;
 import arc.struct.IntIntMap;
+import arc.struct.IntMap;
 import arc.struct.Queue;
 import arc.struct.Seq;
 import arc.util.Eachable;
@@ -25,7 +26,6 @@ import endfield.content.Fx2;
 import endfield.math.IInterp;
 import endfield.math.Mathm;
 import endfield.ui.CraftGridImage;
-import endfield.util.IntMap2;
 import endfield.world.meta.Stats2;
 import mindustry.Vars;
 import mindustry.content.Fx;
@@ -548,7 +548,7 @@ public class PayloadManufacturingGrid extends PayloadBlock {
 	}
 
 	public static class PayloadManufacturingRecipe {
-		public IntMap2<UnlockableContent> requirements = new IntMap2<>(UnlockableContent.class);
+		public IntMap<UnlockableContent> requirements = new IntMap<>();
 		// if not null then this recipe is shapeless
 		public PayloadStack[] shapelessRequirements;
 		public UnlockableContent result;

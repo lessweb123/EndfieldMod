@@ -66,7 +66,7 @@ public final class PatternManager {
 		int[] offsets = shapeOffsets.get(b);
 		if (offsets != null) return offsets;
 
-		Seq<Point2> points = new Seq<>();
+		Seq<Point2> points = new Seq<>(Point2.class);
 		p.getPattern().shape.each((x, y) -> {
 			if (p.getPattern().shape.get(x, y)) points.add(new Point2(x, y));
 		});

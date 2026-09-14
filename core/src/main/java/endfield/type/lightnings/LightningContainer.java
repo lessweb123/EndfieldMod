@@ -4,13 +4,13 @@ import arc.func.Cons;
 import arc.func.Cons2;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.struct.Seq;
 import arc.util.Eachable;
 import arc.util.Time;
 import arc.util.pooling.Pool.Poolable;
 import arc.util.pooling.Pools;
 import endfield.math.IInterp;
 import endfield.type.lightnings.generator.LightningGenerator;
-import endfield.util.CollectionList;
 
 import java.util.Iterator;
 
@@ -67,7 +67,7 @@ public class LightningContainer implements Iterable<LightningEffect>, Eachable<L
 
 	protected float clipSize;
 
-	protected final CollectionList<LightningEffect> lightnings = new CollectionList<>(LightningEffect.class);
+	protected final Seq<LightningEffect> lightnings = new Seq<>(LightningEffect.class);
 
 	/** Create a new lightning bolt in the container using the provided lightning generator. */
 	public void create(LightningGenerator generator) {

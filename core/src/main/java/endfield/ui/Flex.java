@@ -27,13 +27,11 @@ import arc.scene.ui.layout.Stack;
 import arc.scene.ui.layout.Table;
 import arc.scene.ui.layout.WidgetGroup;
 import arc.scene.utils.Elem;
+import arc.struct.Seq;
 import arc.util.Align;
-import endfield.util.CollectionList;
-
-import java.util.List;
 
 public class Flex extends WidgetGroup {
-	protected final List<FlexCell<?>> cells = new CollectionList<>(FlexCell.class);
+	protected final Seq<FlexCell<?>> cells = new Seq<>(FlexCell.class);
 	protected float prefWidth, prefHeight;
 
 	@Override

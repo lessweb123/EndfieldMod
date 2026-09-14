@@ -1,7 +1,7 @@
 package endfield.type;
 
 import arc.Events;
-import endfield.util.CollectionObjectMap;
+import arc.struct.ObjectMap;
 import endfield.util.Constant;
 import mindustry.Vars;
 import mindustry.game.EventType.Trigger;
@@ -10,7 +10,7 @@ import mindustry.type.Sector;
 import mindustry.type.SectorPreset;
 
 public class ExtraSectorPreset extends SectorPreset {
-	public static CollectionObjectMap<Sector, Runnable> scripts = new CollectionObjectMap<>(Sector.class, Runnable.class);
+	public static ObjectMap<Sector, Runnable> scripts = new ObjectMap<>();
 
 	static {
 		Events.run(Trigger.update, () -> {

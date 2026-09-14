@@ -13,7 +13,6 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import endfield.math.IPosition;
 import endfield.math.IScaled;
-import endfield.util.CollectionList;
 import endfield.world.Worlds;
 import mindustry.Vars;
 import mindustry.content.UnitTypes;
@@ -47,8 +46,8 @@ import mindustry.world.draw.DrawDefault;
  * @since 1.0.4
  */
 public abstract class CommandableBlock extends Block {
-	public static final CollectionList<CommandableBuild> participantsTmp = new CollectionList<>(CommandableBuild.class);
-	public static final CollectionList<CommandableBuild> drawsTmp = new CollectionList<>(CommandableBuild.class);
+	public static final Seq<CommandableBuild> participantsTmp = new Seq<>(CommandableBuild.class);
+	public static final Seq<CommandableBuild> drawsTmp = new Seq<>(CommandableBuild.class);
 
 	public DrawBlock drawer = new DrawDefault();
 	public float warmupSpeed = 0.02f;

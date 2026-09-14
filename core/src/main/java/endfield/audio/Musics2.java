@@ -3,14 +3,12 @@ package endfield.audio;
 import arc.Events;
 import arc.audio.Music;
 import arc.files.Fi;
+import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Log;
-import endfield.util.CollectionObjectMap;
 import mindustry.Vars;
 import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.gen.Musics;
-
-import java.util.Map;
 
 /**
  * Manages music, including vanilla and custom tracks.
@@ -18,7 +16,7 @@ import java.util.Map;
  * @since 1.0.2
  */
 public final class Musics2 {
-	static final Map<String, Music[]> musicSets = new CollectionObjectMap<>(String.class, Music[].class);
+	static final ObjectMap<String, Music[]> musicSets = new ObjectMap<>();
 
 	public static Fi musicsDir;// = Vars2.internalTree.child("musics");
 

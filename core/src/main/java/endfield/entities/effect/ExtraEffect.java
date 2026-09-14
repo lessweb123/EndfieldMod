@@ -2,11 +2,11 @@ package endfield.entities.effect;
 
 import arc.Events;
 import arc.math.Mathf;
+import arc.struct.IntMap;
+import arc.struct.Seq;
 import arc.util.Time;
 import endfield.entities.effect.VapourizeEffect.VapourizeEffectState;
 import endfield.math.Mathm;
-import endfield.util.CollectionList;
-import endfield.util.IntMap2;
 import mindustry.content.Liquids;
 import mindustry.entities.Puddles;
 import mindustry.game.EventType.Trigger;
@@ -18,9 +18,9 @@ import mindustry.gen.Unit;
 import java.util.Iterator;
 
 public final class ExtraEffect {
-	private static final CollectionList<BuildQueue> vapourizeQueue = new CollectionList<>(512, BuildQueue.class);
-	private static final IntMap2<BuildQueue> buildQMap = new IntMap2<>(BuildQueue.class);
-	private static final IntMap2<VapourizeEffectState> vapourizeMap = new IntMap2<>(VapourizeEffectState.class);
+	private static final Seq<BuildQueue> vapourizeQueue = new Seq<>(true, 512, BuildQueue.class);
+	private static final IntMap<BuildQueue> buildQMap = new IntMap<>();
+	private static final IntMap<VapourizeEffectState> vapourizeMap = new IntMap<>();
 
 	static {
 		Events.on(WorldLoadEvent.class, event -> {

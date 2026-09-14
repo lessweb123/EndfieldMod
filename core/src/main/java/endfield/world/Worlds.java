@@ -10,7 +10,6 @@ import endfield.entities.Entitys2;
 import endfield.files.Files2;
 import endfield.game.TeamPayloadData;
 import endfield.graphics.PositionLightning;
-import endfield.util.CollectionList;
 import endfield.world.blocks.defense.CommandableBlock;
 import kotlin.Pair;
 import mindustry.Vars;
@@ -27,7 +26,7 @@ import java.util.Properties;
 import static endfield.Vars2.MOD_NAME;
 
 public final class Worlds {
-	public static final CollectionList<CommandableBlock.CommandableBuild> commandableBuilds = new CollectionList<>(CommandableBlock.CommandableBuild.class);
+	public static final Seq<CommandableBlock.CommandableBuild> commandableBuilds = new Seq<>(CommandableBlock.CommandableBuild.class);
 
 	public static TeamPayloadData teamPayloadData = new TeamPayloadData();
 
@@ -73,7 +72,7 @@ public final class Worlds {
 	public static void exportBlockData() {
 		final StringBuilder data = new StringBuilder();
 
-		final CollectionList<Pair<String, Block>> blocks = new CollectionList<>(Pair.class);
+		final Seq<Pair<String, Block>> blocks = new Seq<>(Pair.class);
 
 		Seq<Block> seq = Vars.content.blocks();
 		for (Block block : seq) {

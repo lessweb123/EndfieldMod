@@ -3,9 +3,9 @@ package endfield.entities.bullet;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
+import arc.struct.ObjectIntMap;
+import arc.struct.Seq;
 import arc.util.Time;
-import endfield.util.CollectionList;
-import endfield.util.ObjectIntMap2;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
@@ -34,8 +34,8 @@ public class BallLightningBulletType extends BasicBulletType {
 
 	public Drawer bulletDrawer = null;
 
-	public CollectionList<Healthc> targets = new CollectionList<>(Healthc.class);
-	public ObjectIntMap2<Healthc> shocksMap = new ObjectIntMap2<>(Healthc.class);
+	public Seq<Healthc> targets = new Seq<>(Healthc.class);
+	public ObjectIntMap<Healthc> shocksMap = new ObjectIntMap<>();
 
 	public BallLightningBulletType(float speed, float damage, String sprite) {
 		super(speed, damage, sprite);

@@ -31,7 +31,7 @@ import static mindustry.Vars.player;
 
 public class MultiSource extends Block {
 	public TextureRegion cross;
-	public TextureRegion[] center = new TextureRegion[2];
+	public TextureRegion center0, center1;
 
 	public MultiSource(String name) {
 		super(name);
@@ -61,8 +61,8 @@ public class MultiSource extends Block {
 		super.load();
 
 		cross = Core.atlas.find(name + "-cross");
-		center[0] = Core.atlas.find(name + "-center-0");
-		center[1] = Core.atlas.find(name + "-center-1");
+		center0 = Core.atlas.find(name + "-center-0");
+		center1 = Core.atlas.find(name + "-center-1");
 	}
 
 	@Override
@@ -150,13 +150,13 @@ public class MultiSource extends Block {
 
 			if (data.item != null) {
 				Draw.color(data.item.color);
-				Draw.rect(center[0], x, y);
+				Draw.rect(center0, x, y);
 				Draw.color();
 			}
 
 			if (data.liquid != null) {
 				Draw.color(data.liquid.color);
-				Draw.rect(center[1], x, y);
+				Draw.rect(center1, x, y);
 				Draw.color();
 			}
 		}

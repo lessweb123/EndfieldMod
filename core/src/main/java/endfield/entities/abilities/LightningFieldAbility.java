@@ -5,10 +5,10 @@ import arc.audio.Sound;
 import arc.graphics.Color;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
+import arc.struct.Seq;
 import arc.util.Strings;
 import arc.util.Time;
 import arc.util.Tmp;
-import endfield.util.CollectionList;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
@@ -28,7 +28,7 @@ import mindustry.type.StatusEffect;
 import mindustry.world.meta.StatValues;
 
 public class LightningFieldAbility extends Ability {
-	private static final CollectionList<Healthc> all = new CollectionList<>(Healthc.class);
+	private static final Seq<Healthc> all = new Seq<>(Healthc.class);
 
 	public float damage = 1f, reload = 100f, range = 60f;
 	public Effect hitEffect = Fx.hitLaserBlast, damageEffect = Fx.chainLightning;

@@ -6,10 +6,10 @@ import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Vec3;
 import arc.scene.style.TextureRegionDrawable;
+import arc.struct.ObjectMap;
 import arc.util.Align;
 import arc.util.Scaling;
 import arc.util.Tmp;
-import endfield.util.CollectionObjectMap;
 import mindustry.content.StatusEffects;
 import mindustry.entities.Units;
 import mindustry.gen.Unit;
@@ -60,19 +60,19 @@ public class MultiTractorBeamTurret extends TractorBeamTurret {
 
 	public class MultiTractorBeamBuild extends TractorBeamBuild {
 		/**
-		 * {@link CollectionObjectMap} {@code targets} Uses a {@link Vec3} to contain:
+		 * {@link ObjectMap} {@code targets} Uses a {@link Vec3} to contain:
 		 * <ul>
 		 * <li>.x -> {@code lastX}
 		 * <li>.y -> {@code lastY}
 		 * <li>.z -> {@code strength}
 		 * </ul>
 		 */
-		public final CollectionObjectMap<Unit, Vec3> targets = new CollectionObjectMap<>(Unit.class, Vec3.class, maxAttract, 0.8f);
+		public final ObjectMap<Unit, Vec3> targets = new ObjectMap<>(maxAttract, 0.8f);
 
 		@Override
 		public void updateTile() {
 			super.updateTile();
-			for (Unit unit : targets.keySet()) {
+			for (Unit unit : targets.keys()) {
 				if (unit != null && Angles.within(rotation, angleTo(unit), shootCone) && within(unit, range + unit.hitSize / 2f) && unit.team() != team && unit.isValid() && unit.checkTarget(targetAir, targetGround)) {
 					targets.get(unit).x = unit.x;
 					targets.get(unit).y = unit.y;
@@ -92,7 +92,7 @@ public class MultiTractorBeamTurret extends TractorBeamTurret {
 
 			if (target != null && target.within(this, range + target.hitSize / 2f) && target.team() != team && target.checkTarget(targetAir, targetGround) && efficiency > 0.02f) {
 				Units.nearbyEnemies(team, Tmp.r1.setSize((range + target.hitSize / 2f) * 2).setCenter(x, y), unit -> {
-					if (targets.size() < maxAttract && !targets.containsKey(unit) && Angles.within(rotation, angleTo(unit), shootCone)) {
+					if (targets.size < maxAttract && !targets.containsKey(unit) && Angles.within(rotation, angleTo(unit), shootCone)) {
 						targets.put(unit, new Vec3(unit.x, unit.y, 0f));
 					}
 				});
@@ -106,7 +106,7 @@ public class MultiTractorBeamTurret extends TractorBeamTurret {
 			Draw.rect(region, x, y, rotation - 90);
 			Draw.z(Layer.bullet);
 			//draw laser if applicable
-			for (Unit unit : targets.keySet()) {
+			for (Unit unit : targets.keys()) {
 				Vec3 vec = targets.get(unit);
 				if (vec == null) continue;
 				//float ang = angleTo(vec.x, vec.y);

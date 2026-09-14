@@ -5,11 +5,11 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.math.geom.Vec3;
+import arc.struct.ObjectFloatMap;
 import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
 import endfield.entities.bullet.EndMissileBulletType;
-import endfield.util.ObjectFloatMap2;
 import mindustry.entities.Effect;
 import mindustry.entities.units.WeaponMount;
 import mindustry.gen.Bullet;
@@ -162,7 +162,7 @@ public class EndLauncherWeapon extends Weapon {
 
 	public static class EndLauncherMount extends WeaponMount {
 		public Seq<Teamc> targetSeq = new Seq<>(Teamc.class);
-		public ObjectFloatMap2<Teamc> targets = new ObjectFloatMap2<>(Teamc.class);
+		public ObjectFloatMap<Teamc> targets = new ObjectFloatMap<>();
 		public int burstCount = 0;
 		public float burstTime = 0f;
 
@@ -174,13 +174,13 @@ public class EndLauncherWeapon extends Weapon {
 			targetSeq.removeAll(t -> {
 				float value = targets.increment(t, 0f, -Time.delta);
 				boolean re = value <= 0f || (t instanceof Healthc h && !h.isValid());
-				if (re) targets.remove(t);
+				if (re) targets.remove(t, 0f);
 				return re;
 			});
 		}
 
 		public void removeTarget(Teamc target) {
-			targets.remove(target);
+			targets.remove(target, 0f);
 			targetSeq.remove(target);
 		}
 

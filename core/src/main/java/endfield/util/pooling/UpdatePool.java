@@ -1,11 +1,11 @@
 package endfield.util.pooling;
 
 import arc.Events;
-import endfield.util.CollectionObjectMap;
+import arc.struct.ObjectMap;
 import mindustry.game.EventType.Trigger;
 
 public final class UpdatePool {
-	static final CollectionObjectMap<String, Runnable> updateTasks = new CollectionObjectMap<>(String.class, Runnable.class);
+	static final ObjectMap<String, Runnable> updateTasks = new ObjectMap<>();
 
 	static {
 		Events.run(Trigger.update, UpdatePool::update);

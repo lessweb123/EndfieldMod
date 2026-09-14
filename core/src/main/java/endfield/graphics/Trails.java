@@ -13,12 +13,12 @@ import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.math.geom.Vec3;
 import arc.struct.FloatSeq;
+import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.pooling.Pool.Poolable;
 import arc.util.pooling.Pools;
 import endfield.util.Arrays2;
-import endfield.util.CollectionList;
 import mindustry.gen.Rotc;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Trail;
@@ -149,12 +149,12 @@ public final class Trails {
 	public static class DriftTrail {
 		public int length;
 
-		protected final CollectionList<DriftTrailData> points;
+		protected final Seq<DriftTrailData> points;
 		protected float lastX = -1, lastY = -1, lastAngle = -1, lastW = 0f, counter = 0f;
 
 		public DriftTrail(int len) {
 			length = len;
-			points = new CollectionList<>(true, len, DriftTrailData.class);
+			points = new Seq<>(true, len, DriftTrailData.class);
 		}
 
 		public DriftTrail copy() {

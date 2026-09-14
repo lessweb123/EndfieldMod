@@ -6,6 +6,7 @@ import arc.graphics.g2d.Draw;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Position;
+import arc.struct.IntMap;
 import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -13,7 +14,6 @@ import endfield.content.Fx2;
 import endfield.gen.Entitys;
 import endfield.math.Mathm;
 import endfield.util.Get;
-import endfield.util.IntMap2;
 import mindustry.content.Liquids;
 import mindustry.entities.Puddles;
 import mindustry.game.EventType.Trigger;
@@ -32,8 +32,8 @@ import java.util.Iterator;
 
 public final class VapourizeEffect {
 	static final Seq<BuildQueue> vapourizeQueue = new Seq<>(true, 512, BuildQueue.class);
-	static final IntMap2<BuildQueue> buildQMap = new IntMap2<>(BuildQueue.class);
-	static final IntMap2<VapourizeEffectState> vapourizeMap = new IntMap2<>(VapourizeEffectState.class);
+	static final IntMap<BuildQueue> buildQMap = new IntMap<>();
+	static final IntMap<VapourizeEffectState> vapourizeMap = new IntMap<>();
 
 	static {
 		Events.on(WorldLoadEvent.class, event -> {

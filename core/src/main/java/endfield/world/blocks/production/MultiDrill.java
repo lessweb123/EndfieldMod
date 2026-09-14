@@ -8,11 +8,11 @@ import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
+import arc.struct.ObjectFloatMap;
+import arc.struct.ObjectIntMap;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import endfield.util.ObjectFloatMap2;
-import endfield.util.ObjectIntMap2;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
@@ -29,7 +29,7 @@ import mindustry.world.meta.BlockGroup;
 
 public class MultiDrill extends Block {
 	@NoPatch
-	public ObjectIntMap2<Item> oreCount = new ObjectIntMap2<>(Item.class);
+	public ObjectIntMap<Item> oreCount = new ObjectIntMap<>();
 
 	@NoPatch
 	public Point2[] prox;
@@ -160,9 +160,9 @@ public class MultiDrill extends Block {
 	}
 
 	public class MultiDrillBuild extends Building {
-		public ObjectIntMap2<Item> ores = new ObjectIntMap2<>(Item.class);
+		public ObjectIntMap<Item> ores = new ObjectIntMap<>();
 
-		public ObjectFloatMap2<Item> oreProgress = new ObjectFloatMap2<>(Item.class);
+		public ObjectFloatMap<Item> oreProgress = new ObjectFloatMap<>();
 
 		public float timeDrilled = 0f;
 		public float warmup = 0f;

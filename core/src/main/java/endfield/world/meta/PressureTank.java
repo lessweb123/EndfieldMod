@@ -1,14 +1,14 @@
 package endfield.world.meta;
 
+import arc.struct.Seq;
 import endfield.content.Liquids2;
-import endfield.util.CollectionList;
 import endfield.world.blocks.HasPressure;
 import mindustry.Vars;
 import mindustry.type.Liquid;
 import org.jetbrains.annotations.Nullable;
 
 public class PressureTank {
-	public CollectionList<HasPressure> builds = new CollectionList<>(HasPressure.class);
+	public Seq<HasPressure> builds = new Seq<>(HasPressure.class);
 
 	/**
 	 * Adds a certain amount of fluid distributed over the whole tank.

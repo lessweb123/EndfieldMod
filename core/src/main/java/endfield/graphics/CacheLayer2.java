@@ -9,7 +9,7 @@ import mindustry.graphics.CacheLayer.ShaderLayer;
  * @author LessWeb
  */
 public final class CacheLayer2 {
-	public static ShaderLayer brine, glacium, crystalFluid, deepCrystalFluid, pit, waterPit;
+	public static ShaderLayer brine, glacium, coldPlasma, deepColdPlasma, pit, waterPit;
 
 	/** Don't let anyone instantiate this class. */
 	private CacheLayer2() {}
@@ -18,11 +18,11 @@ public final class CacheLayer2 {
 	public static void load() {
 		brine = new ShaderLayer(Shaders2.brine);
 		glacium = new ShaderLayer(Shaders2.glacium);
-		crystalFluid = new ShaderLayer(Shaders2.crystalFluid);
-		deepCrystalFluid = new ShaderLayer(Shaders2.deepCrystalFluid);
+		coldPlasma = new ShaderLayer(Shaders2.coldPlasma);
+		deepColdPlasma = new ShaderLayer(Shaders2.deepColdPlasma);
 		pit = new ShaderLayer(Shaders2.pit);
 		waterPit = new ShaderLayer(Shaders2.waterPit);
 
-		CacheLayer.add(brine, crystalFluid, deepCrystalFluid, pit, waterPit);
+		CacheLayer.add(brine, coldPlasma, deepColdPlasma, pit, waterPit);
 	}
 }

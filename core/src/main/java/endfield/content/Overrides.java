@@ -80,6 +80,7 @@ public final class Overrides {
 		Blocks.oxidationChamber.canOverdrive = Blocks.neoplasiaReactor.canOverdrive = true;
 		Blocks.slag.attributes.set(Attribute.heat, 1f);
 		Blocks.oreThorium.attributes.set(Attributes2.radioactivity, 1f);
+		Blocks.oreCrystalThorium.attributes.set(Attributes2.radioactivity, 1f);
 		//blocks-environment-erekir
 		Blocks.yellowStonePlates.attributes.set(Attribute.water, -1f);
 		Blocks.beryllicStone.attributes.set(Attributes2.arkycite, 0.7f);
@@ -148,6 +149,7 @@ public final class Overrides {
 			map.put(Items.pyratite, 1.5f);
 			map.put(Items.beryllium, 1.5f);
 			map.put(Items.graphite, 1.5f);
+			map.put(Items.titanium, 1.5f);
 		}
 		//blocks-power
 		if (Blocks.surgeTower instanceof PowerNode node) node.maxNodes = 3;
@@ -229,7 +231,7 @@ public final class Overrides {
 				drag = 0.01f;
 				layer = Layer.bullet - 2f;
 			}});
-			turret.ammoTypes.put(Liquids2.crystalFluid, new LiquidBulletType(Liquids2.crystalFluid) {{
+			turret.ammoTypes.put(Liquids2.coldPlasma, new LiquidBulletType(Liquids2.coldPlasma) {{
 				drag = 0.01f;
 				healPercent = 5f;
 				collidesTeam = true;
@@ -269,7 +271,7 @@ public final class Overrides {
 				damage = 0.2f;
 				layer = Layer.bullet - 2f;
 			}});
-			turret.ammoTypes.put(Liquids2.crystalFluid, new LiquidBulletType(Liquids2.crystalFluid) {{
+			turret.ammoTypes.put(Liquids2.coldPlasma, new LiquidBulletType(Liquids2.coldPlasma) {{
 				lifetime = 49f;
 				speed = 4f;
 				knockback = 1.3f;
@@ -375,7 +377,7 @@ public final class Overrides {
 		Liquids.hydrogen.explosiveness = 1.5f;
 		Liquids.ozone.flammability = 0f;
 		Liquids.ozone.explosiveness = 0f;
-		Liquids.neoplasm.canStayOn.addAll(Liquids2.crystalFluid, Liquids2.lightOil, Liquids2.nitratedOil, Liquids2.blastReagent);
+		Liquids.neoplasm.canStayOn.addAll(Liquids2.coldPlasma, Liquids2.lightOil, Liquids2.nitratedOil, Liquids2.blastReagent);
 		Liquids.neoplasm.capPuddles = true;
 		Liquids.gallium.hidden = false;
 		//items
@@ -388,6 +390,7 @@ public final class Overrides {
 		Items.carbide.hardness = 6;
 		Items.serpuloItems.addAll(Items2.stone, Items2.agglomerateSalt, Items2.rareEarth, Items2.galliumNitride, Items2.crystallineCircuit, Items2.gold, Items2.chromium, Items2.uranium, Items2.heavyAlloy, Items2.crystal);
 		Items.erekirItems.addAll(Items2.stone, Items2.uranium, Items2.chromium, Items2.crystal);
-		//planets
 	}
+
+	public static void init() {}
 }

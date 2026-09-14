@@ -14,7 +14,7 @@ public final class Textures2 {
 	/** Blank image placeholder, used in Kotlin to prevent {@code lateinit var}. */
 	public static Texture white;
 
-	public static Texture noise;
+	public static Texture noise, noiseAlpha;
 	public static Texture smooth, particle, darker, gaussian, median, armor;
 
 	/** Don't let anyone instantiate this class. */
@@ -22,6 +22,7 @@ public final class Textures2 {
 
 	public static void load() {
 		noise = loadTexture(Core.files.internal("sprites/noise.png"), TextureFilter.linear, TextureWrap.repeat);
+		noiseAlpha = loadTexture(Core.files.internal("sprites/noiseAlpha.png"), TextureFilter.linear, TextureWrap.repeat);
 
 		white = new Texture(Pixmaps2.white);
 

@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedType;
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -53,7 +54,7 @@ public class ReflectClassAccessor implements ClassAccessor {
 			default -> {
 				if (className.isArray()) {
 					Class<?> componentType = loadClass(className.componentName());
-					yield componentType.arrayType();
+					yield Array.newInstance(componentType, 0).getClass();
 				}
 
 				String name = className.name();

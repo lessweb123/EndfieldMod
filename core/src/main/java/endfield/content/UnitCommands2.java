@@ -7,13 +7,13 @@ import mindustry.ai.UnitCommand;
 import mindustry.ai.types.CommandAI;
 
 public final class UnitCommands2 {
-	public static final FieldAccessor COMMAND_CONTROLLER_ACCESSOR;
+	public static final FieldAccessor commandControllerAccessor;
 
 	public static UnitCommand nullUnitCommand;
 
 	static {
 		try {
-			COMMAND_CONTROLLER_ACCESSOR = Reflects.newFieldAccessor(CommandAI.class.getDeclaredField("commandController"));
+			commandControllerAccessor = Reflects.newFieldAccessor(CommandAI.class.getDeclaredField("commandController"));
 		} catch (NoSuchFieldException e) {
 			throw new RuntimeException(e);
 		}

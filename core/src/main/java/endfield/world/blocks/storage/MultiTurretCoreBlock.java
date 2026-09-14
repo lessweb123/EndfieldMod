@@ -1,6 +1,6 @@
 package endfield.world.blocks.storage;
 
-import endfield.util.CollectionList;
+import arc.struct.Seq;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.logic.Ranged;
@@ -9,11 +9,9 @@ import mindustry.world.Block;
 import mindustry.world.blocks.payloads.BuildPayload;
 import mindustry.world.blocks.storage.CoreBlock;
 
-import java.util.List;
-
 public class MultiTurretCoreBlock extends CoreBlock {
-	public List<Block> turretBuilder = new CollectionList<>(Block.class);
-	public List<Item> itemBuilder = new CollectionList<>(Item.class);
+	public Seq<Block> turretBuilder = new Seq<>(Block.class);
+	public Seq<Item> itemBuilder = new Seq<>(Item.class);
 
 	public float[] positions = {0, 0};
 
@@ -28,9 +26,9 @@ public class MultiTurretCoreBlock extends CoreBlock {
 
 		@Override
 		public Building create(Block block, Team team) {
-			payloads = new BuildPayload[turretBuilder.size()];
+			payloads = new BuildPayload[turretBuilder.size];
 
-			for (int i = 0; i < turretBuilder.size(); i++) {
+			for (int i = 0; i < turretBuilder.size; i++) {
 				payloads[i] = new BuildPayload(turretBuilder.get(i), team);
 			}
 
@@ -48,7 +46,7 @@ public class MultiTurretCoreBlock extends CoreBlock {
 
 				payload.update(null, this);
 
-				for (int j = 0; j < itemBuilder.size(); j++) {
+				for (int j = 0; j < itemBuilder.size; j++) {
 					Item item = itemBuilder.get(j);
 
 					if (build.acceptItem(build, item) && items.get(item) >= 1) {

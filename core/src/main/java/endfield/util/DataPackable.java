@@ -1,6 +1,7 @@
 package endfield.util;
 
 import arc.func.Func;
+import arc.struct.LongMap;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import arc.util.serialization.SerializationException;
@@ -61,7 +62,7 @@ import java.io.DataOutputStream;
  * }</pre>
  */
 public interface DataPackable {
-	LongMap2<Func<? extends Object[], ?>> objectProvMap = new LongMap2<>(Func.class);
+	LongMap<Func<? extends Object[], ?>> objectProvMap = new LongMap<>();
 
 	/**
 	 * Register a constructor of a wrapper type that takes an array of objects

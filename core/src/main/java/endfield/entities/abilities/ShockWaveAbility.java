@@ -5,6 +5,7 @@ import arc.func.Cons2;
 import arc.graphics.Color;
 import arc.math.Mathf;
 import arc.math.geom.Position;
+import arc.struct.ObjectFloatMap;
 import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -12,7 +13,6 @@ import endfield.audio.Sounds2;
 import endfield.content.Fx2;
 import endfield.graphics.Pal2;
 import endfield.graphics.PositionLightning;
-import endfield.util.ObjectFloatMap2;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.abilities.Ability;
@@ -23,7 +23,7 @@ import mindustry.type.UnitType;
 public class ShockWaveAbility extends Ability {
 	protected static final Seq<Unit> all = new Seq<>(Unit.class);
 
-	public ObjectFloatMap2<StatusEffect> status = new ObjectFloatMap2<>(StatusEffect.class);
+	public ObjectFloatMap<StatusEffect> status = new ObjectFloatMap<>();
 
 	public boolean targetGround = true, targetAir = true;
 	public float x, y;

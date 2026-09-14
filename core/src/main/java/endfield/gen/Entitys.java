@@ -2,10 +2,10 @@ package endfield.gen;
 
 import arc.func.Func;
 import arc.func.Prov;
+import arc.struct.ObjectIntMap;
+import arc.struct.ObjectMap;
 import arc.util.Structs;
 import endfield.entities.effect.VapourizeEffect.VapourizeEffectState;
-import endfield.util.CollectionObjectMap;
-import endfield.util.ObjectIntMap2;
 import mindustry.ctype.Content;
 import mindustry.gen.EntityMapping;
 import mindustry.gen.Entityc;
@@ -18,8 +18,8 @@ import org.jetbrains.annotations.ApiStatus.Obsolete;
  * @since 1.0.6
  */
 public final class Entitys {
-	static final ObjectIntMap2<Class<? extends Entityc>> classIdMap = new ObjectIntMap2<>(Class.class);
-	static final CollectionObjectMap<String, Prov<? extends Entityc>> needIdMap = new CollectionObjectMap<>(String.class, Prov.class);
+	static final ObjectIntMap<Class<? extends Entityc>> classIdMap = new ObjectIntMap<>();
+	static final ObjectMap<String, Prov<? extends Entityc>> needIdMap = new ObjectMap<>();
 
 	/** Don't let anyone instantiate this class. */
 	private Entitys() {}

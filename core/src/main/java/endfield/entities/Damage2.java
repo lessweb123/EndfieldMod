@@ -34,7 +34,6 @@ import endfield.content.Fx2;
 import endfield.entities.Entitys2.LineHitHandler;
 import endfield.math.Mathm;
 import endfield.util.BoolGrid;
-import endfield.util.CollectionList;
 import endfield.util.ValueMap;
 import mindustry.Vars;
 import mindustry.ai.types.MissileAI;
@@ -62,13 +61,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public final class Damage2 {
-	public static final CollectionList<Unit> list = new CollectionList<>(Unit.class);
+	public static final Seq<Unit> list = new Seq<>(Unit.class);
 
 	static final UnitDamageEvent bulletDamageEvent = new UnitDamageEvent();
 	static final Rect rect = new Rect(), rectAlt = new Rect(), hitrect = new Rect();
 	static final Vec2 vec = new Vec2(), vec2 = new Vec2(), vec3 = new Vec2(), seg1 = new Vec2(), seg2 = new Vec2();
-	static final CollectionList<Building> builds = new CollectionList<>(Building.class);
-	static final CollectionList<Unit> units = new CollectionList<>(Unit.class);
+	static final Seq<Building> builds = new Seq<>(Building.class);
+	static final Seq<Unit> units = new Seq<>(Unit.class);
 	static final IntSet collidedBlocks = new IntSet();
 	static final IntFloatMap damages = new IntFloatMap();
 	static final Seq<Collided> collided = new Seq<>(Collided.class);
@@ -76,7 +75,7 @@ public final class Damage2 {
 	static final FloatSeq distances = new FloatSeq();
 	static final BoolGrid collideLineCollided = new BoolGrid();
 	static final IntSeq lineCast = new IntSeq(), lineCastNext = new IntSeq();
-	static final CollectionList<Hit> hitEffects = new CollectionList<>(Hit.class);
+	static final Seq<Hit> hitEffects = new Seq<>(Hit.class);
 
 	static Tile furthest;
 	static Building tmpBuild;
@@ -87,7 +86,7 @@ public final class Damage2 {
 	static float cdist;
 	static int idx;
 	static boolean hit, hit2;
-	static final CollectionList<Hit> hseq = new CollectionList<>(Hit.class);
+	static final Seq<Hit> hseq = new Seq<>(Hit.class);
 	static final BasicPool<Hit> hPool = new BasicPool<>(Hit::new);
 
 	/** Don't let anyone instantiate this class. */

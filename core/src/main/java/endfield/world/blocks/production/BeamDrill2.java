@@ -35,11 +35,11 @@ public class BeamDrill2 extends BeamDrill {
 	public class BeamDrillBuild2 extends BeamDrillBuild {
 		@Override
 		public void updateTile() {
-			if (lasers[0] == null) updateLasers();
-
 			if (timer(timerDump, dumpTime / timeScale)) {
 				dump();
 			}
+
+			if (lasers[0] == null) updateLasers();
 
 			warmup = Mathf.approachDelta(warmup, Mathf.num(efficiency > 0), 1f / 60f);
 
@@ -48,7 +48,7 @@ public class BeamDrill2 extends BeamDrill {
 			float multiplier = Mathf.lerp(1f, optionalBoostIntensity, optionalEfficiency);
 			float drillTime = getDrillTime(lastItem);
 			boostWarmup = Mathf.lerpDelta(boostWarmup, optionalEfficiency, 0.1f);
-			lastDrillSpeed = (facingAmount * multiplier * timeScale) / drillTime;
+			lastDrillSpeed = (facingAmount * multiplier * timeScale) / drillTime * efficiency;
 
 			time += edelta() * multiplier;
 

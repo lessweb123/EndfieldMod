@@ -3,11 +3,11 @@ package endfield.graphics.g2d;
 import arc.graphics.Texture;
 import arc.graphics.g2d.TextureRegion;
 import arc.struct.FloatSeq;
-import endfield.util.CollectionList;
+import arc.struct.Seq;
 
 public class CacheBatch3D extends BaseBatch {
 	public FloatSeq data = new FloatSeq();
-	public CollectionList<Texture> textureSeq = new CollectionList<>(Texture.class);
+	public Seq<Texture> textureSeq = new Seq<>(Texture.class);
 
 	public void begin() {
 		data.clear();

@@ -3,9 +3,9 @@ package endfield.world.blocks.units;
 import arc.Events;
 import arc.math.Mathf;
 import arc.math.geom.Geometry;
+import arc.struct.Seq;
 import arc.util.io.Reads;
 import endfield.math.Mathm;
-import endfield.util.CollectionList;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.content.Items;
@@ -21,7 +21,7 @@ import mindustry.world.Block;
 import java.util.List;
 
 public class Collector extends Block {
-	public List<Building> existing = new CollectionList<>(Building.class);
+	public Seq<Building> existing = new Seq<>(Building.class);
 	public float range = 120f;
 
 	public Collector(String name) {

@@ -7,6 +7,9 @@ import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
 import arc.math.Rand;
 import arc.math.geom.Vec2;
+import arc.struct.ObjectFloatMap;
+import arc.struct.ObjectIntMap;
+import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
@@ -19,11 +22,8 @@ import endfield.graphics.Drawn;
 import endfield.math.Interps;
 import endfield.math.Mathm;
 import endfield.type.unit.PesterUnitType;
-import endfield.util.CollectionList;
 import endfield.util.Constant;
 import endfield.util.Get;
-import endfield.util.ObjectFloatMap2;
-import endfield.util.ObjectIntMap2;
 import mindustry.Vars;
 import mindustry.ai.types.MissileAI;
 import mindustry.content.Fx;
@@ -44,10 +44,8 @@ import mindustry.graphics.Trail;
 import mindustry.type.UnitType;
 import mindustry.world.meta.BlockGroup;
 
-import java.util.List;
-
 public class PesterUnit extends Unit2 implements Pesterc {
-	public static final ObjectIntMap2<Healthc> checked = new ObjectIntMap2<>(Healthc.class);
+	public static final ObjectIntMap<Healthc> checked = new ObjectIntMap<>();
 
 	public static Building tmpBuilding = null;
 
@@ -72,8 +70,8 @@ public class PesterUnit extends Unit2 implements Pesterc {
 	public transient float salvoReloadLast = 0f;
 	public transient float salvoReloadTarget = 0f;
 
-	public ObjectFloatMap2<Healthc> hatred = new ObjectFloatMap2<>(Healthc.class);
-	public List<Healthc> nextTargets = new CollectionList<>(Healthc.class);
+	public ObjectFloatMap<Healthc> hatred = new ObjectFloatMap<>();
+	public Seq<Healthc> nextTargets = new Seq<>(Healthc.class);
 
 	protected Trail[] trails = {};
 
@@ -548,12 +546,12 @@ public class PesterUnit extends Unit2 implements Pesterc {
 	}
 
 	@Override
-	public ObjectFloatMap2<Healthc> hatred() {
+	public ObjectFloatMap<Healthc> hatred() {
 		return hatred;
 	}
 
 	@Override
-	public List<Healthc> nextTargets() {
+	public Seq<Healthc> nextTargets() {
 		return nextTargets;
 	}
 
@@ -638,12 +636,12 @@ public class PesterUnit extends Unit2 implements Pesterc {
 	}
 
 	@Override
-	public void hatred(ObjectFloatMap2<Healthc> value) {
+	public void hatred(ObjectFloatMap<Healthc> value) {
 		hatred = value;
 	}
 
 	@Override
-	public void nextTargets(List<Healthc> value) {
+	public void nextTargets(Seq<Healthc> value) {
 		nextTargets = value;
 	}
 

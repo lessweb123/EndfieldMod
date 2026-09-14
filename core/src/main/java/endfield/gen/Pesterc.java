@@ -1,13 +1,12 @@
 package endfield.gen;
 
 import arc.math.geom.Vec2;
-import endfield.util.ObjectFloatMap2;
+import arc.struct.ObjectFloatMap;
+import arc.struct.Seq;
 import mindustry.gen.Entityc;
 import mindustry.gen.Healthc;
 import mindustry.gen.Teamc;
 import mindustry.graphics.Trail;
-
-import java.util.List;
 
 public interface Pesterc extends Unitc2 {
 	Healthc findOwner(Entityc ent);
@@ -48,9 +47,9 @@ public interface Pesterc extends Unitc2 {
 
 	float salvoReloadTarget();
 
-	ObjectFloatMap2<Healthc> hatred();
+	ObjectFloatMap<Healthc> hatred();
 
-	List<Healthc> nextTargets();
+	Seq<Healthc> nextTargets();
 
 	Trail[] trails();
 
@@ -84,9 +83,9 @@ public interface Pesterc extends Unitc2 {
 
 	void salvoReloadTarget(float value);
 
-	void hatred(ObjectFloatMap2<Healthc> value);
+	void hatred(ObjectFloatMap<Healthc> value);
 
-	void nextTargets(List<Healthc> value);
+	void nextTargets(Seq<Healthc> value);
 
 	void trails(Trail[] value);
 }

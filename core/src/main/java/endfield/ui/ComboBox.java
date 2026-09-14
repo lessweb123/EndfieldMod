@@ -17,10 +17,10 @@ import arc.scene.ui.TextField;
 import arc.scene.ui.layout.Cell;
 import arc.scene.ui.layout.Scl;
 import arc.scene.ui.layout.Table;
+import arc.struct.Seq;
 import arc.util.Align;
 import arc.util.Tmp;
 import endfield.ui.Listeners.ClickOnOtherListener;
-import endfield.util.CollectionList;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -28,8 +28,8 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ComboBox extends Table {
 	final Table mySelectionTable;
 
-	public CollectionList<ComboBoxItem> items = new CollectionList<>(ComboBoxItem.class);
-	public CollectionList<ComboBoxItemSelectListener> listeners = new CollectionList<>(ComboBoxItemSelectListener.class);
+	public Seq<ComboBoxItem> items = new Seq<>(ComboBoxItem.class);
+	public Seq<ComboBoxItemSelectListener> listeners = new Seq<>(ComboBoxItemSelectListener.class);
 
 	TextField myField;
 	Button myButton;
@@ -229,7 +229,7 @@ public class ComboBox extends Table {
 			this(text, Core.scene.getStyle(ComboBoxItemStyle.class));
 		}
 
-		public ComboBoxItem(String text, ComboBoxItemStyle style) {
+		public ComboBoxItem(@Nullable String text, ComboBoxItemStyle style) {
 			this(style);
 			this.text = text;
 		}
@@ -238,7 +238,7 @@ public class ComboBox extends Table {
 			this(image, text, new ComboBoxItemStyle(Core.scene.getStyle(ComboBoxItemStyle.class)));
 		}
 
-		public ComboBoxItem(Drawable image, String text, ComboBoxItemStyle style) {
+		public ComboBoxItem(Drawable image, @Nullable String text, ComboBoxItemStyle style) {
 			this(style);
 			style.image = image;
 			this.text = text;

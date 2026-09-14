@@ -34,7 +34,7 @@ public final class Shaders2 {
 	public static DepthShader depth;
 	public static DepthAtmosphereShader depthAtmosphere;
 	public static AlphaShader alphaShader;
-	public static SurfaceShader2 brine, glacium, crystalFluid, deepCrystalFluid, boundWater, pit, waterPit;
+	public static SurfaceShader2 brine, glacium, coldPlasma, deepColdPlasma, boundWater, pit, waterPit;
 	public static AberrationShader aberration;
 	public static MaskShader alphaMask;
 	public static WaveShader wave;
@@ -65,8 +65,8 @@ public final class Shaders2 {
 
 		brine = new SurfaceShader2(shadersDir.child("general-highp.vert"), shadersDir.child("brine.frag"));
 		glacium = new SurfaceShader2(shadersDir.child("general-highp.vert"), shadersDir.child("glacium.frag"));
-		crystalFluid = new SurfaceShader2(shadersDir.child("general-highp.vert"), shadersDir.child("crystal-fluid.frag"));
-		deepCrystalFluid = new DualSurfaceShader(shadersDir.child("general-highp.vert"), shadersDir.child("deep-crystal-fluid.frag")) {
+		coldPlasma = new SurfaceShader2(shadersDir.child("general-highp.vert"), shadersDir.child("cold-plasma.frag"));
+		deepColdPlasma = new DualSurfaceShader(shadersDir.child("general-highp.vert"), shadersDir.child("deep-cold-plasma.frag")) {
 			@Override
 			public Texture noise() {
 				return Textures2.smooth;
@@ -113,7 +113,8 @@ public final class Shaders2 {
 
 	public static void dispose() {
 		brine.dispose();
-		crystalFluid.dispose();
+		coldPlasma.dispose();
+		deepColdPlasma.dispose();
 		boundWater.dispose();
 		pit.dispose();
 		waterPit.dispose();

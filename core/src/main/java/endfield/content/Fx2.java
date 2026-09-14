@@ -18,6 +18,7 @@ import arc.math.geom.Position;
 import arc.math.geom.Rect;
 import arc.math.geom.Vec2;
 import arc.math.geom.Vec3;
+import arc.struct.IntMap;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.pooling.Pool.Poolable;
@@ -40,7 +41,6 @@ import endfield.math.Mathm;
 import endfield.type.lightnings.LightningContainer;
 import endfield.type.lightnings.generator.RandomGenerator;
 import endfield.util.Get;
-import endfield.util.IntMap2;
 import endfield.util.Vec2Seq;
 import endfield.world.blocks.environment.MultiPropGroup;
 import mindustry.Vars;
@@ -72,7 +72,7 @@ public final class Fx2 {
 	public static final Vec2 v7 = new Vec2(), v8 = new Vec2(), v9 = new Vec2();
 	public static final Color c1 = new Color();
 
-	public static final IntMap2<Effect> same = new IntMap2<>(Effect.class);
+	public static final IntMap<Effect> same = new IntMap<>();
 
 	static float percent = 0;
 

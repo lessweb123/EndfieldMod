@@ -6,8 +6,8 @@ import arc.graphics.g2d.Draw;
 import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
+import arc.struct.Seq;
 import arc.util.Tmp;
-import endfield.util.CollectionList;
 import mindustry.Vars;
 import mindustry.core.Renderer;
 import mindustry.gen.Building;
@@ -20,7 +20,6 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class PowerTower extends BeamNode {
 	public Color baseColor = new Color(0xd4e1ffff);
@@ -86,8 +85,8 @@ public class PowerTower extends BeamNode {
 	}
 
 	public class PowerTowerBuild extends BeamNodeBuild {
-		public List<Building> targets = new CollectionList<>(Building.class);
-		public List<Building> newTargets = new CollectionList<>(Building.class);
+		public Seq<Building> targets = new Seq<>(Building.class);
+		public Seq<Building> newTargets = new Seq<>(Building.class);
 
 		@Override
 		public void updateTile() {

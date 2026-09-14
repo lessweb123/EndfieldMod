@@ -3,12 +3,12 @@ package endfield.entities;
 import arc.math.geom.Mat3D;
 import arc.math.geom.Quat;
 import arc.math.geom.Vec3;
+import arc.struct.Seq;
 import endfield.math.IPosition;
-import endfield.util.CollectionList;
 import org.jetbrains.annotations.Nullable;
 
 public interface Transform extends IPosition {
-	CollectionList<Transform> tmpStack = new CollectionList<>(Transform.class);
+	Seq<Transform> tmpStack = new Seq<>(Transform.class);
 
 	@Nullable Transform parent();
 

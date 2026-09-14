@@ -1,7 +1,7 @@
 package endfield.ai;
 
+import arc.struct.ObjectSet;
 import arc.struct.Seq;
-import endfield.util.CollectionObjectSet;
 import mindustry.Vars;
 import mindustry.ai.types.CargoAI;
 import mindustry.gen.Building;
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 // cargo AI that doesn't require the unit to be tethered
 public class TargetCargoAI extends CargoAI {
-	public static CollectionObjectSet<Building> pendingLoaders = new CollectionObjectSet<>(Building.class);
+	public static ObjectSet<Building> pendingLoaders = new ObjectSet<>();
 
 	public @Nullable Building loadTarget = null;
 

@@ -4,7 +4,9 @@ import arc.Events;
 import arc.func.Boolf;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
+import arc.struct.ObjectMap;
 import arc.struct.PQueue;
+import arc.struct.Seq;
 import arc.util.Structs;
 import arc.util.Time;
 import mindustry.Vars;
@@ -31,7 +33,7 @@ public final class BlockMovement {
 	// directly anyway.
 	public static Point2[][] origins = new Point2[16][];
 
-	static final CollectionList<Building> toRemove = new CollectionList<>(Building.class);
+	static final Seq<Building> toRemove = new Seq<>(Building.class);
 
 	private BlockMovement() {}
 
@@ -170,18 +172,18 @@ public final class BlockMovement {
 	// .block.name)})
 	//this.global.facdustrio.functions.getAllContacted(Vars.world.tile(197,212).build,0,99,null).each(b=>{print(b
 	// .x/8+","+b.y/8)})
-	public static @Nullable CollectionList<Building> getAllContacted(Building root, int direction, int max, Boolf<Building> bool) {
+	public static @Nullable Seq<Building> getAllContacted(Building root, int direction, int max, Boolf<Building> bool) {
 		PQueue<Building> queue = new PQueue<>(10, (a, b) ->
 				// require ordering to be projection of the block's leading edge along  push direction.
 				Math.round(project(a, direction) - project(b, direction))
 		);
 
 		queue.add(root);
-		CollectionList<Building> contacts = null;
+		Seq<Building> contacts = null;
 		while (!queue.empty() && (contacts == null || contacts.size <= max)) {
 			Building next = queue.poll();
 			if (contacts == null) {
-				contacts = CollectionList.with(next);
+				contacts = Seq.with(next);
 			} else {
 				contacts.add(next);
 			}
@@ -229,7 +231,7 @@ public final class BlockMovement {
 	*/
 	//usage: BlockMovement.pushBlock(Vars.world.tile(203,208).build,0,99,1)
 	public static boolean pushBlock(Building build, int direction, int maxBlocks, float speed, Boolf<Building> bool) {
-		CollectionList<Building> pushing = getAllContacted(build, direction, maxBlocks, bool);
+		Seq<Building> pushing = getAllContacted(build, direction, maxBlocks, bool);
 		if (pushing == null) {
 			return false;
 		}
@@ -281,7 +283,7 @@ public final class BlockMovement {
 		}
 	}
 
-	static CollectionObjectMap<Building, BlockMovementUpdater> currentlyPushing = new CollectionObjectMap<>(Building.class, BlockMovementUpdater.class);
+	static ObjectMap<Building, BlockMovementUpdater> currentlyPushing = new ObjectMap<>();
 
 	//building under animation cannot be pushed.
 	public static boolean isBlockMoving(Building build) {

@@ -5,13 +5,13 @@ import arc.math.geom.Point2;
 import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
+import arc.struct.Seq;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import endfield.audio.Sounds2;
 import endfield.content.Fx2;
 import endfield.graphics.Drawn;
 import endfield.ui.Elements;
-import endfield.util.CollectionList;
 import endfield.world.Worlds;
 import mindustry.Vars;
 import mindustry.content.Bullets;
@@ -173,7 +173,7 @@ public abstract class CommandableAttackerBlock extends CommandableBlock {
 
 			if (!drawsTmp.isEmpty()) drawsTmp.clear();
 
-			CollectionList<CommandableBuild> commandableBuilds = Worlds.commandableBuilds;
+			Seq<CommandableBuild> commandableBuilds = Worlds.commandableBuilds;
 			for (CommandableBuild build : commandableBuilds) {
 				if (build != this && build != null && build.team == team && sameGroup(build.block) && build.canCommand(targetVec)) {
 					drawsTmp.add(build);
@@ -192,14 +192,14 @@ public abstract class CommandableAttackerBlock extends CommandableBlock {
 
 			if (canCommand(targetVec)) drawsTmp.add(this);
 			if (drawsTmp.any())
-				Drawn.overlayText(Core.bundle.format("text.participants", drawsTmp.size()), targetVec.x, targetVec.y, Vars.tilesize * 2f, Pal.accent, true);
+				Drawn.overlayText(Core.bundle.format("text.participants", drawsTmp.size), targetVec.x, targetVec.y, Vars.tilesize * 2f, Pal.accent, true);
 		}
 
 		@Override
 		public void commandAll(Vec2 pos) {
 			participantsTmp.clear();
 
-			CollectionList<CommandableBuild> commandableBuilds = Worlds.commandableBuilds;
+			Seq<CommandableBuild> commandableBuilds = Worlds.commandableBuilds;
 			for (int i = 0; i < commandableBuilds.size; i++) {
 				CommandableBuild build = commandableBuilds.items[i];
 

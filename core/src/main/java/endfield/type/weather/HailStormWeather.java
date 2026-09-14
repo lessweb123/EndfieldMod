@@ -1,18 +1,17 @@
 package endfield.type.weather;
 
 import arc.Core;
-import arc.graphics.Color;
 import arc.graphics.Texture;
 import arc.graphics.Texture.TextureFilter;
 import arc.graphics.Texture.TextureWrap;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
+import arc.struct.ObjectFloatMap;
+import arc.struct.Seq;
 import arc.util.Scaling;
 import arc.util.Time;
 import endfield.entities.bullet.FallingRockBulletType;
-import endfield.util.CollectionList;
-import endfield.util.ObjectFloatMap2;
 import endfield.world.meta.StatValues2;
 import endfield.world.meta.Stats2;
 import mindustry.Vars;
@@ -22,21 +21,18 @@ import mindustry.game.Team;
 import mindustry.gen.WeatherState;
 import mindustry.type.Liquid;
 import mindustry.ui.Styles;
-import org.jetbrains.annotations.Nullable;
 
 public class HailStormWeather extends SpawnWeather {
 	static BulletType picked;
 	static float threshold;
 
 	// spawn
-	public ObjectFloatMap2<BulletType> bullets = new ObjectFloatMap2<>(BulletType.class);
+	public ObjectFloatMap<BulletType> bullets = new ObjectFloatMap<>();
 	public float spawnChance = 0;
 	public boolean windDrag = true;
 	public float windDragScaleMin = 1, windDragScaleMax = 1;
 
 	// general
-	public Color color = new Color(0x596ab8ff);
-	public float yspeed = 5f, xspeed = 1.5f, density = 900f, sizeMin = 8f, sizeMax = 40f;
 	public boolean useWindVector = false;
 
 	// rain
@@ -46,20 +42,12 @@ public class HailStormWeather extends SpawnWeather {
 	public TextureRegion[] splashes = new TextureRegion[12];
 
 	// particle
-	public boolean drawParticles = false, randomParticleRotation = false;
 	public String particleRegion = "circle-shadow";
 	public float minAlpha = 1f, maxAlpha = 1f;
 	public float sinSclMin = 30f, sinSclMax = 80f, sinMagMin = 1f, sinMagMax = 7f;
 	public TextureRegion particle;
 
-	// noise
-	public Color noiseColor = color;
-	public boolean drawNoise = false;
-	public int noiseLayers = 1;
 	public float noiseAlpha = 1f, noiseScale = 2000f, noiseSpeed = 1f;
-	public float noiseLayerSpeedM = 1.1f, noiseLayerAlphaM = 0.8f, noiseLayerSclM = 0.99f, noiseLayerColorM = 1f;
-	public String noisePath = "noiseAlpha";
-	public @Nullable Texture noise;
 
 	float minIntensity = Float.POSITIVE_INFINITY;
 
@@ -93,14 +81,16 @@ public class HailStormWeather extends SpawnWeather {
 			drawNoiseLayers(noise, noiseColor, noiseScale, state.opacity * noiseAlpha, noiseSpeed, state.intensity, (useWindVector ? state.windVector.x : 1f), (useWindVector ? state.windVector.y : 1f), noiseLayers, noiseLayerSpeedM, noiseLayerAlphaM, noiseLayerSclM, noiseLayerColorM);
 		}
 
-		if (drawParticles)
+		if (drawParticles) {
 			drawParticles(particle, color, sizeMin, sizeMax, density, state.intensity, state.opacity, xspeed * (useWindVector ? state.windVector.x : 1f), yspeed * (useWindVector ? state.windVector.y : 1f), minAlpha, maxAlpha, sinSclMin, sinSclMax, sinMagMin, sinMagMax, randomParticleRotation);
+		}
 	}
 
 	@Override
 	public void drawUnder(WeatherState state) {
-		if (rain)
+		if (rain) {
 			drawSplashes(splashes, sizeMax, density, state.intensity, state.opacity, splashTimeScale, stroke, color, liquid);
+		}
 	}
 
 	@Override
@@ -129,7 +119,7 @@ public class HailStormWeather extends SpawnWeather {
 
 		if (!bullets.isEmpty()) stats.add(Stats2.debris, stat -> {
 			stat.row();
-			CollectionList<BulletType> keys = new CollectionList<>(BulletType.class);
+			Seq<BulletType> keys = new Seq<>(BulletType.class);
 			bullets.each(e -> keys.add(e.key));
 			keys.sort(b -> bullets.get(b, 0f));
 

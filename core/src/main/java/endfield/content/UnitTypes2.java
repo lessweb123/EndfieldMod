@@ -61,6 +61,7 @@ import endfield.type.unit.CopterUnitType;
 import endfield.type.unit.UnitType2;
 import endfield.type.weapons.AcceleratingWeapon;
 import endfield.type.weapons.BoostWeapon;
+import endfield.type.weapons.BuildWeapon2;
 import endfield.type.weapons.EnergyChargeWeapon;
 import endfield.type.weapons.HealConeWeapon;
 import endfield.type.weapons.LimitedAngleWeapon;
@@ -2649,7 +2650,6 @@ public final class UnitTypes2 {
 			envDisabled = Env.none;
 			hidden = true;
 			targetable = false;
-			hittable = false;
 			targetPriority = -2;
 			setEnginesMirror(new UnitEngine(24 / 4f, -24 / 4f, 2.3f, 315f));
 		}};
@@ -2685,7 +2685,6 @@ public final class UnitTypes2 {
 			envDisabled = Env.none;
 			hidden = true;
 			targetable = false;
-			hittable = false;
 			targetPriority = -2;
 			setEnginesMirror(new UnitEngine(40 / 4f, -40 / 4f, 3f, 315f));
 		}};
@@ -2818,7 +2817,19 @@ public final class UnitTypes2 {
 			constructor = InvincibleShipUnit::new;
 			abilities.add(new RepairFieldAbility(11451.4191981f, 60, 8 * 8), new InvincibleForceFieldAbility(60, 114.514191981f, 1145141919.81f, 300));
 			aiController = NullAI::new;
-			weapons.add(new Weapon(name + "-weapon") {{
+			weapons.add(new BuildWeapon2() {{
+				speedMulti = 1.5f;
+				mirror = true;
+				shootY = 2f;
+				x = 5.25f;
+				y = 0.25f;
+			}}, new BuildWeapon2() {{
+				speedMulti = 1.5f;
+				mirror = true;
+				shootY = 2f;
+				x = 2f;
+				y = -2.5f;
+			}}, new Weapon(name + "-weapon") {{
 				reload = 7;
 				bullet = new BasicBulletType(24.1f, 114514.191981f) {{
 					splashDamage = 114514.191981f;

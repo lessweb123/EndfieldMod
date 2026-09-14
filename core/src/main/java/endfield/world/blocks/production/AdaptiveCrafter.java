@@ -16,7 +16,6 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import endfield.math.Mathm;
 import endfield.type.Recipe;
-import endfield.util.CollectionList;
 import endfield.world.consumers.ConsumeRecipe;
 import mindustry.Vars;
 import mindustry.content.Fx;
@@ -48,8 +47,6 @@ import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValue;
 import mindustry.world.meta.StatValues;
 
-import java.util.List;
-
 public class AdaptiveCrafter extends Block {
 	/** Liquid output directions, specified in the same order as outputLiquids. Use -1 to dump in every direction. Rotations are relative to block. */
 	public int[] liquidOutputDirections = {-1};
@@ -67,10 +64,10 @@ public class AdaptiveCrafter extends Block {
 
 	public DrawBlock drawer = new DrawDefault();
 
-	public CollectionList<Recipe> recipes = new CollectionList<>(Recipe.class);
+	public Seq<Recipe> recipes = new Seq<>(Recipe.class);
 
-	public List<Item> itemOutput = new CollectionList<>(Item.class);
-	public List<Liquid> liquidOutput = new CollectionList<>(Liquid.class);
+	public Seq<Item> itemOutput = new Seq<>(Item.class);
+	public Seq<Liquid> liquidOutput = new Seq<>(Liquid.class);
 
 	public float powerProduction = 0f;
 

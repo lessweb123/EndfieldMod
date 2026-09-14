@@ -1,5 +1,6 @@
 package endfield.content;
 
+import arc.Core;
 import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
@@ -53,11 +54,11 @@ import endfield.world.blocks.defense.InsulationWall;
 import endfield.world.blocks.defense.RectOverdriveProjector;
 import endfield.world.blocks.defense.ShapedWall;
 import endfield.world.blocks.defense.turrets.Cobweb;
-import endfield.world.blocks.defense.turrets.MinigunTurret;
 import endfield.world.blocks.defense.turrets.PlatformTurret;
 import endfield.world.blocks.defense.turrets.SpeedupTurret;
 import endfield.world.blocks.defense.turrets.TeslaTurret;
 import endfield.world.blocks.distribution.Conveyor2;
+import endfield.world.blocks.distribution.Conveyor3;
 import endfield.world.blocks.distribution.CoveredRouter;
 import endfield.world.blocks.distribution.InvertedJunction;
 import endfield.world.blocks.distribution.MultiJunction;
@@ -73,6 +74,7 @@ import endfield.world.blocks.distribution.TubeSorter;
 import endfield.world.blocks.environment.ConnectedFloor;
 import endfield.world.blocks.environment.ConnectedStaticWall;
 import endfield.world.blocks.environment.DepthCliff;
+import endfield.world.blocks.environment.OreVein;
 import endfield.world.blocks.heat.ThermalHeater;
 import endfield.world.blocks.liquid.ConnectedPump;
 import endfield.world.blocks.liquid.LiquidDirectionalUnloader;
@@ -223,6 +225,7 @@ import mindustry.world.blocks.power.Battery;
 import mindustry.world.blocks.power.ConsumeGenerator;
 import mindustry.world.blocks.power.LightBlock;
 import mindustry.world.blocks.power.PowerNode;
+import mindustry.world.blocks.power.SolarGenerator;
 import mindustry.world.blocks.power.ThermalGenerator;
 import mindustry.world.blocks.production.AttributeCrafter;
 import mindustry.world.blocks.production.BurstDrill;
@@ -286,7 +289,7 @@ import static endfield.Vars2.MOD_NAME;
 public final class Blocks2 {
 	//environment
 	public static DepthCliff cliff;
-	public static Floor coreZoneCenter, coreZoneDot, darkPanel7, darkPanel8, darkPanel9, darkPanel10, darkPanel11, darkPanelDamaged;
+	public static Floor coreZoneCenter, coreZoneCenterLarge, coreZoneCenterHuge, coreZoneDot, darkPanel7, darkPanel8, darkPanel9, darkPanel10, darkPanel11, darkPanelDamaged;
 	public static ConnectedFloor metalTiles15, metalTiles16, metalTiles17, metalTiles18;
 	public static Floor asphalt;
 	public static ConnectedFloor asphaltTiles;
@@ -308,7 +311,7 @@ public final class Blocks2 {
 	public static Floor deepSlate, deepSlateBrick;
 	public static StaticWall deepSlateWall, deepSlateBrickWall;
 	public static Floor brine;
-	public static Floor crystalFluid, deepCrystalFluid;
+	public static Floor coldPlasma, deepColdPlasma;
 	public static Floor metalFloorWater, metalFloorWater2, metalFloorWater3;
 	public static Floor metalFloorWater4, metalFloorWater5, metalFloorDamagedWater;
 	public static Floor stoneWater;
@@ -321,8 +324,12 @@ public final class Blocks2 {
 	public static Floor mycelium, myceliumSpore;
 	public static StaticWall myceliumShrubs, myceliumPine;
 	public static Floor softRareEarth, patternRareEarth;
+	public static Floor crystalFloor;
+	public static StaticWall crystalBlock;
 	public static StaticWall softRareEarthWall;
-	public static TallBlock crystals, crystalsBoulder;
+	public static TallBlock oreClusterCrystal;
+	public static OreVein oreSmallTitanium, oreNormalTitanium, oreDenseTitanium, orePureTitanium;
+	public static TallBlock oreClusterTitanium;
 	public static OreBlock oreSilicon, oreCrystal, oreUranium, oreChromium;
 	//wall
 	public static Wall copperWallHuge, copperWallGigantic;
@@ -378,6 +385,7 @@ public final class Blocks2 {
 	public static MultiJunction chromiumJunction;
 	public static MultiRouter chromiumRouter;
 	public static RailItemBridge chromiumItemBridge;
+	public static Conveyor3 hardLightRail;
 	public static NodeBridge phaseItemNode;
 	public static Unloader machineryUnloader;
 	public static Unloader rapidUnloader;
@@ -410,6 +418,7 @@ public final class Blocks2 {
 	public static SmartPowerNode smartPowerNode;
 	public static ArmoredPowerNode microArmoredPowerNode, heavyArmoredPowerNode;
 	public static PowerAnalyzer powerAnalyzer;
+	public static SolarGenerator solarPad, photonPanel;
 	public static ConsumeGenerator gasGenerator;
 	public static ConsumeGenerator coalPyrolyzer;
 	public static ThermalGenerator largeThermalGenerator, radiationGenerator;
@@ -438,7 +447,6 @@ public final class Blocks2 {
 	public static GenericCrafter blastSiliconSmelter;
 	public static GenericCrafter crystallineCircuitConstructor;
 	public static AdaptiveCrafter crystallineCircuitPrinter;
-	public static GenericCrafter crystalActivator;
 	public static GenericCrafter largePhaseWeaver;
 	public static GenericCrafter phaseFusionInstrument;
 	public static GenericCrafter clarifier;
@@ -523,7 +531,6 @@ public final class Blocks2 {
 	public static ItemTurret cloudBreaker;
 	public static LiquidTurret turbulence;
 	public static LiquidTurret ironStream;
-	public static MinigunTurret minigun;
 	public static SpeedupTurret hurricane;
 	public static ContinuousTurret judgement;
 	public static ItemTurret evilSpirits;
@@ -591,6 +598,14 @@ public final class Blocks2 {
 			blendGroup = Blocks.coreZone;
 			allowCorePlacement = true;
 		}};
+		coreZoneCenterLarge = new Floor("core-zone-center-large", 0) {{
+			blendGroup = Blocks.coreZone;
+			allowCorePlacement = true;
+		}};
+		coreZoneCenterHuge = new Floor("core-zone-center-huge", 0) {{
+			blendGroup = Blocks.coreZone;
+			allowCorePlacement = true;
+		}};
 		coreZoneDot = new Floor("core-zone-dot", 0) {{
 			blendGroup = Blocks.coreZone;
 			allowCorePlacement = true;
@@ -649,6 +664,7 @@ public final class Blocks2 {
 			attributes.set(Attribute.water, -0.3f);
 		}};
 		basaltRock = new TallBlock("basalt-rock") {{
+			itemDrop = Items2.stone;
 			clipSize = 120f;
 			variants = 2;
 			attributes.set(Attribute.sand, 0.7f);
@@ -799,27 +815,27 @@ public final class Blocks2 {
 			cacheLayer = CacheLayer2.brine;
 			albedo = 1f;
 		}};
-		crystalFluid = new Floor("pooled-crystal-fluid", 0) {{
+		coldPlasma = new Floor("pooled-cold-plasma", 0) {{
 			status = StatusEffects2.regenerating;
 			statusDuration = 60f;
 			drownTime = 160f;
 			speedMultiplier = 0.8f;
-			liquidDrop = Liquids2.crystalFluid;
+			liquidDrop = Liquids2.coldPlasma;
 			isLiquid = true;
-			cacheLayer = CacheLayer2.crystalFluid;
+			cacheLayer = CacheLayer2.coldPlasma;
 			liquidMultiplier = 0.5f;
 			emitLight = true;
 			lightRadius = 20f;
 			lightColor = Color.green.cpy().a(0.19f);
 		}};
-		deepCrystalFluid = new Floor("pooled-deep-crystal-fluid", 0) {{
+		deepColdPlasma = new Floor("pooled-deep-cold-plasma", 0) {{
 			status = StatusEffects2.regenerating;
 			statusDuration = 180f;
 			drownTime = 120f;
 			speedMultiplier = 0.6f;
-			liquidDrop = Liquids2.crystalFluid;
+			liquidDrop = Liquids2.coldPlasma;
 			isLiquid = true;
-			cacheLayer = CacheLayer2.deepCrystalFluid;
+			cacheLayer = CacheLayer2.deepColdPlasma;
 			emitLight = true;
 			lightRadius = 30f;
 			lightColor = Color.green.cpy().a(0.19f);
@@ -937,15 +953,26 @@ public final class Blocks2 {
 		myceliumPine = new StaticWall("mycelium-pine") {{
 			variants = 2;
 		}};
-		crystals = new TallBlock("crystals") {{
-			variants = 3;
-			clipSize = 128f;
+		crystalFloor = new Floor("crystal-floor", 3) {{
 			itemDrop = Items2.crystal;
 		}};
-		crystalsBoulder = new TallBlock("crystals-boulder") {{
+		crystalBlock = new StaticWall("crystal-block") {{
 			variants = 3;
-			clipSize = 96f;
 			itemDrop = Items2.crystal;
+		}};
+		oreClusterCrystal = new TallBlock("ore-cluster-crystal") {{
+			itemDrop = Items2.crystal;
+			shadowOffset = -1f;
+			variants = 3;
+		}};
+		oreSmallTitanium = new OreVein("ore-small-titanium", Items.titanium, -0.2f);
+		oreNormalTitanium = new OreVein("ore-normal-titanium", Items.titanium, 0.1f);
+		oreDenseTitanium = new OreVein("ore-dense-titanium", Items.titanium, 0.3f);
+		orePureTitanium = new OreVein("ore-pure-titanium", Items.titanium, 0.6f);
+		oreClusterTitanium = new TallBlock("ore-cluster-titanium") {{
+			itemDrop = Items.titanium;
+			shadowOffset = -1f;
+			variants = 3;
 		}};
 		oreSilicon = new OreBlock("ore-silicon", Items.silicon) {{
 			variants = 3;
@@ -1654,6 +1681,15 @@ public final class Blocks2 {
 			buildCostMultiplier = 0.8f;
 			chromiumEfficientConveyor.bridgeReplacement =  chromiumArmorConveyor.bridgeReplacement =  chromiumTubeConveyor.bridgeReplacement = this;
 		}};
+		hardLightRail = new Conveyor3("hard-light-rail") {{
+			requirements(Category.distribution, BuildVisibility.hidden, ItemStack.with(Items2.chromium, 1, Items.phaseFabric, 1));
+			health = 300;
+			armor = 1f;
+			speed = 0.115f;
+			displayedSpeed = 15f;
+			placeableLiquid = true;
+			drawTeamOverlay = false;
+		}};
 		phaseItemNode = new NodeBridge("phase-item-node") {{
 			requirements(Category.distribution, ItemStack.with(Items.lead, 30, Items2.chromium, 10, Items.silicon, 15, Items.phaseFabric, 10));
 			size = 1;
@@ -1971,6 +2007,47 @@ public final class Blocks2 {
 			displayLength = 24f / 4f;
 			hideDetails = false;
 		}};
+		solarPad = new SolarGenerator("solar-pad") {{
+			requirements(Category.power, ItemStack.with(Items.lead, 20, Items.silicon, 30));
+			size = 2;
+			powerProduction = 0.6f;
+			drawer = new DrawMulti(new DrawDefault(), new DrawFade() {{
+				suffix = "-fade";
+				scale = 120f;
+				alpha = 1f;
+			}});
+		}};
+		photonPanel = new SolarGenerator("photon-panel") {{
+			requirements(Category.power, ItemStack.with(Items.lead, 60, Items.metaglass, 10 , Items2.galliumNitride, 10, Items2.crystallineCircuit, 15));
+			size = 3;
+			powerProduction = 3.6f;
+			buildType = () -> new SolarGeneratorBuild() {
+				@Override
+				public void draw() {
+					Draw.rect(baseRegions[Mathf.randomSeed(id, 0, baseRegions.length - 1)], x, y);
+					Draw.rect(reflectRegions[Mathf.randomSeed(id + 123, 0, baseRegions.length - 1)], x, y);
+					Draw.rect(topRegion, x, y);
+				}
+			};
+		}
+			public TextureRegion topRegion;
+			public TextureRegion[] baseRegions, reflectRegions;
+
+			@Override
+			public void load() {
+				super.load();
+
+				baseRegions = new TextureRegion[3];
+				reflectRegions = new TextureRegion[3];
+
+				topRegion = Core.atlas.find(name + "-top");
+
+				for (int i = 0; i < 3; i++) {
+					baseRegions[i] = Core.atlas.find(name + "-base" + (i + 1));
+					reflectRegions[i] = Core.atlas.find(name + "-reflect" + (i + 1));
+				}
+			}
+		};
 		gasGenerator = new ConsumeGenerator("gas-generator") {{
 			size = 1;
 			requirements(Category.power, ItemStack.with(Items.metaglass, 30, Items.titanium, 40));
@@ -2144,7 +2221,7 @@ public final class Blocks2 {
 			ambientSoundVolume = 0.1f;
 			consumePower(65f);
 			consumeItem(Items.phaseFabric, 1);
-			consumeLiquid(Liquids2.crystalFluid, 0.25f);
+			consumeLiquid(Liquids2.coldPlasma, 0.25f);
 			buildCostMultiplier = 0.6f;
 		}};
 		hugeBattery = new Battery("huge-battery") {{
@@ -2500,25 +2577,6 @@ public final class Blocks2 {
 			}});
 			consumePower(25f);
 			squareSprite = false;
-			hideDetails = false;
-		}};
-		crystalActivator = new GenericCrafter("crystal-activator") {{
-			requirements(Category.crafting, ItemStack.with(Items.titanium, 90, Items.silicon, 80, Items2.crystallineCircuit, 30, Items.plastanium, 60));
-			size = 2;
-			health = 360;
-			hasPower = hasLiquids = outputsLiquid = true;
-			rotate = false;
-			solid = true;
-			itemCapacity = 15;
-			liquidCapacity = 24f;
-			craftTime = 100f;
-			craftEffect = Fx2.square(Pal2.crystalAmmoBright, 38, 3, 24, 3.2f);
-			outputLiquid = new LiquidStack(Liquids2.crystalFluid, 18f / 60f);
-			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.water), new DrawLiquidTile(Liquids2.crystalFluid), new DrawRotator(1.5f), new DrawDefault(), new DrawRegion("-top"));
-			lightLiquid = Liquids2.crystalFluid;
-			consumePower(3f);
-			consumeItem(Items2.crystal, 1);
-			consumeLiquid(Liquids.water, 18f / 60f);
 			hideDetails = false;
 		}};
 		largePhaseWeaver = new GenericCrafter("large-phase-weaver") {{
@@ -3201,7 +3259,7 @@ public final class Blocks2 {
 			glowMag = 0.4f;
 			glowScl = 12f;
 			consumePower(18f);
-			consumeLiquid(Liquids2.crystalFluid, 0.6f);
+			consumeLiquid(Liquids2.coldPlasma, 0.6f);
 		}};
 		titanReconstructor = new Reconstructor("titan-reconstructor") {{
 			requirements(Category.units, ItemStack.with(Items.lead, 4000, Items.silicon, 3000, Items.plastanium, 1500, Items.surgeAlloy, 1200, Items.phaseFabric, 300, Items2.uranium, 600, Items2.chromium, 800));
@@ -4955,7 +5013,7 @@ public final class Blocks2 {
 				statusDuration = 600f;
 				status = StatusEffects.melting;
 				damage = 9.5f;
-			}}, Liquids2.crystalFluid, new LiquidBulletType(Liquids2.crystalFluid) {{
+			}}, Liquids2.coldPlasma, new LiquidBulletType(Liquids2.coldPlasma) {{
 				lifetime = 30f;
 				speed = 7f;
 				puddleSize = 6f;
@@ -5058,81 +5116,6 @@ public final class Blocks2 {
 			rotateSpeed = 9f;
 			liquidCapacity = 10f;
 			buildCostMultiplier = 0.8f;
-		}};
-		minigun = new MinigunTurret("minigun") {{
-			requirements(Category.turret, ItemStack.with(Items.copper, 350, Items.graphite, 300, Items.titanium, 150, Items.plastanium, 175, Items.surgeAlloy, 120));
-			ammo(Items.copper, new BasicBulletType(11f, 19f) {{
-				width = 5f;
-				height = 7f;
-				lifetime = 25f;
-				ammoMultiplier = 2;
-			}}, Items.graphite, new BasicBulletType(13f, 37f) {{
-				width = 5.5f;
-				height = 9f;
-				reloadMultiplier = 0.6f;
-				ammoMultiplier = 4;
-				lifetime = 23f;
-			}}, Items.pyratite, new BasicBulletType(13f, 24f) {{
-				width = 5f;
-				height = 8f;
-				frontColor = Pal.lightishOrange;
-				backColor = Pal.lightOrange;
-				status = StatusEffects.burning;
-				hitEffect = new MultiEffect(Fx.hitBulletSmall, Fx.fireHit);
-				homingPower = 0.07f;
-				reloadMultiplier = 1.3f;
-				ammoMultiplier = 5;
-				lifetime = 23f;
-				makeFire = true;
-			}}, Items.silicon, new BasicBulletType(12f, 21f) {{
-				width = 5f;
-				height = 8f;
-				homingPower = 0.07f;
-				reloadMultiplier = 1.3f;
-				ammoMultiplier = 5;
-				lifetime = 24f;
-			}}, Items.thorium, new BasicBulletType(15f, 47f) {{
-				width = 6f;
-				height = 11f;
-				shootEffect = Fx.shootBig;
-				smokeEffect = Fx.shootBigSmoke;
-				ammoMultiplier = 4f;
-				lifetime = 20f;
-			}}, Items2.uranium, new BasicBulletType(17f, 65f) {{
-				width = 7f;
-				height = 13f;
-				shootEffect = Fx.shootBig;
-				smokeEffect = Fx.shootBigSmoke;
-				status = StatusEffects.melting;
-				ammoMultiplier = 6f;
-				lifetime = 18f;
-			}});
-			size = 4;
-			range = 280f;
-			maxSpeed = 27f;
-			scaledHealth = 150;
-			shootCone = 35f;
-			shootSound = Sounds.shootSalvo;
-			targetAir = targetGround = true;
-			recoil = 3f;
-			recoilTime = 90f;
-			cooldownTime = 10f;
-			inaccuracy = 2f;
-			shootEffect = smokeEffect = Fx.none;
-			heatColor = Pal.turretHeat;
-			barX = 4f;
-			barY = -10f;
-			barStroke = 1f;
-			barLength = 9f;
-			shoot = new ShootBarrel() {{
-				shots = 2;
-				barrels = new float[]{
-						-4f, 0f, 0f,
-						4f, 0f, 0f
-				};
-			}};
-			ammoUseEffect = Fx2.casing(32f);
-			coolant = consumeCoolant(0.2f);
 		}};
 		hurricane = new SpeedupTurret("hurricane") {{
 			requirements(Category.turret, ItemStack.with(Items.lead, 80, Items.graphite, 100, Items.silicon, 250, Items.plastanium, 120, Items.surgeAlloy, 80, Items.phaseFabric, 150));
@@ -5374,7 +5357,7 @@ public final class Blocks2 {
 			unitSort = UnitSorts.strongest;
 			buildCostMultiplier = 0.8f;
 			consumePower(26f);
-			consumeLiquid(Liquids2.crystalFluid, 12f / 60f);
+			consumeLiquid(Liquids2.coldPlasma, 12f / 60f);
 		}};
 		evilSpirits = new ItemTurret("evil-spirits") {{
 			requirements(Category.turret, ItemStack.with(Items.copper, 600, Items.graphite, 500, Items.plastanium, 250, Items2.uranium, 220, Items.surgeAlloy, 280));

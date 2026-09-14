@@ -2,6 +2,8 @@ package endfield.util;
 
 import arc.func.Boolf;
 import arc.func.Prov;
+import arc.struct.ObjectSet;
+import arc.struct.Seq;
 import arc.util.Structs;
 import endfield.util.handler.ClassHandler;
 import mindustry.Vars;
@@ -15,11 +17,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 
 import static endfield.Vars2.accessibleHelper;
 import static endfield.Vars2.platformImpl;
@@ -82,6 +80,10 @@ public final class Reflects {
 	 */
 	public static FieldAccessor newFieldAccessor(Field field) {
 		return platformImpl.fieldAccessor(field);
+	}
+
+	public static MethodAccessor newMethodAccessor(Class<?> type, String name, Class<?>... parameterTypes) {
+		return platformImpl.methodAccessor(ClassHandler.getMethod(type, name, parameterTypes));
 	}
 
 	/**
@@ -184,15 +186,15 @@ public final class Reflects {
 						.collect(Collectors.joining(",", "(", ")")));*/
 	}
 
-	public static List<Class<?>> getDirectSuperclasses(Class<?> clazz) {
-		ArrayList<Class<?>> result = new ArrayList<>();
+	public static Seq<Class<?>> getDirectSuperclasses(Class<?> clazz) {
+		Seq<Class<?>> result = new Seq<>(Class.class);
 		Class<?> superclass = clazz.getSuperclass();
 
 		if (superclass != null && superclass != Object.class) {
 			result.add(superclass);
 		}
 
-		Collections.addAll(result, clazz.getInterfaces());
+		result.addAll(clazz.getInterfaces());
 
 		return result;
 	}
@@ -213,9 +215,9 @@ public final class Reflects {
 		return false;
 	}
 
-	public static Set<Class<?>> getClassSubclassHierarchy(Class<?> clazz) {
+		public static ObjectSet<Class<?>> getClassSubclassHierarchy(Class<?> clazz) {
 		Class<?> curr = clazz.getSuperclass();
-		CollectionObjectSet<Class<?>> hierarchy = new CollectionObjectSet<>(Class.class);
+			ObjectSet<Class<?>> hierarchy = new ObjectSet<>();
 		while (curr != null) {
 			hierarchy.add(curr);
 			Class<?>[] interfaces = curr.getInterfaces();
@@ -307,10 +309,10 @@ public final class Reflects {
 		return types;
 	}
 
-	public static Class<?>[] toTypes(List<?> args) {
+	public static Class<?>[] toTypes(Seq<?> args) {
 		if (args == null) return Constant.EMPTY_CLASS;
 
-		Class<?>[] types = new Class[args.size()];
+		Class<?>[] types = new Class[args.size];
 
 		for (int i = 0; i < types.length; i++) {
 			Object object = args.get(i);

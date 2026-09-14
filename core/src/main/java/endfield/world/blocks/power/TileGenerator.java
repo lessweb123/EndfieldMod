@@ -1,7 +1,7 @@
 package endfield.world.blocks.power;
 
+import arc.struct.Seq;
 import arc.util.Scaling;
-import endfield.util.CollectionList;
 import mindustry.game.Team;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
@@ -9,10 +9,8 @@ import mindustry.world.Tile;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatValues;
 
-import java.util.List;
-
 public class TileGenerator extends AdvancedConsumeGenerator {
-	public List<Block> filter = new CollectionList<>(Block.class);
+	public Seq<Block> filter = new Seq<>(Block.class);
 
 	public TileGenerator(String name) {
 		super(name);

@@ -4,6 +4,7 @@ import arc.graphics.Color;
 import arc.util.Time;
 import endfield.audio.Sounds2;
 import endfield.entities.bullet.FallingRockBulletType;
+import endfield.graphics.Textures2;
 import endfield.type.weather.EffectWeather;
 import endfield.type.weather.HailStormWeather;
 import mindustry.content.Fx;
@@ -114,7 +115,7 @@ public final class Weathers2 {
 				hitSound = Sounds2.giantHailstoneHit;
 				damage = splashDamage = 250f;
 				splashDamageRadius = 80f;
-			}}, 1f / 10000000f);
+			}}, 1f / 20000f);
 		}};
 		stoneStorm = new HailStormWeather("stone-storm") {{
 			attrs.set(Attribute.light, -2f);
@@ -130,12 +131,13 @@ public final class Weathers2 {
 			xspeed = yspeed = 20f;
 			density = 400f;
 			drawNoise = true;
+			noise = Textures2.noiseAlpha;
 			noiseLayers = 3;
-			noiseColor = Color.valueOf("493D37");
+			noiseColor = new Color(0x493d37ff);
 			noiseSpeed = 20f;
 			drawParticles = true;
 			randomParticleRotation = true;
-			particleRegion = "-stone-stone-small-0";
+			particleRegion = MOD_NAME + "-stone-small-0";
 			minAlpha = 0.2f;
 			maxAlpha = 0.8f;
 			sinSclMin = 60f;

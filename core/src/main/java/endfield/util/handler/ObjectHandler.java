@@ -1,14 +1,12 @@
 package endfield.util.handler;
 
 import arc.func.Boolf;
-import endfield.util.CollectionList;
-import endfield.util.CollectionObjectSet;
+import arc.struct.ObjectSet;
+import arc.struct.Seq;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.List;
-import java.util.Set;
 
 /**
  * A set of practical tools for copying field properties of an object to another.
@@ -27,7 +25,7 @@ public final class ObjectHandler {
 	 * @throws IllegalArgumentException If the target object is not assigned from the source class
 	 */
 	public static <S, T extends S> void copyField(S source, T target) {
-		List<Field> fields = getFields(source, null);
+		Seq<Field> fields = getFields(source, null);
 
 		for (Field field : fields) {
 			FieldHandler.set(target, field, FieldHandler.get(source, field));
@@ -43,8 +41,8 @@ public final class ObjectHandler {
 	 * @param blacks Field blacklist
 	 */
 	public static <S, T extends S> void copyFieldAsBlack(S source, T target, String... blacks) {
-		Set<String> black = CollectionObjectSet.with(blacks);
-		List<Field> fields = getFields(source, field -> !black.contains(field.getName()));
+		ObjectSet<String> black = ObjectSet.with(blacks);
+		Seq<Field> fields = getFields(source, field -> !black.contains(field.getName()));
 
 		for (Field field : fields) {
 			FieldHandler.set(target, field, FieldHandler.get(source, field));
@@ -60,17 +58,17 @@ public final class ObjectHandler {
 	 * @param whites Field whitelist
 	 */
 	public static <S, T extends S> void copyFieldAsWhite(S source, T target, String... whites) {
-		Set<String> black = CollectionObjectSet.with(whites);
-		List<Field> fields = getFields(source, field -> black.contains(field.getName()));
+		ObjectSet<String> black = ObjectSet.with(whites);
+		Seq<Field> fields = getFields(source, field -> black.contains(field.getName()));
 
 		for (Field field : fields) {
 			FieldHandler.set(target, field, FieldHandler.get(source, field));
 		}
 	}
 
-	public static List<Field> getFields(Object object, @Nullable Boolf<Field> filler) {
+	public static Seq<Field> getFields(Object object, @Nullable Boolf<Field> filler) {
 		Class<?> curr = object.getClass();
-		CollectionList<Field> fields = new CollectionList<>(Field.class);
+		Seq<Field> fields = new Seq<>(Field.class);
 
 		while (curr != Object.class) {
 			for (Field field : ClassHandler.getFields(curr)) {

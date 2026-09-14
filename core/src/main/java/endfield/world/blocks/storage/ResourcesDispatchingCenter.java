@@ -20,7 +20,6 @@ import arc.util.Strings;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import endfield.util.CollectionList;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.core.UI;
@@ -35,8 +34,6 @@ import mindustry.graphics.Pal;
 import mindustry.type.Item;
 import mindustry.ui.Bar;
 import mindustry.world.blocks.storage.StorageBlock;
-
-import java.util.List;
 
 /**
  * Resource distribution center, directly delivering resources to target buildings.
@@ -61,7 +58,7 @@ public class ResourcesDispatchingCenter extends StorageBlock {
 	public TextureRegion bottomRegion;
 	public TextureRegion rotatorRegion;
 
-	public List<ItemHave> tmpWhatHave = new CollectionList<>(true, 32, ItemHave.class);
+	public Seq<ItemHave> tmpWhatHave = new Seq<>(true, 32, ItemHave.class);
 
 	public ResourcesDispatchingCenter(String name) {
 		super(name);
@@ -295,9 +292,9 @@ public class ResourcesDispatchingCenter extends StorageBlock {
 		 * @param whatIHave Existing resources
 		 * @return Is the sending successful
 		 */
-		public boolean sendItems(Building target, List<ItemHave> whatIHave) {
+		public boolean sendItems(Building target, Seq<ItemHave> whatIHave) {
 			boolean s = false;
-			for (int i = whatIHave.size() - 1; i >= 0; i--) {
+			for (int i = whatIHave.size - 1; i >= 0; i--) {
 				ItemHave have = whatIHave.get(i);
 				Item item = have.item;
 				int count = have.count;
@@ -422,7 +419,7 @@ public class ResourcesDispatchingCenter extends StorageBlock {
 					l.update((() -> {
 						l.clearChildren();
 						l.left();
-						List<Item> seq = new CollectionList<>(Item.class);
+						Seq<Item> seq = new Seq<>(Item.class);
 						items.each((item, amount) -> {
 							map.put(item.id, amount);
 							seq.add(item);

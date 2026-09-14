@@ -116,18 +116,12 @@ public abstract class HeightPass {
 
 		@Override
 		public float height(Vec3 pos, float height) {
-			switch (operation) {
-				case add -> {
-					return height + rawHeight(pos);
-				}
-				case set -> {
-					return rawHeight(pos);
-				}
-				case carve -> {
-					return height - rawHeight(pos);
-				}
-			}
-			return height;
+			return switch (operation) {
+				case add -> height + rawHeight(pos);
+				case set -> rawHeight(pos);
+				case carve -> height - rawHeight(pos);
+				//default -> height;
+			};
 		}
 
 		protected float rawHeight(Vec3 pos) {

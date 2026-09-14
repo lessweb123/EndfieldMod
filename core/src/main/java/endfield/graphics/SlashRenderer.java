@@ -6,12 +6,12 @@ import arc.graphics.g2d.Fill;
 import arc.graphics.gl.FrameBuffer;
 import arc.graphics.gl.Shader;
 import arc.math.Mathf;
+import arc.struct.Seq;
 import arc.util.Tmp;
-import endfield.util.CollectionList;
 import mindustry.Vars;
 
 public final class SlashRenderer {
-	private static final CollectionList<SlashData> slashes = new CollectionList<>(SlashData.class);
+	private static final Seq<SlashData> slashes = new Seq<>(SlashData.class);
 	private static int maxCount = 4;
 	private static SlashShader slashShader;
 	private static int slashIndex = 0;

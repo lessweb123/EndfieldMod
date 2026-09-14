@@ -8,10 +8,10 @@ import arc.graphics.Pixmap;
 import arc.graphics.Texture;
 import arc.graphics.Texture.TextureFilter;
 import arc.graphics.g2d.TextureRegion;
+import arc.struct.OrderedMap;
 import arc.util.Http;
 import arc.util.Log;
 import endfield.util.atomic.AtomicFloat;
-import endfield.util.holder.ObjectHolder;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 public final class URLDownloader {
-	static final CollectionOrderedMap<String, String> URL_REPLACES = new CollectionOrderedMap<>(String.class, String.class);
+	static final OrderedMap<String, String> URL_REPLACES = new OrderedMap<>();
 
 	/** Don't let anyone instantiate this class. */
 	private URLDownloader() {}
@@ -40,7 +40,7 @@ public final class URLDownloader {
 		AtomicInteger counter = new AtomicInteger();
 		AtomicReference<Runnable> get = new AtomicReference<>();
 
-		for (ObjectHolder<String, String> entry : URL_REPLACES) {
+		for (var entry : URL_REPLACES) {
 			if (url.startsWith(entry.key)) {
 				url = url.replaceFirst(entry.key, entry.value);
 			}

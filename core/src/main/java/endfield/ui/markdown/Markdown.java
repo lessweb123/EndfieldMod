@@ -233,7 +233,9 @@ public class Markdown extends WidgetGroup {
 		public Color colorModifier;
 		public float scaleModifier;
 
-		public FontEntry() {}
+		public FontEntry() {
+			scaleModifier = Float.NaN;
+		}
 
 		public FontEntry(Font font, boolean isItal, Color colorMod, float scaleMod) {
 			fontModifier = font;

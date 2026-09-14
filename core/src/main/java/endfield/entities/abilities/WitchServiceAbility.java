@@ -2,11 +2,11 @@ package endfield.entities.abilities;
 
 import arc.graphics.Color;
 import arc.math.geom.Rect;
+import arc.struct.ObjectFloatMap;
 import arc.util.Time;
 import endfield.content.Fx2;
 import endfield.content.StatusEffects2;
 import endfield.graphics.Pal2;
-import endfield.util.ObjectFloatMap2;
 import mindustry.Vars;
 import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
@@ -19,7 +19,7 @@ import mindustry.type.UnitType;
 public class WitchServiceAbility extends Ability {
 	protected static Rect tmpRect = new Rect();
 
-	public ObjectFloatMap2<Unit> findMap = new ObjectFloatMap2<>(Unit.class);
+	public ObjectFloatMap<Unit> findMap = new ObjectFloatMap<>();
 
 	public float width = 60f, height = 60f;
 	public StatusEffect effectType = StatusEffects2.apoptosis;
@@ -80,14 +80,16 @@ public class WitchServiceAbility extends Ability {
 						u.apply(applyEffect, timeApply / 2f);
 					} else {
 						if (u.isValid() && findMap.containsKey(u)) {
-							findMap.remove(u);
+							findMap.remove(u, 0f);
 						}
 					}
 				}
 			});
 			for (Unit u : findMap.keys()) {
-				if (u == null || !u.isValid() || u.hasEffect(effectType)) {
-					findMap.remove(u);
+				if (u == null) continue;
+
+				if (!u.isValid() || u.hasEffect(effectType)) {
+					findMap.remove(u, 0f);
 
 					continue;
 				}
@@ -97,7 +99,7 @@ public class WitchServiceAbility extends Ability {
 
 				if (findMap.get(u, 0f) >= 1) {
 					u.apply(effectType, effectTime);
-					findMap.remove(u);
+					findMap.remove(u, 0f);
 				}
 			}
 

@@ -4,18 +4,15 @@ import arc.Core;
 import arc.files.Fi;
 import arc.files.ZipFi;
 import arc.func.Boolf2;
+import arc.struct.ObjectSet;
+import arc.struct.Seq;
 import arc.util.ArcRuntimeException;
 import arc.util.serialization.Jval;
-import endfield.util.CollectionList;
-import endfield.util.CollectionObjectSet;
 import mindustry.mod.Mod;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.Set;
-
 public final class ModGetter {
-	public static final Set<Throwable> errors = new CollectionObjectSet<>(Throwable.class);
+	public static final ObjectSet<Throwable> errors = new ObjectSet<>();
 
 	public static final String[] metaFiles = {"mod.json", "mod.hjson", "plugin.json", "plugin.hjson"};
 
@@ -62,8 +59,8 @@ public final class ModGetter {
 		}
 	}
 
-	public static List<ModInfo> getModsWithFilter(Boolf2<Fi, Jval> filter) {
-		List<ModInfo> result = new CollectionList<>(ModInfo.class);
+	public static Seq<ModInfo> getModsWithFilter(Boolf2<Fi, Jval> filter) {
+		Seq<ModInfo> result = new Seq<>(ModInfo.class);
 
 		for (Fi file : modDirectory.list()) {
 			try {
@@ -79,11 +76,11 @@ public final class ModGetter {
 		return result;
 	}
 
-	public static List<ModInfo> getModsWithName(String name) {
+	public static Seq<ModInfo> getModsWithName(String name) {
 		return getModsWithFilter((fi, jval) -> jval.getString("name").equals(name));
 	}
 
-	public static List<ModInfo> getModsWithClass(Class<? extends Mod> mainClass) {
+	public static Seq<ModInfo> getModsWithClass(Class<? extends Mod> mainClass) {
 		return getModsWithFilter((fi, jval) -> {
 			String main = jval.getString("main");
 			return main != null && main.equals(mainClass.getCanonicalName());
@@ -91,13 +88,13 @@ public final class ModGetter {
 	}
 
 	public static @Nullable ModInfo getModWithName(String name) {
-		List<ModInfo> list = getModsWithName(name);
+		Seq<ModInfo> list = getModsWithName(name);
 
 		return list.isEmpty() ? null : list.get(0);
 	}
 
 	public static @Nullable ModInfo getModWithClass(Class<? extends Mod> mainClass) {
-		List<ModInfo> list = getModsWithClass(mainClass);
+		Seq<ModInfo> list = getModsWithClass(mainClass);
 
 		return list.isEmpty() ? null : list.get(0);
 	}

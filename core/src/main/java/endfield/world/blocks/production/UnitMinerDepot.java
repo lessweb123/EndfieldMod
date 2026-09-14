@@ -10,14 +10,13 @@ import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Table;
 import arc.struct.EnumSet;
+import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import endfield.content.UnitTypes2;
 import endfield.graphics.Drawe;
-import endfield.util.CollectionObjectMap;
-import endfield.util.holder.ObjectHolder;
 import mindustry.Vars;
 import mindustry.content.Blocks;
 import mindustry.content.Fx;
@@ -115,7 +114,7 @@ public class UnitMinerDepot extends Block {
 
 		public @Nullable Item targetItem;
 
-		public CollectionObjectMap<Item, Tile> oreTiles = new CollectionObjectMap<>(Item.class, Tile.class);
+		public ObjectMap<Item, Tile> oreTiles = new ObjectMap<>();
 		public boolean oresFound, targetSet;
 
 		@Override
@@ -293,7 +292,7 @@ public class UnitMinerDepot extends Block {
 			TypeIO.writeVecNullable(write, commandPos);
 
 			write.i(oreTiles.size);
-			for (ObjectHolder<Item, Tile> entry : oreTiles.iterator()) {
+			for (var entry : oreTiles.iterator()) {
 				write.s(entry.key.id);
 				write.i(entry.value == null ? -1 : entry.value.pos());
 			}

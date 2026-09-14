@@ -14,6 +14,7 @@ import arc.math.Rand;
 import arc.math.geom.Position;
 import arc.math.geom.Rect;
 import arc.math.geom.Vec2;
+import arc.struct.IntMap;
 import arc.struct.IntSeq;
 import arc.struct.IntSet;
 import arc.struct.IntSet.IntSetIterator;
@@ -49,6 +50,7 @@ import mindustry.type.Weapon;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
+import mindustry.world.consumers.Consume;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.draw.DrawMulti;
@@ -73,10 +75,22 @@ public final class Get {
 
 	public static final Team[] baseTeams = {Team.derelict, Team.sharded, Team.crux, Team.green, Team.malis, Team.blue};
 
-	static final CollectionList<ItemStack> itemStacks = new CollectionList<>(ItemStack.class);
-	static final CollectionList<Item> items = new CollectionList<>(Item.class);
+	public static final FieldAccessor consumeBuilderAccessor;
+	public static final MethodAccessor iconsAccessor;
+
+	static final Seq<ItemStack> itemStacks = new Seq<>(ItemStack.class);
+	static final Seq<Item> items = new Seq<>(Item.class);
 
 	static final IntSeq amounts = new IntSeq();
+
+	static {
+		try {
+			consumeBuilderAccessor = Reflects.newFieldAccessor(Block.class.getDeclaredField("consumeBuilder"));
+			iconsAccessor = Reflects.newMethodAccessor(Block.class.getDeclaredMethod("icons", Constant.EMPTY_CLASS));
+		} catch (NoSuchFieldException | NoSuchMethodException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	/** Don't let anyone instantiate this class. */
 	private Get() {}
@@ -325,7 +339,7 @@ public final class Get {
 		return bullet;
 	}
 
-	public static void liquid(@Nullable IntMap2<Cons<Liquid>> cons, String name, Color color, float exp, float fla, float htc, float vis, float temp) {
+	public static void liquid(@Nullable IntMap<Cons<Liquid>> cons, String name, Color color, float exp, float fla, float htc, float vis, float temp) {
 		for (int i = 1; i < 10; i++) {
 			int j = i;
 			Liquid liquid = new Liquid(name + j, color) {{
@@ -345,7 +359,7 @@ public final class Get {
 		liquid(null, name, color, exp, fla, htc, vis, temp);
 	}
 
-	public static void item(@Nullable IntMap2<Cons<Item>> cons, String name, Color color, float exp, float fla, float cos, float radio, float chg, float health) {
+	public static void item(@Nullable IntMap<Cons<Item>> cons, String name, Color color, float exp, float fla, float cos, float radio, float chg, float health) {
 		for (int i = 1; i < 10; i++) {
 			int j = i;
 			Item item = new Item(name + j, color) {{
@@ -506,6 +520,14 @@ public final class Get {
 				return damage;
 			}
 		}
+	}
+
+	public static Seq<Consume> consumeBuilder(Block block) {
+		return consumeBuilderAccessor.getObject(block);
+	}
+
+	public static TextureRegion[] icons(Block block) {
+		return iconsAccessor.invoke(block, Constant.EMPTY_OBJECT);
 	}
 
 	public static class Pos implements IPosition, Poolable {

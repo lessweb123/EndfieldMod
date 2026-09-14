@@ -8,6 +8,7 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
+import arc.struct.OrderedSet;
 import arc.util.Eachable;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -18,7 +19,6 @@ import arc.util.pooling.Pools;
 import endfield.entities.bullet.LiquidMassDriverBolt;
 import endfield.graphics.Outliner;
 import endfield.math.Mathm;
-import endfield.util.CollectionOrderedSet;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.content.Liquids;
@@ -176,7 +176,7 @@ public class LiquidMassDriver extends Block {
 		public float reloadCounter = 0f;
 		public DriverState state = DriverState.idle;
 		//TODO use queue? this array usually holds about 3 shooters max anyway
-		public CollectionOrderedSet<Building> waitingShooters = new CollectionOrderedSet<>(Building.class);
+		public OrderedSet<Building> waitingShooters = new OrderedSet<>();
 
 		public Building currentShooter() {
 			return waitingShooters.isEmpty() ? null : waitingShooters.first();

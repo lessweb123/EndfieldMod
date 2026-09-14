@@ -7,10 +7,10 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
+import arc.struct.Seq;
 import arc.util.Strings;
 import arc.util.Time;
 import endfield.math.Mathm;
-import endfield.util.CollectionList;
 import endfield.world.meta.Stats2;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
@@ -24,12 +24,10 @@ import mindustry.type.UnitType;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 
-import java.util.List;
-
 import static mindustry.Vars.state;
 
 public class JavelinAbility extends Ability {
-	protected final List<Healthc> targets = new CollectionList<>(Healthc.class);
+	protected final Seq<Healthc> targets = new Seq<>(Healthc.class);
 
 	public String suffix = "-overlay";
 	public String name;
