@@ -8,6 +8,8 @@ import endfield.util.CollectionObjectMap;
 import mindustry.Vars;
 import mindustry.entities.Damage;
 import mindustry.entities.abilities.Ability;
+import mindustry.gen.Call;
+import mindustry.gen.Groups;
 import mindustry.gen.Hitboxc;
 import mindustry.gen.UnitWaterMove;
 
@@ -37,7 +39,28 @@ public class UnitWaterMove2 extends UnitWaterMove implements Unitc2 {
 
 	@Override
 	public void add() {
-		super.add();
+		if (added) return;
+
+		index__unit = Groups.unit.addIndex(this);
+		index__sync = Groups.sync.addIndex(this);
+		index__draw = Groups.draw.addIndex(this);
+
+		added = true;
+
+		updateLastPosition();
+
+		team.data().updateCount(type, 1);
+
+		//check if over unit cap
+		if (type.useUnitCap && count() > cap() && !spawnedByCore && !dead && !Vars.state.rules.editor) {
+			Call.unitCapDeath(this);
+			team.data().updateCount(type, -1);
+		}
+
+		Vars.unitPhysics.add(this);
+
+		tleft.clear();
+		tright.clear();
 
 		asType().init(this);
 	}

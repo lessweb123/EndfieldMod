@@ -2,33 +2,20 @@ package endfield.util;
 
 import arc.func.Cons;
 import arc.func.Prov;
-import arc.math.Mathf;
 import arc.struct.Seq;
 import arc.util.ArcRuntimeException;
 import arc.util.Eachable;
-import endfield.math.Mathm;
 import endfield.util.holder.CharHolder;
 
 import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import static endfield.util.Constant.EMPTY;
+import static endfield.util.CollectionObjectSet.tableSize;
 import static endfield.util.Constant.INDEX_ILLEGAL;
 import static endfield.util.Constant.INDEX_ZERO;
-import static endfield.util.Constant.PRIME2;
-import static endfield.util.Constant.PRIME3;
 
-/**
- * An unordered map that uses char keys. This implementation is a cuckoo hash map using 3 hashes, random walking, and a small
- * stash for problematic keys. Null values are allowed. No allocation is done except when growing the table size. <br>
- * <br>
- * This map performs very fast get, containsKey, and remove (typically O(1), worst case O(log(n))). Put may be a bit slower,
- * depending on hash collisions. Load factors greater than 0.91 greatly increase the chances the map will have to rehash to the
- * next higher POT size.
- *
- * @author Nathan Sweet
- */
 public class CharMap<V> implements Iterable<CharHolder<V>>, Eachable<CharHolder<V>>, Cloneable {
 	public int size;
 
@@ -36,14 +23,16 @@ public class CharMap<V> implements Iterable<CharHolder<V>>, Eachable<CharHolder<
 
 	protected char[] keyTable;
 	protected V[] valueTable;
-	protected int capacity, stashSize;
+
 	protected V zeroValue;
 	protected boolean hasZeroValue;
 
 	protected float loadFactor;
-	protected int hashShift, mask, threshold;
-	protected int stashCapacity;
-	protected int pushIterations;
+	protected int threshold;
+
+	protected int shift;
+
+	protected int mask;
 
 	protected transient Entries entries1, entries2;
 	protected transient Values values1, values2;
@@ -62,53 +51,37 @@ public class CharMap<V> implements Iterable<CharHolder<V>>, Eachable<CharHolder<
 		return map;
 	}
 
-	/** Creates a new map with an initial capacity of 51 and a load factor of 0.8. */
+	public CharMap() {
+		this(Object.class);
+	}
+
 	public CharMap(Class<?> valueType) {
 		this(51, 0.8f, valueType);
 	}
 
-	/**
-	 * Creates a new map with a load factor of 0.8.
-	 *
-	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two.
-	 */
 	public CharMap(int initialCapacity, Class<?> valueType) {
 		this(initialCapacity, 0.8f, valueType);
 	}
 
-	/**
-	 * Creates a new map with the specified initial capacity and load factor. This map will hold initialCapacity items before
-	 * growing the backing table.
-	 *
-	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two.
-	 */
 	@SuppressWarnings("unchecked")
 	public CharMap(int initialCapacity, float loadFactor, Class<?> valueType) {
-		if (initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0: " + initialCapacity);
-		initialCapacity = Mathf.nextPowerOfTwo((int) Math.ceil(initialCapacity / loadFactor));
-		if (initialCapacity > 1 << 30)
-			throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
-		capacity = initialCapacity;
-
-		if (loadFactor <= 0) throw new IllegalArgumentException("loadFactor must be > 0: " + loadFactor);
+		if (loadFactor <= 0f || loadFactor >= 1f)
+			throw new IllegalArgumentException("loadFactor must be > 0 and < 1: " + loadFactor);
 		this.loadFactor = loadFactor;
 
-		threshold = (int) (capacity * loadFactor);
-		mask = capacity - 1;
-		hashShift = 31 - Integer.numberOfTrailingZeros(capacity);
-		stashCapacity = Math.max(3, (int) Math.ceil(Math.log(capacity)) * 2);
-		pushIterations = Mathm.clamp(capacity, 8, (int) Math.sqrt(capacity) / 8);
+		int tableSize = tableSize(initialCapacity, loadFactor);
+		threshold = (int) (tableSize * loadFactor);
+		mask = tableSize - 1;
+		shift = Long.numberOfLeadingZeros(mask);
 
 		valueComponentType = (Class<V>) valueType;
 
-		keyTable = new char[capacity + stashCapacity];
-		valueTable = (V[]) Array.newInstance(valueComponentType, keyTable.length);
+		keyTable = new char[tableSize];
+		valueTable = (V[]) Array.newInstance(valueComponentType, tableSize);
 	}
 
-	/** Creates a new map identical to the specified map. */
 	public CharMap(CharMap<? extends V> map) {
-		this((int) Math.floor(map.capacity * map.loadFactor), map.loadFactor, map.valueComponentType);
-		stashSize = map.stashSize;
+		this((int) (map.keyTable.length * map.loadFactor), map.loadFactor, map.valueComponentType);
 		System.arraycopy(map.keyTable, 0, keyTable, 0, map.keyTable.length);
 		System.arraycopy(map.valueTable, 0, valueTable, 0, map.valueTable.length);
 		size = map.size;
@@ -140,6 +113,19 @@ public class CharMap<V> implements Iterable<CharHolder<V>>, Eachable<CharHolder<
 		}
 	}
 
+	protected int place(char item) {
+		return (int) (item * 0x9E3779B97F4A7C15L >>> shift);
+	}
+
+	protected int locateKey(char key) {
+		char[] ks = keyTable;
+		for (int i = place(key); ; i = i + 1 & mask) {
+			int other = ks[i];
+			if (other == 0) return -(i + 1);
+			if (other == key) return i;
+		}
+	}
+
 	public V put(char key, V value) {
 		if (key == 0) {
 			V oldValue = zeroValue;
@@ -150,189 +136,70 @@ public class CharMap<V> implements Iterable<CharHolder<V>>, Eachable<CharHolder<
 			}
 			return oldValue;
 		}
-
-		// Check for existing keys.
-		int index1 = key & mask;
-		char key1 = keyTable[index1];
-		if (key1 == key) {
-			V oldValue = valueTable[index1];
-			valueTable[index1] = value;
+		int i = locateKey(key);
+		if (i >= 0) {
+			V oldValue = valueTable[i];
+			valueTable[i] = value;
 			return oldValue;
 		}
+		i = -(i + 1);
+		keyTable[i] = key;
+		valueTable[i] = value;
+		if (++size >= threshold) resize(keyTable.length << 1);
+		return null;
+	}
 
-		int index2 = hash2(key);
-		char key2 = keyTable[index2];
-		if (key2 == key) {
-			V oldValue = valueTable[index2];
-			valueTable[index2] = value;
-			return oldValue;
-		}
-
-		int index3 = hash3(key);
-		char key3 = keyTable[index3];
-		if (key3 == key) {
-			V oldValue = valueTable[index3];
-			valueTable[index3] = value;
-			return oldValue;
-		}
-
-		// Update key in the stash.
-		for (int i = capacity, n = i + stashSize; i < n; i++) {
-			if (keyTable[i] == key) {
-				V oldValue = valueTable[i];
-				valueTable[i] = value;
-				return oldValue;
+	public V putMissing(char key, V value) {
+		if (key == 0) {
+			V oldValue = zeroValue;
+			if (!hasZeroValue) {
+				zeroValue = value;
+				hasZeroValue = true;
+				size++;
 			}
+			return oldValue;
 		}
-
-		// Check for empty buckets.
-		if (key1 == EMPTY) {
-			keyTable[index1] = key;
-			valueTable[index1] = value;
-			if (size++ >= threshold) resize(capacity << 1);
-			return null;
-		}
-
-		if (key2 == EMPTY) {
-			keyTable[index2] = key;
-			valueTable[index2] = value;
-			if (size++ >= threshold) resize(capacity << 1);
-			return null;
-		}
-
-		if (key3 == EMPTY) {
-			keyTable[index3] = key;
-			valueTable[index3] = value;
-			if (size++ >= threshold) resize(capacity << 1);
-			return null;
-		}
-
-		push(key, value, index1, key1, index2, key2, index3, key3);
+		int i = locateKey(key);
+		if (i >= 0) return valueTable[i];
+		i = -(i + 1);
+		keyTable[i] = key;
+		valueTable[i] = value;
+		if (++size >= threshold) resize(keyTable.length << 1);
 		return null;
 	}
 
 	public void putAll(CharMap<? extends V> map) {
-		for (CharHolder<? extends V> entry : map.entries())
-			put(entry.key, entry.value);
+		ensureCapacity(map.size);
+		if (map.hasZeroValue) put('\u0000', map.zeroValue);
+		char[] keyTable = map.keyTable;
+		V[] valueTable = map.valueTable;
+		for (int i = 0, n = keyTable.length; i < n; i++) {
+			char key = keyTable[i];
+			if (key != 0) put(key, valueTable[i]);
+		}
 	}
 
-	/** Skips checks for existing keys. */
 	protected void putResize(char key, V value) {
-		if (key == 0) {
-			zeroValue = value;
-			hasZeroValue = true;
-			return;
+		char[] ks = keyTable;
+		for (int i = place(key); ; i = (i + 1) & mask) {
+			if (ks[i] == 0) {
+				ks[i] = key;
+				valueTable[i] = value;
+				return;
+			}
 		}
-
-		// Check for empty buckets.
-		int index1 = key & mask;
-		char key1 = keyTable[index1];
-		if (key1 == EMPTY) {
-			keyTable[index1] = key;
-			valueTable[index1] = value;
-			if (size++ >= threshold) resize(capacity << 1);
-			return;
-		}
-
-		int index2 = hash2(key);
-		char key2 = keyTable[index2];
-		if (key2 == EMPTY) {
-			keyTable[index2] = key;
-			valueTable[index2] = value;
-			if (size++ >= threshold) resize(capacity << 1);
-			return;
-		}
-
-		int index3 = hash3(key);
-		char key3 = keyTable[index3];
-		if (key3 == EMPTY) {
-			keyTable[index3] = key;
-			valueTable[index3] = value;
-			if (size++ >= threshold) resize(capacity << 1);
-			return;
-		}
-
-		push(key, value, index1, key1, index2, key2, index3, key3);
 	}
 
-	protected void push(char insertKey, V insertValue, int index1, char key1, int index2, char key2, int index3, char key3) {
-		// Push keys until an empty bucket is found.
-		char evictedKey;
-		V evictedValue;
-		int i = 0, pushIterations = this.pushIterations;
-		do {
-			// Replace the key and value for one of the hashes.
-			switch (Mathf.random(2)) {
-				case 0:
-					evictedKey = key1;
-					evictedValue = valueTable[index1];
-					keyTable[index1] = insertKey;
-					valueTable[index1] = insertValue;
-					break;
-				case 1:
-					evictedKey = key2;
-					evictedValue = valueTable[index2];
-					keyTable[index2] = insertKey;
-					valueTable[index2] = insertValue;
-					break;
-				default:
-					evictedKey = key3;
-					evictedValue = valueTable[index3];
-					keyTable[index3] = insertKey;
-					valueTable[index3] = insertValue;
-					break;
-			}
-
-			// If the evicted key hashes to an empty bucket, put it there and stop.
-			index1 = evictedKey & mask;
-			key1 = keyTable[index1];
-			if (key1 == EMPTY) {
-				keyTable[index1] = evictedKey;
-				valueTable[index1] = evictedValue;
-				if (size++ >= threshold) resize(capacity << 1);
-				return;
-			}
-
-			index2 = hash2(evictedKey);
-			key2 = keyTable[index2];
-			if (key2 == EMPTY) {
-				keyTable[index2] = evictedKey;
-				valueTable[index2] = evictedValue;
-				if (size++ >= threshold) resize(capacity << 1);
-				return;
-			}
-
-			index3 = hash3(evictedKey);
-			key3 = keyTable[index3];
-			if (key3 == EMPTY) {
-				keyTable[index3] = evictedKey;
-				valueTable[index3] = evictedValue;
-				if (size++ >= threshold) resize(capacity << 1);
-				return;
-			}
-
-			if (++i == pushIterations) break;
-
-			insertKey = evictedKey;
-			insertValue = evictedValue;
-		} while (true);
-
-		putStash(evictedKey, evictedValue);
+	public V get(char key) {
+		if (key == 0) return hasZeroValue ? zeroValue : null;
+		int i = locateKey(key);
+		return i >= 0 ? valueTable[i] : null;
 	}
 
-	protected void putStash(char key, V value) {
-		if (stashSize == stashCapacity) {
-			// Too many pushes occurred and the stash is full, increase the table size.
-			resize(capacity << 1);
-			putResize(key, value);
-			return;
-		}
-		// Store key in the stash.
-		int index = capacity + stashSize;
-		keyTable[index] = key;
-		valueTable[index] = value;
-		stashSize++;
-		size++;
+	public V get(char key, V defaultValue) {
+		if (key == 0) return hasZeroValue ? zeroValue : defaultValue;
+		int i = locateKey(key);
+		return i >= 0 ? valueTable[i] : defaultValue;
 	}
 
 	public V get(char key, Prov<? extends V> defaultValue) {
@@ -344,280 +211,150 @@ public class CharMap<V> implements Iterable<CharHolder<V>>, Eachable<CharHolder<
 		return out;
 	}
 
-	public V get(char key) {
-		if (key == 0) {
-			if (!hasZeroValue) return null;
-			return zeroValue;
-		}
-		int index = key & mask;
-		if (keyTable[index] != key) {
-			index = hash2(key);
-			if (keyTable[index] != key) {
-				index = hash3(key);
-				if (keyTable[index] != key) return getStash(key, null);
-			}
-		}
-		return valueTable[index];
-	}
-
-	public V get(char key, V defaultValue) {
-		if (key == 0) {
-			if (!hasZeroValue) return defaultValue;
-			return zeroValue;
-		}
-		int index = key & mask;
-		if (keyTable[index] != key) {
-			index = hash2(key);
-			if (keyTable[index] != key) {
-				index = hash3(key);
-				if (keyTable[index] != key) return getStash(key, defaultValue);
-			}
-		}
-		return valueTable[index];
-	}
-
-	protected V getStash(char key, V defaultValue) {
-		for (int i = capacity, n = i + stashSize; i < n; i++)
-			if (keyTable[i] == key) return valueTable[i];
-		return defaultValue;
-	}
-
 	public V remove(char key) {
 		if (key == 0) {
 			if (!hasZeroValue) return null;
+			hasZeroValue = false;
 			V oldValue = zeroValue;
 			zeroValue = null;
-			hasZeroValue = false;
 			size--;
 			return oldValue;
 		}
 
-		int index = key & mask;
-		if (keyTable[index] == key) {
-			keyTable[index] = EMPTY;
-			V oldValue = valueTable[index];
-			valueTable[index] = null;
-			size--;
-			return oldValue;
-		}
-
-		index = hash2(key);
-		if (keyTable[index] == key) {
-			keyTable[index] = EMPTY;
-			V oldValue = valueTable[index];
-			valueTable[index] = null;
-			size--;
-			return oldValue;
-		}
-
-		index = hash3(key);
-		if (keyTable[index] == key) {
-			keyTable[index] = EMPTY;
-			V oldValue = valueTable[index];
-			valueTable[index] = null;
-			size--;
-			return oldValue;
-		}
-
-		return removeStash(key);
-	}
-
-	protected V removeStash(char key) {
-		for (int i = capacity, n = i + stashSize; i < n; i++) {
-			if (keyTable[i] == key) {
-				V oldValue = valueTable[i];
-				removeStashIndex(i);
-				size--;
-				return oldValue;
+		int i = locateKey(key);
+		if (i < 0) return null;
+		char[] ks = keyTable;
+		V[] vs = valueTable;
+		V oldValue = vs[i];
+		int m = mask, next = i + 1 & m;
+		while ((key = ks[next]) != 0) {
+			int placement = place(key);
+			if ((next - placement & m) > (i - placement & m)) {
+				ks[i] = key;
+				vs[i] = vs[next];
+				i = next;
 			}
+			next = next + 1 & m;
 		}
-		return null;
+		ks[i] = 0;
+		vs[i] = null;
+		size--;
+		return oldValue;
 	}
 
-	protected void removeStashIndex(int index) {
-		// If the removed location was not last, move the last tuple to the removed location.
-		stashSize--;
-		int lastIndex = capacity + stashSize;
-		if (index < lastIndex) {
-			keyTable[index] = keyTable[lastIndex];
-			valueTable[index] = valueTable[lastIndex];
-			valueTable[lastIndex] = null;
-		} else
-			valueTable[index] = null;
-	}
-
-	/** Returns true if the map is empty. */
 	public boolean isEmpty() {
 		return size == 0;
 	}
 
-	/**
-	 * Reduces the size of the backing arrays to be the specified capacity or less. If the capacity is already less, nothing is
-	 * done. If the map contains more items than the specified capacity, the next highest power of two capacity is used instead.
-	 */
 	public void shrink(int maximumCapacity) {
 		if (maximumCapacity < 0) throw new IllegalArgumentException("maximumCapacity must be >= 0: " + maximumCapacity);
 		if (size > maximumCapacity) maximumCapacity = size;
-		if (capacity <= maximumCapacity) return;
-		maximumCapacity = Mathf.nextPowerOfTwo(maximumCapacity);
-		resize(maximumCapacity);
+		int tableSize = tableSize(maximumCapacity, loadFactor);
+		if (keyTable.length > tableSize) resize(tableSize);
 	}
 
-	/** Clears the map and reduces the size of the backing arrays to be the specified capacity if they are larger. */
 	public void clear(int maximumCapacity) {
-		if (capacity <= maximumCapacity) {
+		int tableSize = tableSize(maximumCapacity, loadFactor);
+		if (keyTable.length <= tableSize) {
 			clear();
 			return;
 		}
-		zeroValue = null;
-		hasZeroValue = false;
 		size = 0;
-		resize(maximumCapacity);
+		hasZeroValue = false;
+		zeroValue = null;
+		resize(tableSize);
 	}
 
 	public void clear() {
 		if (size == 0) return;
-		for (int i = capacity + stashSize; i-- > 0; ) {
-			keyTable[i] = EMPTY;
-			valueTable[i] = null;
-		}
 		size = 0;
-		stashSize = 0;
+		Arrays.fill(keyTable, '\u0000');
+		Arrays.fill(valueTable, null);
 		zeroValue = null;
 		hasZeroValue = false;
 	}
 
-	/**
-	 * Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may
-	 * be an expensive operation.
-	 *
-	 * @param identity If true, uses == to compare the specified value with values in the map. If false, uses
-	 *                 {@link #equals(Object)}.
-	 */
 	public boolean containsValue(Object value, boolean identity) {
+		V[] vs = valueTable;
 		if (value == null) {
 			if (hasZeroValue && zeroValue == null) return true;
-			for (int i = capacity + stashSize; i-- > 0; )
-				if (keyTable[i] != EMPTY && valueTable[i] == null) return true;
+			char[] ks = keyTable;
+			for (int i = vs.length - 1; i >= 0; i--)
+				if (ks[i] != 0 && vs[i] == null) return true;
 		} else if (identity) {
 			if (value == zeroValue) return true;
-			for (int i = capacity + stashSize; i-- > 0; )
-				if (valueTable[i] == value) return true;
+			for (int i = vs.length - 1; i >= 0; i--)
+				if (vs[i] == value) return true;
 		} else {
 			if (hasZeroValue && value.equals(zeroValue)) return true;
-			for (int i = capacity + stashSize; i-- > 0; )
-				if (value.equals(valueTable[i])) return true;
+			for (int i = vs.length - 1; i >= 0; i--)
+				if (value.equals(vs[i])) return true;
 		}
 		return false;
 	}
 
 	public boolean containsKey(char key) {
 		if (key == 0) return hasZeroValue;
-		int index = key & mask;
-		if (keyTable[index] != key) {
-			index = hash2(key);
-			if (keyTable[index] != key) {
-				index = hash3(key);
-				if (keyTable[index] != key) return containsKeyStash(key);
-			}
-		}
-		return true;
+		return locateKey(key) >= 0;
 	}
 
-	protected boolean containsKeyStash(char key) {
-		for (int i = capacity, n = i + stashSize; i < n; i++)
-			if (keyTable[i] == key) return true;
-		return false;
-	}
-
-	/**
-	 * Returns the key for the specified value, or {@code notFound} if it is not in the map. Note this traverses the entire map
-	 * and compares every value, which may be an expensive operation.
-	 *
-	 * @param identity If true, uses == to compare the specified value with values in the map. If false, uses
-	 *                 {@link #equals(Object)}.
-	 */
 	public int findKey(Object value, boolean identity, int notFound) {
+		V[] vs = valueTable;
 		if (value == null) {
 			if (hasZeroValue && zeroValue == null) return 0;
-			for (int i = capacity + stashSize; i-- > 0; )
-				if (keyTable[i] != EMPTY && valueTable[i] == null) return keyTable[i];
+			char[] ks = keyTable;
+			for (int i = vs.length - 1; i >= 0; i--)
+				if (ks[i] != 0 && vs[i] == null) return ks[i];
 		} else if (identity) {
 			if (value == zeroValue) return 0;
-			for (int i = capacity + stashSize; i-- > 0; )
-				if (valueTable[i] == value) return keyTable[i];
+			for (int i = vs.length - 1; i >= 0; i--)
+				if (vs[i] == value) return keyTable[i];
 		} else {
 			if (hasZeroValue && value.equals(zeroValue)) return 0;
-			for (int i = capacity + stashSize; i-- > 0; )
-				if (value.equals(valueTable[i])) return keyTable[i];
+			for (int i = vs.length - 1; i >= 0; i--)
+				if (value.equals(vs[i])) return keyTable[i];
 		}
 		return notFound;
 	}
 
-	/**
-	 * Increases the size of the backing array to accommodate the specified number of additional items. Useful before adding many
-	 * items to avoid multiple backing array resizes.
-	 */
 	public void ensureCapacity(int additionalCapacity) {
-		if (additionalCapacity < 0)
-			throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
-		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded >= threshold) resize(Mathf.nextPowerOfTwo((int) Math.ceil(sizeNeeded / loadFactor)));
+		int tableSize = tableSize(size + additionalCapacity, loadFactor);
+		if (keyTable.length < tableSize) resize(tableSize);
 	}
 
 	@SuppressWarnings("unchecked")
 	protected void resize(int newSize) {
-		int oldEndIndex = capacity + stashSize;
-
-		capacity = newSize;
+		int oldCapacity = keyTable.length;
 		threshold = (int) (newSize * loadFactor);
 		mask = newSize - 1;
-		hashShift = 31 - Integer.numberOfTrailingZeros(newSize);
-		stashCapacity = Math.max(3, (int) Math.ceil(Math.log(newSize)) * 2);
-		pushIterations = Mathm.clamp(newSize, 8, (int) Math.sqrt(newSize) / 8);
+		shift = Long.numberOfLeadingZeros(mask);
 
 		char[] oldKeyTable = keyTable;
 		V[] oldValueTable = valueTable;
 
-		keyTable = new char[newSize + stashCapacity];
-		valueTable = (V[]) Array.newInstance(valueComponentType, newSize + stashCapacity);
+		keyTable = new char[newSize];
+		valueTable = (V[]) new Object[newSize];
 
-		int oldSize = size;
-		size = hasZeroValue ? 1 : 0;
-		stashSize = 0;
-		if (oldSize > 0) {
-			for (int i = 0; i < oldEndIndex; i++) {
+		if (size > 0) {
+			for (int i = 0; i < oldCapacity; i++) {
 				char key = oldKeyTable[i];
-				if (key != EMPTY) putResize(key, oldValueTable[i]);
+				if (key != 0) putResize(key, oldValueTable[i]);
 			}
 		}
 	}
 
-	protected int hash2(int h) {
-		h *= PRIME2;
-		return (h ^ h >>> hashShift) & mask;
-	}
-
-	protected int hash3(int h) {
-		h *= PRIME3;
-		return (h ^ h >>> hashShift) & mask;
-	}
-
 	@Override
 	public int hashCode() {
-		int h = 0;
-		if (hasZeroValue && zeroValue != null) {
-			h += zeroValue.hashCode();
-		}
-		for (int i = 0, n = capacity + stashSize; i < n; i++) {
-			char key = keyTable[i];
-			if (key != EMPTY) {
-				h += (int) key * 31;
-
-				V value = valueTable[i];
-				if (value != null) {
-					h += value.hashCode();
-				}
+		int h = size;
+		if (hasZeroValue && zeroValue != null) h += zeroValue.hashCode();
+		char[] ks = keyTable;
+		V[] vs = valueTable;
+		for (int i = 0, n = ks.length; i < n; i++) {
+			int key = ks[i];
+			if (key != 0) {
+				h += key * 31;
+				V value = vs[i];
+				if (value != null) h += value.hashCode();
 			}
 		}
 		return h;
@@ -626,26 +363,43 @@ public class CharMap<V> implements Iterable<CharHolder<V>>, Eachable<CharHolder<
 	@Override
 	public boolean equals(Object o) {
 		if (o == this) return true;
-		if (!(o instanceof CharMap<?> map) || map.valueComponentType != valueComponentType) return false;
-		if (map.size != size) return false;
-		if (map.hasZeroValue != hasZeroValue) return false;
+		if (!(o instanceof CharMap<?> other)) return false;
+		if (other.size != size) return false;
+		if (other.hasZeroValue != hasZeroValue) return false;
 		if (hasZeroValue) {
-			if (map.zeroValue == null) {
+			if (other.zeroValue == null) {
 				if (zeroValue != null) return false;
 			} else {
-				if (!map.zeroValue.equals(zeroValue)) return false;
+				if (!other.zeroValue.equals(zeroValue)) return false;
 			}
 		}
-		for (int i = 0, n = capacity + stashSize; i < n; i++) {
-			char key = keyTable[i];
-			if (key != EMPTY) {
-				V value = valueTable[i];
+		char[] ks = keyTable;
+		V[] vs = valueTable;
+		for (int i = 0, n = ks.length; i < n; i++) {
+			char key = ks[i];
+			if (key != 0) {
+				V value = vs[i];
 				if (value == null) {
-					if (!map.containsKey(key) || map.get(key) != null) return false;
+					if (other.get(key) != null) return false;
 				} else {
-					if (!value.equals(map.get(key))) return false;
+					if (!value.equals(other.get(key))) return false;
 				}
 			}
+		}
+		return true;
+	}
+
+	public boolean equalsIdentity(Object o) {
+		if (o == this) return true;
+		if (!(o instanceof CharMap<?> other)) return false;
+		if (other.size != size) return false;
+		if (other.hasZeroValue != hasZeroValue) return false;
+		if (hasZeroValue && zeroValue != other.zeroValue) return false;
+		char[] ks = keyTable;
+		V[] vs = valueTable;
+		for (int i = 0, n = ks.length; i < n; i++) {
+			char key = ks[i];
+			if (key != 0 && vs[i] != other.get(key)) return false;
 		}
 		return true;
 	}
@@ -655,27 +409,29 @@ public class CharMap<V> implements Iterable<CharHolder<V>>, Eachable<CharHolder<
 		if (size == 0) return "[]";
 		StringBuilder buffer = new StringBuilder(32);
 		buffer.append('[');
-		int i = keyTable.length;
+		char[] ks = keyTable;
+		V[] vs = valueTable;
+		int i = ks.length;
 		if (hasZeroValue) {
 			buffer.append("0=");
 			buffer.append(zeroValue);
 		} else {
 			while (i-- > 0) {
-				int key = keyTable[i];
-				if (key == EMPTY) continue;
+				int key = ks[i];
+				if (key == 0) continue;
 				buffer.append(key);
 				buffer.append('=');
-				buffer.append(valueTable[i]);
+				buffer.append(vs[i]);
 				break;
 			}
 		}
 		while (i-- > 0) {
-			int key = keyTable[i];
-			if (key == EMPTY) continue;
+			int key = ks[i];
+			if (key == 0) continue;
 			buffer.append(", ");
 			buffer.append(key);
 			buffer.append('=');
-			buffer.append(valueTable[i]);
+			buffer.append(vs[i]);
 		}
 		buffer.append(']');
 		return buffer.toString();
@@ -686,10 +442,6 @@ public class CharMap<V> implements Iterable<CharHolder<V>>, Eachable<CharHolder<
 		return entries();
 	}
 
-	/**
-	 * Returns an iterator for the entries in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration.
-	 */
 	public Entries entries() {
 		if (entries1 == null) {
 			entries1 = new Entries();
@@ -707,10 +459,6 @@ public class CharMap<V> implements Iterable<CharHolder<V>>, Eachable<CharHolder<
 		return entries2;
 	}
 
-	/**
-	 * Returns an iterator for the values in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration.
-	 */
 	public Values values() {
 		if (values1 == null) {
 			values1 = new Values();
@@ -728,10 +476,6 @@ public class CharMap<V> implements Iterable<CharHolder<V>>, Eachable<CharHolder<
 		return values2;
 	}
 
-	/**
-	 * Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration.
-	 */
 	public Keys keys() {
 		if (keys1 == null) {
 			keys1 = new Keys();
@@ -768,28 +512,40 @@ public class CharMap<V> implements Iterable<CharHolder<V>>, Eachable<CharHolder<
 		}
 
 		void findNextIndex() {
-			hasNext = false;
-			for (int n = capacity + stashSize; ++nextIndex < n; ) {
-				if (keyTable[nextIndex] != EMPTY) {
+			char[] ks = keyTable;
+			for (int n = ks.length; ++nextIndex < n; ) {
+				if (ks[nextIndex] != 0) {
 					hasNext = true;
-					break;
+					return;
 				}
 			}
+			hasNext = false;
 		}
 
 		public void remove() {
-			if (currentIndex == INDEX_ZERO && hasZeroValue) {
-				zeroValue = null;
+			int i = currentIndex;
+			if (i == INDEX_ZERO && hasZeroValue) {
 				hasZeroValue = false;
-			} else if (currentIndex < 0) {
+				zeroValue = null;
+			} else if (i < 0) {
 				throw new IllegalStateException("next must be called before remove.");
-			} else if (currentIndex >= capacity) {
-				removeStashIndex(currentIndex);
-				nextIndex = currentIndex - 1;
-				findNextIndex();
 			} else {
-				keyTable[currentIndex] = EMPTY;
-				valueTable[currentIndex] = null;
+				char[] ks = keyTable;
+				V[] vs = valueTable;
+				int m = mask, next = i + 1 & m;
+				char key;
+				while ((key = ks[next]) != 0) {
+					int placement = place(key);
+					if ((next - placement & m) > (i - placement & m)) {
+						ks[i] = key;
+						vs[i] = vs[next];
+						i = next;
+					}
+					next = next + 1 & m;
+				}
+				ks[i] = 0;
+				vs[i] = null;
+				if (i != currentIndex) --nextIndex;
 			}
 			currentIndex = INDEX_ILLEGAL;
 			size--;
@@ -799,7 +555,6 @@ public class CharMap<V> implements Iterable<CharHolder<V>>, Eachable<CharHolder<
 	public class Entries extends MapIterator implements Iterable<CharHolder<V>>, Iterator<CharHolder<V>> {
 		protected CharHolder<V> entry = new CharHolder<>();
 
-		/** Note the same entry instance is returned each time this method is called. */
 		@Override
 		public CharHolder<V> next() {
 			if (!hasNext) throw new NoSuchElementException();
@@ -859,7 +614,6 @@ public class CharMap<V> implements Iterable<CharHolder<V>>, Eachable<CharHolder<
 			return this;
 		}
 
-		/** Returns a new array containing the remaining values. */
 		public Seq<V> toArray() {
 			Seq<V> array = new Seq<>(true, size, valueComponentType);
 			while (hasNext)
@@ -883,7 +637,6 @@ public class CharMap<V> implements Iterable<CharHolder<V>>, Eachable<CharHolder<
 			return key;
 		}
 
-		/** Returns a new array containing the remaining keys. */
 		public CharSeq toArray() {
 			CharSeq array = new CharSeq(true, size);
 			while (hasNext)

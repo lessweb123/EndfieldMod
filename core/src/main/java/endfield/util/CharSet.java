@@ -1,85 +1,53 @@
 package endfield.util;
 
-import arc.math.Mathf;
 import arc.util.ArcRuntimeException;
 import endfield.func.Charc;
-import endfield.math.Mathm;
 
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 
-import static endfield.util.Constant.EMPTY;
+import static endfield.util.CollectionObjectSet.tableSize;
 import static endfield.util.Constant.INDEX_ILLEGAL;
 import static endfield.util.Constant.INDEX_ZERO;
-import static endfield.util.Constant.PRIME2;
-import static endfield.util.Constant.PRIME3;
 
-/**
- * An unordered set that uses char keys. This implementation uses cuckoo hashing using 3 hashes, random walking, and a small stash
- * for problematic keys. No allocation is done except when growing the table size. <br>
- * <br>
- * This set performs very fast contains and remove (typically O(1), worst case O(log(n))). Add may be a bit slower, depending on
- * hash collisions. Load factors greater than 0.91 greatly increase the chances the set will have to rehash to the next higher POT
- * size.
- *
- * @author Nathan Sweet
- */
 public class CharSet implements Cloneable {
 	public int size;
 
 	protected char[] keyTable;
-	protected int capacity, stashSize;
 	protected boolean hasZeroValue;
 
 	protected float loadFactor;
-	protected int hashShift, mask, threshold;
-	protected int stashCapacity;
-	protected int pushIterations;
+	protected int threshold;
+
+	protected int shift;
+
+	protected int mask;
 
 	protected transient CharSetIterator iterator1, iterator2;
 
-	/** Creates a new set with an initial capacity of 51 and a load factor of 0.8. */
 	public CharSet() {
 		this(51, 0.8f);
 	}
 
-	/**
-	 * Creates a new set with a load factor of 0.8.
-	 *
-	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two.
-	 */
 	public CharSet(int initialCapacity) {
 		this(initialCapacity, 0.8f);
 	}
 
-	/**
-	 * Creates a new set with the specified initial capacity and load factor. This set will hold initialCapacity items before
-	 * growing the backing table.
-	 *
-	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two.
-	 */
 	public CharSet(int initialCapacity, float loadFactor) {
-		if (initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0: " + initialCapacity);
-		initialCapacity = Mathf.nextPowerOfTwo((int) Math.ceil(initialCapacity / loadFactor));
-		if (initialCapacity > 1 << 30)
-			throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
-		capacity = initialCapacity;
-
-		if (loadFactor <= 0) throw new IllegalArgumentException("loadFactor must be > 0: " + loadFactor);
+		if (loadFactor <= 0f || loadFactor >= 1f)
+			throw new IllegalArgumentException("loadFactor must be > 0 and < 1: " + loadFactor);
 		this.loadFactor = loadFactor;
 
-		threshold = (int) (capacity * loadFactor);
-		mask = capacity - 1;
-		hashShift = 31 - Integer.numberOfTrailingZeros(capacity);
-		stashCapacity = Math.max(3, (int) Math.ceil(Math.log(capacity)) * 2);
-		pushIterations = Mathm.clamp(capacity, 8, (int) Math.sqrt(capacity) / 8);
+		int tableSize = tableSize(initialCapacity, loadFactor);
+		threshold = (int) (tableSize * loadFactor);
+		mask = tableSize - 1;
+		shift = Long.numberOfLeadingZeros(mask);
 
-		keyTable = new char[capacity + stashCapacity];
+		keyTable = new char[tableSize];
 	}
 
-	/** Creates a new set identical to the specified set. */
 	public CharSet(CharSet set) {
-		this((int) Math.floor(set.capacity * set.loadFactor), set.loadFactor);
-		stashSize = set.stashSize;
+		this((int) (set.keyTable.length * set.loadFactor), set.loadFactor);
 		System.arraycopy(set.keyTable, 0, keyTable, 0, set.keyTable.length);
 		size = set.size;
 		hasZeroValue = set.hasZeroValue;
@@ -111,7 +79,19 @@ public class CharSet implements Cloneable {
 		}
 	}
 
-	/** Returns true if the key was not already in the set. */
+	protected int place(char item) {
+		return (int) (item * 0x9E3779B97F4A7C15L >>> shift);
+	}
+
+	protected int locateKey(char key) {
+		char[] ks = keyTable;
+		for (int i = place(key); ; i = i + 1 & mask) {
+			int other = ks[i];
+			if (other == 0) return -(i + 1);
+			if (other == key) return i;
+		}
+	}
+
 	public boolean add(char key) {
 		if (key == 0) {
 			if (hasZeroValue) return false;
@@ -119,44 +99,11 @@ public class CharSet implements Cloneable {
 			size++;
 			return true;
 		}
-
-		// Check for existing keys.
-		int index1 = key & mask;
-		char key1 = keyTable[index1];
-		if (key1 == key) return false;
-
-		int index2 = hash2(key);
-		char key2 = keyTable[index2];
-		if (key2 == key) return false;
-
-		int index3 = hash3(key);
-		char key3 = keyTable[index3];
-		if (key3 == key) return false;
-
-		// Find key in the stash.
-		for (int i = capacity, n = i + stashSize; i < n; i++)
-			if (keyTable[i] == key) return false;
-
-		// Check for empty buckets.
-		if (key1 == EMPTY) {
-			keyTable[index1] = key;
-			if (size++ >= threshold) resize(capacity << 1);
-			return true;
-		}
-
-		if (key2 == EMPTY) {
-			keyTable[index2] = key;
-			if (size++ >= threshold) resize(capacity << 1);
-			return true;
-		}
-
-		if (key3 == EMPTY) {
-			keyTable[index3] = key;
-			if (size++ >= threshold) resize(capacity << 1);
-			return true;
-		}
-
-		push(key, index1, key1, index2, key2, index3, key3);
+		int i = locateKey(key);
+		if (i >= 0) return false;
+		i = -(i + 1);
+		keyTable[i] = key;
+		if (++size >= threshold) resize(keyTable.length << 1);
 		return true;
 	}
 
@@ -191,110 +138,16 @@ public class CharSet implements Cloneable {
 		addAll(str.toCharArray(), 0, str.length());
 	}
 
-	/** Skips checks for existing keys. */
 	protected void addResize(char key) {
-		if (key == 0) {
-			hasZeroValue = true;
-			return;
-		}
-
-		// Check for empty buckets.
-		int index1 = key & mask;
-		char key1 = keyTable[index1];
-		if (key1 == EMPTY) {
-			keyTable[index1] = key;
-			if (size++ >= threshold) resize(capacity << 1);
-			return;
-		}
-
-		int index2 = hash2(key);
-		char key2 = keyTable[index2];
-		if (key2 == EMPTY) {
-			keyTable[index2] = key;
-			if (size++ >= threshold) resize(capacity << 1);
-			return;
-		}
-
-		int index3 = hash3(key);
-		char key3 = keyTable[index3];
-		if (key3 == EMPTY) {
-			keyTable[index3] = key;
-			if (size++ >= threshold) resize(capacity << 1);
-			return;
-		}
-
-		push(key, index1, key1, index2, key2, index3, key3);
-	}
-
-	protected void push(char insertKey, int index1, char key1, int index2, char key2, int index3, char key3) {
-		// Push keys until an empty bucket is found.
-		char evictedKey;
-		int i = 0;
-		do {
-			// Replace the key and value for one of the hashes.
-			switch (Mathf.random(2)) {
-				case 0:
-					evictedKey = key1;
-					keyTable[index1] = insertKey;
-					break;
-				case 1:
-					evictedKey = key2;
-					keyTable[index2] = insertKey;
-					break;
-				default:
-					evictedKey = key3;
-					keyTable[index3] = insertKey;
-					break;
-			}
-
-			// If the evicted key hashes to an empty bucket, put it there and stop.
-			index1 = evictedKey & mask;
-			key1 = keyTable[index1];
-			if (key1 == EMPTY) {
-				keyTable[index1] = evictedKey;
-				if (size++ >= threshold) resize(capacity << 1);
+		char[] ks = keyTable;
+		for (int i = place(key); ; i = (i + 1) & mask) {
+			if (ks[i] == 0) {
+				ks[i] = key;
 				return;
 			}
-
-			index2 = hash2(evictedKey);
-			key2 = keyTable[index2];
-			if (key2 == EMPTY) {
-				keyTable[index2] = evictedKey;
-				if (size++ >= threshold) resize(capacity << 1);
-				return;
-			}
-
-			index3 = hash3(evictedKey);
-			key3 = keyTable[index3];
-			if (key3 == EMPTY) {
-				keyTable[index3] = evictedKey;
-				if (size++ >= threshold) resize(capacity << 1);
-				return;
-			}
-
-			if (++i == pushIterations) break;
-
-			insertKey = evictedKey;
-		} while (true);
-
-		addStash(evictedKey);
-	}
-
-	protected void addStash(char key) {
-		if (stashSize == stashCapacity) {
-			// Too many pushes occurred and the stash is full, increase the table size.
-			resize(capacity << 1);
-			addResize(key);
-			return;
 		}
-		// Store key in the stash.
-		int index = capacity + stashSize;
-		keyTable[index] = key;
-		stashSize++;
-		size++;
 	}
 
-	/** Returns true if the key was removed. */
 	public boolean remove(char key) {
 		if (key == 0) {
 			if (!hasZeroValue) return false;
@@ -303,162 +156,96 @@ public class CharSet implements Cloneable {
 			return true;
 		}
 
-		int index = key & mask;
-		if (keyTable[index] == key) {
-			keyTable[index] = EMPTY;
-			size--;
-			return true;
-		}
-
-		index = hash2(key);
-		if (keyTable[index] == key) {
-			keyTable[index] = EMPTY;
-			size--;
-			return true;
-		}
-
-		index = hash3(key);
-		if (keyTable[index] == key) {
-			keyTable[index] = EMPTY;
-			size--;
-			return true;
-		}
-
-		return removeStash(key);
-	}
-
-	protected boolean removeStash(char key) {
-		for (int i = capacity, n = i + stashSize; i < n; i++) {
-			if (keyTable[i] == key) {
-				removeStashIndex(i);
-				size--;
-				return true;
+		int i = locateKey(key);
+		if (i < 0) return false;
+		char[] ks = keyTable;
+		int m = mask, next = i + 1 & m;
+		while ((key = ks[next]) != 0) {
+			int placement = place(key);
+			if ((next - placement & m) > (i - placement & m)) {
+				ks[i] = key;
+				i = next;
 			}
+			next = next + 1 & m;
 		}
-		return false;
+		ks[i] = 0;
+		size--;
+		return true;
 	}
 
-	protected void removeStashIndex(int index) {
-		// If the removed location was not last, move the last tuple to the removed location.
-		stashSize--;
-		int lastIndex = capacity + stashSize;
-		if (index < lastIndex) keyTable[index] = keyTable[lastIndex];
-	}
-
-	/** Returns true if the set is empty. */
 	public boolean isEmpty() {
 		return size == 0;
 	}
 
-	/**
-	 * Reduces the size of the backing arrays to be the specified capacity or less. If the capacity is already less, nothing is
-	 * done. If the set contains more items than the specified capacity, the next highest power of two capacity is used instead.
-	 */
 	public void shrink(int maximumCapacity) {
 		if (maximumCapacity < 0) throw new IllegalArgumentException("maximumCapacity must be >= 0: " + maximumCapacity);
 		if (size > maximumCapacity) maximumCapacity = size;
-		if (capacity <= maximumCapacity) return;
-		maximumCapacity = Mathf.nextPowerOfTwo(maximumCapacity);
-		resize(maximumCapacity);
+		int tableSize = tableSize(maximumCapacity, loadFactor);
+		if (keyTable.length > tableSize) resize(tableSize);
 	}
 
-	/** Clears the set and reduces the size of the backing arrays to be the specified capacity if they are larger. */
 	public void clear(int maximumCapacity) {
-		if (capacity <= maximumCapacity) {
+		int tableSize = tableSize(maximumCapacity, loadFactor);
+		if (keyTable.length <= tableSize) {
 			clear();
 			return;
 		}
-		hasZeroValue = false;
 		size = 0;
-		resize(maximumCapacity);
+		hasZeroValue = false;
+		resize(tableSize);
 	}
 
 	public void clear() {
 		if (size == 0) return;
-		for (int i = capacity + stashSize; i-- > 0; )
-			keyTable[i] = EMPTY;
 		size = 0;
-		stashSize = 0;
+		Arrays.fill(keyTable, '\u0000');
 		hasZeroValue = false;
 	}
 
 	public boolean contains(char key) {
 		if (key == 0) return hasZeroValue;
-		int index = key & mask;
-		if (keyTable[index] != key) {
-			index = hash2(key);
-			if (keyTable[index] != key) {
-				index = hash3(key);
-				if (keyTable[index] != key) return containsKeyStash(key);
-			}
-		}
-		return true;
-	}
-
-	protected boolean containsKeyStash(char key) {
-		for (int i = capacity, n = i + stashSize; i < n; i++)
-			if (keyTable[i] == key) return true;
-		return false;
+		return locateKey(key) >= 0;
 	}
 
 	public int first() {
 		if (hasZeroValue) return 0;
-		for (int i = 0, n = capacity + stashSize; i < n; i++)
-			if (keyTable[i] != EMPTY) return keyTable[i];
-		throw new IllegalStateException("IntSet is empty.");
+		char[] ks = keyTable;
+		for (char k : ks) {
+			if (k != 0) return k;
+		}
+		throw new IllegalStateException("CharSet is empty.");
 	}
 
-	/**
-	 * Increases the size of the backing array to accommodate the specified number of additional items. Useful before adding many
-	 * items to avoid multiple backing array resizes.
-	 */
 	public void ensureCapacity(int additionalCapacity) {
-		if (additionalCapacity < 0)
-			throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
-		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded >= threshold) resize(Mathf.nextPowerOfTwo((int) Math.ceil(sizeNeeded / loadFactor)));
+		int tableSize = tableSize(size + additionalCapacity, loadFactor);
+		if (keyTable.length < tableSize) resize(tableSize);
 	}
 
 	protected void resize(int newSize) {
-		int oldEndIndex = capacity + stashSize;
-
-		capacity = newSize;
+		int oldCapacity = keyTable.length;
 		threshold = (int) (newSize * loadFactor);
 		mask = newSize - 1;
-		hashShift = 31 - Integer.numberOfTrailingZeros(newSize);
-		stashCapacity = Math.max(3, (int) Math.ceil(Math.log(newSize)) * 2);
-		pushIterations = Mathm.clamp(newSize, 8, (int) Math.sqrt(newSize) / 8);
+		shift = Long.numberOfLeadingZeros(mask);
 
 		char[] oldKeyTable = keyTable;
 
-		keyTable = new char[newSize + stashCapacity];
+		keyTable = new char[newSize];
 
-		int oldSize = size;
-		size = hasZeroValue ? 1 : 0;
-		stashSize = 0;
-		if (oldSize > 0) {
-			for (int i = 0; i < oldEndIndex; i++) {
+		if (size > 0) {
+			for (int i = 0; i < oldCapacity; i++) {
 				char key = oldKeyTable[i];
-				if (key != EMPTY) addResize(key);
+				if (key != 0) addResize(key);
 			}
 		}
 	}
 
-	protected int hash2(int h) {
-		h *= PRIME2;
-		return (h ^ h >>> hashShift) & mask;
-	}
-
-	protected int hash3(int h) {
-		h *= PRIME3;
-		return (h ^ h >>> hashShift) & mask;
-	}
-
 	@Override
 	public int hashCode() {
-		int h = 0;
-		for (int i = 0, n = capacity + stashSize; i < n; i++)
-			if (keyTable[i] != EMPTY) h += keyTable[i];
+		int h = size;
+		char[] ks = keyTable;
+		for (int key : ks) {
+			if (key != 0) h += key;
+		}
 		return h;
 	}
 
@@ -467,8 +254,10 @@ public class CharSet implements Cloneable {
 		if (!(o instanceof CharSet other)) return false;
 		if (other.size != size) return false;
 		if (other.hasZeroValue != hasZeroValue) return false;
-		for (int i = 0, n = capacity + stashSize; i < n; i++)
-			if (keyTable[i] != EMPTY && !other.contains(keyTable[i])) return false;
+		char[] ks = keyTable;
+		for (char k : ks) {
+			if (k != 0 && !other.contains(k)) return false;
+		}
 		return true;
 	}
 
@@ -477,20 +266,21 @@ public class CharSet implements Cloneable {
 		if (size == 0) return "[]";
 		StringBuilder buffer = new StringBuilder(32);
 		buffer.append('[');
-		int i = keyTable.length;
+		char[] table = keyTable;
+		int i = table.length;
 		if (hasZeroValue)
-			buffer.append('0');
+			buffer.append("0");
 		else {
 			while (i-- > 0) {
-				int key = keyTable[i];
-				if (key == EMPTY) continue;
+				int key = table[i];
+				if (key == 0) continue;
 				buffer.append(key);
 				break;
 			}
 		}
 		while (i-- > 0) {
-			int key = keyTable[i];
-			if (key == EMPTY) continue;
+			int key = table[i];
+			if (key == 0) continue;
 			buffer.append(", ");
 			buffer.append(key);
 		}
@@ -498,10 +288,6 @@ public class CharSet implements Cloneable {
 		return buffer.toString();
 	}
 
-	/**
-	 * Returns an iterator for the keys in the set. Remove is supported. Note that the same iterator instance is returned each time
-	 * this method is called. Use the {@link CharSetIterator} constructor for nested or multithreaded iteration.
-	 */
 	public CharSetIterator iterator() {
 		if (iterator1 == null) {
 			iterator1 = new CharSetIterator();
@@ -538,27 +324,36 @@ public class CharSet implements Cloneable {
 		}
 
 		protected void findNextIndex() {
-			hasNext = false;
-			char[] keyTable = CharSet.this.keyTable;
-			for (int n = capacity + stashSize; ++nextIndex < n; ) {
-				if (keyTable[nextIndex] != EMPTY) {
+			char[] ks = keyTable;
+			for (int n = ks.length; ++nextIndex < n; ) {
+				if (ks[nextIndex] != 0) {
 					hasNext = true;
-					break;
+					return;
 				}
 			}
+			hasNext = false;
 		}
 
 		public void remove() {
-			if (currentIndex == INDEX_ZERO && hasZeroValue) {
+			int i = currentIndex;
+			if (i == INDEX_ZERO && hasZeroValue) {
 				hasZeroValue = false;
-			} else if (currentIndex < 0) {
+			} else if (i < 0) {
 				throw new IllegalStateException("next must be called before remove.");
-			} else if (currentIndex >= capacity) {
-				removeStashIndex(currentIndex);
-				nextIndex = currentIndex - 1;
-				findNextIndex();
 			} else {
-				keyTable[currentIndex] = EMPTY;
+				char[] ks = keyTable;
+				int m = mask, next = i + 1 & m;
+				char key;
+				while ((key = ks[next]) != 0) {
+					int placement = place(key);
+					if ((next - placement & m) > (i - placement & m)) {
+						ks[i] = key;
+						i = next;
+					}
+					next = next + 1 & m;
+				}
+				ks[i] = 0;
+				if (i != currentIndex) --nextIndex;
 			}
 			currentIndex = INDEX_ILLEGAL;
 			size--;

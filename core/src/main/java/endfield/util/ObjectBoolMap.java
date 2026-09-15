@@ -1,19 +1,17 @@
 package endfield.util;
 
 import arc.func.Cons;
-import arc.math.Mathf;
 import arc.struct.BoolSeq;
 import arc.util.ArcRuntimeException;
 import arc.util.Eachable;
-import endfield.math.Mathm;
 import endfield.util.holder.ObjectBoolHolder;
 
 import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import static endfield.util.Constant.PRIME2;
-import static endfield.util.Constant.PRIME3;
+import static endfield.util.CollectionObjectSet.tableSize;
 
 public class ObjectBoolMap<K> implements Iterable<ObjectBoolHolder<K>>, Eachable<ObjectBoolHolder<K>>, Cloneable {
 	public int size;
@@ -22,67 +20,120 @@ public class ObjectBoolMap<K> implements Iterable<ObjectBoolHolder<K>>, Eachable
 
 	protected K[] keyTable;
 	protected boolean[] valueTable;
-	protected int capacity, stashSize;
 
 	protected float loadFactor;
-	protected int hashShift, mask, threshold;
-	protected int stashCapacity;
-	protected int pushIterations;
+	protected int threshold;
+
+	protected int shift;
+
+	protected int mask;
 
 	protected transient Entries entries1, entries2;
 	protected transient Values values1, values2;
 	protected transient Keys keys1, keys2;
 
-	/** Creates a new map with an initial capacity of 51 and a load factor of 0.8. */
+	public ObjectBoolMap() {
+		this(Object.class);
+	}
+
 	public ObjectBoolMap(Class<?> keyType) {
 		this(keyType, 51, 0.8f);
 	}
 
-	/**
-	 * Creates a new map with a load factor of 0.8.
-	 *
-	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two.
-	 */
 	public ObjectBoolMap(Class<?> keyType, int initialCapacity) {
 		this(keyType, initialCapacity, 0.8f);
 	}
 
-	/**
-	 * Creates a new map with the specified initial capacity and load factor. This map will hold initialCapacity items before
-	 * growing the backing table.
-	 *
-	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two.
-	 */
 	@SuppressWarnings("unchecked")
 	public ObjectBoolMap(Class<?> keyType, int initialCapacity, float loadFactor) {
-		if (initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0: " + initialCapacity);
-		initialCapacity = Mathf.nextPowerOfTwo((int) Math.ceil(initialCapacity / loadFactor));
-		if (initialCapacity > 1 << 30)
-			throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
-		capacity = initialCapacity;
-
-		if (loadFactor <= 0) throw new IllegalArgumentException("loadFactor must be > 0: " + loadFactor);
+		if (loadFactor <= 0f || loadFactor >= 1f)
+			throw new IllegalArgumentException("loadFactor must be > 0 and < 1: " + loadFactor);
 		this.loadFactor = loadFactor;
 
-		threshold = (int) (capacity * loadFactor);
-		mask = capacity - 1;
-		hashShift = 31 - Integer.numberOfTrailingZeros(capacity);
-		stashCapacity = Math.max(3, (int) Math.ceil(Math.log(capacity)) * 2);
-		pushIterations = Mathm.clamp(capacity, 8, (int) Math.sqrt(capacity) / 8);
+		int tableSize = tableSize(initialCapacity, loadFactor);
+		threshold = (int) (tableSize * loadFactor);
+		mask = tableSize - 1;
+		shift = Long.numberOfLeadingZeros(mask);
 
 		keyComponentType = (Class<K>) keyType;
 
-		keyTable = (K[]) Array.newInstance(keyType, capacity + stashCapacity);
-		valueTable = new boolean[keyTable.length];
+		keyTable = (K[]) Array.newInstance(keyType, tableSize);
+		valueTable = new boolean[tableSize];
 	}
 
-	/** Creates a new map identical to the specified map. */
 	public ObjectBoolMap(ObjectBoolMap<? extends K> map) {
-		this(map.keyComponentType, (int) Math.floor(map.capacity * map.loadFactor), map.loadFactor);
-		stashSize = map.stashSize;
+		this(map.keyComponentType, (int) (map.keyTable.length * map.loadFactor), map.loadFactor);
 		System.arraycopy(map.keyTable, 0, keyTable, 0, map.keyTable.length);
 		System.arraycopy(map.valueTable, 0, valueTable, 0, map.valueTable.length);
 		size = map.size;
+	}
+
+	@Override
+	public void each(Cons<? super ObjectBoolHolder<K>> cons) {
+		for (ObjectBoolHolder<K> entry : entries()) {
+			cons.get(entry);
+		}
+	}
+
+	protected int place(Object item) {
+		return (int) (item.hashCode() * 0x9E3779B97F4A7C15L >>> shift);
+	}
+
+	protected int locateKey(Object key) {
+		K[] ks = keyTable;
+		for (int i = place(key); ; i = i + 1 & mask) {
+			K other = ks[i];
+			if (other == null) return -(i + 1);
+			if (other.equals(key)) return i;
+		}
+	}
+
+	public boolean put(K key, boolean value) {
+		if (key == null) throw new IllegalArgumentException("key cannot be null.");
+		int i = locateKey(key);
+		if (i >= 0) {
+			boolean oldValue = valueTable[i];
+			valueTable[i] = value;
+			return oldValue;
+		}
+		i = -(i + 1);
+		keyTable[i] = key;
+		valueTable[i] = value;
+		if (++size >= threshold) resize(keyTable.length << 1);
+		return false;
+	}
+
+	public void putMissing(K key, boolean value) {
+		if (key == null) throw new IllegalArgumentException("key cannot be null.");
+		int i = locateKey(key);
+		if (i >= 0) return;
+		i = -(i + 1);
+		keyTable[i] = key;
+		valueTable[i] = value;
+		if (++size >= threshold) resize(keyTable.length << 1);
+	}
+
+	public boolean putMissing(K key, boolean value, boolean defaultValue) {
+		if (key == null) throw new IllegalArgumentException("key cannot be null.");
+		int i = locateKey(key);
+		if (i >= 0) return valueTable[i];
+		i = -(i + 1);
+		keyTable[i] = key;
+		valueTable[i] = value;
+		if (++size >= threshold) resize(keyTable.length << 1);
+		return defaultValue;
+	}
+
+	public void putAll(ObjectBoolMap<? extends K> map) {
+		for (ObjectBoolHolder<? extends K> entry : map.entries())
+			put(entry.key, entry.value);
+	}
+
+	@SuppressWarnings("unchecked")
+	public void putAll(Object... values) {
+		for (int i = 0; i < values.length / 2; i++) {
+			put((K) values[i * 2], (boolean) values[i * 2 + 1]);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -102,428 +153,140 @@ public class ObjectBoolMap<K> implements Iterable<ObjectBoolHolder<K>>, Eachable
 		}
 	}
 
-	@Override
-	public void each(Cons<? super ObjectBoolHolder<K>> cons) {
-		for (ObjectBoolHolder<K> entry : entries()) {
-			cons.get(entry);
-		}
-	}
-
-	public void put(K key, boolean value) {
-		if (key == null) return;
-
-		// Check for existing keys.
-		int hashCode = key.hashCode();
-		int index1 = hashCode & mask;
-		K key1 = keyTable[index1];
-		if (key.equals(key1)) {
-			valueTable[index1] = value;
-			return;
-		}
-
-		int index2 = hash2(hashCode);
-		K key2 = keyTable[index2];
-		if (key.equals(key2)) {
-			valueTable[index2] = value;
-			return;
-		}
-
-		int index3 = hash3(hashCode);
-		K key3 = keyTable[index3];
-		if (key.equals(key3)) {
-			valueTable[index3] = value;
-			return;
-		}
-
-		// Update key in the stash.
-		for (int i = capacity, n = i + stashSize; i < n; i++) {
-			if (key.equals(keyTable[i])) {
+	protected void putResize(K key, boolean value) {
+		K[] ks = keyTable;
+		for (int i = place(key); ; i = (i + 1) & mask) {
+			if (ks[i] == null) {
+				ks[i] = key;
 				valueTable[i] = value;
 				return;
 			}
 		}
-
-		// Check for empty buckets.
-		if (key1 == null) {
-			keyTable[index1] = key;
-			valueTable[index1] = value;
-			if (size++ >= threshold) resize(capacity << 1);
-			return;
-		}
-
-		if (key2 == null) {
-			keyTable[index2] = key;
-			valueTable[index2] = value;
-			if (size++ >= threshold) resize(capacity << 1);
-			return;
-		}
-
-		if (key3 == null) {
-			keyTable[index3] = key;
-			valueTable[index3] = value;
-			if (size++ >= threshold) resize(capacity << 1);
-			return;
-		}
-
-		push(key, value, index1, key1, index2, key2, index3, key3);
-	}
-
-	public void putAll(ObjectBoolMap<? extends K> map) {
-		for (ObjectBoolHolder<? extends K> entry : map.entries())
-			put(entry.key, entry.value);
-	}
-
-	@SuppressWarnings("unchecked")
-	public void putAll(Object... values) {
-		for (int i = 0; i < values.length / 2; i++) {
-			put((K) values[i * 2], (boolean) values[i * 2 + 1]);
-		}
-	}
-
-	/** Skips checks for existing keys. */
-	protected void putResize(K key, boolean value) {
-		if (key == null) return;
-
-		// Check for empty buckets.
-		int hashCode = key.hashCode();
-		int index1 = hashCode & mask;
-		K key1 = keyTable[index1];
-		if (key1 == null) {
-			keyTable[index1] = key;
-			valueTable[index1] = value;
-			if (size++ >= threshold) resize(capacity << 1);
-			return;
-		}
-
-		int index2 = hash2(hashCode);
-		K key2 = keyTable[index2];
-		if (key2 == null) {
-			keyTable[index2] = key;
-			valueTable[index2] = value;
-			if (size++ >= threshold) resize(capacity << 1);
-			return;
-		}
-
-		int index3 = hash3(hashCode);
-		K key3 = keyTable[index3];
-		if (key3 == null) {
-			keyTable[index3] = key;
-			valueTable[index3] = value;
-			if (size++ >= threshold) resize(capacity << 1);
-			return;
-		}
-
-		push(key, value, index1, key1, index2, key2, index3, key3);
-	}
-
-	protected void push(K insertKey, boolean insertValue, int index1, K key1, int index2, K key2, int index3, K key3) {
-		// Push keys until an empty bucket is found.
-		K evictedKey;
-		boolean evictedValue;
-		int i = 0;
-		do {
-			// Replace the key and value for one of the hashes.
-			switch (Mathf.random(2)) {
-				case 0:
-					evictedKey = key1;
-					evictedValue = valueTable[index1];
-					keyTable[index1] = insertKey;
-					valueTable[index1] = insertValue;
-					break;
-				case 1:
-					evictedKey = key2;
-					evictedValue = valueTable[index2];
-					keyTable[index2] = insertKey;
-					valueTable[index2] = insertValue;
-					break;
-				default:
-					evictedKey = key3;
-					evictedValue = valueTable[index3];
-					keyTable[index3] = insertKey;
-					valueTable[index3] = insertValue;
-					break;
-			}
-
-			// If the evicted key hashes to an empty bucket, put it there and stop.
-			int hashCode = evictedKey.hashCode();
-			index1 = hashCode & mask;
-			key1 = keyTable[index1];
-			if (key1 == null) {
-				keyTable[index1] = evictedKey;
-				valueTable[index1] = evictedValue;
-				if (size++ >= threshold) resize(capacity << 1);
-				return;
-			}
-
-			index2 = hash2(hashCode);
-			key2 = keyTable[index2];
-			if (key2 == null) {
-				keyTable[index2] = evictedKey;
-				valueTable[index2] = evictedValue;
-				if (size++ >= threshold) resize(capacity << 1);
-				return;
-			}
-
-			index3 = hash3(hashCode);
-			key3 = keyTable[index3];
-			if (key3 == null) {
-				keyTable[index3] = evictedKey;
-				valueTable[index3] = evictedValue;
-				if (size++ >= threshold) resize(capacity << 1);
-				return;
-			}
-
-			if (++i == pushIterations) break;
-
-			insertKey = evictedKey;
-			insertValue = evictedValue;
-		} while (true);
-
-		putStash(evictedKey, evictedValue);
-	}
-
-	protected void putStash(K key, boolean value) {
-		if (stashSize == stashCapacity) {
-			// Too many pushes occurred and the stash is full, increase the table size.
-			resize(capacity << 1);
-			putResize(key, value);
-			return;
-		}
-		// Store key in the stash.
-		int index = capacity + stashSize;
-		keyTable[index] = key;
-		valueTable[index] = value;
-		stashSize++;
-		size++;
 	}
 
 	public boolean get(Object key) {
 		return get(key, false);
 	}
 
-	/**
-	 * @param defaultValue Returned if the key was not associated with a value.
-	 */
 	public boolean get(Object key, boolean defaultValue) {
 		if (key == null) return defaultValue;
-
-		int hashCode = key.hashCode();
-		int index = hashCode & mask;
-		if (!key.equals(keyTable[index])) {
-			index = hash2(hashCode);
-			if (!key.equals(keyTable[index])) {
-				index = hash3(hashCode);
-				if (!key.equals(keyTable[index])) return getStash(key, defaultValue);
-			}
-		}
-		return valueTable[index];
+		int i = locateKey(key);
+		return i < 0 ? defaultValue : valueTable[i];
 	}
 
-	protected boolean getStash(Object key, boolean defaultValue) {
-		for (int i = capacity, n = i + stashSize; i < n; i++)
-			if (key.equals(keyTable[i])) return valueTable[i];
-		return defaultValue;
-	}
-
-	/**
-	 * @return false as default value.
-	 */
 	public boolean remove(K key) {
 		return remove(key, false);
 	}
 
-	/**
-	 * @return the value that was removed, or defaultValue.
-	 */
 	public boolean remove(K key, boolean defaultValue) {
-		int hashCode = key.hashCode();
-		int index = hashCode & mask;
-		if (key.equals(keyTable[index])) {
-			keyTable[index] = null;
-			boolean oldValue = valueTable[index];
-			size--;
-			return oldValue;
-		}
-
-		index = hash2(hashCode);
-		if (key.equals(keyTable[index])) {
-			keyTable[index] = null;
-			boolean oldValue = valueTable[index];
-			size--;
-			return oldValue;
-		}
-
-		index = hash3(hashCode);
-		if (key.equals(keyTable[index])) {
-			keyTable[index] = null;
-			boolean oldValue = valueTable[index];
-			size--;
-			return oldValue;
-		}
-
-		return removeStash(key, defaultValue);
-	}
-
-	protected boolean removeStash(K key, boolean defaultValue) {
-		for (int i = capacity, n = i + stashSize; i < n; i++) {
-			if (key.equals(keyTable[i])) {
-				boolean oldValue = valueTable[i];
-				removeStashIndex(i);
-				size--;
-				return oldValue;
+		if (key == null) return defaultValue;
+		int i = locateKey(key);
+		if (i < 0) return defaultValue;
+		K[] ks = keyTable;
+		boolean[] vs = valueTable;
+		boolean oldValue = vs[i];
+		int m = mask, next = i + 1 & m;
+		while ((key = ks[next]) != null) {
+			int placement = place(key);
+			if ((next - placement & m) > (i - placement & m)) {
+				ks[i] = key;
+				vs[i] = vs[next];
+				i = next;
 			}
+			next = next + 1 & m;
 		}
-		return defaultValue;
+		ks[i] = null;
+		size--;
+		return oldValue;
 	}
 
-	protected void removeStashIndex(int index) {
-		// If the removed location was not last, move the last tuple to the removed location.
-		stashSize--;
-		int lastIndex = capacity + stashSize;
-		if (index < lastIndex) {
-			keyTable[index] = keyTable[lastIndex];
-			valueTable[index] = valueTable[lastIndex];
-			keyTable[lastIndex] = null;
-		}
+	public boolean isNotEmpty() {
+		return size > 0;
 	}
 
-	/** Returns true if the map is empty. */
 	public boolean isEmpty() {
 		return size == 0;
 	}
 
-	/**
-	 * Reduces the size of the backing arrays to be the specified capacity or less. If the capacity is already less, nothing is
-	 * done. If the map contains more items than the specified capacity, the next highest power of two capacity is used instead.
-	 */
 	public void shrink(int maximumCapacity) {
 		if (maximumCapacity < 0) throw new IllegalArgumentException("maximumCapacity must be >= 0: " + maximumCapacity);
 		if (size > maximumCapacity) maximumCapacity = size;
-		if (capacity <= maximumCapacity) return;
-		maximumCapacity = Mathf.nextPowerOfTwo(maximumCapacity);
-		resize(maximumCapacity);
+		int tableSize = tableSize(maximumCapacity, loadFactor);
+		if (keyTable.length > tableSize) resize(tableSize);
 	}
 
-	/** Clears the map and reduces the size of the backing arrays to be the specified capacity if they are larger. */
 	public void clear(int maximumCapacity) {
-		if (capacity <= maximumCapacity) {
+		int tableSize = tableSize(maximumCapacity, loadFactor);
+		if (keyTable.length <= tableSize) {
 			clear();
 			return;
 		}
 		size = 0;
-		resize(maximumCapacity);
+		resize(tableSize);
 	}
 
 	public void clear() {
 		if (size == 0) return;
-		for (int i = capacity + stashSize; i-- > 0; )
-			keyTable[i] = null;
 		size = 0;
-		stashSize = 0;
+		Arrays.fill(keyTable, null);
 	}
 
-	/**
-	 * Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may be
-	 * an expensive operation.
-	 */
 	public boolean containsValue(boolean value) {
-		for (int i = capacity + stashSize; i-- > 0; )
-			if (keyTable[i] != null && valueTable[i] == value) return true;
+		K[] ks = keyTable;
+		boolean[] vs = valueTable;
+		for (int i = vs.length - 1; i >= 0; i--)
+			if (ks[i] != null && vs[i] == value) return true;
 		return false;
-
 	}
 
 	public boolean containsKey(Object key) {
-		if (key == null) return false;
-
-		int hashCode = key.hashCode();
-		int index = hashCode & mask;
-		if (!key.equals(keyTable[index])) {
-			index = hash2(hashCode);
-			if (!key.equals(keyTable[index])) {
-				index = hash3(hashCode);
-				if (!key.equals(keyTable[index])) return containsKeyStash(key);
-			}
-		}
-		return true;
+		return key != null && locateKey(key) >= 0;
 	}
 
-	protected boolean containsKeyStash(Object key) {
-		for (int i = capacity, n = i + stashSize; i < n; i++)
-			if (key.equals(keyTable[i])) return true;
-		return false;
-	}
-
-	/**
-	 * Returns the key for the specified value, or null if it is not in the map. Note this traverses the entire map and compares
-	 * every value, which may be an expensive operation.
-	 */
 	public K findKey(boolean value) {
-		for (int i = capacity + stashSize; i-- > 0; )
-			if (keyTable[i] != null && valueTable[i] == value) return keyTable[i];
+		K[] ks = keyTable;
+		boolean[] vs = valueTable;
+		for (int i = vs.length - 1; i >= 0; i--) {
+			K key = ks[i];
+			if (key != null && vs[i] == value) return key;
+		}
 		return null;
 	}
 
-	/**
-	 * Increases the size of the backing array to accommodate the specified number of additional items. Useful before adding many
-	 * items to avoid multiple backing array resizes.
-	 */
 	public void ensureCapacity(int additionalCapacity) {
-		if (additionalCapacity < 0)
-			throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
-		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded >= threshold) resize(Mathf.nextPowerOfTwo((int) Math.ceil(sizeNeeded / loadFactor)));
+		int tableSize = tableSize(size + additionalCapacity, loadFactor);
+		if (keyTable.length < tableSize) resize(tableSize);
 	}
 
 	@SuppressWarnings("unchecked")
 	protected void resize(int newSize) {
-		int oldEndIndex = capacity + stashSize;
-
-		capacity = newSize;
+		int oldCapacity = keyTable.length;
 		threshold = (int) (newSize * loadFactor);
 		mask = newSize - 1;
-		hashShift = 31 - Integer.numberOfTrailingZeros(newSize);
-		stashCapacity = Math.max(3, (int) Math.ceil(Math.log(newSize)) * 2);
-		pushIterations = Mathm.clamp(newSize, 8, (int) Math.sqrt(newSize) / 8);
+		shift = Long.numberOfLeadingZeros(mask);
 
 		K[] oldKeyTable = keyTable;
 		boolean[] oldValueTable = valueTable;
 
-		keyTable = (K[]) Array.newInstance(keyComponentType, newSize + stashCapacity);
-		valueTable = new boolean[newSize + stashCapacity];
+		keyTable = (K[]) Array.newInstance(keyComponentType, newSize);
+		valueTable = new boolean[newSize];
 
-		int oldSize = size;
-		size = 0;
-		stashSize = 0;
-		if (oldSize > 0) {
-			for (int i = 0; i < oldEndIndex; i++) {
+		if (size > 0) {
+			for (int i = 0; i < oldCapacity; i++) {
 				K key = oldKeyTable[i];
 				if (key != null) putResize(key, oldValueTable[i]);
 			}
 		}
 	}
 
-	protected int hash2(int h) {
-		h *= PRIME2;
-		return (h ^ h >>> hashShift) & mask;
-	}
-
-	protected int hash3(int h) {
-		h *= PRIME3;
-		return (h ^ h >>> hashShift) & mask;
-	}
-
 	@Override
 	public int hashCode() {
-		int h = 0;
-		for (int i = 0, n = capacity + stashSize; i < n; i++) {
-			K key = keyTable[i];
-			if (key != null) {
-				h += key.hashCode() * 31;
-
-				boolean value = valueTable[i];
-				h += Boolean.hashCode(value);
-			}
+		int h = size;
+		K[] ks = keyTable;
+		boolean[] vs = valueTable;
+		for (int i = 0, n = ks.length; i < n; i++) {
+			K key = ks[i];
+			if (key != null) h += key.hashCode() + Boolean.hashCode(vs[i]);
 		}
 		return h;
 	}
@@ -531,44 +294,54 @@ public class ObjectBoolMap<K> implements Iterable<ObjectBoolHolder<K>>, Eachable
 	@Override
 	public boolean equals(Object o) {
 		if (o == this) return true;
-		if (!(o instanceof ObjectBoolMap<?> map) || map.keyComponentType != keyComponentType) return false;
-
-		if (map.size != size) return false;
-		for (int i = 0, n = capacity + stashSize; i < n; i++) {
-			K key = keyTable[i];
+		if (!(o instanceof ObjectBoolMap<?> other)) return false;
+		if (other.size != size) return false;
+		K[] ks = keyTable;
+		boolean[] vs = valueTable;
+		for (int i = 0, n = ks.length; i < n; i++) {
+			K key = ks[i];
 			if (key != null) {
-				boolean otherValue = map.get(key, false);
-				if (!map.containsKey(key)) return false;
-				boolean value = valueTable[i];
-				if (otherValue != value) return false;
+				boolean otherValue = other.get(key, false);
+				if (!other.containsKey(key)) return false;
+				if (otherValue != vs[i]) return false;
 			}
 		}
 		return true;
 	}
 
+	public String toString(String separator) {
+		return toString(separator, false);
+	}
+
 	@Override
 	public String toString() {
-		if (size == 0) return "{}";
-		StringBuilder buffer = new StringBuilder(32);
-		buffer.append('{');
-		int i = keyTable.length;
+		return toString(", ", true);
+	}
+
+	public String toString(String separator, boolean braces) {
+		if (size == 0) return braces ? "{}" : "";
+		java.lang.StringBuilder buffer = new java.lang.StringBuilder(32);
+		if (braces) buffer.append('{');
+		K[] ks = keyTable;
+		boolean[] vs = valueTable;
+		int i = ks.length;
 		while (i-- > 0) {
-			K key = keyTable[i];
+			K key = ks[i];
 			if (key == null) continue;
 			buffer.append(key);
 			buffer.append('=');
-			buffer.append(valueTable[i]);
+			buffer.append(vs[i]);
 			break;
 		}
 		while (i-- > 0) {
-			K key = keyTable[i];
+			K key = ks[i];
 			if (key == null) continue;
-			buffer.append(", ");
+			buffer.append(separator);
 			buffer.append(key);
 			buffer.append('=');
-			buffer.append(valueTable[i]);
+			buffer.append(vs[i]);
 		}
-		buffer.append('}');
+		if (braces) buffer.append('}');
 		return buffer.toString();
 	}
 
@@ -577,10 +350,6 @@ public class ObjectBoolMap<K> implements Iterable<ObjectBoolHolder<K>>, Eachable
 		return entries();
 	}
 
-	/**
-	 * Returns an iterator for the entries in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration.
-	 */
 	public Entries entries() {
 		if (entries1 == null) {
 			entries1 = new Entries();
@@ -598,10 +367,6 @@ public class ObjectBoolMap<K> implements Iterable<ObjectBoolHolder<K>>, Eachable
 		return entries2;
 	}
 
-	/**
-	 * Returns an iterator for the values in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration.
-	 */
 	public Values values() {
 		if (values1 == null) {
 			values1 = new Values();
@@ -619,10 +384,6 @@ public class ObjectBoolMap<K> implements Iterable<ObjectBoolHolder<K>>, Eachable
 		return values2;
 	}
 
-	/**
-	 * Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each time
-	 * this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration.
-	 */
 	public Keys keys() {
 		if (keys1 == null) {
 			keys1 = new Keys();
@@ -657,26 +418,36 @@ public class ObjectBoolMap<K> implements Iterable<ObjectBoolHolder<K>>, Eachable
 		}
 
 		protected void findNextIndex() {
-			hasNext = false;
-			for (int n = capacity + stashSize; ++nextIndex < n; ) {
-				if (keyTable[nextIndex] != null) {
+			K[] ks = keyTable;
+			for (int n = ks.length; ++nextIndex < n; ) {
+				if (ks[nextIndex] != null) {
 					hasNext = true;
-					break;
+					return;
 				}
 			}
+			hasNext = false;
 		}
 
 		public void remove() {
-			if (currentIndex < 0) throw new IllegalStateException("next must be called before remove.");
-			if (currentIndex >= capacity) {
-				removeStashIndex(currentIndex);
-				nextIndex = currentIndex - 1;
-				findNextIndex();
-			} else {
-				keyTable[currentIndex] = null;
+			int i = currentIndex;
+			if (i < 0) throw new IllegalStateException("next must be called before remove.");
+			K[] ks = keyTable;
+			boolean[] vs = valueTable;
+			int m = mask, next = i + 1 & m;
+			K key;
+			while ((key = ks[next]) != null) {
+				int placement = place(key);
+				if ((next - placement & m) > (i - placement & m)) {
+					ks[i] = key;
+					vs[i] = vs[next];
+					i = next;
+				}
+				next = next + 1 & m;
 			}
-			currentIndex = -1;
+			ks[i] = null;
 			size--;
+			if (i != currentIndex) --nextIndex;
+			currentIndex = -1;
 		}
 	}
 
@@ -694,7 +465,6 @@ public class ObjectBoolMap<K> implements Iterable<ObjectBoolHolder<K>>, Eachable
 			return out;
 		}
 
-		/** Note the same entry instance is returned each time this method is called. */
 		@Override
 		public ObjectBoolHolder<K> next() {
 			if (!hasNext) throw new NoSuchElementException();
@@ -733,7 +503,6 @@ public class ObjectBoolMap<K> implements Iterable<ObjectBoolHolder<K>>, Eachable
 			return value;
 		}
 
-		/** Returns a new array containing the remaining values. */
 		public BoolSeq toSeq() {
 			BoolSeq array = new BoolSeq(true, size);
 			while (hasNext)
@@ -774,15 +543,13 @@ public class ObjectBoolMap<K> implements Iterable<ObjectBoolHolder<K>>, Eachable
 			return this;
 		}
 
-		/** Returns a new array containing the remaining keys. */
 		public CollectionList<K> toList() {
-			CollectionList<K> array = new CollectionList<>(true, size, keyComponentType);
+			CollectionList<K> array = new CollectionList<>(size, keyComponentType);
 			while (hasNext)
 				array.add(next());
 			return array;
 		}
 
-		/** Adds the remaining keys to the array. */
 		public CollectionList<K> toList(CollectionList<K> array) {
 			while (hasNext)
 				array.add(next());

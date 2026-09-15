@@ -5,43 +5,24 @@ import arc.util.Strings;
 
 import java.util.Arrays;
 
-/**
- * A resizable, ordered or unordered char array. Avoids the boxing that occurs with {@code ArrayList<Character>}. If unordered, this class
- * avoids a memory copy when removing elements (the last element is moved to the removed element's position).
- *
- * @author Nathan Sweet
- * @author LessWeb
- */
 public class CharSeq implements CharSequence, Appendable, Cloneable {
 	public char[] items;
 	public int size;
 	public boolean ordered;
 
-	/** Creates an ordered array with a capacity of 16. */
 	public CharSeq() {
 		this(true, 16);
 	}
 
-	/** Creates an ordered array with the specified capacity. */
 	public CharSeq(int capacity) {
 		this(true, capacity);
 	}
 
-	/**
-	 * @param ordered  If false, methods that remove elements may change the order of other elements in the array, which avoids a
-	 *                 memory copy.
-	 * @param capacity Any elements added beyond this will cause the backing array to be grown.
-	 */
 	public CharSeq(boolean ordered, int capacity) {
 		this.ordered = ordered;
 		items = new char[capacity];
 	}
 
-	/**
-	 * Creates a new array containing the elements in the specific array. The new array will be ordered if the specific array is
-	 * ordered. The capacity is set to the number of elements, so any subsequent elements added will cause the backing array to be
-	 * grown.
-	 */
 	public CharSeq(CharSeq array) {
 		ordered = array.ordered;
 		size = array.size;
@@ -49,30 +30,16 @@ public class CharSeq implements CharSequence, Appendable, Cloneable {
 		System.arraycopy(array.items, 0, items, 0, size);
 	}
 
-	/**
-	 * Creates a new ordered array containing the elements in the specified array. The capacity is set to the number of elements,
-	 * so any subsequent elements added will cause the backing array to be grown.
-	 */
 	public CharSeq(char[] array) {
 		this(true, array, 0, array.length);
 	}
 
-	/**
-	 * Creates a new array containing the elements in the specified array. The capacity is set to the number of elements, so any
-	 * subsequent elements added will cause the backing array to be grown.
-	 *
-	 * @param ordered If false, methods that remove elements may change the order of other elements in the array, which avoids a
-	 *                memory copy.
-	 */
 	public CharSeq(boolean ordered, char[] array, int startIndex, int count) {
 		this(ordered, count);
 		size = count;
 		System.arraycopy(array, startIndex, items, 0, count);
 	}
 
-	/**
-	 * @see #CharSeq(char[])
-	 */
 	public static CharSeq with(char... array) {
 		return new CharSeq(array);
 	}
@@ -90,32 +57,36 @@ public class CharSeq implements CharSequence, Appendable, Cloneable {
 	}
 
 	public void add(char value) {
-		if (size == items.length) items = resize(Math.max(8, (int) (size * 1.75f)));
-		items[size++] = value;
+		char[] cs = items;
+		if (size == cs.length) cs = resize(Math.max(8, (int) (size * 1.75f)));
+		cs[size++] = value;
 	}
 
 	public void add(char value1, char value2) {
-		if (size + 1 >= items.length) items = resize(Math.max(8, (int) (size * 1.75f)));
-		items[size] = value1;
-		items[size + 1] = value2;
+		char[] cs = items;
+		if (size + 1 >= cs.length) cs = resize(Math.max(8, (int) (size * 1.75f)));
+		cs[size] = value1;
+		cs[size + 1] = value2;
 		size += 2;
 	}
 
 	public void add(char value1, char value2, char value3) {
-		if (size + 2 >= items.length) items = resize(Math.max(8, (int) (size * 1.75f)));
-		items[size] = value1;
-		items[size + 1] = value2;
-		items[size + 2] = value3;
+		char[] cs = items;
+		if (size + 2 >= cs.length) cs = resize(Math.max(8, (int) (size * 1.75f)));
+		cs[size] = value1;
+		cs[size + 1] = value2;
+		cs[size + 2] = value3;
 		size += 3;
 	}
 
 	public void add(char value1, char value2, char value3, char value4) {
-		if (size + 3 >= items.length)
-			items = resize(Math.max(8, (int) (size * 1.8f))); // 1.75 isn't enough when size=5.
-		items[size] = value1;
-		items[size + 1] = value2;
-		items[size + 2] = value3;
-		items[size + 3] = value4;
+		char[] cs = items;
+		if (size + 3 >= cs.length)
+			cs = resize(Math.max(8, (int) (size * 1.8f))); // 1.75 isn't enough when size=5.
+		cs[size] = value1;
+		cs[size + 1] = value2;
+		cs[size + 2] = value3;
+		cs[size + 3] = value4;
 		size += 4;
 	}
 
@@ -134,9 +105,10 @@ public class CharSeq implements CharSequence, Appendable, Cloneable {
 	}
 
 	public void addAll(char[] array, int offset, int length) {
+		char[] cs = items;
 		int sizeNeeded = size + length;
-		if (sizeNeeded > items.length) items = resize(Math.max(8, (int) (sizeNeeded * 1.75f)));
-		System.arraycopy(array, offset, items, size, length);
+		if (sizeNeeded > cs.length) cs = resize(Math.max(8, (int) (sizeNeeded * 1.75f)));
+		System.arraycopy(array, offset, cs, size, length);
 		size += length;
 	}
 
@@ -208,46 +180,51 @@ public class CharSeq implements CharSequence, Appendable, Cloneable {
 
 	public void insert(int index, char value) {
 		if (index > size) throw new IndexOutOfBoundsException("index can't be > size: " + index + " > " + size);
-		char[] theItems = items;
-		if (size == theItems.length) theItems = resize(Math.max(8, (int) (size * 1.75f)));
+		char[] cs = items;
+		if (size == cs.length) cs = resize(Math.max(8, (int) (size * 1.75f)));
 		if (ordered)
-			System.arraycopy(theItems, index, theItems, index + 1, size - index);
+			System.arraycopy(cs, index, cs, index + 1, size - index);
 		else
-			theItems[size] = theItems[index];
+			cs[size] = cs[index];
 		size++;
-		theItems[index] = value;
+		cs[index] = value;
 	}
 
 	public void swap(int first, int second) {
 		if (first >= size) throw new IndexOutOfBoundsException("first can't be >= size: " + first + " >= " + size);
 		if (second >= size) throw new IndexOutOfBoundsException("second can't be >= size: " + second + " >= " + size);
-		char firstValue = items[first];
-		items[first] = items[second];
-		items[second] = firstValue;
+		char[] cs = items;
+		char firstValue = cs[first];
+		cs[first] = cs[second];
+		cs[second] = firstValue;
 	}
 
 	public boolean contains(char value) {
 		int i = size - 1;
+		char[] cs = items;
 		while (i >= 0)
-			if (items[i--] == value) return true;
+			if (cs[i--] == value) return true;
 		return false;
 	}
 
 	public int indexOf(char value) {
+		char[] cs = items;
 		for (int i = 0, n = size; i < n; i++)
-			if (items[i] == value) return i;
+			if (cs[i] == value) return i;
 		return -1;
 	}
 
 	public int lastIndexOf(char value) {
+		char[] cs = items;
 		for (int i = size - 1; i >= 0; i--)
-			if (items[i] == value) return i;
+			if (cs[i] == value) return i;
 		return -1;
 	}
 
 	public boolean removeValue(char value) {
+		char[] cs = items;
 		for (int i = 0, n = size; i < n; i++) {
-			if (items[i] == value) {
+			if (cs[i] == value) {
 				removeIndex(i);
 				return true;
 			}
@@ -255,45 +232,41 @@ public class CharSeq implements CharSequence, Appendable, Cloneable {
 		return false;
 	}
 
-	/** Removes and returns the item at the specified index. */
 	public char removeIndex(int index) {
 		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
-		char value = items[index];
+		char[] cs = items;
+		char value = cs[index];
 		size--;
 		if (ordered)
-			System.arraycopy(items, index + 1, items, index, size - index);
+			System.arraycopy(cs, index + 1, cs, index, size - index);
 		else
-			items[index] = items[size];
+			cs[index] = cs[size];
 		return value;
 	}
 
-	/** Removes the items between the specified indices, inclusive. */
 	public void removeRange(int start, int end) {
 		if (end >= size) throw new IndexOutOfBoundsException("end can't be >= size: " + end + " >= " + size);
 		if (start > end) throw new IndexOutOfBoundsException("start can't be > end: " + start + " > " + end);
+		char[] cs = items;
 		int count = end - start + 1;
 		if (ordered)
-			System.arraycopy(items, start + count, items, start, size - (start + count));
+			System.arraycopy(cs, start + count, cs, start, size - (start + count));
 		else {
 			int lastIndex = size - 1;
 			for (int i = 0; i < count; i++)
-				items[start + i] = items[lastIndex - i];
+				cs[start + i] = cs[lastIndex - i];
 		}
 		size -= count;
 	}
 
-	/**
-	 * Removes from this array all of elements contained in the specified array.
-	 *
-	 * @return true if this array was modified.
-	 */
 	public boolean removeAll(CharSeq array) {
 		int theSize = size;
 		int startSize = theSize;
+		char[] cs = items;
 		for (int i = 0, n = array.size; i < n; i++) {
 			char item = array.get(i);
 			for (int ii = 0; ii < theSize; ii++) {
-				if (item == items[ii]) {
+				if (item == cs[ii]) {
 					removeIndex(ii);
 					theSize--;
 					break;
@@ -303,17 +276,14 @@ public class CharSeq implements CharSequence, Appendable, Cloneable {
 		return theSize != startSize;
 	}
 
-	/** Removes and returns the last item. */
 	public char pop() {
 		return items[--size];
 	}
 
-	/** Returns the last item. */
 	public char peek() {
 		return items[size - 1];
 	}
 
-	/** Returns the first item. */
 	public char first() {
 		if (size == 0) throw new IllegalStateException("Array is empty.");
 		return items[0];
@@ -343,7 +313,6 @@ public class CharSeq implements CharSequence, Appendable, Cloneable {
 		return size;
 	}
 
-	/** Returns true if the array is empty. */
 	@Override
 	public boolean isEmpty() {
 		return size == 0;
@@ -393,23 +362,11 @@ public class CharSeq implements CharSequence, Appendable, Cloneable {
 		return s;
 	}
 
-	/**
-	 * Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items
-	 * have been removed, or if it is known that more items will not be added.
-	 *
-	 * @return {@link #items}
-	 */
 	public char[] shrink() {
 		if (items.length != size) resize(size);
 		return items;
 	}
 
-	/**
-	 * Increases the size of the backing array to accommodate the specified number of additional items. Useful before adding many
-	 * items to avoid multiple backing array resizes.
-	 *
-	 * @return {@link #items}
-	 */
 	public char[] ensureCapacity(int additionalCapacity) {
 		if (additionalCapacity < 0)
 			throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
@@ -418,11 +375,6 @@ public class CharSeq implements CharSequence, Appendable, Cloneable {
 		return items;
 	}
 
-	/**
-	 * Sets the array size, leaving any values beyond the current size undefined.
-	 *
-	 * @return {@link #items}
-	 */
 	public char[] setSize(int newSize) {
 		if (newSize < 0) throw new IllegalArgumentException("newSize must be >= 0: " + newSize);
 		if (newSize > items.length) resize(Math.max(8, newSize));
@@ -442,32 +394,29 @@ public class CharSeq implements CharSequence, Appendable, Cloneable {
 	}
 
 	public void reverse() {
+		char[] cs = items;
 		for (int i = 0, lastIndex = size - 1, n = size / 2; i < n; i++) {
 			int ii = lastIndex - i;
-			char temp = items[i];
-			items[i] = items[ii];
-			items[ii] = temp;
+			char temp = cs[i];
+			cs[i] = cs[ii];
+			cs[ii] = temp;
 		}
 	}
 
 	public void shuffle() {
+		char[] cs = items;
 		for (int i = size - 1; i >= 0; i--) {
 			int ii = Mathf.random(i);
-			char temp = items[i];
-			items[i] = items[ii];
-			items[ii] = temp;
+			char temp = cs[i];
+			cs[i] = cs[ii];
+			cs[ii] = temp;
 		}
 	}
 
-	/**
-	 * Reduces the size of the array to the specified size. If the array is already smaller than the specified size, no action is
-	 * taken.
-	 */
 	public void truncate(int newSize) {
 		if (size > newSize) size = newSize;
 	}
 
-	/** Returns a random item from the array, or zero if the array is empty. */
 	public char random() {
 		if (size == 0) return 0;
 		return items[Mathf.random(0, size - 1)];
@@ -493,9 +442,10 @@ public class CharSeq implements CharSequence, Appendable, Cloneable {
 		if (o == this) return true;
 		if (!ordered || !(o instanceof CharSeq array) || !array.ordered) return false;
 		if (size != array.size) return false;
+		char[] cs = array.items;
 		char[] otherItems = array.items;
 		for (int i = 0; i < size; i++)
-			if (items[i] != otherItems[i]) return false;
+			if (cs[i] != otherItems[i]) return false;
 		return true;
 	}
 
@@ -507,12 +457,13 @@ public class CharSeq implements CharSequence, Appendable, Cloneable {
 
 	public String asString() {
 		if (size == 0) return "[]";
+		char[] cs = items;
 		StringBuilder buffer = new StringBuilder(32);
 		buffer.append('[');
-		buffer.append(items[0]);
+		buffer.append(cs[0]);
 		for (int i = 1; i < size; i++) {
 			buffer.append(", ");
-			buffer.append(items[i]);
+			buffer.append(cs[i]);
 		}
 		buffer.append(']');
 		return buffer.toString();

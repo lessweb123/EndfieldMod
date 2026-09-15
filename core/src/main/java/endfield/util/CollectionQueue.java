@@ -13,36 +13,29 @@ import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 
 /**
- * A resizable, ordered array of objects with efficient add and remove at the beginning and end. Values in the backing array may
- * wrap back to the beginning, making add and remove at the beginning and end O(1) (unless the backing array needs to resize when
- * adding). Deque functionality is provided via {@link #removeLast()} and {@link #addFirst(Object)}.
+ * Implementation of Java Collection Framework {@code Queue} based on {@code Queue}, used in places that require Java
+ * specifications and the feature of {@code Queue} not creating nodes.
  */
 public class CollectionQueue<E> extends AbstractQueue<E> implements Eachable<E> {
 	public final Class<E> componentType;
 
-	/** Number of elements in the queue. */
 	public int size = 0;
-	/** Contains the values in the queue. Head and tail indices go in a circle around this array, wrapping at the end. */
+
 	public E[] values;
-	/** Index of first element. Logically smaller than tail. Unless empty, it points to a valid element inside queue. */
+
 	protected int head = 0;
-	/**
-	 * Index of last element. Logically bigger than head. Usually points to an empty position, but points to the head when full
-	 * (size == values.length).
-	 */
 	protected int tail = 0;
 
 	protected transient @Nullable QueueIterator iterator1, iterator2;
 
-	/** Creates a new Queue which can hold 16 values without needing to resize backing array. */
+	public CollectionQueue() {
+		this(Object.class);
+	}
+
 	public CollectionQueue(Class<?> type) {
 		this(16, type);
 	}
 
-	/**
-	 * Creates a new Queue which can hold the specified number of values without needing to resize backing array. This creates
-	 * backing array of the specified type via reflection, which is necessary only when accessing the backing array directly.
-	 */
 	@SuppressWarnings("unchecked")
 	public CollectionQueue(int initialSize, Class<?> type) {
 		componentType = (Class<E>) type;
@@ -50,24 +43,20 @@ public class CollectionQueue<E> extends AbstractQueue<E> implements Eachable<E> 
 		values = (E[]) Array.newInstance(type, initialSize);
 	}
 
-	/**
-	 * Append given object to the tail. (enqueue to tail) Unless backing array needs resizing, operates in O(1) time.
-	 *
-	 * @param object can be null
-	 */
 	public void addLast(E object) {
-		if (size == values.length) {
-			resize(values.length << 1);// * 2
+		E[] vs = values;
+
+		if (size == vs.length) {
+			resize(vs.length << 1);// * 2
 		}
 
-		values[tail++] = object;
-		if (tail == values.length) {
+		vs[tail++] = object;
+		if (tail == vs.length) {
 			tail = 0;
 		}
 		size++;
 	}
 
-	/** Adds an object to the tail. */
 	@Override
 	public boolean add(E e) {
 		addLast(e);
@@ -104,82 +93,67 @@ public class CollectionQueue<E> extends AbstractQueue<E> implements Eachable<E> 
 		return values[0];
 	}
 
-	/**
-	 * Prepend given object to the head. (enqueue to head) Unless backing array needs resizing, operates in O(1) time.
-	 *
-	 * @param object can be null
-	 * @see #addLast(Object)
-	 */
 	public void addFirst(E object) {
-		if (size == values.length) {
-			resize(values.length << 1);// * 2
+		E[] vs = values;
+
+		if (size == vs.length) {
+			resize(vs.length << 1);// * 2
 		}
 
 		head--;
 		if (head == -1) {
-			head = values.length - 1;
+			head = vs.length - 1;
 		}
-		values[head] = object;
+		vs[head] = object;
 
 		size++;
 	}
 
-	/**
-	 * Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items
-	 * have been removed, or if it is known that more items will not be added.
-	 *
-	 * @return {@link #values}
-	 */
 	public E[] shrink() {
 		if (values.length != size) resize(size);
 		return values;
 	}
 
-	/**
-	 * Increases the size of the backing array to accommodate the specified number of additional items. Useful before adding many
-	 * items to avoid multiple backing array resizes.
-	 */
 	public void ensureCapacity(int additional) {
-		final int needed = size + additional;
+		int needed = size + additional;
 		if (values.length < needed) {
 			resize(needed);
 		}
 	}
 
-	/** Resize backing array. newSize must be bigger than current size. */
 	@SuppressWarnings("unchecked")
 	protected void resize(int newSize) {
-		final E[] newArray = (E[]) Array.newInstance(componentType, newSize);
-		if (head < tail) {
+		E[] vs = values;
+		int h = head;
+		int t = tail;
+
+		E[] newArray = (E[]) Array.newInstance(componentType, newSize);
+		if (h < t) {
 			// Continuous
-			System.arraycopy(values, head, newArray, 0, tail - head);
+			System.arraycopy(vs, h, newArray, 0, t - h);
 		} else if (size > 0) {
 			// Wrapped
-			final int rest = values.length - head;
-			System.arraycopy(values, head, newArray, 0, rest);
-			System.arraycopy(values, 0, newArray, rest, tail);
+			int rest = vs.length - h;
+			System.arraycopy(vs, h, newArray, 0, rest);
+			System.arraycopy(vs, 0, newArray, rest, t);
 		}
 		values = newArray;
 		head = 0;
 		tail = size;
 	}
 
-	/**
-	 * Remove the first item from the queue. (dequeue from head) Always O(1).
-	 *
-	 * @return removed object
-	 * @throws NoSuchElementException when queue is empty
-	 */
 	public E removeFirst() {
 		if (size == 0) {
 			// Underflow
 			throw new NoSuchElementException("Queue is empty.");
 		}
 
-		final E result = values[head];
-		values[head] = null;
+		E[] vs = values;
+
+		E result = vs[head];
+		vs[head] = null;
 		head++;
-		if (head == values.length) {
+		if (head == vs.length) {
 			head = 0;
 		}
 		size--;
@@ -187,24 +161,19 @@ public class CollectionQueue<E> extends AbstractQueue<E> implements Eachable<E> 
 		return result;
 	}
 
-	/**
-	 * Remove the last item from the queue. (dequeue from tail) Always O(1).
-	 *
-	 * @return removed object
-	 * @throws NoSuchElementException when queue is empty
-	 * @see #removeFirst()
-	 */
 	public E removeLast() {
 		if (size == 0) {
 			throw new NoSuchElementException("Queue is empty.");
 		}
 
+		E[] vs = values;
+
 		tail--;
 		if (tail == -1) {
-			tail = values.length - 1;
+			tail = vs.length - 1;
 		}
-		final E result = values[tail];
-		values[tail] = null;
+		E result = vs[tail];
+		vs[tail] = null;
 		size--;
 
 		return result;
@@ -219,33 +188,28 @@ public class CollectionQueue<E> extends AbstractQueue<E> implements Eachable<E> 
 		return indexOf(value, identity) != -1;
 	}
 
-	/**
-	 * Returns the index of first occurrence of value in the queue, or -1 if no such value exists.
-	 *
-	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
-	 * @return An index of first occurrence of value in queue or -1 if no such value exists
-	 */
 	public int indexOf(Object value, boolean identity) {
 		if (size == 0) return -1;
+		E[] vs = values;
 		if (identity || value == null) {
 			if (head < tail) {
 				for (int i = head; i < tail; i++)
-					if (values[i] == value) return i - head;
+					if (vs[i] == value) return i - head;
 			} else {
-				for (int i = head, n = values.length; i < n; i++)
-					if (values[i] == value) return i - head;
+				for (int i = head, n = vs.length; i < n; i++)
+					if (vs[i] == value) return i - head;
 				for (int i = 0; i < tail; i++)
-					if (values[i] == value) return i + values.length - head;
+					if (vs[i] == value) return i + vs.length - head;
 			}
 		} else {
 			if (head < tail) {
 				for (int i = head; i < tail; i++)
-					if (value.equals(values[i])) return i - head;
+					if (value.equals(vs[i])) return i - head;
 			} else {
-				for (int i = head, n = values.length; i < n; i++)
-					if (value.equals(values[i])) return i - head;
+				for (int i = head, n = vs.length; i < n; i++)
+					if (value.equals(vs[i])) return i - head;
 				for (int i = 0; i < tail; i++)
-					if (value.equals(values[i])) return i + values.length - head;
+					if (value.equals(vs[i])) return i + vs.length - head;
 			}
 		}
 		return -1;
@@ -253,14 +217,15 @@ public class CollectionQueue<E> extends AbstractQueue<E> implements Eachable<E> 
 
 	public int indexOf(Boolf<? super E> value) {
 		if (size == 0) return -1;
+		E[] vs = values;
 		if (head < tail) {
 			for (int i = head; i < tail; i++)
-				if (value.get(values[i])) return i - head;
+				if (value.get(vs[i])) return i - head;
 		} else {
-			for (int i = head, n = values.length; i < n; i++)
-				if (value.get(values[i])) return i - head;
+			for (int i = head, n = vs.length; i < n; i++)
+				if (value.get(vs[i])) return i - head;
 			for (int i = 0; i < tail; i++)
-				if (value.get(values[i])) return i + values.length - head;
+				if (value.get(vs[i])) return i + vs.length - head;
 		}
 		return -1;
 	}
@@ -279,12 +244,6 @@ public class CollectionQueue<E> extends AbstractQueue<E> implements Eachable<E> 
 		return remove(value, false);
 	}
 
-	/**
-	 * Removes the first instance of the specified value in the queue.
-	 *
-	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
-	 * @return true if value was found and removed, false otherwise
-	 */
 	public boolean remove(Object value, boolean identity) {
 		int index = indexOf(value, identity);
 		if (index == -1) return false;
@@ -292,29 +251,29 @@ public class CollectionQueue<E> extends AbstractQueue<E> implements Eachable<E> 
 		return true;
 	}
 
-	/** Removes and returns the item at the specified index. */
 	public E removeIndex(int index) {
 		if (index < 0) throw new IndexOutOfBoundsException("index can't be < 0: " + index);
 		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 
+		E[] vs = values;
 		index += head;
 		E value;
 		if (head < tail) { // index is between head and tail.
-			value = values[index];
-			System.arraycopy(values, index + 1, values, index, tail - index);
-			values[tail] = null;
+			value = vs[index];
+			System.arraycopy(vs, index + 1, vs, index, tail - index);
+			vs[tail] = null;
 			tail--;
-		} else if (index >= values.length) { // index is between 0 and tail.
-			index -= values.length;
-			value = values[index];
-			System.arraycopy(values, index + 1, values, index, tail - index);
+		} else if (index >= vs.length) { // index is between 0 and tail.
+			index -= vs.length;
+			value = vs[index];
+			System.arraycopy(vs, index + 1, vs, index, tail - index);
 			tail--;
 		} else { // index is between head and values.length.
-			value = values[index];
-			System.arraycopy(values, head, values, head + 1, index - head);
-			values[head] = null;
+			value = vs[index];
+			System.arraycopy(vs, head, vs, head + 1, index - head);
+			vs[head] = null;
 			head++;
-			if (head == values.length) {
+			if (head == vs.length) {
 				head = 0;
 			}
 		}
@@ -327,83 +286,59 @@ public class CollectionQueue<E> extends AbstractQueue<E> implements Eachable<E> 
 		return size;
 	}
 
-	/** Returns true if the queue is empty. */
 	@Override
 	public boolean isEmpty() {
 		return size == 0;
 	}
 
-	/**
-	 * Returns the first (head) item in the queue (without removing it).
-	 *
-	 * @throws NoSuchElementException when queue is empty
-	 * @see #addFirst(Object)
-	 * @see #removeFirst()
-	 */
 	public E first() {
 		if (size == 0) {
-			// Underflow
 			throw new NoSuchElementException("Queue is empty.");
 		}
 		return values[head];
 	}
 
-	/**
-	 * Returns the last (tail) item in the queue (without removing it).
-	 *
-	 * @throws NoSuchElementException when queue is empty
-	 * @see #addLast(Object)
-	 * @see #removeLast()
-	 */
 	public E last() {
 		if (size == 0) {
-			// Underflow
 			throw new NoSuchElementException("Queue is empty.");
 		}
+		E[] vs = values;
 		tail--;
 		if (tail == -1) {
-			tail = values.length - 1;
+			tail = vs.length - 1;
 		}
-		return values[tail];
+		return vs[tail];
 	}
 
-	/**
-	 * Retrieves the value in queue without removing it. Indexing is from the front to back, zero based. Therefore get(0) is the
-	 * same as {@link #first()}.
-	 *
-	 * @throws IndexOutOfBoundsException when the index is negative or >= size
-	 */
 	public E get(int index) {
 		if (index < 0) throw new IndexOutOfBoundsException("index can't be < 0: " + index);
 		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
+		E[] vs = values;
 
 		int i = head + index;
-		if (i >= values.length) {
-			i -= values.length;
+		if (i >= vs.length) {
+			i -= vs.length;
 		}
-		return values[i];
+		return vs[i];
 	}
 
-	/**
-	 * Removes all values from this queue. Values in backing array are set to null to prevent memory leak, so this operates in
-	 * O(n).
-	 */
 	@Override
 	public void clear() {
 		if (size == 0) return;
+		E[] vs = values;
+		int h = head;
+		int t = tail;
 
-		if (head < tail) {
-			// Continuous
-			for (int i = head; i < tail; i++) {
-				values[i] = null;
+		if (h < t) {
+			for (int i = h; i < t; i++) {
+				vs[i] = null;
 			}
 		} else {
-			// Wrapped
-			for (int i = head; i < values.length; i++) {
-				values[i] = null;
+			for (int i = h; i < vs.length; i++) {
+				vs[i] = null;
 			}
-			for (int i = 0; i < tail; i++) {
-				values[i] = null;
+			for (int i = 0; i < t; i++) {
+				vs[i] = null;
 			}
 		}
 		head = 0;
@@ -411,10 +346,6 @@ public class CollectionQueue<E> extends AbstractQueue<E> implements Eachable<E> 
 		size = 0;
 	}
 
-	/**
-	 * Returns an iterator for the items in the queue. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the constructor for nested or multithreaded iteration.
-	 */
 	@Override
 	public QueueIterator iterator() {
 		if (iterator1 == null) iterator1 = new QueueIterator();
@@ -432,7 +363,6 @@ public class CollectionQueue<E> extends AbstractQueue<E> implements Eachable<E> 
 			iterator2.done = false;
 			return iterator2;
 		}
-		//allocate new iterator in the case of 3+ nested loops.
 		return new QueueIterator();
 	}
 
@@ -467,10 +397,8 @@ public class CollectionQueue<E> extends AbstractQueue<E> implements Eachable<E> 
 		final T[] a;
 		final int end;
 		if ((end = tail + ((head <= tail) ? 0 : es.length)) >= 0) {
-			// Uses null extension feature of copyOfRange
 			a = Arrays.copyOfRange(es, head, end, c);
 		} else {
-			// integer overflow!
 			a = Arrays.copyOfRange(es, 0, end - head, c);
 			System.arraycopy(es, head, a, 0, es.length - head);
 		}
@@ -481,16 +409,44 @@ public class CollectionQueue<E> extends AbstractQueue<E> implements Eachable<E> 
 
 	@Override
 	public void each(Cons<? super E> cons) {
-		for (int i = 0; i < size; i++) {
-			cons.get(get(i));
+		E[] vs = values;
+
+		for(int index = 0; index < size; index++){
+			int i = head + index;
+			if(i >= vs.length){
+				i -= vs.length;
+			}
+			cons.get(vs[i]);
 		}
 	}
 
 	@Override
 	public void forEach(Consumer<? super E> action) {
-		for (int i = 0; i < size; i++) {
-			action.accept(get(i));
+		E[] vs = values;
+
+		for(int index = 0; index < size; index++){
+			int i = head + index;
+			if(i >= vs.length){
+				i -= vs.length;
+			}
+			action.accept(vs[i]);
 		}
+	}
+
+	public E find(Boolf<E> func) {
+		E[] vs = values;
+
+		for (int index = 0; index < size; index++) {
+			int i = head + index;
+			if (i >= vs.length) {
+				i -= vs.length;
+			}
+			E value = vs[i];
+			if (func.get(value)) {
+				return value;
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -498,12 +454,15 @@ public class CollectionQueue<E> extends AbstractQueue<E> implements Eachable<E> 
 		if (size == 0) {
 			return "[]";
 		}
+		E[] vs = values;
+		int h = head;
+		int t = tail;
 
 		StringBuilder sb = new StringBuilder(64);
 		sb.append('[');
-		sb.append(values[head]);
-		for (int i = (head + 1) % values.length; i != tail; i = (i + 1) % values.length) {
-			sb.append(", ").append(values[i]);
+		sb.append(vs[h]);
+		for (int i = (h + 1) % vs.length; i != t; i = (i + 1) % vs.length) {
+			sb.append(", ").append(vs[i]);
 		}
 		sb.append(']');
 		return sb.toString();
@@ -511,12 +470,14 @@ public class CollectionQueue<E> extends AbstractQueue<E> implements Eachable<E> 
 
 	@Override
 	public int hashCode() {
-		final int backingLength = values.length;
+		int s = size;
+		E[] vs = values;
+		int backingLength = vs.length;
 		int index = head;
 
-		int hash = size + 1;
-		for (int s = 0; s < size; s++) {
-			final E value = values[index];
+		int hash = s + 1;
+		for (int i = 0; i < s; i++) {
+			E value = vs[index];
 
 			hash *= 31;
 			if (value != null) hash += value.hashCode();
@@ -535,17 +496,22 @@ public class CollectionQueue<E> extends AbstractQueue<E> implements Eachable<E> 
 
 		if (other.size != size) return false;
 
-		int index = head;
+		E[] myValues = values;
+		int myBackingLength = myValues.length;
+		Object[] itsValues = other.values;
+		int itsBackingLength = itsValues.length;
+
+		int myIndex = head;
 		int itsIndex = other.head;
 		for (int s = 0; s < size; s++) {
-			E myValue = values[index];
-			Object itsValue = other.values[itsIndex];
+			E myValue = myValues[myIndex];
+			Object itsValue = itsValues[itsIndex];
 
 			if (!(myValue == null ? itsValue == null : myValue.equals(itsValue))) return false;
-			index++;
+			myIndex++;
 			itsIndex++;
-			if (index == values.length) index = 0;
-			if (itsIndex == other.values.length) itsIndex = 0;
+			if (myIndex == myBackingLength) myIndex = 0;
+			if (itsIndex == itsBackingLength) itsIndex = 0;
 		}
 		return true;
 	}

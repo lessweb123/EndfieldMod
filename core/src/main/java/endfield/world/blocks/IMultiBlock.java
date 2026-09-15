@@ -39,16 +39,20 @@ public interface IMultiBlock extends IBlock {
 	}
 
 	default void addLink(int... values) {
+		Seq<Point2> linkPos = linkPos();
+		IntSeq linkSize = linkSize();
 		for (int i = 0; i < values.length; i += 3) {
-			linkPos().add(new Point2(values[i], values[i + 1]));
-			linkSize().add(values[i + 2]);
+			linkPos.add(new Point2(values[i], values[i + 1]));
+			linkSize.add(values[i + 2]);
 		}
 	}
 
 	default boolean checkLink(Tile tile, Team team, int size, int rotation) {
-		for (int i = 0; i < linkPos().size; i++) {
-			Point2 p = linkPos().get(i);
-			int s = linkSize().get(i);
+		Seq<Point2> linkPos = linkPos();
+		IntSeq linkSize = linkSize();
+		for (int i = 0; i < linkPos.size; i++) {
+			Point2 p = linkPos.get(i);
+			int s = linkSize.get(i);
 			Point2 rotated = calculateRotatedPosition(p, size, s, rotation);
 			if (!Build.validPlace(Blocks2.linkBlock[s - 1], team, tile.x + rotated.x, tile.y + rotated.y, 0, false)) {
 				return false;
@@ -60,9 +64,11 @@ public interface IMultiBlock extends IBlock {
 	default void createPlaceholder(Tile tile, int size) {
 		if (Vars.state.rules.infiniteResources || tile == null || tile.build == null) return;
 
-		for (int i = 0; i < linkPos().size; i++) {
-			Point2 p = linkPos().get(i);
-			int s = linkSize().get(i);
+		Seq<Point2> linkPos = linkPos();
+		IntSeq linkSize = linkSize();
+		for (int i = 0; i < linkPos.size; i++) {
+			Point2 p = linkPos.get(i);
+			int s = linkSize.get(i);
 			Point2 rotated = calculateRotatedPosition(p, size, s, tile.build.rotation);
 			Tile t = Vars.world.tile(tile.x + rotated.x, tile.y + rotated.y);
 			t.setBlock(Blocks2.placeholderBlock[s - 1], tile.team(), 0);
@@ -73,9 +79,11 @@ public interface IMultiBlock extends IBlock {
 
 	default Seq<Building> setLinkBuild(Building build, Block block, Tile tile, Team team, int size, int rotation) {
 		Seq<Building> out = new Seq<>(Building.class);
-		for (int i = 0; i < linkPos().size; i++) {
-			Point2 p = linkPos().get(i);
-			int s = linkSize().get(i);
+		Seq<Point2> linkPos = linkPos();
+		IntSeq linkSize = linkSize();
+		for (int i = 0; i < linkPos.size; i++) {
+			Point2 p = linkPos.get(i);
+			int s = linkSize.get(i);
 			Point2 rotated = calculateRotatedPosition(p, size, s, rotation);
 			Tile t = Vars.world.tile(tile.x + rotated.x, tile.y + rotated.y);
 
@@ -92,9 +100,11 @@ public interface IMultiBlock extends IBlock {
 
 	default Seq<Tile> getLinkTiles(Tile tile, int size, int rotation) {
 		Seq<Tile> out = new Seq<>(Tile.class);
-		for (int i = 0; i < linkPos().size; i++) {
-			Point2 p = linkPos().get(i);
-			int s = linkSize().get(i);
+		Seq<Point2> linkPos = linkPos();
+		IntSeq linkSize = linkSize();
+		for (int i = 0; i < linkPos.size; i++) {
+			Point2 p = linkPos.get(i);
+			int s = linkSize.get(i);
 			Point2 rotated = calculateRotatedPosition(p, size, s, rotation);
 			Tile t = Vars.world.tile(tile.x + rotated.x, tile.y + rotated.y);
 			out.add(t);
@@ -112,8 +122,9 @@ public interface IMultiBlock extends IBlock {
 			}
 		}
 
-		for (int i = 0; i < linkPos().size; i++) {
-			Point2 p = linkPos().get(i);
+		Seq<Point2> linkPos = linkPos();
+		for (int i = 0; i < linkPos.size; i++) {
+			Point2 p = linkPos.get(i);
 			int s = linkSize().get(i);
 			Point2 rotated = calculateRotatedPosition(p, size, s, rotation);
 			Point2 lb2 = leftBottomPos(s).add(rotated);
@@ -132,9 +143,11 @@ public interface IMultiBlock extends IBlock {
 	default Point2 teamOverlayPos(int size, int rotation) {
 		Point2 out = leftBottomPos(size);
 
-		for (int i = 0; i < linkPos().size; i++) {
-			Point2 p = linkPos().get(i);
-			int s = linkSize().get(i);
+		Seq<Point2> linkPos = linkPos();
+		IntSeq linkSize = linkSize();
+		for (int i = 0; i < linkPos.size; i++) {
+			Point2 p = linkPos.get(i);
+			int s = linkSize.get(i);
 			Point2 rotated = calculateRotatedPosition(p, size, s, rotation);
 			Point2 lb = leftBottomPos(s).add(rotated);
 
@@ -146,9 +159,11 @@ public interface IMultiBlock extends IBlock {
 	default Point2 statusOverlayPos(int size, int rotation) {
 		Point2 out = rightBottomPos(size);
 
-		for (int i = 0; i < linkPos().size; i++) {
-			Point2 p = linkPos().get(i);
-			int s = linkSize().get(i);
+		Seq<Point2> linkPos = linkPos();
+		IntSeq linkSize = linkSize();
+		for (int i = 0; i < linkPos.size; i++) {
+			Point2 p = linkPos.get(i);
+			int s = linkSize.get(i);
 			Point2 rotated = calculateRotatedPosition(p, size, s, rotation);
 			Point2 rb = rightBottomPos(s).add(rotated);
 
@@ -173,9 +188,11 @@ public interface IMultiBlock extends IBlock {
 
 		Point2 out = new Point2(size, size);
 
-		for (int i = 0; i < linkPos().size; i++) {
-			Point2 p = linkPos().get(i);
-			int s = linkSize().get(i);
+		Seq<Point2> linkPos = linkPos();
+		IntSeq linkSize = linkSize();
+		for (int i = 0; i < linkPos.size; i++) {
+			Point2 p = linkPos.get(i);
+			int s = linkSize.get(i);
 			Point2 rotated = calculateRotatedPosition(p, size, s, rotation);
 
 			left = Math.min(left, rotated.x);
@@ -191,8 +208,9 @@ public interface IMultiBlock extends IBlock {
 	default int getTileCount() {
 		int out = 0;
 		out += size() * size();
-		for (int i = 0; i < linkSize().size; i++) {
-			out += linkSize().get(i) * linkSize().get(i);
+		IntSeq linkSize = linkSize();
+		for (int i = 0; i < linkSize.size; i++) {
+			out += linkSize.get(i) * linkSize.get(i);
 		}
 		return out;
 	}

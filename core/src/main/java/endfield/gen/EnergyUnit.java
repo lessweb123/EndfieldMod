@@ -76,6 +76,7 @@ public class EnergyUnit extends Unit2 implements Energyc {
 	@Override
 	public void add() {
 		if (added) return;
+
 		index__unit = Groups.unit.addIndex(this);
 		index__sync = Groups.sync.addIndex(this);
 		index__draw = Groups.draw.addIndex(this);
@@ -91,6 +92,8 @@ public class EnergyUnit extends Unit2 implements Energyc {
 			Call.unitCapDeath(this);
 			team.data().updateCount(type, -1);
 		}
+
+		Vars.unitPhysics.add(this);
 
 		lastPos.set(this);
 	}

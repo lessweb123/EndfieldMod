@@ -41,6 +41,7 @@ public class Unit2 extends UnitEntity implements Unitc2, ExtraVariable {
 	@Override
 	public void add() {
 		if (added) return;
+
 		index__unit = Groups.unit.addIndex(this);
 		index__sync = Groups.sync.addIndex(this);
 		index__draw = Groups.draw.addIndex(this);
@@ -56,6 +57,8 @@ public class Unit2 extends UnitEntity implements Unitc2, ExtraVariable {
 			Call.unitCapDeath(this);
 			team.data().updateCount(type, -1);
 		}
+
+		Vars.unitPhysics.add(this);
 
 		asType().init(this);
 	}

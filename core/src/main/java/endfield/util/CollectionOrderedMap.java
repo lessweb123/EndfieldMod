@@ -6,41 +6,74 @@ import endfield.util.holder.ObjectHolder;
 import java.util.NoSuchElementException;
 
 /**
- * Implementation of Ordered Map based on {@code OrderedMap} wrapper for Java collection framework
- * used in places where Java specifications are required and OrderedMap does not create nodes.
+ * Implementation of Java Collection Framework {@code Map} based on {@code OrderedMap}, used in places that require
+ * Java specifications and the feature of {@code OrderedMap} not creating nodes.
  */
 public class CollectionOrderedMap<K, V> extends CollectionObjectMap<K, V> {
-	public CollectionList<K> orderedKeys;
+	public final CollectionList<K> orderedKeys;
+
+	public CollectionOrderedMap() {
+		orderedKeys = new CollectionList<>();
+	}
 
 	public CollectionOrderedMap(Class<?> keyType, Class<?> valueType) {
 		super(keyType, valueType, 16, 0.75f);
-		setList(keyType, 16);
+		orderedKeys = new CollectionList<>(keyType);
 	}
 
 	public CollectionOrderedMap(Class<?> keyType, Class<?> valueType, int capacity) {
 		super(keyType, valueType, capacity, 0.75f);
-		setList(keyType, capacity);
+		orderedKeys = new CollectionList<>(capacity, keyType);
 	}
 
 	public CollectionOrderedMap(Class<?> keyType, Class<?> valueType, int capacity, float loadFactor) {
 		super(keyType, valueType, capacity, loadFactor);
-		setList(keyType, capacity);
+		orderedKeys = new CollectionList<>(capacity, keyType);
 	}
 
 	public CollectionOrderedMap(CollectionOrderedMap<? extends K, ? extends V> map) {
 		super(map);
-		setList(map.keyComponentType, 16);
+		orderedKeys = new CollectionList<>(map.size, map.keyComponentType);
 		putAll(map);
-	}
-
-	protected void setList(Class<?> keyType, int capacity) {
-		orderedKeys = new CollectionList<>(true, capacity, keyType);
 	}
 
 	@Override
 	public V put(K key, V value) {
-		if (!containsKey(key)) orderedKeys.add(key);
-		return super.put(key, value);
+		if (key == null) throw new IllegalArgumentException("key cannot be null.");
+		int i = locateKey(key);
+		if (i >= 0) { // Existing key was found.
+			V oldValue = valueTable[i];
+			valueTable[i] = value;
+			return oldValue;
+		}
+		i = -(i + 1);
+		keyTable[i] = key;
+		valueTable[i] = value;
+		orderedKeys.add(key);
+		if (++size >= threshold) resize(keyTable.length << 1);
+		return null;
+	}
+
+	@Override
+	public V putMissing(K key, V value) {
+		if (key == null) throw new IllegalArgumentException("key cannot be null.");
+		int i = locateKey(key);
+		if (i >= 0) return valueTable[i];
+		i = -(i + 1);
+		keyTable[i] = key;
+		valueTable[i] = value;
+		orderedKeys.add(key);
+		if (++size >= threshold) resize(keyTable.length << 1);
+		return null;
+	}
+
+	public void putAll(CollectionOrderedMap<? extends K, ? extends V> map) {
+		ensureCapacity(map.size);
+		K[] keys = map.orderedKeys.items;
+		for (int i = 0, n = map.orderedKeys.size; i < n; i++) {
+			K key = keys[i];
+			put(key, map.get(key));
+		}
 	}
 
 	@Override
@@ -51,6 +84,22 @@ public class CollectionOrderedMap<K, V> extends CollectionObjectMap<K, V> {
 
 	public V removeIndex(int index) {
 		return super.remove(orderedKeys.remove(index));
+	}
+
+	public boolean alter(K before, K after) {
+		if (containsKey(after)) return false;
+		int index = orderedKeys.indexOf(before, false);
+		if (index == -1) return false;
+		super.put(after, super.remove(before));
+		orderedKeys.set(index, after);
+		return true;
+	}
+
+	public boolean alterIndex(int index, K after) {
+		if (index < 0 || index >= size || containsKey(after)) return false;
+		super.put(after, super.remove(orderedKeys.get(index)));
+		orderedKeys.set(index, after);
+		return true;
 	}
 
 	@Override
@@ -87,11 +136,6 @@ public class CollectionOrderedMap<K, V> extends CollectionObjectMap<K, V> {
 		return entries2;
 	}
 
-
-	/**
-	 * Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link OrderedMapKeys} constructor for nested or multithreaded iteration.
-	 */
 	@Override
 	public Keys keySet() {
 		if (keys1 == null) {
@@ -129,18 +173,20 @@ public class CollectionOrderedMap<K, V> extends CollectionObjectMap<K, V> {
 	}
 
 	@Override
-	public String toString() {
-		if (size == 0) return "[]";
+	public String toString(String separator, boolean braces) {
+		if (size == 0) return braces ? "{}" : "";
 		StringBuilder buffer = new StringBuilder(32);
-		buffer.append('[');
-		for (int i = 0, n = orderedKeys.size; i < n; i++) {
-			K key = orderedKeys.get(i);
-			if (i > 0) buffer.append(", ");
-			buffer.append(key);
+		if (braces) buffer.append('{');
+		CollectionList<K> keys = orderedKeys;
+		for (int i = 0, n = keys.size; i < n; i++) {
+			K key = keys.get(i);
+			if (i > 0) buffer.append(separator);
+			buffer.append(key == this ? "(this)" : key);
 			buffer.append('=');
-			buffer.append(get(key));
+			V value = get(key);
+			buffer.append(value == this ? "(this)" : value);
 		}
-		buffer.append(']');
+		if (braces) buffer.append('}');
 		return buffer.toString();
 	}
 
@@ -155,6 +201,7 @@ public class CollectionOrderedMap<K, V> extends CollectionObjectMap<K, V> {
 		public ObjectHolder<K, V> next() {
 			if (!hasNext) throw new NoSuchElementException();
 			if (!valid) throw new ArcRuntimeException("#iterator() cannot be used nested.");
+			currentIndex = nextIndex;
 			entry.key = orderedKeys.get(nextIndex);
 			entry.value = get(entry.key);
 			nextIndex++;
@@ -167,6 +214,7 @@ public class CollectionOrderedMap<K, V> extends CollectionObjectMap<K, V> {
 			if (currentIndex < 0) throw new IllegalStateException("next must be called before remove.");
 			CollectionOrderedMap.this.remove(entry.key);
 			nextIndex--;
+			currentIndex = -1;
 		}
 	}
 

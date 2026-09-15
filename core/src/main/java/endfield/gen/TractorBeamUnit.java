@@ -234,6 +234,7 @@ public class TractorBeamUnit extends PayloadUnit2 {
 	@Override
 	public void add() {
 		if (added) return;
+
 		index__unit = Groups.unit.addIndex(this);
 		index__sync = Groups.sync.addIndex(this);
 		index__draw = Groups.draw.addIndex(this);
@@ -248,7 +249,9 @@ public class TractorBeamUnit extends PayloadUnit2 {
 			team.data().updateCount(type, -1);
 		}
 
-		beamRange = this.asType().tractorBeamRange;
+		Vars.unitPhysics.add(this);
+
+		beamRange = asType().tractorBeamRange;
 	}
 
 	@Override

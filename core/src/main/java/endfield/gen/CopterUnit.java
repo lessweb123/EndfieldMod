@@ -37,6 +37,8 @@ public class CopterUnit extends Unit2 implements Copterc {
 			team.data().updateCount(type, -1);
 		}
 
+		Vars.unitPhysics.add(this);
+
 		if (type instanceof CopterUnitType cType) {
 			rotors = new RotorMount[cType.rotors.size];
 

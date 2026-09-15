@@ -293,6 +293,7 @@ public final class Blocks2 {
 	public static ConnectedFloor metalTiles15, metalTiles16, metalTiles17, metalTiles18;
 	public static Floor asphalt;
 	public static ConnectedFloor asphaltTiles;
+	public static Floor siliceoustone;
 	public static SteamVent shaleVent;
 	public static Floor basaltSpikes, basaltPlates;
 	public static TallBlock basaltRock;
@@ -646,6 +647,7 @@ public final class Blocks2 {
 			drawEdgeIn = false;
 			blendGroup = asphalt;
 		}};
+		siliceoustone = new Floor("siliceoustone", 4);
 		shaleVent = new SteamVent("shale-vent") {{
 			variants = 3;
 			parent = blendGroup = Blocks.shale;

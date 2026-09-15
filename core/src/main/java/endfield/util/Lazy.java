@@ -2,7 +2,7 @@ package endfield.util;
 
 import arc.func.Prov;
 
-public class Lazy<T> {
+public class Lazy<T> implements kotlin.Lazy<T> {
 	T value;
 	Prov<? extends T> prov;
 
@@ -22,5 +22,15 @@ public class Lazy<T> {
 		value = prov.get();
 		prov = null;
 		return value;
+	}
+
+	@Override
+	public T getValue() {
+		return value;
+	}
+
+	@Override
+	public boolean isInitialized() {
+		return prov == null;
 	}
 }

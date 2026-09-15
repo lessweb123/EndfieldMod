@@ -7,36 +7,40 @@ import endfield.util.holder.IntBoolHolder;
 import java.util.NoSuchElementException;
 
 public class IntBoolOrderedMap extends IntBoolMap {
-	public IntSeq orderedKeys;
+	public final IntSeq orderedKeys;
 
 	public IntBoolOrderedMap() {
 		super();
-		setMap(capacity);
+		orderedKeys = new IntSeq();
 	}
 
 	public IntBoolOrderedMap(int initialCapacity) {
 		super(initialCapacity);
-		setMap(capacity);
+		orderedKeys = new IntSeq(initialCapacity);
 	}
 
 	public IntBoolOrderedMap(int initialCapacity, float loadFactor) {
 		super(initialCapacity, loadFactor);
-		setMap(capacity);
+		orderedKeys = new IntSeq(initialCapacity);
 	}
 
 	public IntBoolOrderedMap(IntBoolOrderedMap map) {
 		super(map);
-		setMap(16);
-	}
-
-	protected void setMap(int capacity) {
-		orderedKeys = new IntSeq(true, capacity);
+		orderedKeys = new IntSeq(map.size);
 	}
 
 	@Override
 	public void put(int key, boolean value) {
-		if (!containsKey(key)) orderedKeys.add(key);
-		super.put(key, value);
+		int i = locateKey(key);
+		if (i >= 0) {
+			valueTable[i] = value;
+			return;
+		}
+		i = -(i + 1);
+		keyTable[i] = key;
+		valueTable[i] = value;
+		orderedKeys.add(key);
+		if (++size >= threshold) resize(keyTable.length << 1);
 	}
 
 	@Override
@@ -47,6 +51,22 @@ public class IntBoolOrderedMap extends IntBoolMap {
 
 	public boolean removeIndex(int index) {
 		return super.remove(orderedKeys.removeIndex(index));
+	}
+
+	public boolean alter(int before, int after) {
+		if (containsKey(after)) return false;
+		int index = orderedKeys.indexOf(before);
+		if (index == -1) return false;
+		super.put(after, super.remove(before));
+		orderedKeys.set(index, after);
+		return true;
+	}
+
+	public boolean alterIndex(int index, int after) {
+		if (index < 0 || index >= size || containsKey(after)) return false;
+		super.put(after, super.remove(orderedKeys.get(index)));
+		orderedKeys.set(index, after);
+		return true;
 	}
 
 	@Override
@@ -79,10 +99,6 @@ public class IntBoolOrderedMap extends IntBoolMap {
 		return entries2;
 	}
 
-	/**
-	 * Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link OrderedMapKeys} constructor for nested or multithreaded iteration.
-	 */
 	@Override
 	public Keys keys() {
 		if (keys1 == null) {

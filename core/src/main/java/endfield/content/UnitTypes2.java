@@ -2636,7 +2636,6 @@ public final class UnitTypes2 {
 			hitSize = 12f;
 			itemCapacity = 20;
 			isEnemy = false;
-			payloadCapacity = 0;
 			mineTier = 10;//The stronghold determines the tier.
 			mineSpeed = 1.6f;
 			mineWalls = true;
@@ -2645,11 +2644,8 @@ public final class UnitTypes2 {
 			logicControllable = false;
 			playerControllable = false;
 			allowedInPayloads = false;
-			createWreck = false;
-			envEnabled = Env.any;
 			envDisabled = Env.none;
 			hidden = true;
-			targetable = false;
 			targetPriority = -2;
 			setEnginesMirror(new UnitEngine(24 / 4f, -24 / 4f, 2.3f, 315f));
 		}};
@@ -2671,7 +2667,6 @@ public final class UnitTypes2 {
 			hitSize = 16f;
 			itemCapacity = 50;
 			isEnemy = false;
-			payloadCapacity = 0;
 			mineTier = 10;
 			mineSpeed = 3.2f;
 			mineWalls = true;
@@ -2680,11 +2675,8 @@ public final class UnitTypes2 {
 			logicControllable = false;
 			playerControllable = false;
 			allowedInPayloads = false;
-			createWreck = false;
-			envEnabled = Env.any;
 			envDisabled = Env.none;
 			hidden = true;
-			targetable = false;
 			targetPriority = -2;
 			setEnginesMirror(new UnitEngine(40 / 4f, -40 / 4f, 3f, 315f));
 		}};

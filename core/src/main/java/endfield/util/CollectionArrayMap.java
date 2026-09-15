@@ -16,14 +16,8 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
- * An ordered or unordered map of objects. This implementation uses arrays to store the keys and values, which means
- * {@link #getKey(Object, boolean) gets} do a comparison for each key in the map. This is slower than a typical hash map
- * implementation, but may be acceptable for small maps and has the benefits that keys and values can be accessed by index, which
- * makes iteration fast. Like {@link CollectionList}, if ordered is false, this class avoids a memory copy when removing elements (the last
- * element is moved to the removed element's position).
- *
- * @author Nathan Sweet
- * @author LessWeb
+ * Implementation of Java Collection Framework {@code Map} based on {@code ArrayMap}, used in places that require
+ * Java specifications and the feature of {@code ArrayMap} not creating nodes.
  */
 public class CollectionArrayMap<K, V> extends AbstractMap<K, V> implements Iterable<ObjectHolder<K, V>>, Eachable<ObjectHolder<K, V>>, Cloneable {
 	public final Class<K> keyComponentType;
@@ -38,23 +32,18 @@ public class CollectionArrayMap<K, V> extends AbstractMap<K, V> implements Itera
 	protected transient Values valuesIter1, valuesIter2;
 	protected transient Keys keysIter1, keysIter2;
 
-	/** Creates an ordered map with a capacity of 16. */
+	public CollectionArrayMap() {
+		this(Object.class, Object.class);
+	}
+
 	public CollectionArrayMap(Class<?> keyType, Class<?> valueType) {
 		this(true, 16, keyType, valueType);
 	}
 
-	/** Creates an ordered map with the specified capacity. */
 	public CollectionArrayMap(int capacity, Class<?> keyType, Class<?> valueType) {
 		this(true, capacity, keyType, valueType);
 	}
 
-	/**
-	 * Creates a new map with {@link #keys} and {@link #values} of the specified type.
-	 *
-	 * @param ordered  If false, methods that remove elements may change the order of other elements in the arrays, which avoids a
-	 *                 memory copy.
-	 * @param capacity Any elements added beyond this will cause the backing arrays to be grown.
-	 */
 	@SuppressWarnings("unchecked")
 	public CollectionArrayMap(boolean ordered, int capacity, Class<?> keyType, Class<?> valueType) {
 		this.ordered = ordered;
@@ -66,11 +55,6 @@ public class CollectionArrayMap<K, V> extends AbstractMap<K, V> implements Itera
 		values = (V[]) Array.newInstance(valueType, capacity);
 	}
 
-	/**
-	 * Creates a new map containing the elements in the specified map. The new map will have the same type of backing arrays and
-	 * will be ordered if the specified map is ordered. The capacity is set to the number of elements, so any subsequent elements
-	 * added will cause the backing arrays to be grown.
-	 */
 	public CollectionArrayMap(CollectionArrayMap<? extends K, ? extends V> array) {
 		this(array.ordered, array.size, array.keyComponentType, array.valueComponentType);
 		size = array.size;
@@ -168,37 +152,29 @@ public class CollectionArrayMap<K, V> extends AbstractMap<K, V> implements Itera
 		size += length;
 	}
 
-	/**
-	 * Returns the value for the specified key. Note this does a .equals() comparison of each key in reverse order until the
-	 * specified key is found.
-	 */
 	@Override
 	public V get(Object key) {
+		K[] ks = keys;
 		int i = size - 1;
 		if (key == null) {
 			for (; i >= 0; i--)
-				if (keys[i] == null) return values[i];
+				if (ks[i] == null) return values[i];
 		} else {
 			for (; i >= 0; i--)
-				if (key.equals(keys[i])) return values[i];
+				if (key.equals(ks[i])) return values[i];
 		}
 		return null;
 	}
 
-	/**
-	 * Returns the key for the specified value. Note this does a comparison of each value in reverse order until the specified
-	 * value is found.
-	 *
-	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
-	 */
 	public K getKey(Object value, boolean identity) {
+		V[] vs = values;
 		int i = size - 1;
 		if (identity || value == null) {
 			for (; i >= 0; i--)
-				if (values[i] == value) return keys[i];
+				if (vs[i] == value) return keys[i];
 		} else {
 			for (; i >= 0; i--)
-				if (value.equals(values[i])) return keys[i];
+				if (value.equals(vs[i])) return keys[i];
 		}
 		return null;
 	}
@@ -235,41 +211,45 @@ public class CollectionArrayMap<K, V> extends AbstractMap<K, V> implements Itera
 
 	public void insert(int index, K key, V value) {
 		if (index > size) throw new IndexOutOfBoundsException(String.valueOf(index));
-		if (size == keys.length) resize(Math.max(8, (int) (size * 1.75f)));
+		K[] ks = keys;
+		V[] vs = values;
+		if (size == ks.length) resize(Math.max(8, (int) (size * 1.75f)));
 		if (ordered) {
-			System.arraycopy(keys, index, keys, index + 1, size - index);
-			System.arraycopy(values, index, values, index + 1, size - index);
+			System.arraycopy(ks, index, ks, index + 1, size - index);
+			System.arraycopy(vs, index, vs, index + 1, size - index);
 		} else {
-			keys[size] = keys[index];
-			values[size] = values[index];
+			ks[size] = ks[index];
+			vs[size] = vs[index];
 		}
 		size++;
-		keys[index] = key;
-		values[index] = value;
+		ks[index] = key;
+		vs[index] = value;
 	}
 
 	@Override
 	public boolean containsKey(Object key) {
+		K[] ks = keys;
 		int i = size - 1;
 		if (key == null) {
 			while (i >= 0)
-				if (keys[i--] == null) return true;
+				if (ks[i--] == null) return true;
 		} else {
 			while (i >= 0)
-				if (key.equals(keys[i--])) return true;
+				if (key.equals(ks[i--])) return true;
 		}
 		return false;
 	}
 
 	@Override
 	public boolean containsValue(Object value) {
+		V[] vs = values;
 		int i = size - 1;
 		if (value == null) {
 			while (i >= 0)
-				if (values[i--] == null) return true;
+				if (vs[i--] == null) return true;
 		} else {
 			while (i >= 0)
-				if (value.equals(values[i--])) return true;
+				if (value.equals(vs[i--])) return true;
 		}
 		return false;
 	}
@@ -278,52 +258,57 @@ public class CollectionArrayMap<K, V> extends AbstractMap<K, V> implements Itera
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
 	 */
 	public boolean containsValue(Object value, boolean identity) {
+		V[] vs = values;
 		int i = size - 1;
 		if (identity || value == null) {
 			while (i >= 0)
-				if (values[i--] == value) return true;
+				if (vs[i--] == value) return true;
 		} else {
 			while (i >= 0)
-				if (value.equals(values[i--])) return true;
+				if (value.equals(vs[i--])) return true;
 		}
 		return false;
 	}
 
 	public int indexOfKey(Object key) {
+		K[] ks = keys;
 		if (key == null) {
 			for (int i = 0, n = size; i < n; i++)
-				if (keys[i] == null) return i;
+				if (ks[i] == null) return i;
 		} else {
 			for (int i = 0, n = size; i < n; i++)
-				if (key.equals(keys[i])) return i;
+				if (key.equals(ks[i])) return i;
 		}
 		return -1;
 	}
 
 	public int indexOfValue(Object value, boolean identity) {
+		V[] vs = values;
 		if (identity || value == null) {
 			for (int i = 0, n = size; i < n; i++)
-				if (values[i] == value) return i;
+				if (vs[i] == value) return i;
 		} else {
 			for (int i = 0, n = size; i < n; i++)
-				if (value.equals(values[i])) return i;
+				if (value.equals(vs[i])) return i;
 		}
 		return -1;
 	}
 
 	public V removeKey(Object key) {
+		K[] ks = keys;
+		V[] vs = values;
 		if (key == null) {
 			for (int i = 0, n = size; i < n; i++) {
-				if (keys[i] == null) {
-					V value = values[i];
+				if (ks[i] == null) {
+					V value = vs[i];
 					removeIndex(i);
 					return value;
 				}
 			}
 		} else {
 			for (int i = 0, n = size; i < n; i++) {
-				if (key.equals(keys[i])) {
-					V value = values[i];
+				if (key.equals(ks[i])) {
+					V value = vs[i];
 					removeIndex(i);
 					return value;
 				}
@@ -354,16 +339,18 @@ public class CollectionArrayMap<K, V> extends AbstractMap<K, V> implements Itera
 	/** Removes and returns the key/values pair at the specified index. */
 	public void removeIndex(int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		K[] ks = keys;
+		V[] vs = values;
 		size--;
 		if (ordered) {
-			System.arraycopy(keys, index + 1, keys, index, size - index);
-			System.arraycopy(values, index + 1, values, index, size - index);
+			System.arraycopy(ks, index + 1, ks, index, size - index);
+			System.arraycopy(vs, index + 1, vs, index, size - index);
 		} else {
-			keys[index] = keys[size];
-			values[index] = values[size];
+			ks[index] = ks[size];
+			vs[index] = vs[size];
 		}
 		keys[size] = null;
-		values[size] = null;
+		vs[size] = null;
 	}
 
 	@Override
@@ -371,23 +358,19 @@ public class CollectionArrayMap<K, V> extends AbstractMap<K, V> implements Itera
 		return size;
 	}
 
-	/** Returns true if the map is empty. */
 	@Override
 	public boolean isEmpty() {
 		return size == 0;
 	}
 
-	/** Returns the last key. */
 	public K peekKey() {
 		return keys[size - 1];
 	}
 
-	/** Returns the last value. */
 	public V peekValue() {
 		return values[size - 1];
 	}
 
-	/** Clears the map and reduces the size of the backing arrays to be the specified capacity if they are larger. */
 	public void clear(int maximumCapacity) {
 		if (keys.length <= maximumCapacity) {
 			clear();
@@ -399,9 +382,11 @@ public class CollectionArrayMap<K, V> extends AbstractMap<K, V> implements Itera
 
 	@Override
 	public void clear() {
+		K[] ks = keys;
+		V[] vs = values;
 		for (int i = 0, n = size; i < n; i++) {
-			keys[i] = null;
-			values[i] = null;
+			ks[i] = null;
+			vs[i] = null;
 		}
 		size = 0;
 	}
@@ -411,19 +396,11 @@ public class CollectionArrayMap<K, V> extends AbstractMap<K, V> implements Itera
 		return keys();
 	}
 
-	/**
-	 * Reduces the size of the backing arrays to the size of the actual number of entries. This is useful to release memory when
-	 * many items have been removed, or if it is known that more entries will not be added.
-	 */
 	public void shrink() {
 		if (keys.length == size) return;
 		resize(size);
 	}
 
-	/**
-	 * Increases the size of the backing arrays to accommodate the specified number of additional entries. Useful before adding
-	 * many entries to avoid multiple backing array resizes.
-	 */
 	public void ensureCapacity(int additionalCapacity) {
 		if (additionalCapacity < 0)
 			throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
@@ -468,10 +445,6 @@ public class CollectionArrayMap<K, V> extends AbstractMap<K, V> implements Itera
 		}
 	}
 
-	/**
-	 * Reduces the size of the arrays to the specified size. If the arrays are already smaller than the specified size, no action
-	 * is taken.
-	 */
 	public void truncate(int newSize) {
 		if (size <= newSize) return;
 		for (int i = newSize; i < size; i++) {
@@ -483,10 +456,12 @@ public class CollectionArrayMap<K, V> extends AbstractMap<K, V> implements Itera
 
 	@Override
 	public int hashCode() {
+		K[] ks = keys;
+		V[] vs = values;
 		int h = 0;
 		for (int i = 0, n = size; i < n; i++) {
-			K key = keys[i];
-			V value = values[i];
+			K key = ks[i];
+			V value = vs[i];
 			if (key != null) h += key.hashCode() * 31;
 			if (value != null) h += value.hashCode();
 		}
@@ -496,12 +471,14 @@ public class CollectionArrayMap<K, V> extends AbstractMap<K, V> implements Itera
 	@Override
 	public boolean equals(Object o) {
 		if (o == this) return true;
-		if (!(o instanceof CollectionArrayMap<?, ?> map) || map.keyComponentType != keyComponentType || map.valueComponentType != valueComponentType)
+		if (!(o instanceof Map<?, ?> map))
 			return false;
-		if (map.size != size) return false;
+		if (map.size() != size) return false;
+		K[] ks = keys;
+		V[] vs = values;
 		for (int i = 0, n = size; i < n; i++) {
-			K key = keys[i];
-			V value = values[i];
+			K key = ks[i];
+			V value = vs[i];
 			if (value == null) {
 				if (!map.containsKey(key) || map.get(key) != null) return false;
 			} else {
@@ -514,16 +491,18 @@ public class CollectionArrayMap<K, V> extends AbstractMap<K, V> implements Itera
 	@Override
 	public String toString() {
 		if (size == 0) return "{}";
+		K[] ks = keys;
+		V[] vs = values;
 		StringBuilder buffer = new StringBuilder(32);
 		buffer.append('{');
-		buffer.append(keys[0]);
+		buffer.append(ks[0]);
 		buffer.append('=');
-		buffer.append(values[0]);
+		buffer.append(vs[0]);
 		for (int i = 1; i < size; i++) {
 			buffer.append(", ");
-			buffer.append(keys[i]);
+			buffer.append(ks[i]);
 			buffer.append('=');
-			buffer.append(values[i]);
+			buffer.append(vs[i]);
 		}
 		buffer.append('}');
 		return buffer.toString();
@@ -534,10 +513,6 @@ public class CollectionArrayMap<K, V> extends AbstractMap<K, V> implements Itera
 		return entries();
 	}
 
-	/**
-	 * Returns an iterator for the entries in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration.
-	 */
 	public Entries entries() {
 		if (entries1 == null) {
 			entries1 = new Entries();
@@ -555,10 +530,6 @@ public class CollectionArrayMap<K, V> extends AbstractMap<K, V> implements Itera
 		return entries2;
 	}
 
-	/**
-	 * Returns an iterator for the values in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration.
-	 */
 	@Override
 	public Values values() {
 		if (valuesIter1 == null) {
@@ -582,10 +553,6 @@ public class CollectionArrayMap<K, V> extends AbstractMap<K, V> implements Itera
 		return new MapEntrySet();
 	}
 
-	/**
-	 * Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration.
-	 */
 	public Keys keys() {
 		if (keysIter1 == null) {
 			keysIter1 = new Keys();
@@ -730,7 +697,7 @@ public class CollectionArrayMap<K, V> extends AbstractMap<K, V> implements Itera
 
 		@Override
 		public CollectionList<ObjectHolder<K, V>> toList() {
-			return toList(new CollectionList<>(true, size - index, ObjectHolder.class));
+			return toList(new CollectionList<>(size - index, ObjectHolder.class));
 		}
 
 		@Override
@@ -771,7 +738,7 @@ public class CollectionArrayMap<K, V> extends AbstractMap<K, V> implements Itera
 
 		@Override
 		public CollectionList<V> toList() {
-			return new CollectionList<>(true, values, index, size - index);
+			return new CollectionList<>(values, index, size - index);
 		}
 
 		@Override
@@ -806,7 +773,7 @@ public class CollectionArrayMap<K, V> extends AbstractMap<K, V> implements Itera
 
 		@Override
 		public CollectionList<K> toList() {
-			return new CollectionList<>(true, keys, index, size - index);
+			return new CollectionList<>(keys, index, size - index);
 		}
 
 		@Override

@@ -20,14 +20,16 @@ public interface IMultiBuild extends IBuilding {
 	}
 
 	default void updateLinkProximity() {
-		if (linkEntities() != null) {
-			linkProximityMap().clear();
+		Seq<Building> linkEntities = linkEntities();
+		Seq<Building[]> linkProximityMap = linkProximityMap();
+		if (linkEntities != null) {
+			linkProximityMap.clear();
 			//add link entity's proximity
-			for (Building link : linkEntities()) {
+			for (Building link : linkEntities) {
 				for (Building linkProx : link.proximity) {
-					if (linkProx != this && !linkEntities().contains(linkProx)) {
+					if (linkProx != this && !linkEntities.contains(linkProx)) {
 						if (checkValidPair(linkProx, link)) {
-							linkProximityMap().add(new Building[]{linkProx, link});
+							linkProximityMap.add(new Building[]{linkProx, link});
 						}
 					}
 				}
@@ -35,9 +37,9 @@ public interface IMultiBuild extends IBuilding {
 
 			//add self entity's proximity
 			for (Building prox : proximity()) {
-				if (!linkEntities().contains(prox)) {
+				if (!linkEntities.contains(prox)) {
 					if (checkValidPair(prox, (Building) this)) {
-						linkProximityMap().add(new Building[]{prox, (Building) this});
+						linkProximityMap.add(new Building[]{prox, (Building) this});
 					}
 				}
 			}

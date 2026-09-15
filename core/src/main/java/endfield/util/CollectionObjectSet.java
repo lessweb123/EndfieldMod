@@ -3,91 +3,65 @@ package endfield.util;
 import arc.func.Boolf;
 import arc.func.Cons;
 import arc.math.Mathf;
+import arc.util.ArcRuntimeException;
 import arc.util.Eachable;
-import endfield.math.Mathm;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
 import java.util.AbstractSet;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import static endfield.util.Constant.PRIME2;
-import static endfield.util.Constant.PRIME3;
-
 /**
- * An unordered set where the keys are objects. This implementation uses cuckoo hashing using 3 hashes, random walking, and a
- * small stash for problematic keys. Null keys are not allowed. No allocation is done except when growing the table size.<br>
- * <br>This set performs very fast contains and remove (typically O(1), worst case O(log(n))). Add may be a bit slower, depending on
- * hash collisions. Load factors greater than 0.91 greatly increase the chances the set will have to rehash to the next higher POT
- * size.<br><br>Iteration can be very slow for a set with a large capacity. {@link #clear(int)} and {@link #shrink(int)} can be used to reduce
- * the capacity. {@link CollectionOrderedSet} provides much faster iteration.
- *
- * @author Nathan Sweet
+ * Implementation of Java Collection Framework {@code Set} based on {@code ObjectSet}, used in places that require
+ * Java specifications and the feature of {@code ObjectSet} not creating nodes.
  */
 public class CollectionObjectSet<E> extends AbstractSet<E> implements Eachable<E>, Cloneable {
 	public int size;
 
-	public final Class<E> componentType;
+	public final Class<E> elementType;
 
 	protected E[] keyTable;
-	protected int capacity, stashSize;
 
 	protected float loadFactor;
-	protected int hashShift, mask, threshold;
-	protected int stashCapacity;
-	protected int pushIterations;
+	protected int threshold;
 
-	protected transient @Nullable Iter iterator1, iterator2;
+	protected int shift;
+	protected int mask;
 
-	/** Creates a new set with an initial capacity of 51 and a load factor of 0.8. */
+	protected transient Iter iterator1, iterator2;
+
+	public CollectionObjectSet() {
+		this(Object.class);
+	}
+
 	public CollectionObjectSet(Class<?> type) {
 		this(type, 51, 0.8f);
 	}
 
-	/**
-	 * Creates a new set with a load factor of 0.8.
-	 *
-	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two.
-	 */
 	public CollectionObjectSet(Class<?> type, int initialCapacity) {
 		this(type, initialCapacity, 0.8f);
 	}
 
-	/**
-	 * Creates a new set with the specified initial capacity and load factor. This set will hold initialCapacity items before
-	 * growing the backing table.
-	 *
-	 * @param initialCapacity If not a power of two, it is increased to the next nearest power of two.
-	 * @param type This value must be equal to generic E, otherwise a ClassCastException will be thrown at runtime.
-	 */
 	@SuppressWarnings("unchecked")
 	public CollectionObjectSet(Class<?> type, int initialCapacity, float loadFactor) {
-		if (initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0: " + initialCapacity);
-		initialCapacity = Mathf.nextPowerOfTwo((int) Math.ceil(initialCapacity / loadFactor));
-		if (initialCapacity > 1 << 30)
-			throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
-		capacity = initialCapacity;
-
-		if (loadFactor <= 0) throw new IllegalArgumentException("loadFactor must be > 0: " + loadFactor);
+		if (loadFactor <= 0f || loadFactor >= 1f)
+			throw new IllegalArgumentException("loadFactor must be > 0 and < 1: " + loadFactor);
 		this.loadFactor = loadFactor;
 
-		threshold = (int) (capacity * loadFactor);
-		mask = capacity - 1;
-		hashShift = 31 - Integer.numberOfTrailingZeros(capacity);
-		stashCapacity = Math.max(3, (int) Math.ceil(Math.log(capacity)) * 2);
-		pushIterations = Mathm.clamp(capacity, 8, (int) Math.sqrt(capacity) / 8);
+		int tableSize = tableSize(initialCapacity, loadFactor);
+		threshold = (int) (tableSize * loadFactor);
+		mask = tableSize - 1;
+		shift = Long.numberOfLeadingZeros(mask);
 
-		componentType = (Class<E>) type;
-		keyTable = (E[]) Array.newInstance(type, capacity + stashCapacity);
+		elementType = (Class<E>) type;
+		keyTable = (E[]) Array.newInstance(type, tableSize);
 	}
 
-	/** Creates a new set identical to the specified set. */
 	public CollectionObjectSet(CollectionObjectSet<? extends E> set) {
-		this(set.componentType, (int) Math.floor(set.capacity * set.loadFactor), set.loadFactor);
-		stashSize = set.stashSize;
+		this(set.elementType, (int) (set.keyTable.length * set.loadFactor), set.loadFactor);
 		System.arraycopy(set.keyTable, 0, keyTable, 0, set.keyTable.length);
 		size = set.size;
 	}
@@ -112,7 +86,7 @@ public class CollectionObjectSet<E> extends AbstractSet<E> implements Eachable<E
 
 	/** Allocates a new set with all elements that match the predicate. */
 	public CollectionObjectSet<E> select(Boolf<? super E> predicate) {
-		CollectionObjectSet<E> arr = new CollectionObjectSet<>(componentType);
+		CollectionObjectSet<E> arr = new CollectionObjectSet<>(elementType);
 		for (E e : this) {
 			if (predicate.get(e)) arr.add(e);
 		}
@@ -140,52 +114,40 @@ public class CollectionObjectSet<E> extends AbstractSet<E> implements Eachable<E
 		}
 	}
 
-	/**
-	 * Returns true if the key was not already in the set. If this set already contains the key, the call leaves the set unchanged
-	 * and returns false.
-	 */
+	public E find(Boolf<E> predicate) {
+		for (E t : this) {
+			if (predicate.get(t)) {
+				return t;
+			}
+		}
+		return null;
+	}
+
+	protected int place(Object item) {
+		return (int) (item.hashCode() * 0x9E3779B97F4A7C15L >>> shift);
+	}
+
+	protected int locateKey(Object key) {
+		E[] es = keyTable;
+		for (int i = place(key); ; i = i + 1 & mask) {
+			E other = es[i];
+			if (other == null) return -(i + 1);
+			if (other.equals(key)) return i;
+		}
+	}
+
+	public boolean any() {
+		return size > 0;
+	}
+
 	@Override
 	public boolean add(E key) {
 		if (key == null) return false;
-
-		// Check for existing keys.
-		int hashCode = key.hashCode();
-		int index1 = hashCode & mask;
-		E key1 = keyTable[index1];
-		if (key.equals(key1)) return false;
-
-		int index2 = hash2(hashCode);
-		E key2 = keyTable[index2];
-		if (key.equals(key2)) return false;
-
-		int index3 = hash3(hashCode);
-		E key3 = keyTable[index3];
-		if (key.equals(key3)) return false;
-
-		// Find key in the stash.
-		for (int i = capacity, n = i + stashSize; i < n; i++)
-			if (key.equals(keyTable[i])) return false;
-
-		// Check for empty buckets.
-		if (key1 == null) {
-			keyTable[index1] = key;
-			if (size++ >= threshold) resize(capacity << 1);
-			return true;
-		}
-
-		if (key2 == null) {
-			keyTable[index2] = key;
-			if (size++ >= threshold) resize(capacity << 1);
-			return true;
-		}
-
-		if (key3 == null) {
-			keyTable[index3] = key;
-			if (size++ >= threshold) resize(capacity << 1);
-			return true;
-		}
-
-		push(key, index1, key1, index2, key2, index3, key3);
+		int i = locateKey(key);
+		if (i >= 0) return false;
+		i = -(i + 1);
+		keyTable[i] = key;
+		if (++size >= threshold) resize(keyTable.length << 1);
 		return true;
 	}
 
@@ -206,14 +168,26 @@ public class CollectionObjectSet<E> extends AbstractSet<E> implements Eachable<E
 
 	public void addAll(E[] array, int offset, int length) {
 		ensureCapacity(length);
-		for (int i = offset, n = i + length; i < n; i++)
-			add(array[i]);
+		for (int i = offset, n = i + length; i < n; i++) {
+			E value = array[i];
+			if (value != null) add(value);
+		}
 	}
 
 	public void addAll(Set<? extends E> set) {
 		ensureCapacity(set.size());
 		for (E key : set)
 			add(key);
+	}
+
+	protected void addResize(E key) {
+		E[] es = keyTable;
+		for (int i = place(key); ; i = (i + 1) & mask) {
+			if (es[i] == null) {
+				es[i] = key;
+				return;
+			}
+		}
 	}
 
 	public void removeAll(E[] array, int offset, int length) {
@@ -231,153 +205,25 @@ public class CollectionObjectSet<E> extends AbstractSet<E> implements Eachable<E
 		removeAll(array.items, 0, array.size);
 	}
 
-	/** Skips checks for existing keys. */
-	protected void addResize(E key) {
-		// Check for empty buckets.
-		int hashCode = key.hashCode();
-		int index1 = hashCode & mask;
-		E key1 = keyTable[index1];
-		if (key1 == null) {
-			keyTable[index1] = key;
-			if (size++ >= threshold) resize(capacity << 1);
-			return;
-		}
-
-		int index2 = hash2(hashCode);
-		E key2 = keyTable[index2];
-		if (key2 == null) {
-			keyTable[index2] = key;
-			if (size++ >= threshold) resize(capacity << 1);
-			return;
-		}
-
-		int index3 = hash3(hashCode);
-		E key3 = keyTable[index3];
-		if (key3 == null) {
-			keyTable[index3] = key;
-			if (size++ >= threshold) resize(capacity << 1);
-			return;
-		}
-
-		push(key, index1, key1, index2, key2, index3, key3);
-	}
-
-	protected void push(E insertKey, int index1, E key1, int index2, E key2, int index3, E key3) {
-		// Push keys until an empty bucket is found.
-		E evictedKey;
-		int i = 0;
-		do {
-			// Replace the key and value for one of the hashes.
-			switch (Mathf.random(2)) {
-				case 0:
-					evictedKey = key1;
-					keyTable[index1] = insertKey;
-					break;
-				case 1:
-					evictedKey = key2;
-					keyTable[index2] = insertKey;
-					break;
-				default:
-					evictedKey = key3;
-					keyTable[index3] = insertKey;
-					break;
-			}
-
-			// If the evicted key hashes to an empty bucket, put it there and stop.
-			int hashCode = evictedKey.hashCode();
-			index1 = hashCode & mask;
-			key1 = keyTable[index1];
-			if (key1 == null) {
-				keyTable[index1] = evictedKey;
-				if (size++ >= threshold) resize(capacity << 1);
-				return;
-			}
-
-			index2 = hash2(hashCode);
-			key2 = keyTable[index2];
-			if (key2 == null) {
-				keyTable[index2] = evictedKey;
-				if (size++ >= threshold) resize(capacity << 1);
-				return;
-			}
-
-			index3 = hash3(hashCode);
-			key3 = keyTable[index3];
-			if (key3 == null) {
-				keyTable[index3] = evictedKey;
-				if (size++ >= threshold) resize(capacity << 1);
-				return;
-			}
-
-			if (++i == pushIterations) break;
-
-			insertKey = evictedKey;
-		} while (true);
-
-		addStash(evictedKey);
-	}
-
-	protected void addStash(E key) {
-		if (stashSize == stashCapacity) {
-			// Too many pushes occurred and the stash is full, increase the table size.
-			resize(capacity << 1);
-			addResize(key);
-			return;
-		}
-		// Store key in the stash.
-		int index = capacity + stashSize;
-		keyTable[index] = key;
-		stashSize++;
-		size++;
-	}
-
-	/** Returns true if the key was removed. */
 	@Override
 	public boolean remove(Object key) {
-		int hashCode = key.hashCode();
-		int index = hashCode & mask;
-		if (key.equals(keyTable[index])) {
-			keyTable[index] = null;
-			size--;
-			return true;
-		}
-
-		index = hash2(hashCode);
-		if (key.equals(keyTable[index])) {
-			keyTable[index] = null;
-			size--;
-			return true;
-		}
-
-		index = hash3(hashCode);
-		if (key.equals(keyTable[index])) {
-			keyTable[index] = null;
-			size--;
-			return true;
-		}
-
-		return removeStash(key);
-	}
-
-	protected boolean removeStash(Object key) {
-		for (int i = capacity, n = i + stashSize; i < n; i++) {
-			if (key.equals(keyTable[i])) {
-				removeStashIndex(i);
-				size--;
-				return true;
+		if (key == null) return false;
+		int i = locateKey(key);
+		if (i < 0) return false;
+		E[] ks = keyTable;
+		int m = mask, next = i + 1 & m;
+		E k;
+		while ((k = ks[next]) != null) {
+			int placement = place(k);
+			if ((next - placement & m) > (i - placement & m)) {
+				ks[i] = k;
+				i = next;
 			}
+			next = next + 1 & m;
 		}
-		return false;
-	}
-
-	protected void removeStashIndex(int index) {
-		// If the removed location was not last, move the last tuple to the removed location.
-		stashSize--;
-		int lastIndex = capacity + stashSize;
-		if (index < lastIndex) {
-			keyTable[index] = keyTable[lastIndex];
-			keyTable[lastIndex] = null;
-		}
+		ks[i] = null;
+		size--;
+		return true;
 	}
 
 	@Override
@@ -385,107 +231,55 @@ public class CollectionObjectSet<E> extends AbstractSet<E> implements Eachable<E
 		return size;
 	}
 
-	/** Returns true if the set is empty. */
 	@Override
 	public boolean isEmpty() {
 		return size == 0;
 	}
 
-	public boolean any() {
-		return size > 0;
-	}
-
-	/**
-	 * Reduces the size of the backing arrays to be the specified capacity or less. If the capacity is already less, nothing is
-	 * done. If the set contains more items than the specified capacity, the next highest power of two capacity is used instead.
-	 */
 	public void shrink(int maximumCapacity) {
 		if (maximumCapacity < 0) throw new IllegalArgumentException("maximumCapacity must be >= 0: " + maximumCapacity);
 		if (size > maximumCapacity) maximumCapacity = size;
-		if (capacity <= maximumCapacity) return;
-		maximumCapacity = Mathf.nextPowerOfTwo(maximumCapacity);
-		resize(maximumCapacity);
+		int tableSize = tableSize(maximumCapacity, loadFactor);
+		if (keyTable.length > tableSize) resize(tableSize);
 	}
 
-	/**
-	 * Clears the set and reduces the size of the backing arrays to be the specified capacity, if they are larger. The reduction
-	 * is done by allocating new arrays, though for large arrays this can be faster than clearing the existing array.
-	 */
 	public void clear(int maximumCapacity) {
-		if (capacity <= maximumCapacity) {
+		int tableSize = tableSize(maximumCapacity, loadFactor);
+		if (keyTable.length <= tableSize) {
 			clear();
 			return;
 		}
 		size = 0;
-		resize(maximumCapacity);
+		resize(tableSize);
 	}
 
-	/**
-	 * Clears the set, leaving the backing arrays at the current capacity. When the capacity is high and the population is low,
-	 * iteration can be unnecessarily slow. {@link #clear(int)} can be used to reduce the capacity.
-	 */
 	@Override
 	public void clear() {
 		if (size == 0) return;
-		for (int i = capacity + stashSize; i-- > 0; )
-			keyTable[i] = null;
 		size = 0;
-		stashSize = 0;
+		Arrays.fill(keyTable, null);
 	}
 
 	@Override
 	public boolean contains(Object key) {
-		if (key == null || size == 0) return false;
-
-		int hashCode = key.hashCode();
-		int index = hashCode & mask;
-		if (!key.equals(keyTable[index])) {
-			index = hash2(hashCode);
-			if (!key.equals(keyTable[index])) {
-				index = hash3(hashCode);
-				if (!key.equals(keyTable[index])) return getKeyStash(key) != null;
-			}
-		}
-		return true;
+		if (key == null) return false;
+		return locateKey(key) >= 0;
 	}
 
-	/**
-	 * @return May be null.
-	 */
 	public E get(Object key) {
 		if (key == null) return null;
-
-		int hashCode = key.hashCode();
-		int index = hashCode & mask;
-		E found = keyTable[index];
-		if (!key.equals(found)) {
-			index = hash2(hashCode);
-			found = keyTable[index];
-			if (!key.equals(found)) {
-				index = hash3(hashCode);
-				found = keyTable[index];
-				if (!key.equals(found)) return getKeyStash(key);
-			}
-		}
-		return found;
-	}
-
-	protected E getKeyStash(Object key) {
-		for (int i = capacity, n = i + stashSize; i < n; i++)
-			if (key.equals(keyTable[i])) return keyTable[i];
-		return null;
+		int i = locateKey(key);
+		return i < 0 ? null : keyTable[i];
 	}
 
 	public E first() {
-		for (int i = 0, n = capacity + stashSize; i < n; i++)
-			if (keyTable[i] != null) return keyTable[i];
+		E[] ks = keyTable;
+		for (E k : ks) {
+			if (k != null) return k;
+		}
 		throw new IllegalStateException("ObjectSet is empty.");
 	}
 
-	/**
-	 * Increases the size of the backing array to accommodate the specified number of additional items. Useful before adding many
-	 * items to avoid multiple backing array resizes.
-	 */
 	public void ensureCapacity(int additionalCapacity) {
 		if (additionalCapacity < 0)
 			throw new IllegalArgumentException("additionalCapacity must be >= 0: " + additionalCapacity);
@@ -495,54 +289,40 @@ public class CollectionObjectSet<E> extends AbstractSet<E> implements Eachable<E
 
 	@SuppressWarnings("unchecked")
 	protected void resize(int newSize) {
-		int oldEndIndex = capacity + stashSize;
-
-		capacity = newSize;
+		int oldCapacity = keyTable.length;
 		threshold = (int) (newSize * loadFactor);
 		mask = newSize - 1;
-		hashShift = 31 - Integer.numberOfTrailingZeros(newSize);
-		stashCapacity = Math.max(3, (int) Math.ceil(Math.log(newSize)) * 2);
-		pushIterations = Mathm.clamp(newSize, 8, (int) Math.sqrt(newSize) / 8);
-
+		shift = Long.numberOfLeadingZeros(mask);
 		E[] oldKeyTable = keyTable;
 
-		keyTable = (E[]) Array.newInstance(componentType, newSize + stashCapacity);
+		keyTable = (E[]) Array.newInstance(elementType, newSize);
 
-		int oldSize = size;
-		size = 0;
-		stashSize = 0;
-		if (oldSize > 0) {
-			for (int i = 0; i < oldEndIndex; i++) {
+		if (size > 0) {
+			for (int i = 0; i < oldCapacity; i++) {
 				E key = oldKeyTable[i];
 				if (key != null) addResize(key);
 			}
 		}
 	}
 
-	protected int hash2(int h) {
-		h *= PRIME2;
-		return (h ^ h >>> hashShift) & mask;
-	}
-
-	protected int hash3(int h) {
-		h *= PRIME3;
-		return (h ^ h >>> hashShift) & mask;
-	}
-
 	@Override
 	public int hashCode() {
-		int h = 0;
-		for (int i = 0, n = capacity + stashSize; i < n; i++)
-			if (keyTable[i] != null) h += keyTable[i].hashCode();
+		int h = size;
+		E[] ks = keyTable;
+		for (E key : ks) {
+			if (key != null) h += key.hashCode();
+		}
 		return h;
 	}
 
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof CollectionObjectSet<?> other)) return false;
-		if (other.size != size) return false;
-		for (int i = 0, n = capacity + stashSize; i < n; i++)
-			if (keyTable[i] != null && !other.contains(keyTable[i])) return false;
+		if (!(o instanceof Set<?> other)) return false;
+		if (other.size() != size) return false;
+		E[] ks = keyTable;
+		for (E k : ks) {
+			if (k != null && !other.contains(k)) return false;
+		}
 		return true;
 	}
 
@@ -566,76 +346,82 @@ public class CollectionObjectSet<E> extends AbstractSet<E> implements Eachable<E
 		return buffer.toString();
 	}
 
-	/**
-	 * Returns an iterator for the keys in the set. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link Iter} constructor for nested or multithreaded iteration.
-	 */
 	@Override
 	public Iter iterator() {
-		if (iterator1 == null) iterator1 = new Iter();
-
-		if (iterator1.done) {
+		if (iterator1 == null) {
+			iterator1 = new Iter();
+			iterator2 = new Iter();
+		}
+		if (!iterator1.valid) {
 			iterator1.reset();
+			iterator1.valid = true;
+			iterator2.valid = false;
 			return iterator1;
 		}
+		iterator2.reset();
+		iterator2.valid = true;
+		iterator1.valid = false;
+		return iterator2;
+	}
 
-		if (iterator2 == null) iterator2 = new Iter();
-
-		if (iterator2.done) {
-			iterator2.reset();
-			return iterator2;
-		}
-		// no finished iterators
-		return new Iter();
+	static int tableSize(int capacity, float loadFactor) {
+		if (capacity < 0) throw new IllegalArgumentException("capacity must be >= 0: " + capacity);
+		int tableSize = Mathf.nextPowerOfTwo(Math.max(2, (int) Math.ceil(capacity / loadFactor)));
+		if (tableSize > 1 << 30) throw new IllegalArgumentException("The required capacity is too large: " + capacity);
+		return tableSize;
 	}
 
 	public class Iter implements Iterable<E>, Iterator<E> {
 		public boolean hasNext;
 
 		public int nextIndex, currentIndex;
-		public boolean done;
+		public boolean valid = true;
 
 		public Iter() {
 			reset();
-			done = true;
 		}
 
 		public void reset() {
 			currentIndex = -1;
 			nextIndex = -1;
 			findNextIndex();
-			done = false;
 		}
 
 		protected void findNextIndex() {
-			hasNext = false;
-			for (int n = capacity + stashSize; ++nextIndex < n; ) {
-				if (keyTable[nextIndex] != null) {
+			E[] ks = keyTable;
+			for (int n = keyTable.length; ++nextIndex < n; ) {
+				if (ks[nextIndex] != null) {
 					hasNext = true;
-					break;
+					return;
 				}
 			}
+			hasNext = false;
 		}
 
 		@Override
 		public void remove() {
-			if (currentIndex < 0) throw new IllegalStateException("next must be called before remove.");
-			if (currentIndex >= capacity) {
-				removeStashIndex(currentIndex);
-				nextIndex = currentIndex - 1;
-				findNextIndex();
-			} else {
-				keyTable[currentIndex] = null;
+			int i = currentIndex;
+			if (i < 0) throw new IllegalStateException("next must be called before remove.");
+			E[] ks = keyTable;
+			int m = mask, next = i + 1 & m;
+			E key;
+			while ((key = ks[next]) != null) {
+				int placement = place(key);
+				if ((next - placement & m) > (i - placement & m)) {
+					ks[i] = key;
+					i = next;
+				}
+				next = next + 1 & m;
 			}
-			currentIndex = -1;
+			ks[i] = null;
 			size--;
+			if (i != currentIndex) --nextIndex;
+			currentIndex = -1;
 		}
 
 		@Override
 		public boolean hasNext() {
-			if (!hasNext) {
-				done = true;
-			}
+			if (!valid) throw new ArcRuntimeException("#iterator() cannot be used nested.");
 			return hasNext;
 		}
 
@@ -653,16 +439,14 @@ public class CollectionObjectSet<E> extends AbstractSet<E> implements Eachable<E
 			return this;
 		}
 
-		/** Adds the remaining values to the array. */
 		public CollectionList<E> toList(CollectionList<E> array) {
 			while (hasNext)
 				array.add(next());
 			return array;
 		}
 
-		/** Returns a new array containing the remaining values. */
 		public CollectionList<E> toList() {
-			return toList(new CollectionList<>(true, size, componentType));
+			return toList(new CollectionList<>(size, elementType));
 		}
 	}
 }

@@ -6,36 +6,72 @@ import endfield.util.holder.ObjectBoolHolder;
 import java.util.NoSuchElementException;
 
 public class ObjectBoolOrderedMap<K> extends ObjectBoolMap<K> {
-	public CollectionList<K> orderedKeys;
+	public final CollectionList<K> orderedKeys;
+
+	public ObjectBoolOrderedMap() {
+		orderedKeys = new CollectionList<>();
+	}
 
 	public ObjectBoolOrderedMap(Class<?> keyType) {
 		super(keyType);
-		setMap(keyType, capacity);
+		orderedKeys = new CollectionList<>(keyType);
 	}
 
 	public ObjectBoolOrderedMap(Class<?> keyType, int initialCapacity) {
 		super(keyType, initialCapacity);
-		setMap(keyType, capacity);
+		orderedKeys = new CollectionList<>(initialCapacity, keyType);
 	}
 
 	public ObjectBoolOrderedMap(Class<?> keyType, int initialCapacity, float loadFactor) {
 		super(keyType, initialCapacity, loadFactor);
-		setMap(keyType, capacity);
+		orderedKeys = new CollectionList<>(initialCapacity, keyType);
 	}
 
 	public ObjectBoolOrderedMap(ObjectBoolMap<? extends K> map) {
 		super(map);
-		setMap(map.keyComponentType, 16);
-	}
-
-	protected void setMap(Class<?> keyType, int capacity) {
-		orderedKeys = new CollectionList<>(true, capacity, keyType);
+		orderedKeys = new CollectionList<>(map.size, map.keyComponentType);
 	}
 
 	@Override
-	public void put(K key, boolean value) {
-		if (!containsKey(key)) orderedKeys.add(key);
-		super.put(key, value);
+	public boolean put(K key, boolean value) {
+		if (key == null) throw new IllegalArgumentException("key cannot be null.");
+		int i = locateKey(key);
+		if (i >= 0) { // Existing key was found.
+			boolean oldValue = valueTable[i];
+			valueTable[i] = value;
+			return oldValue;
+		}
+		i = -(i + 1); // Empty space was found.
+		keyTable[i] = key;
+		valueTable[i] = value;
+		orderedKeys.add(key);
+		if (++size >= threshold) resize(keyTable.length << 1);
+		return false;
+	}
+
+	@Override
+	public boolean putMissing(K key, boolean value, boolean defaultValue) {
+		if (key == null) throw new IllegalArgumentException("key cannot be null.");
+		int i = locateKey(key);
+		if (i >= 0) return valueTable[i];
+		i = -(i + 1);
+		keyTable[i] = key;
+		valueTable[i] = value;
+		orderedKeys.add(key);
+		if (++size >= threshold) resize(keyTable.length << 1);
+		return defaultValue;
+	}
+
+	@Override
+	public void putMissing(K key, boolean value) {
+		if (key == null) throw new IllegalArgumentException("key cannot be null.");
+		int i = locateKey(key);
+		if (i >= 0) return;
+		i = -(i + 1);
+		keyTable[i] = key;
+		valueTable[i] = value;
+		orderedKeys.add(key);
+		if (++size >= threshold) resize(keyTable.length << 1);
 	}
 
 	@Override
@@ -46,6 +82,22 @@ public class ObjectBoolOrderedMap<K> extends ObjectBoolMap<K> {
 
 	public boolean removeIndex(int index) {
 		return super.remove(orderedKeys.remove(index));
+	}
+
+	public boolean alter(K before, K after) {
+		if (containsKey(after)) return false;
+		int index = orderedKeys.indexOf(before, false);
+		if (index == -1) return false;
+		super.put(after, super.remove(before));
+		orderedKeys.set(index, after);
+		return true;
+	}
+
+	public boolean alterIndex(int index, K after) {
+		if (index < 0 || index >= size || containsKey(after)) return false;
+		super.put(after, super.remove(orderedKeys.get(index)));
+		orderedKeys.set(index, after);
+		return true;
 	}
 
 	@Override
@@ -78,11 +130,6 @@ public class ObjectBoolOrderedMap<K> extends ObjectBoolMap<K> {
 		return entries2;
 	}
 
-
-	/**
-	 * Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link OrderedMapKeys} constructor for nested or multithreaded iteration.
-	 */
 	@Override
 	public Keys keys() {
 		if (keys1 == null) {
@@ -120,18 +167,20 @@ public class ObjectBoolOrderedMap<K> extends ObjectBoolMap<K> {
 	}
 
 	@Override
-	public String toString() {
-		if (size == 0) return "{}";
+	public String toString(String separator, boolean braces) {
+		if (size == 0) return braces ? "{}" : "";
 		StringBuilder buffer = new StringBuilder(32);
-		buffer.append('{');
-		for (int i = 0, n = orderedKeys.size; i < n; i++) {
-			K key = orderedKeys.get(i);
-			if (i > 0) buffer.append(", ");
-			buffer.append(key);
+		if (braces) buffer.append('{');
+		CollectionList<K> keys = orderedKeys;
+		for (int i = 0, n = keys.size; i < n; i++) {
+			K key = keys.get(i);
+			if (i > 0) buffer.append(separator);
+			buffer.append(key == this ? "(this)" : key);
 			buffer.append('=');
-			buffer.append(get(key));
+			boolean value = get(key);
+			buffer.append(value);
 		}
-		buffer.append('}');
+		if (braces) buffer.append('}');
 		return buffer.toString();
 	}
 
@@ -146,6 +195,7 @@ public class ObjectBoolOrderedMap<K> extends ObjectBoolMap<K> {
 		public ObjectBoolHolder<K> next() {
 			if (!hasNext) throw new NoSuchElementException();
 			if (!valid) throw new ArcRuntimeException("#iterator() cannot be used nested.");
+			currentIndex = nextIndex;
 			entry.key = orderedKeys.get(nextIndex);
 			entry.value = get(entry.key);
 			nextIndex++;
@@ -158,6 +208,7 @@ public class ObjectBoolOrderedMap<K> extends ObjectBoolMap<K> {
 			if (currentIndex < 0) throw new IllegalStateException("next must be called before remove.");
 			ObjectBoolOrderedMap.this.remove(entry.key);
 			nextIndex--;
+			currentIndex = -1;
 		}
 	}
 
