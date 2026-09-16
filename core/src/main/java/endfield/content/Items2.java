@@ -24,6 +24,7 @@ public final class Items2 {
 			hardness = 1;
 			cost = 0.4f;
 			lowPriority = true;
+			alwaysUnlocked = true;
 		}};
 		agglomerateSalt = new Item("agglomerate-salt", Color.white) {{
 			cost = 1.1f;

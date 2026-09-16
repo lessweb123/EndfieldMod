@@ -954,7 +954,9 @@ public class CollectionList<E> extends AbstractList<E> implements Eachable<E>, C
 
 	@Override
 	public Object[] toArray() {
-		return toArray(Object.class);
+		Object[] result = new Object[size];
+		System.arraycopy(items, 0, result, 0, size);
+		return result;
 	}
 
 	@SuppressWarnings("unchecked")

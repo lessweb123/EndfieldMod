@@ -1,17 +1,13 @@
 package endfield.world.blocks.defense;
 
-import arc.func.Cons;
 import arc.math.Mathf;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
-import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.world.blocks.defense.OverdriveProjector;
 
 public class RectOverdriveProjector extends OverdriveProjector {
-	public Cons<Building> selected = t -> Drawf.selected(t, Tmp.c1.set(baseColor).a(Mathf.absin(4f, 1f)));
-
 	public RectOverdriveProjector(String name) {
 		super(name);
 	}
@@ -27,7 +23,7 @@ public class RectOverdriveProjector extends OverdriveProjector {
 		y += offset;
 
 		Drawf.dashSquare(baseColor, x, y, range);
-		Vars.indexer.eachBlock(Vars.player.team(), Tmp.r1.setCentered(x, y, range), b -> b.block.canOverdrive, selected);
+		Vars.indexer.eachBlock(Vars.player.team(), Tmp.r1.setCentered(x, y, range), b -> b.block.canOverdrive, other -> Drawf.selected(other, Tmp.c1.set(baseColor).a(Mathf.absin(4f, 1f))));
 	}
 
 	public class RectOverdriveBuild extends OverdriveBuild {
@@ -37,7 +33,7 @@ public class RectOverdriveProjector extends OverdriveProjector {
 
 			float realRange = range + phaseHeat * phaseRangeBoost;
 
-			Vars.indexer.eachBlock(team, Tmp.r1.setCentered(x, y, realRange), other -> other.block.canOverdrive, selected);
+			Vars.indexer.eachBlock(team, Tmp.r1.setCentered(x, y, realRange), other -> other.block.canOverdrive, other -> Drawf.selected(other, Tmp.c1.set(baseColor).a(Mathf.absin(4f, 1f))));
 
 			Drawf.dashSquare(baseColor, x, y, realRange);
 		}

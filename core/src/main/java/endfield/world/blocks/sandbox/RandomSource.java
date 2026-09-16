@@ -1,5 +1,6 @@
 package endfield.world.blocks.sandbox;
 
+import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.type.Item;
 import mindustry.type.Liquid;
@@ -21,7 +22,7 @@ public class RandomSource extends AdaptiveSource {
 			counter += edelta();
 			float limit = 60f / itemsPerSecond;
 
-			if (outputItems == null) outputItems = Vars.content.items();
+			Seq<Item> outputItems = Vars.content.items();
 
 			while (counter >= limit) {
 				for (int i = 0; i < outputItems.size; i++) {
@@ -36,7 +37,7 @@ public class RandomSource extends AdaptiveSource {
 
 			liquids.clear();
 
-			if (outputLiquids == null) outputLiquids = Vars.content.liquids();
+			Seq<Liquid> outputLiquids = Vars.content.liquids();
 
 			for (int i = 0; i < outputLiquids.size; i++) {
 				Liquid liquid = outputLiquids.random();

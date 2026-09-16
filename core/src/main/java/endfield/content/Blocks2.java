@@ -193,6 +193,7 @@ import mindustry.world.blocks.defense.BaseShield;
 import mindustry.world.blocks.defense.Door;
 import mindustry.world.blocks.defense.ForceProjector;
 import mindustry.world.blocks.defense.MendProjector;
+import mindustry.world.blocks.defense.OverdriveProjector;
 import mindustry.world.blocks.defense.Radar;
 import mindustry.world.blocks.defense.RegenProjector;
 import mindustry.world.blocks.defense.ShieldWall;
@@ -414,6 +415,7 @@ public final class Blocks2 {
 	public static LiquidDirectionalUnloader reinforcedLiquidUnloader;
 	public static SortLiquidRouter reinforcedLiquidSorter, reinforcedLiquidValve;
 	public static Pump smallReinforcedPump, largeReinforcedPump;
+	public static LiquidMassDriver reinforcedLiquidMassDriver;
 	//power
 	public static PowerNode networkPowerNode;
 	public static SmartPowerNode smartPowerNode;
@@ -472,6 +474,7 @@ public final class Blocks2 {
 	public static HeatCrafter largeCarbideCrucible;
 	//defense
 	public static LightBlock lighthouse;
+	public static OverdriveProjector overdriver;
 	public static MendProjector mendDome;
 	public static RegenProjector sectorStructureMender;
 	public static ForceProjector largeShieldGenerator;
@@ -1967,6 +1970,19 @@ public final class Blocks2 {
 			size = 3;
 			squareSprite = false;
 		}};
+		reinforcedLiquidMassDriver = new LiquidMassDriver("reinforced-liquid-mass-driver") {{
+			requirements(Category.liquid, ItemStack.with(Items.beryllium, 200, Items.silicon, 150, Items.oxide, 140, Items.graphite, 200, Items.tungsten, 120));
+			size = 3;
+			range = 400f;
+			knockback = 4;
+			liquidCapacity = 1000f;
+			reload = 240f;
+			rotateSpeed = 2f;
+			squareSprite = false;
+			armor = 5f;
+			researchCostMultiplier = 0.5f;
+			consumePower(2f);
+		}};
 		//power
 		networkPowerNode = new PowerNode("network-power-node") {{
 			requirements(Category.power, ItemStack.with(Items.titanium, 15, Items.silicon, 15, Items.surgeAlloy, 10));
@@ -3006,9 +3022,9 @@ public final class Blocks2 {
 			itemCapacity = 30;
 			liquidCapacity = 600;
 			heatRequirement = 80;
-			maxEfficiency = 1f;
-			craftTime = 45;
-			outputItem = new ItemStack(Items.surgeAlloy, 3);
+			maxEfficiency = 1.5f;
+			craftTime = 60f;
+			outputItem = new ItemStack(Items.surgeAlloy, 5);
 			ambientSound = Sounds.loopSmelter;
 			ambientSoundVolume = 1.8f;
 			craftEffect = new RadialEffect(Fx.surgeCruciSmoke, 4, 90, 5);
@@ -3020,7 +3036,7 @@ public final class Blocks2 {
 			}}, new DrawLiquidRegion(Liquids.slag), new DrawDefault(), new DrawHeatInput(), new DrawHeatRegion() {{
 				color = new Color(0xff6060ff);
 			}}, new DrawHeatRegion("-vents"));
-			consumeItem(Items.silicon, 8);
+			consumeItem(Items.silicon, 12);
 			consumeLiquid(Liquids.slag, 80f / 60f);
 			consumePower(1f);
 		}};
@@ -3029,15 +3045,20 @@ public final class Blocks2 {
 			size = 5;
 			health = 2950;
 			armor = 10f;
-			itemCapacity = 50;
+			itemCapacity = 45;
 			heatRequirement = 80;
-			maxEfficiency = 1f;
-			craftTime = 35;
-			outputItem = new ItemStack(Items.carbide, 3);
+			maxEfficiency = 1.5f;
+			craftTime = 60f;
+			craftEffect = new Effect(60, e -> {
+				Draw.color(Items.carbide.color);
+				Lines.stroke(3 * e.foutpow());
+				Lines.poly(e.x, e.y, 6, 32 * e.foutpow(), 720 * e.fin());
+			}).layer(Layer.blockUnder - 10);
+			outputItem = new ItemStack(Items.carbide, 6);
 			ambientSound = Sounds.loopSmelter;
 			ambientSoundVolume = 1.8f;
 			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawCrucibleFlame(), new DrawDefault(), new DrawHeatInput());
-			consumeItems(ItemStack.with(Items.graphite, 8, Items.tungsten, 5));
+			consumeItems(ItemStack.with(Items.graphite, 15, Items.tungsten, 8));
 			consumePower(1f);
 		}};
 		//defense
@@ -3048,6 +3069,15 @@ public final class Blocks2 {
 			radius = 220f;
 			consumePower(0.15f);
 			buildCostMultiplier = 0.8f;
+		}};
+		overdriver = new OverdriveProjector("overdriver") {{
+			requirements(Category.effect, ItemStack.with(Items.lead, 35, Items.silicon, 25, Items.titanium, 25));
+			range = 40f;
+			speedBoost = 1.3f;
+			speedBoostPhase = 0.2f;
+			phaseRangeBoost = 20f;
+			consumePower(1.5f);
+			consumeItem(Items.silicon, 1).optional(true, true);
 		}};
 		mendDome = new MendProjector("mend-dome") {{
 			requirements(Category.effect, ItemStack.with(Items.lead, 200, Items.titanium, 130, Items.silicon, 120, Items.plastanium, 60, Items.surgeAlloy, 40));
@@ -3169,10 +3199,9 @@ public final class Blocks2 {
 			size = 3;
 			range = 150f;
 			reload = 90f;
-			phaseRangeBoost = 0f;
+			phaseRangeBoost = 50f;
 			speedBoostPhase = 0.3f;
 			speedBoost = 1.5f;
-			hasBoost = true;
 			consumePower(6f);
 			consumeLiquid(Liquids.hydrogen, 0.05f);
 			consumeItem(Items.phaseFabric, 1).optional(true, true);

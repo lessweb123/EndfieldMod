@@ -1,5 +1,7 @@
 package endfield.util;
 
+import arc.struct.Seq;
+
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
@@ -29,6 +31,10 @@ public class FunctionType {
 	FunctionType(Class<?>... types) {
 		paramType = types;
 		hash = Arrays.hashCode(types);
+	}
+
+	public static FunctionType inst(Seq<Class<?>> paramType) {
+		return inst(paramType.toArray(Class.class));
 	}
 
 	public static FunctionType inst(List<Class<?>> paramType) {

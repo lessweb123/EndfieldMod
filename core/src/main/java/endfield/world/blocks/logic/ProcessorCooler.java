@@ -46,7 +46,7 @@ public class ProcessorCooler extends Block {
 		liquidConsumer = findConsumer(c -> c instanceof ConsumeLiquidBase);
 
 		if (acceptCoolant && liquidConsumer == null) {
-			liquidConsumer = consume(new ConsumeLiquidFilter(l -> l.temperature <= 0.5f && l.flammability < 0.1f && !l.gas, 0.15f));
+			liquidConsumer = consume(new ConsumeLiquidFilter(liquid -> liquid.coolant && !liquid.gas && liquid.temperature <= 0.5f && liquid.flammability < 0.1f, 0.15f));
 		}
 
 		super.init();

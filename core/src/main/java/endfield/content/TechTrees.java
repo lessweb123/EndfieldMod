@@ -157,6 +157,7 @@ public final class TechTrees {
 			node(reinforcedLiquidSorter);
 			node(reinforcedLiquidValve);
 		});
+		vanillaNode(reinforcedBridgeConduit, () -> node(reinforcedLiquidMassDriver));
 		removeNode(reinforcedPump);
 		vanillaNode(reinforcedConduit, () -> node(smallReinforcedPump, Seq.with(new OnSector(SectorPresets.basin)), () -> node(reinforcedPump, () -> node(largeReinforcedPump))));
 		//power
@@ -228,6 +229,7 @@ public final class TechTrees {
 		vanillaNode(coreShard, () -> node(detonator, () -> node(bombLauncher)));
 		vanillaNode(illuminator, () -> node(lighthouse));
 		vanillaNode(shockMine, () -> node(paralysisMine));
+		vanillaNode(mender, () -> node(overdriver));
 		vanillaNode(mendProjector, () -> node(mendDome, () -> node(sectorStructureMender)));
 		vanillaNode(forceProjector, () -> node(largeShieldGenerator));
 		//defense-erekir
@@ -340,9 +342,9 @@ public final class TechTrees {
 	}
 
 	public static void removeNode(UnlockableContent content) {
-		context = TechTree.all.find(t -> t.content == content);
-		if (context != null) {
-			context.remove();
+		TechNode node = TechTree.all.find(t -> t.content == content);
+		if (node != null) {
+			node.remove();
 		}
 	}
 

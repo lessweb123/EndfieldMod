@@ -12,7 +12,7 @@ public final class SectorPresets2 {
 	//serpulo
 	public static SectorPreset volcanicArchipelago, ironBridgeCoast, moltenRiftValley, frozenPlateau;
 	//erekir
-	//public static SectorPreset no;
+	//public static SectorPreset todo;
 
 	/** Don't let anyone instantiate this class. */
 	private SectorPresets2() {}

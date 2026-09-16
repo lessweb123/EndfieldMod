@@ -8,6 +8,10 @@ public class WeightedRandom<E> {
 	protected CollectionList<E> items;
 	protected FloatSeq weights = new FloatSeq();
 
+	public WeightedRandom() {
+		items = new CollectionList<>();
+	}
+
 	public WeightedRandom(Class<?> componentType) {
 		items = new CollectionList<>(componentType);
 	}

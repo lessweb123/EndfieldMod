@@ -1,7 +1,6 @@
 package endfield.world.blocks.sandbox;
 
 import arc.graphics.Color;
-import arc.struct.Seq;
 import endfield.type.Recipe;
 import endfield.world.consumers.ConsumeRecipe;
 import mindustry.Vars;
@@ -28,9 +27,6 @@ import mindustry.world.meta.Stat;
 public class AdaptiveSource extends Block {
 	public float powerProduction = 1000000f / 60f;
 	public float heatOutput = 1000f;
-
-	public Seq<Item> outputItems;
-	public Seq<Liquid> outputLiquids;
 
 	protected AdaptiveSource(String name) {
 		super(name);
@@ -68,9 +64,6 @@ public class AdaptiveSource extends Block {
 		public void updateTile() {
 			if (proximity.isEmpty()) return;
 
-			if (outputItems == null) outputItems = Vars.content.items();
-			if (outputLiquids == null) outputLiquids = Vars.content.liquids();
-
 			for (int i = 0; i < proximity.size; i++) {
 				Building build = proximity.get(i);
 				if (build == null || !build.shouldConsume() || build.block == null || build.block.consumers == null) continue;
@@ -85,7 +78,7 @@ public class AdaptiveSource extends Block {
 							}
 						}
 					} else if (consume instanceof ConsumeItemFilter cons) {
-						for (Item item : outputItems) {
+						for (Item item : Vars.content.items()) {
 							if (cons.filter.get(item) && build.acceptItem(this, item)) {
 								build.handleItem(this, item);
 							}
@@ -102,7 +95,7 @@ public class AdaptiveSource extends Block {
 							}
 						}
 					} else if (consume instanceof ConsumeLiquidFilter cons) {
-						for (Liquid liquid : outputLiquids) {
+						for (Liquid liquid : Vars.content.liquids()) {
 							if (cons.filter.get(liquid) && build.acceptLiquid(this, liquid) && build.liquids.get(liquid) < build.block.liquidCapacity) {
 								build.handleLiquid(this, liquid, build.block.liquidCapacity - build.liquids.get(liquid));
 							}

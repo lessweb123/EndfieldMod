@@ -121,7 +121,7 @@ public final class EndFieldMod extends Mod {
 				t.add(Core.bundle.get("text.type")).left().growX().wrap().pad(4f).labelAlign(Align.left).row();
 				t.add(Core.bundle.get("text.other-0")).left().growX().wrap().pad(4f).labelAlign(Align.left).row();
 				t.add(Core.bundle.get("text.other-1")).left().growX().wrap().width(550f).maxWidth(600f).pad(4f).labelAlign(Align.left).row();
-				t.add(Core.bundle.get("text.other-contributor")).left().growX().wrap().width(550f).maxWidth(600f).pad(4f).labelAlign(Align.left).row();
+				t.add(Core.bundle.get("text.other-3")).left().growX().wrap().width(550f).maxWidth(600f).pad(4f).labelAlign(Align.left).row();
 			}).grow().center().maxWidth(600f);
 			dialog.show();
 		});
@@ -242,7 +242,7 @@ public final class EndFieldMod extends Mod {
 		if (Vars.ui != null) {
 			if (Vars.ui.settings != null) {
 				//add endfield settings
-				Vars.ui.settings.addCategory(Core.bundle.format("text.settings"), Icon2.reactionIcon, table -> {
+				Vars.ui.settings.addCategory(Core.bundle.get("text.settings"), Icon2.reactionIcon, table -> {
 					table.checkPref("closed-dialog", false);
 					table.checkPref("floating-text", true);
 					table.checkPref("splash-drawer", false);
