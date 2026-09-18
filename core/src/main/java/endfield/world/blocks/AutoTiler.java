@@ -1,5 +1,6 @@
 package endfield.world.blocks;
 
+import arc.func.Boolf;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Geometry;
@@ -17,9 +18,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 
 public interface AutoTiler extends Autotiler {
-	int[] blendResult = new int[5];
-	BuildPlan[] directionals = new BuildPlan[4];
-
 	@Override
 	default TextureRegion sliced(TextureRegion input, SliceMode mode) {
 		return mode == SliceMode.none ? input : mode == SliceMode.bottom ? botHalf(input) : topHalf(input);
@@ -44,29 +42,20 @@ public interface AutoTiler extends Autotiler {
 	}
 
 	@Override
-	default int @Nullable [] getTiling(BuildPlan req, Eachable<BuildPlan> list) {
-		if (req.tile() == null) return null;
+	default int @Nullable [] getTiling(BuildPlan plan, Eachable<BuildPlan> list) {
+		if (plan.tile() == null) return null;
+		BuildPlan[] directionals = AutoTilerHolder.directionals;
 
 		Arrays.fill(directionals, null);
-		//TODO this is O(n^2), very slow, should use quadtree or intmap or something instead
-		list.each(other -> {
-			if (other.breaking || other == req) return;
+		AutoTilerHolder.plan = plan;
+		Block.findPlan(list, plan.x, plan.y, plan.block.size + 2, AutoTilerHolder.blendFinder);
 
-			int i = 0;
-			for (Point2 point : Geometry.d4) {
-				int x = req.x + point.x, y = req.y + point.y;
-				if (x >= other.x - (other.block.size - 1) / 2 && x <= other.x + (other.block.size / 2) && y >= other.y - (other.block.size - 1) / 2 && y <= other.y + (other.block.size / 2)) {
-					directionals[i] = other;
-				}
-				i++;
-			}
-		});
-
-		return buildBlending(req.tile(), req.rotation, directionals, req.worldContext);
+		return buildBlending(plan.tile(), plan.rotation, directionals, plan.worldContext);
 	}
 
 	@Override
 	default int[] buildBlending(Tile tile, int rotation, BuildPlan[] directional, boolean world) {
+		int[] blendResult = AutoTilerHolder.blendResult;
 		blendResult[0] = 0;
 		blendResult[1] = blendResult[2] = 1;
 
@@ -139,7 +128,6 @@ public interface AutoTiler extends Autotiler {
 		return checkWorld && blends(tile, rotation, direction);
 	}
 
-	// TODO docs -- use for direction?
 	@Override
 	default boolean blends(Tile tile, int rotation, int direction) {
 		Building other = tile.nearbyBuild(Mathf.mod(rotation - direction, 4));
@@ -162,11 +150,8 @@ public interface AutoTiler extends Autotiler {
 	@Override
 	default boolean lookingAtEither(Tile tile, int rotation, int otherx, int othery, int otherrot, Block otherblock) {
 		return
-				//block is facing the other
 				Point2.equals(tile.x + Geometry.d4(rotation).x, tile.y + Geometry.d4(rotation).y, otherx, othery) ||
-						//does not output to rotated direction
 						!otherblock.rotatedOutput(otherx, othery, tile) ||
-						//other block is facing this one
 						Point2.equals(otherx + Geometry.d4(otherrot).x, othery + Geometry.d4(otherrot).y, tile.x, tile.y);
 	}
 
@@ -175,5 +160,26 @@ public interface AutoTiler extends Autotiler {
 		Tile facing = Edges.getFacingEdge(otherblock, otherx, othery, tile);
 		return facing != null &&
 				Point2.equals(tile.x + Geometry.d4(rotation).x, tile.y + Geometry.d4(rotation).y, facing.x, facing.y);
+	}
+
+	class AutoTilerHolder {
+		static final int[] blendResult = new int[5];
+		static final BuildPlan[] directionals = new BuildPlan[4];
+
+		static BuildPlan plan;
+		static final Boolf<BuildPlan> blendFinder = other -> {
+			if (other.breaking || other == plan) return false;
+
+			int i = 0;
+			for (Point2 point : Geometry.d4) {
+				int x = plan.x + point.x, y = plan.y + point.y;
+				if (x >= other.x - (other.block.size - 1) / 2 && x <= other.x + (other.block.size / 2) && y >= other.y - (other.block.size - 1) / 2 && y <= other.y + (other.block.size / 2)) {
+					directionals[i] = other;
+				}
+				i++;
+			}
+
+			return false;
+		};
 	}
 }

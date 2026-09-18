@@ -6,6 +6,7 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import endfield.graphics.Pal2;
 import mindustry.gen.Building;
 import mindustry.graphics.Layer;
 import mindustry.world.Block;
@@ -14,7 +15,7 @@ import mindustry.world.draw.DrawBlock;
 public class DrawHeat extends DrawBlock {
 	public TextureRegion heat, glow;
 
-	public Color heatColor = new Color(1f, 0.22f, 0.22f, 0.8f);
+	public Color heatColor = Pal2.heat;
 	public float heatPulse = 0.3f, heatPulseScl = 10f, glowMult = 1.2f;
 
 	public int rotOffset = 0;

@@ -2703,9 +2703,6 @@ public final class UnitTypes2 {
 			mineTier = 5;
 			mineSpeed = 6f;
 			mineWalls = true;
-			mineItems.remove(Items.thorium);
-			mineItems.add(Items.beryllium, Items.graphite, Items.tungsten);
-			mineItems.add(Items2.stone, Items2.rareEarth, Items2.gold);
 			allowLegStep = true;
 			legCount = 6;
 			legGroupSize = 3;

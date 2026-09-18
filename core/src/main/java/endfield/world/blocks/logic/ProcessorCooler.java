@@ -85,6 +85,8 @@ public class ProcessorCooler extends Block {
 	}
 
 	public class ProcessorCoolerBuild extends Building {
+		//public Seq<LogicBuild> logics = new Seq<>(true, maxProcessors, LogicBuild.class);
+
 		public float heat = 0;
 		public int usedLinks = 0;
 
@@ -116,6 +118,11 @@ public class ProcessorCooler extends Block {
 			}
 			usedLinks = count;
 			heat = Mathf.lerpDelta(heat, Mathm.clamp(((float) count) / maxProcessors), 0.03f);
+		}
+
+		@Override
+		public void drawSelect() {
+			super.drawSelect();
 		}
 
 		@Override

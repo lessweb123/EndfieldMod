@@ -34,7 +34,6 @@ public class UnitIniter extends Block {
 
 		alwaysUnlocked = true;
 		destroySound = ambientSound = breakSound = Sounds.none;
-		size = 1;
 		update = true;
 		outputsPayload = true;
 		hasPower = false;

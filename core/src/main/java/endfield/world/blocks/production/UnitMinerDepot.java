@@ -11,6 +11,7 @@ import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Table;
 import arc.struct.EnumSet;
 import arc.struct.ObjectMap;
+import arc.struct.ObjectSet;
 import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.io.Reads;
@@ -45,6 +46,10 @@ import mindustry.world.meta.BlockFlag;
 import org.jetbrains.annotations.Nullable;
 
 public class UnitMinerDepot extends Block {
+	public @Nullable Item blockedItem;
+
+	public ObjectSet<Item> blockedItems = new ObjectSet<>();
+
 	public UnitType minerUnit = UnitTypes2.legsMiner;
 	public float buildTime = 60f * 8f;
 
@@ -87,6 +92,15 @@ public class UnitMinerDepot extends Block {
 				() -> Pal.power,
 				() -> (float) tile.team.data().countType(minerUnit) / Units.getCap(tile.team)
 		));
+	}
+
+	@Override
+	public void init() {
+		super.init();
+
+		if (blockedItem != null) {
+			blockedItems.add(blockedItem);
+		}
 	}
 
 	@Override
@@ -147,7 +161,9 @@ public class UnitMinerDepot extends Block {
 
 			if (!oresFound) {
 				oresFound = true;
-				for (Item item : minerUnit.mineItems) {
+				for (Item item : Vars.content.items()) {
+					if (blockedItems.contains(item)) continue;
+
 					//is there a better way?
 					Tile ore = oreTile(x, y, item);
 					if (!oreTiles.containsKey(item) && ore != null) {
@@ -274,7 +290,7 @@ public class UnitMinerDepot extends Block {
 
 		@Override
 		public void buildConfiguration(Table table) {
-			Seq<Item> targets = minerUnit.mineItems.select(item -> Vars.indexer.hasOre(item) || Vars.indexer.hasWallOre(item));
+			Seq<Item> targets = Vars.content.items().select(item -> !blockedItems.contains(item) && (Vars.indexer.hasOre(item) || Vars.indexer.hasWallOre(item)));
 			ItemSelection.buildTable(block, table, targets, () -> targetItem, this::configure);
 		}
 

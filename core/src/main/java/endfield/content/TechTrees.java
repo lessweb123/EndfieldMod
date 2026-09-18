@@ -37,7 +37,11 @@ public final class TechTrees {
 		vanillaNode(Liquids.water, () -> {
 			nodeProduce(Liquids2.brine);
 			nodeProduce(Liquids.gallium);
-			nodeProduce(Liquids.nitrogen);
+			nodeProduce(Liquids.ozone, () -> nodeProduce(Liquids.hydrogen, () -> {
+				nodeProduce(Liquids.nitrogen);
+				nodeProduce(Liquids.cyanogen);
+			}));
+			nodeProduce(Liquids2.promethium);
 		});
 		vanillaNode(Liquids.oil, () -> {
 			nodeProduce(Liquids2.lightOil);
@@ -45,14 +49,17 @@ public final class TechTrees {
 			nodeProduce(Liquids2.gas);
 		});
 		vanillaNode(Items.sand, () -> {
-			nodeProduce(Items2.stone, () -> nodeProduce(Items2.crystal));
+			nodeProduce(Items2.stone, () -> {
+				nodeProduce(Items2.diamond);
+				nodeProduce(Items2.crystal);
+			});
 			nodeProduce(Items2.rareEarth);
 			nodeProduce(Items2.agglomerateSalt);
 		});
 		vanillaNode(Items.copper, () -> nodeProduce(Items2.gold));
 		vanillaNode(Items.silicon, () -> {
-			nodeProduce(Items2.crystallineCircuit, () -> nodeProduce(Liquids2.coldPlasma));
-			nodeProduce(Items2.galliumNitride);
+			nodeProduce(Items2.crystallineCircuit, () -> nodeProduce(Liquids2.coldPlasma, () -> nodeProduce(Liquids2.hotPlasma)));
+			nodeProduce(Items2.siliconNitride, () -> nodeProduce(Items2.galliumNitride));
 		});
 		vanillaNode(Items.thorium, () -> nodeProduce(Items2.uranium, () -> nodeProduce(Items2.chromium)));
 		vanillaNode(Items.surgeAlloy, () -> nodeProduce(Items2.heavyAlloy));
@@ -163,15 +170,18 @@ public final class TechTrees {
 		//power
 		vanillaNode(powerNode, () -> node(smartPowerNode, () -> node(powerAnalyzer)));
 		vanillaNode(powerNodeLarge, () -> node(heavyArmoredPowerNode, () -> node(microArmoredPowerNode)));
-		vanillaNode(steamGenerator, () -> node(coalPyrolyzer, () -> node(gasGenerator)));
+		vanillaNode(steamGenerator, () -> {
+			node(largeSteamGenerator);
+			node(coalPyrolyzer, () -> node(gasGenerator));
+		});
 		vanillaNode(solarPanel, () -> node(solarPad));
 		vanillaNode(largeSolarPanel, () -> node(photonPanel));
 		vanillaNode(thermalGenerator, () -> node(largeThermalGenerator));
 		vanillaNode(thoriumReactor, () -> node(uraniumReactor));
-		vanillaNode(impactReactor, () -> node(hyperMagneticReactor));
+		//vanillaNode(impactReactor, () -> node(fissionReactor));
 		vanillaNode(batteryLarge, () -> {
-			node(hugeBattery);
-			node(armoredCoatedBattery);
+			node(crystalBattery);
+			node(armoredCrystalBattery);
 		});
 		//power-erekir
 		vanillaNode(beamNode, () -> {
@@ -218,6 +228,10 @@ public final class TechTrees {
 			node(chemicalSiliconSmelter, ItemStack.with(Items.graphite, 2800, Items.silicon, 1000, Items.tungsten, 2400, Items.oxide, 50));
 			node(ventHeater);
 		});
+		vanillaNode(smallHeatRedirector, () -> node(heatBelt, () -> {
+			node(smallHeatRouter);
+			node(heatBridge);
+		}));
 		vanillaNode(electricHeater, () -> {
 			node(largeElectricHeater, ItemStack.with(Items.tungsten, 3000, Items.oxide, 2400, Items.carbide, 800));
 			node(heatReactor);
@@ -311,6 +325,7 @@ public final class TechTrees {
 		});
 		vanillaNode(spectre, () -> node(evilSpirits));
 		vanillaNode(meltdown, () -> node(judgement));
+		vanillaNode(tsunami, () -> node(furnace));
 		//turret-erekir
 		vanillaNode(breach, () -> node(rupture, Seq.with(new OnSector(SectorPresets.stronghold)), () -> node(rift, Seq.with(new OnSector(SectorPresets.karst)))));
 		//tier6

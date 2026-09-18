@@ -11,8 +11,8 @@ import mindustry.type.Item;
  */
 public final class Items2 {
 	public static Item stone, agglomerateSalt, rareEarth;
-	public static Item galliumNitride, crystallineCircuit, crystallineElectronicUnit;
-	public static Item crystal;
+	public static Item siliconNitride, galliumNitride, coldPlasmaBottle, crystallineCircuit, crystallineElectronicUnit;
+	public static Item diamond, crystal;
 	public static Item gold, uranium, chromium, heavyAlloy;
 
 	/** Don't let anyone instantiate this class. */
@@ -36,9 +36,17 @@ public final class Items2 {
 			buildable = false;
 			lowPriority = true;
 		}};
+		siliconNitride = new Item("silicon-nitride", new Color(0xdfdfdfff)) {{
+			hardness = 4;
+		}};
 		galliumNitride = new Item("gallium-nitride", new Color(0xbff3ffff)) {{
 			cost = 1.2f;
 			hardness = 3;
+		}};
+		coldPlasmaBottle = new Item("cold-plasma-bottle") {{
+			cost = 1.1f;
+			explosiveness = 2.5f;
+			hardness = 1;
 		}};
 		crystallineCircuit = new Item("crystalline-circuit", Pal2.crystalAmmoBack) {{
 			cost = -0.75f;
@@ -48,9 +56,12 @@ public final class Items2 {
 			cost = -1.75f;
 			hardness = 7;
 		}};
+		diamond = new Item("diamond", new Color(0x0029afff)) {{
+			cost = 1.35f;
+			hardness = 6;
+		}};
 		crystal = new Item("crystal", Pal2.crystalAmmoBack) {{
 			cost = 1.25f;
-			flammability = 0.2f;
 			explosiveness = 0.3f;
 			radioactivity = 0.1f;
 			hardness = 5;

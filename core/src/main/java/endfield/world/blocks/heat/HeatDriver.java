@@ -100,7 +100,7 @@ public class HeatDriver extends Block {
 	}
 
 	public class HeatDriverBuild extends Building implements HeatBlock, HeatConsumer, RotBlock {
-		public float rotation = 90f;
+		public float topRotation = 90f;
 		public float progress = 0f;
 		public float resProgress = 0f;
 		public int link = -1;
@@ -117,16 +117,16 @@ public class HeatDriver extends Block {
 
 			float move = 3f * progress;
 
-			Drawf.shadow(turretPart, x, y, rotation - 90f);
+			Drawf.shadow(turretPart, x, y, topRotation - 90f);
 
-			Drawf.shadow(rPart, x + Angles.trnsx(rotation + 180f, 0f, move) - size / 2f, y + Angles.trnsy(rotation + 180f, 0f, move) - size / 2f, rotation - 90f);
+			Drawf.shadow(rPart, x + Angles.trnsx(topRotation + 180f, 0f, move) - size / 2f, y + Angles.trnsy(topRotation + 180f, 0f, move) - size / 2f, topRotation - 90f);
 
-			Draw.rect(rLine, x + Angles.trnsx(rotation + 180f, 0f, move), y + Angles.trnsy(rotation + 180f, 0f, move), rotation - 90f);
+			Draw.rect(rLine, x + Angles.trnsx(topRotation + 180f, 0f, move), y + Angles.trnsy(topRotation + 180f, 0f, move), topRotation - 90f);
 
-			Draw.rect(turretLine, x, y, rotation - 90f);
-			Draw.rect(turretPart, x, y, rotation - 90f);
+			Draw.rect(turretLine, x, y, topRotation - 90f);
+			Draw.rect(turretPart, x, y, topRotation - 90f);
 
-			Draw.rect(rPart, x + Angles.trnsx(rotation + 180f, 0f, move), y + Angles.trnsy(rotation + 180f, 0f, move), rotation - 90f);
+			Draw.rect(rPart, x + Angles.trnsx(topRotation + 180f, 0f, move), y + Angles.trnsy(topRotation + 180f, 0f, move), topRotation - 90f);
 
 			float p = Math.min(heat / visualMaxHeat * power.status, 1);
 
@@ -135,38 +135,38 @@ public class HeatDriver extends Block {
 			Draw.z(Layer.effect);
 
 			if (progress > 0.01f) {
-				Draw.rect(effect, x + Angles.trnsx(rotation + 180f, -8f), y + Angles.trnsy(rotation + 180f, -8f), 10f * progress, 10f * progress, rotation - 90f - Time.time * 2);
-				Draw.rect(effect, x + Angles.trnsx(rotation + 180f, -8f), y + Angles.trnsy(rotation + 180f, -8f), 6f * progress, 6f * progress, rotation - 90f + Time.time * 2);
+				Draw.rect(effect, x + Angles.trnsx(topRotation + 180f, -8f), y + Angles.trnsy(topRotation + 180f, -8f), 10f * progress, 10f * progress, topRotation - 90f - Time.time * 2);
+				Draw.rect(effect, x + Angles.trnsx(topRotation + 180f, -8f), y + Angles.trnsy(topRotation + 180f, -8f), 6f * progress, 6f * progress, topRotation - 90f + Time.time * 2);
 
 				for (int i = 0; i < 4; i++) {
 					float angle = i * 360f / 4;
-					Drawf.tri(x + Angles.trnsx(rotation + 180f, -8f) + Angles.trnsx(angle + Time.time, 5f), y + Angles.trnsy(rotation + 180f, -8f) + Angles.trnsy(angle + Time.time, 5f), 6f, 2f * progress, angle + Time.time);
+					Drawf.tri(x + Angles.trnsx(topRotation + 180f, -8f) + Angles.trnsx(angle + Time.time, 5f), y + Angles.trnsy(topRotation + 180f, -8f) + Angles.trnsy(angle + Time.time, 5f), 6f, 2f * progress, angle + Time.time);
 				}
 			}
 
 			if (resProgress > 0.01f) {
 				Draw.alpha(1);
 				Lines.stroke(1 * resProgress);
-				Lines.circle(x + Angles.trnsx(rotation + 180f, 10f), y + Angles.trnsy(rotation + 180f, 10f), 5);
-				Lines.circle(x + Angles.trnsx(rotation + 180f, 10f), y + Angles.trnsy(rotation + 180f, 10f), 3);
+				Lines.circle(x + Angles.trnsx(topRotation + 180f, 10f), y + Angles.trnsy(topRotation + 180f, 10f), 5);
+				Lines.circle(x + Angles.trnsx(topRotation + 180f, 10f), y + Angles.trnsy(topRotation + 180f, 10f), 3);
 
 				for (int i = 0; i < 3; i++) {
 					float angle = i * 360f / 3;
-					Drawf.tri(x + Angles.trnsx(rotation + 180f, 10f) + Angles.trnsx(angle - Time.time, 5), y + Angles.trnsy(rotation + 180f, 10f) + Angles.trnsy(angle - Time.time, 5f), 4f, -2f * resProgress, angle - Time.time);
-					Drawf.tri(x + Angles.trnsx(rotation + 180f, 10f) + Angles.trnsx(angle + Time.time, 3), y + Angles.trnsy(rotation + 180f, 10f) + Angles.trnsy(angle + Time.time, 3f), 3f, 1 * resProgress, angle + Time.time);
+					Drawf.tri(x + Angles.trnsx(topRotation + 180f, 10f) + Angles.trnsx(angle - Time.time, 5), y + Angles.trnsy(topRotation + 180f, 10f) + Angles.trnsy(angle - Time.time, 5f), 4f, -2f * resProgress, angle - Time.time);
+					Drawf.tri(x + Angles.trnsx(topRotation + 180f, 10f) + Angles.trnsx(angle + Time.time, 3), y + Angles.trnsy(topRotation + 180f, 10f) + Angles.trnsy(angle + Time.time, 3f), 3f, 1 * resProgress, angle + Time.time);
 				}
 			}
 
 			if (linkValid()) {
 				Building other = Vars.world.build(link);
-				if (!Angles.near(rotation, angleTo(other), 2f)) return;
+				if (!Angles.near(topRotation, angleTo(other), 2f)) return;
 				Draw.color();
 				float dist = dst(other) / arrowSpacing - size;
 				int arrows = (int) (dist / arrowSpacing);
 
 				for (int a = 0; a < arrows; a++) {
 					Draw.alpha(Mathf.absin(a - Time.time / arrowTimeScl, arrowPeriod, 1f) * progress * Renderer.bridgeOpacity * p);
-					Draw.rect(arrow, x + Angles.trnsx(rotation + 180f, -arrowSpacing) * (Vars.tilesize / 2f + a * arrowSpacing + arrowOffset), y + Angles.trnsy(rotation + 180f, -arrowSpacing) * (Vars.tilesize / 2f + a * arrowSpacing + arrowOffset), 25f, 25f, rotation);
+					Draw.rect(arrow, x + Angles.trnsx(topRotation + 180f, -arrowSpacing) * (Vars.tilesize / 2f + a * arrowSpacing + arrowOffset), y + Angles.trnsy(topRotation + 180f, -arrowSpacing) * (Vars.tilesize / 2f + a * arrowSpacing + arrowOffset), 25f, 25f, topRotation);
 				}
 			}
 		}
@@ -184,8 +184,8 @@ public class HeatDriver extends Block {
 				HeatDriverBuild other = (HeatDriverBuild) linked;
 				if (other.checkOneOwner(this)) other.owners.add(this);
 				float toRotation = angleTo(other);
-				rotation = Mathf.slerpDelta(rotation, toRotation, 0.02f * power.status);
-				if (Angles.near(rotation, toRotation, 2)) {
+				topRotation = Mathf.slerpDelta(topRotation, toRotation, 0.02f * power.status);
+				if (Angles.near(topRotation, toRotation, 2)) {
 					updateTransfer();
 					other.updateTransfer();
 					progress = Mathf.slerpDelta(progress, 1, 0.02f * power.status);
@@ -208,7 +208,7 @@ public class HeatDriver extends Block {
 				float totalHeat = 0f;
 				for (int i = 0; i < owners.size; i++) {
 					HeatDriverBuild owner = (HeatDriverBuild) owners.get(i);
-					if (Angles.near(owner.rotation, owner.angleTo(this), 2f)) {
+					if (Angles.near(owner.topRotation, owner.angleTo(this), 2f)) {
 						totalHeat += owner.heat;
 						totalHeat *= owner.power.status;
 					}
@@ -329,7 +329,7 @@ public class HeatDriver extends Block {
 		public void write(Writes write) {
 			super.write(write);
 			write.i(link);
-			write.f(rotation);
+			write.f(topRotation);
 			write.f(progress);
 		}
 
@@ -337,13 +337,13 @@ public class HeatDriver extends Block {
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
 			link = read.i();
-			rotation = read.f();
+			topRotation = read.f();
 			progress = read.f();
 		}
 
 		@Override
 		public float buildRotation() {
-			return rotation;
+			return topRotation;
 		}
 	}
 }

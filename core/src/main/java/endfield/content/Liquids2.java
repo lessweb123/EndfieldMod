@@ -19,13 +19,13 @@ import mindustry.type.Liquid;
  * @author LessWeb
  */
 public final class Liquids2 {
-	static final int coldPlasmaId = Draws.nextTaskId();
+	static final int coldPlasmaId = Draws.nextTaskId(), hotPlasmaId = Draws.nextTaskId();
 
 	public static ObjectFloatMap<Liquid> densities = new ObjectFloatMap<>(), viscosities = new ObjectFloatMap<>();
 
-	public static Liquid brine;
+	public static Liquid brine, promethium;
 	public static Liquid gas, lightOil, nitratedOil, blastReagent;
-	public static CrystalLiquid coldPlasma;
+	public static CrystalLiquid coldPlasma, hotPlasma;
 
 	/** Don't let anyone instantiate this class. */
 	private Liquids2() {}
@@ -42,12 +42,21 @@ public final class Liquids2 {
 	public static void load() {
 		brine = new Liquid("brine", new Color(0xb8c89fff)) {{
 			coolant = false;
-			viscosity = 0.8f;
+			viscosity = 0.55f;
 			explosiveness = 0.1f;
 			densities.put(this, 1 / 8f);
 			viscosities.put(this, 1f);
 		}};
-		gas = new Liquid("gas", new Color(0xfbd367ff)) {{
+		promethium = new Liquid("promethium", Pal2.promethiumFront) {{
+			flammability = 4f;
+			temperature = 0.6f;
+			viscosity = 0.9f;
+			explosiveness = 0.5f;
+			boilPoint = 0.5f;
+			coolant = false;
+			canStayOn.addAll(Liquids.water);
+		}};
+		gas = new Liquid("gas", Pal2.gasFront) {{
 			gasColor = barColor = lightColor = color;
 			gas = true;
 			flammability = 1.25f;
@@ -87,14 +96,16 @@ public final class Liquids2 {
 			densities.put(this, 1 / 8f);
 			viscosities.put(this, 1f);
 		}};
-		coldPlasma = new CrystalLiquid("cold-plasma", Pal2.crystalAmmoBack) {{
+		coldPlasma = new CrystalLiquid("cold-plasma", Pal2.coldPlasmaFront) {{
 			heatCapacity = 2.5f;
+			explosiveness = 0.1f;
+			temperature = 0.15f;
+			boilPoint = 10000f;
 			lightColor = color.cpy().a(0.3f);
 			colorFrom = color.cpy().a(0.5f);
 			colorTo = color.cpy().a(0.4f);
 			particleSpacing = 10;
 			particleEffect = WrapperEffect.wrap(Fx2.glowParticle, color);
-			effect = StatusEffects.electrified;
 			canStayOn.addAll(Liquids.water, Liquids.cryofluid, Liquids.oil, Liquids.arkycite, Liquids.neoplasm);
 			densities.put(this, 1 / 8f);
 			viscosities.put(this, 1f);
@@ -102,7 +113,7 @@ public final class Liquids2 {
 			@Override
 			public void drawPuddle(Puddle puddle) {
 				Draws.drawTask(coldPlasmaId, puddle, Shaders2.wave, s -> {
-					s.waveMix = Pal2.crystalAmmoBright;
+					s.waveMix = Pal2.coldPlasmaFront;
 					s.mixAlpha = 0.2f + Mathf.absin(5, 0.2f);
 					s.waveScl = 0.2f;
 					s.maxThreshold = 1f;
@@ -110,5 +121,31 @@ public final class Liquids2 {
 				}, super::drawPuddle);
 			}
 		};
+		hotPlasma = new CrystalLiquid("hot-plasma", Pal2.hotPlasmaFront) {{
+			heatCapacity = 2.5f;
+			explosiveness = 5f;
+			temperature = 5f;
+			coolant = false;
+			boilPoint = 10000f;
+			lightColor = color.cpy().a(0.3f);
+			colorFrom = color.cpy().a(0.5f);
+			colorTo = color.cpy().a(0.4f);
+			particleSpacing = 10;
+			particleEffect = WrapperEffect.wrap(Fx2.glowParticle, color);
+			effect = StatusEffects2.ultFireBurn;
+			canStayOn.addAll(Liquids.water, Liquids.cryofluid, Liquids.oil, Liquids.arkycite, Liquids.neoplasm);
+			densities.put(this, 1 / 8f);
+			viscosities.put(this, 1f);
+		}
+			@Override
+			public void drawPuddle(Puddle puddle) {
+				Draws.drawTask(hotPlasmaId, puddle, Shaders2.wave, s -> {
+					s.waveMix = Pal2.hotPlasmaFront;
+					s.mixAlpha = 0.2f + Mathf.absin(5, 0.2f);
+					s.waveScl = 0.2f;
+					s.maxThreshold = 1f;
+					s.minThreshold = 0.4f;
+				}, super::drawPuddle);
+			}};
 	}
 }

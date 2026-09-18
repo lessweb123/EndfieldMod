@@ -77,7 +77,7 @@ public class HoverTurretAbility extends Ability {
 	public float maxPitch = 1.1f;
 
 	public boolean drawBeam = false;
-	public Color beamColor = Color.valueOf("2eeaea");
+	public Color beamColor = new Color(0x2eeaeaff);
 	public float beamWidth = 8f;
 	public float beamLength = 240f;
 	public float beamTime = 15f;

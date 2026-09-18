@@ -167,12 +167,6 @@ public final class Overrides {
 		Blocks.neoplasiaReactor.canOverdrive = true;
 		//blocks-production
 		Blocks.siliconSmelter.consumePower(0.25f);
-		Blocks.siliconCrucible.itemCapacity = 40;
-		Blocks.siliconCrucible.floating = true;
-		if (Blocks.siliconCrucible instanceof AttributeCrafter crafter) {
-			crafter.maxBoost = 3f;
-			crafter.outputItem = new ItemStack(Items.silicon, 10);
-		}
 		Blocks.phaseWeaver.itemCapacity = 30;
 		if (Blocks.disassembler instanceof Separator separator) separator.results = ItemStack.with(Items.copper, 1, Items.lead, 1, Items.graphite, 1, Items.titanium, 1, Items.thorium, 1);
 		Blocks.disassembler.removeConsumers(c -> c instanceof ConsumeItems || c instanceof ConsumeLiquid);
@@ -321,16 +315,33 @@ public final class Overrides {
 		Blocks.diffuse.armor = 3f;
 		Blocks.sublimate.armor = 4f;
 		if (Blocks.sublimate instanceof ContinuousLiquidTurret turret) {
-			turret.ammoTypes.put(Liquids2.gas, new ContinuousFlameBulletType() {{
-				damage = 90f;
+			turret.ammoTypes.remove(Liquids.ozone);
+			turret.ammoTypes.put(Liquids2.gas, new ContinuousFlameBulletType(90f) {{
 				rangeChange = 30f;
 				length = 160f;
 				knockback = 1f;
 				pierceCap = 2;
 				buildingDamageMultiplier = 0.3f;
 				colors = new Color[]{new Color(0xffd37fa1), new Color(0xffd37fcc), new Color(0xffd37fff), new Color(0xffe6b7ff), new Color(0xd8e2ffff)};
-				lightColor = flareColor = new Color(0xfbd367ff);
+				lightColor = flareColor = Pal2.gasFront;
 				hitColor = new Color(0xffd367ff);
+			}});
+			turret.ammoTypes.put(Liquids.hydrogen, new ContinuousFlameBulletType(60f) {{
+				length = 130f;
+				knockback = 1f;
+				pierceCap = 2;
+				buildingDamageMultiplier = 0.3f;
+				colors = new Color[]{new Color(0x92abff7f), new Color(0x92abffa2), new Color(0x92abffd3), new Color(0x92abffff), new Color(0xd4e0ffff)};
+				lightColor = hitColor = flareColor = new Color(0x92abffff);
+			}});
+			turret.ammoTypes.put(Liquids.cyanogen, new ContinuousFlameBulletType(130f) {{
+				rangeChange = 70f;
+				length = 200f;
+				knockback = 2f;
+				pierceCap = 3;
+				buildingDamageMultiplier = 0.3f;
+				colors = new Color[]{new Color(0x465ab888), new Color(0x66a6d2a0), new Color(0x89e8b6b0), new Color(0xcafcbeff), Color.white};
+				lightColor = hitColor = flareColor = new Color(0x89e8b6ff);
 			}});
 		}
 		Blocks.titan.armor = 13f;
@@ -388,7 +399,8 @@ public final class Overrides {
 		Items.surgeAlloy.hardness = 6;
 		Items.phaseFabric.hardness = 3;
 		Items.carbide.hardness = 6;
-		Items.serpuloItems.addAll(Items2.stone, Items2.agglomerateSalt, Items2.rareEarth, Items2.galliumNitride, Items2.crystallineCircuit, Items2.gold, Items2.chromium, Items2.uranium, Items2.heavyAlloy, Items2.crystal);
+		Items.fissileMatter.hidden = false;
+		Items.serpuloItems.addAll(Items2.stone, Items2.agglomerateSalt, Items2.rareEarth, Items2.siliconNitride, Items2.galliumNitride, Items2.crystallineCircuit, Items2.coldPlasmaBottle, Items2.gold, Items2.diamond, Items2.crystal, Items2.chromium, Items2.uranium, Items2.heavyAlloy);
 		Items.erekirItems.addAll(Items2.stone, Items2.uranium, Items2.chromium, Items2.crystal);
 	}
 

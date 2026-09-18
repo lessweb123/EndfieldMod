@@ -102,7 +102,9 @@ public class Conveyor3 extends Conveyor {
 		@Override
 		public void onProximityUpdate() {
 			super.onProximityUpdate();
+
 			drawIndex = 0;
+
 			if (check(tile.x, tile.y + 1)) drawIndex += 1;
 			if (check(tile.x + 1, tile.y)) drawIndex += 2;
 			if (check(tile.x, tile.y - 1)) drawIndex += 4;

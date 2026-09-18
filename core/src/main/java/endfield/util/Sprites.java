@@ -109,6 +109,19 @@ public final class Sprites {
 		return layers;
 	}
 
+	public static TextureRegion[][] splitLayers2(String name, int size, int width, int height) {
+		TextureRegion region = Core.atlas.find(name);
+
+		TextureRegion[][] layers = new TextureRegion[height / size][width / size];
+
+		for (int y = 0; y < height / size; y++) {
+			for (int x = 0; x < width / size; x++) {
+				layers[y][x] = new TextureRegion(region, x * size, y * size, size, size);
+			}
+		}
+		return layers;
+	}
+
 	/**
 	 * Gets multiple regions inside a {@link TextureRegion}.
 	 * <p>The element returned by this method cannot be used in situations where it will be

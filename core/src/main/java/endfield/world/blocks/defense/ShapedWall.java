@@ -29,7 +29,6 @@ public class ShapedWall extends ConnectedWall {
 
 	public ShapedWall(String name) {
 		super(name);
-		size = 1;
 		teamPassable = true;
 	}
 
