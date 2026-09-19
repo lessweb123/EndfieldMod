@@ -84,6 +84,7 @@ public final class Entitys {
 		register(PesterUnit.class, PesterUnit::new);
 		register(NucleoidUnit.class, NucleoidUnit::new);
 		register(AirSeaAmphibiousUnit.class, AirSeaAmphibiousUnit::new);
+		register(DayunTankUnit.class, DayunTankUnit::new);
 		register(DPSMechUnit.class, DPSMechUnit::new);
 		register(InvincibleShipUnit.class, InvincibleShipUnit::new);
 		register(UltFire.class, UltFire::new);

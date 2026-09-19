@@ -2,6 +2,7 @@ package endfield.world.meta;
 
 import arc.Core;
 import arc.func.Boolf;
+import arc.func.Floatf;
 import arc.graphics.Color;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
@@ -13,6 +14,7 @@ import arc.scene.ui.layout.Cell;
 import arc.scene.ui.layout.Collapser;
 import arc.scene.ui.layout.Stack;
 import arc.scene.ui.layout.Table;
+import arc.struct.ObjectFloatMap;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Scaling;
@@ -45,6 +47,7 @@ import org.jetbrains.annotations.ApiStatus.Obsolete;
 import org.jetbrains.annotations.Nullable;
 
 import static endfield.Vars2.MOD_PREFIX;
+import static mindustry.Vars.content;
 
 public final class StatValues2 {
 	/** Don't let anyone instantiate this class. */
@@ -756,6 +759,22 @@ public final class StatValues2 {
 			bt.row();
 			bt.add("@bullet.notargetsbuildings");
 		}
+	}
+
+	public static StatValue liquidEffMultiplier(Floatf<Liquid> efficiency, float amount, Boolf<Liquid> filter, @Nullable ObjectFloatMap<Liquid> liquidDurationMultipliers) {
+		return table -> {
+			if (table.getCells().size > 0)
+				table.getCells().peek().growX(); //Expand the spacer on the row above to push everything to the left
+			table.row();
+			table.table(c -> {
+				for (Liquid liquid : content.liquids().select(l -> filter.get(l) && l.unlockedNow() && !l.isHidden())) {
+					c.table(Styles.grayPanel, b -> {
+						b.add(StatValues.displayLiquid(liquid, amount * (liquidDurationMultipliers == null ? 1f : liquidDurationMultipliers.get(liquid, 1f)), true)).pad(10f).left().grow();
+						b.add("[stat]" + Core.bundle.format("stat.efficiency", StatValues.fixValue(efficiency.get(liquid) * 100f))).right().pad(10f).padRight(15f);
+					}).growX().pad(5).row();
+				}
+			}).growX().colspan(table.getColumns()).row();
+		};
 	}
 
 	public static StatValue boosters(float reload, float maxUsed, float multiplier, boolean baseReload, Boolf<Liquid> filter, boolean noReloadBoost) {

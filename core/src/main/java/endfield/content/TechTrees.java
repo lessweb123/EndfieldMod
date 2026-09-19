@@ -168,12 +168,12 @@ public final class TechTrees {
 		removeNode(reinforcedPump);
 		vanillaNode(reinforcedConduit, () -> node(smallReinforcedPump, Seq.with(new OnSector(SectorPresets.basin)), () -> node(reinforcedPump, () -> node(largeReinforcedPump))));
 		//power
-		vanillaNode(powerNode, () -> node(smartPowerNode, () -> node(powerAnalyzer)));
-		vanillaNode(powerNodeLarge, () -> node(heavyArmoredPowerNode, () -> node(microArmoredPowerNode)));
-		vanillaNode(steamGenerator, () -> {
-			node(largeSteamGenerator);
-			node(coalPyrolyzer, () -> node(gasGenerator));
+		vanillaNode(powerNode, () -> node(powerAnalyzer));
+		vanillaNode(powerNodeLarge, () -> {
+			node(powerNodeHuge);
+			node(armoredPowerNodeHuge, () -> node(armoredPowerNode));
 		});
+		vanillaNode(steamGenerator, () -> node(coalPyrolyzer, () -> node(gasGenerator)));
 		vanillaNode(solarPanel, () -> node(solarPad));
 		vanillaNode(largeSolarPanel, () -> node(photonPanel));
 		vanillaNode(thermalGenerator, () -> node(largeThermalGenerator));
@@ -185,7 +185,7 @@ public final class TechTrees {
 		});
 		//power-erekir
 		vanillaNode(beamNode, () -> {
-			node(smartBeamNode, () -> node(reinforcedPowerAnalyzer));
+			node(reinforcedPowerAnalyzer);
 			node(beamDiode);
 			node(beamInsulator);
 		});
@@ -296,7 +296,6 @@ public final class TechTrees {
 		//turret
 		vanillaNode(duo, () -> {
 			node(rocketLauncher, Seq.with(new SectorComplete(SectorPresets.ruinousShores)), () -> {
-				node(caelum);
 				node(largeRocketLauncher, Seq.with(new Research(swarmer), new SectorComplete(SectorPresets.facility32m)));
 				node(rocketSilo, Seq.with(new SectorComplete(SectorPresets.tarFields)));
 			});
@@ -327,6 +326,7 @@ public final class TechTrees {
 		vanillaNode(meltdown, () -> node(judgement));
 		vanillaNode(tsunami, () -> node(furnace));
 		//turret-erekir
+		vanillaNode(disperse, () -> node(tracer, Seq.with(new OnSector(SectorPresets.crevice))));
 		vanillaNode(breach, () -> node(rupture, Seq.with(new OnSector(SectorPresets.stronghold)), () -> node(rift, Seq.with(new OnSector(SectorPresets.karst)))));
 		//tier6
 		vanillaNode(dagger, () -> node(vanguard, () -> node(striker, () -> node(counterattack, () -> node(crush, () -> node(destruction, () -> node(purgatory)))))));

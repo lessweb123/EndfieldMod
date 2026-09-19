@@ -21,11 +21,13 @@ import arc.scene.ui.ImageButton;
 import arc.scene.ui.ScrollPane;
 import arc.scene.ui.layout.Scl;
 import arc.scene.ui.layout.Table;
+import arc.struct.ObjectFloatMap;
 import arc.util.Time;
 import arc.util.Tmp;
 import endfield.audio.Sounds2;
 import endfield.entities.bullet.ConeFlameBulletType;
 import endfield.entities.bullet.CritBulletType;
+import endfield.entities.bullet.CtrlMissileBulletType;
 import endfield.entities.bullet.EffectBulletType;
 import endfield.entities.bullet.EndNukeBulletType;
 import endfield.entities.bullet.PositionLightningBulletType;
@@ -101,8 +103,6 @@ import endfield.world.blocks.power.BeamDiode;
 import endfield.world.blocks.power.GlowNuclearReactor;
 import endfield.world.blocks.power.OverlayGenerator;
 import endfield.world.blocks.power.PowerAnalyzer;
-import endfield.world.blocks.power.SmartBeamNode;
-import endfield.world.blocks.power.SmartPowerNode;
 import endfield.world.blocks.production.AdaptiveCrafter;
 import endfield.world.blocks.production.BeamDrill2;
 import endfield.world.blocks.production.Centrifuge;
@@ -118,6 +118,8 @@ import endfield.world.blocks.storage.CoreStorageBlock;
 import endfield.world.blocks.storage.CrashCore;
 import endfield.world.blocks.units.PayloadSource2;
 import endfield.world.blocks.units.UnitIniter;
+import endfield.world.consumers.ConsumeLiquidEfficiency;
+import endfield.world.consumers.ConsumeLiquidExplode;
 import endfield.world.draw.DrawAnim;
 import endfield.world.draw.DrawHeat;
 import endfield.world.draw.DrawLiquidsOutputs;
@@ -250,10 +252,7 @@ import mindustry.world.blocks.units.Reconstructor;
 import mindustry.world.blocks.units.RepairTower;
 import mindustry.world.blocks.units.UnitAssemblerModule;
 import mindustry.world.consumers.ConsumeCoolant;
-import mindustry.world.consumers.ConsumeItemExplode;
-import mindustry.world.consumers.ConsumeItemFlammable;
 import mindustry.world.consumers.ConsumeLiquid;
-import mindustry.world.consumers.ConsumeLiquidFlammable;
 import mindustry.world.draw.DrawCells;
 import mindustry.world.draw.DrawCircles;
 import mindustry.world.draw.DrawCrucibleFlame;
@@ -424,12 +423,10 @@ public final class Blocks2 {
 	public static Pump smallReinforcedPump, largeReinforcedPump;
 	public static LiquidMassDriver reinforcedLiquidMassDriver;
 	//power
-	public static PowerNode networkPowerNode;
-	public static SmartPowerNode smartPowerNode;
-	public static ArmoredPowerNode microArmoredPowerNode, heavyArmoredPowerNode;
+	public static PowerNode powerNodeHuge;
+	public static ArmoredPowerNode armoredPowerNode, armoredPowerNodeHuge;
 	public static PowerAnalyzer powerAnalyzer;
 	public static SolarGenerator solarPad, photonPanel;
-	public static ConsumeGenerator largeSteamGenerator;
 	public static ConsumeGenerator gasGenerator;
 	public static ConsumeGenerator coalPyrolyzer;
 	public static ThermalGenerator largeThermalGenerator, radiationGenerator;
@@ -437,7 +434,6 @@ public final class Blocks2 {
 	public static GlowNuclearReactor uraniumReactor;
 	public static Battery crystalBattery, armoredCrystalBattery;
 	//power-erekir
-	public static SmartBeamNode smartBeamNode;
 	public static BeamDiode beamDiode;
 	public static InsulationWall beamInsulator;
 	public static PowerAnalyzer reinforcedPowerAnalyzer;
@@ -454,7 +450,7 @@ public final class Blocks2 {
 	public static GenericCrafter fractionator;
 	public static GenericCrafter largePlastaniumCompressor;
 	public static GenericCrafter largeSurgeSmelter;
-	public static AttributeCrafter blastSiliconSmelter;
+	public static GenericCrafter blastSiliconSmelter;
 	public static GenericCrafter crystallineCircuitConstructor;
 	public static AdaptiveCrafter crystallineCircuitPrinter;
 	public static GenericCrafter largePhaseWeaver;
@@ -539,7 +535,6 @@ public final class Blocks2 {
 	public static ItemTurret rocketLauncher, largeRocketLauncher;
 	public static ItemTurret rocketSilo;
 	public static ContinuousLiquidTurret furnace;
-	public static ItemTurret caelum;
 	public static ItemTurret mammoth;
 	public static ItemTurret dragonBreath;
 	public static PowerTurret breakthrough;
@@ -552,6 +547,7 @@ public final class Blocks2 {
 	public static ItemTurret nukeLauncherPlatform;
 	//turret-erekir
 	public static ItemTurret rupture;
+	public static ItemTurret tracer;
 	public static ItemTurret rift;
 	//campaign
 	public static LaunchPad largeLaunchPad;
@@ -2058,18 +2054,23 @@ public final class Blocks2 {
 			consumePower(2f);
 		}};
 		//power
-		networkPowerNode = new PowerNode("network-power-node") {{
+		powerNodeHuge = new PowerNode("power-node-huge") {{
 			requirements(Category.power, ItemStack.with(Items.titanium, 15, Items.silicon, 15, Items.surgeAlloy, 10));
 			size = 3;
 			maxNodes = 25;
 			laserRange = 28f;
 		}};
-		smartPowerNode = new SmartPowerNode("smart-power-node") {{ //Copy stats from normal power node
-			requirements(Category.power, ItemStack.with(Items.copper, 2, Items.lead, 5, Items.silicon, 1));
-			maxNodes = 10;
-			laserRange = 6;
+		armoredPowerNode = new ArmoredPowerNode("armored-power-node") {{
+			requirements(Category.power, ItemStack.with(Items.plastanium, 5, Items.phaseFabric, 10, Items2.galliumNitride, 5, Items2.heavyAlloy, 10));
+			health = 1150;
+			armor = 30f;
+			absorbLasers = true;
+			maxNodes = 12;
+			laserRange = 32f;
+			update = true;
+			hideDetails = false;
 		}};
-		heavyArmoredPowerNode = new ArmoredPowerNode("heavy-armored-power-node") {{
+		armoredPowerNodeHuge = new ArmoredPowerNode("armored-power-node-huge") {{
 			requirements(Category.power, ItemStack.with(Items.plastanium, 30, Items.phaseFabric, 15, Items2.galliumNitride, 10, Items2.heavyAlloy, 25));
 			size = 3;
 			health = 3350;
@@ -2077,16 +2078,6 @@ public final class Blocks2 {
 			absorbLasers = true;
 			maxNodes = 28;
 			laserRange = 36f;
-			update = true;
-			hideDetails = false;
-		}};
-		microArmoredPowerNode = new ArmoredPowerNode("micro-armored-power-node") {{
-			requirements(Category.power, ItemStack.with(Items.plastanium, 5, Items.phaseFabric, 10, Items2.galliumNitride, 5, Items2.heavyAlloy, 10));
-			health = 1150;
-			armor = 30f;
-			absorbLasers = true;
-			maxNodes = 12;
-			laserRange = 32f;
 			update = true;
 			hideDetails = false;
 		}};
@@ -2139,37 +2130,14 @@ public final class Blocks2 {
 				}
 			}
 		};
-		largeSteamGenerator = new ConsumeGenerator("large-steam-generator") {{
-			requirements(Category.power, ItemStack.with(Items.lead, 200, Items.titanium, 120, Items.thorium, 40, Items.graphite, 100, Items.silicon, 180, Items.metaglass, 80));
-			size = 3;
-			itemDuration = 20;
-			itemCapacity = 20;
-			liquidCapacity = 100f;
-			powerProduction = 36f;
-			generateEffect = Fx.generatespark;
-			drawer = new DrawMulti(new DrawDefault(), new DrawRegion("-rot") {{
-				rotateSpeed = 9;
-				rotation = 45;
-			}}, new DrawRegion("-rot2") {{
-				rotateSpeed = -1.25f;
-				rotation = 60;
-			}}, new DrawRegion("-top2"));
-			ambientSound = Sounds.loopSteam;
-			ambientSoundVolume = 0.06f;
-			consume(new ConsumeItemFlammable());
-			consume(new ConsumeItemExplode());
-			consumeLiquid(Liquids.water, 0.4f);
-			itemDurationMultipliers.put(Items.pyratite, 3f);
-			buildCostMultiplier = 0.55f;
-		}};
 		gasGenerator = new ConsumeGenerator("gas-generator") {{
 			requirements(Category.power, ItemStack.with(Items.metaglass, 30, Items.titanium, 40));
 			hasLiquids = true;
 			powerProduction = 3.5f;
-			consumeLiquid(Liquids2.gas, 0.1f);
 			generateEffect = Fx.steam;
 			effectChance = 0.01f;
 			drawer = new DrawMulti(new DrawDefault(), new DrawWarmupRegion());
+			consume(new ConsumeLiquidEfficiency(liquid -> liquid.gas && liquid.flammability >= 0.4f, liquid -> liquid.flammability, 0.1f));
 			ambientSound = Sounds.loopSteam;
 			ambientSoundVolume = 0.02f;
 		}};
@@ -2252,9 +2220,26 @@ public final class Blocks2 {
 				}
 			}), 4, 90, 8f);
 			effectChance = 0.2f;
-			consume(new ConsumeLiquidFlammable(0.4f, 0.2f));
+			consume(new ConsumeLiquidEfficiency(liquid -> !liquid.gas && liquid.flammability >= 0.4f, liquid -> liquid.flammability, 0.2f));
+			consume(new ConsumeLiquidExplode());
 			squareSprite = false;
-		}};
+		}
+			public ObjectFloatMap<Liquid> liquidDurationMultipliers;
+
+			@Override
+			public void init() {
+				super.init();
+
+				liquidDurationMultipliers = new ObjectFloatMap<>();
+				liquidDurationMultipliers.put(Liquids.arkycite, 0.6f);
+				liquidDurationMultipliers.put(Liquids2.promethium, 0.8f);
+
+				if (filterLiquid instanceof ConsumeLiquidEfficiency eff) {
+					eff.liquidDurationMultipliers = liquidDurationMultipliers;
+					eff.multiplier = b -> liquidDurationMultipliers.get(eff.getConsumed(b), 1f);
+				}
+			}
+		};
 		uraniumReactor = new GlowNuclearReactor("uranium-reactor") {{
 			requirements(Category.power, ItemStack.with(Items.lead, 400, Items.metaglass, 120, Items.graphite, 350, Items.silicon, 300, Items2.uranium, 100));
 			size = 3;
@@ -2341,14 +2326,6 @@ public final class Blocks2 {
 			buildCostMultiplier = 0.5f;
 		}};
 		//power-erekir
-		smartBeamNode = new SmartBeamNode("smart-beam-node") {{ //Copy stats from normal beam node
-			requirements(Category.power, ItemStack.with(Items.beryllium, 10, Items.silicon, 2));
-			consumesPower = outputsPower = true;
-			health = 90;
-			range = 10;
-			fogRadius = 1;
-			consumePowerBuffered(1000f);
-		}};
 		beamDiode = new BeamDiode("beam-diode") {{
 			requirements(Category.power, ItemStack.with(Items.beryllium, 10, Items.silicon, 10, Items.oxide, 5));
 			health = 90;
@@ -2561,13 +2538,11 @@ public final class Blocks2 {
 			consumePower(6);
 			consumeItems(ItemStack.with(Items.copper, 5, Items.lead, 6, Items.titanium, 5, Items.silicon, 4));
 		}};
-		blastSiliconSmelter = new AttributeCrafter("blast-silicon-smelter") {{
+		blastSiliconSmelter = new GenericCrafter("blast-silicon-smelter") {{
 			requirements(Category.crafting, ItemStack.with(Items.graphite, 90, Items.thorium, 70, Items.silicon, 80, Items.plastanium, 50, Items.surgeAlloy, 30));
 			health = 660;
 			size = 4;
 			itemCapacity = 50;
-			boostScale = 0.15f;
-			outputScale = 0.15f;
 			craftTime = 35f;
 			outputItem = new ItemStack(Items.silicon, 10);
 			craftEffect = new RadialEffect(Fx.surgeCruciSmoke, 9, 45f, 6f);
@@ -4416,7 +4391,7 @@ public final class Blocks2 {
 			elevation = 0f;
 			unitSort = UnitSorts.weakest;
 			drawer = new DrawTurret() {{
-				parts.addAll(new RegionPart("-cover-top") {{
+				parts.add(new RegionPart("-cover-top") {{
 					progress = PartProgress.warmup;
 					moveY = -6f;
 				}}, new RegionPart("-cover-left") {{
@@ -4511,243 +4486,6 @@ public final class Blocks2 {
 				}}, new RegionPart("-top"));
 			}};
 			squareSprite = false;
-		}};
-		caelum = new ItemTurret("caelum") {{
-			requirements(Category.turret, ItemStack.with(Items.copper, 560, Items.graphite, 500, Items.silicon, 400, Items.titanium, 400, Items.plastanium, 170));
-			health = 5500;
-			size = 4;
-			reload = 26f;
-			range = 640f;
-			fogRadiusMultiplier = 0.25f;
-			maxAmmo = 20;
-			ammoPerShot = 2;
-			recoil = 4f;
-			ammoUseEffect = new ParticleEffect() {{
-				particles = 9;
-				interp = Interp.pow10Out;
-				sizeInterp = Interp.pow5In;
-				sizeFrom = 5.5f;
-				sizeTo = 0f;
-				length = 30f;
-				baseLength = 0f;
-				lifetime = 55f;
-				colorFrom = colorTo = Pal2.smoke.cpy().a(0.525f);
-				layer = 49f;
-			}};
-			canOverdrive = false;
-			shoot = new ShootAlternate() {{
-				barrels = 2;
-				spread = 18;
-			}};
-			xRand = 4;
-			coolant = consumeCoolant(0.5f);
-			coolant.optional = true;
-			shootSound = Sounds2.dd1;
-			targetGround = false;
-			targetAir = true;
-			hasLiquids = true;
-			inaccuracy = 7.77f;
-			shootCone = 270f;
-			shake = 4f;
-			rotateSpeed = 0.85f;
-			Color caelumAmmo = new Color(0xeeee00ff);
-			ammo(Items.blastCompound, new FlakBulletType(6f, 33f) {{
-				damage = 33;
-				splashDamageRadius = 64f;
-				splashDamage = 255f;
-				knockback = 10f;
-				hitSize = 50f;
-				shrinkY = 0;
-				hitSound = Sounds.explosionReactor2;
-				hitSoundVolume = 2f;
-				speed = 6f;
-				lifetime = 135f;
-				status = StatusEffects.blasted;
-				homingDelay = 15f;
-				homingPower = 0.08f;
-				homingRange = 120f;
-				width = 15f;
-				height = 55f;
-				sprite = MOD_NAME + "-missile";
-				backColor = Pal.blastAmmoBack;
-				frontColor = Pal2.missileGray;
-				trailLength = 40;
-				trailWidth = 2f;
-				trailColor = Color.white.cpy().a(0.5f);
-				trailChance = 1f;
-				trailInterval = 16f;
-				trailEffect = new ParticleEffect() {{
-					particles = 3;
-					length = 16f;
-					baseLength = 1f;
-					lifetime = 45f;
-					colorFrom = colorTo = Pal2.missileGray.cpy().a(0.475f);
-					sizeFrom = 3f;
-					sizeTo = 0f;
-				}};
-				hitShake = 2.5f;
-				ammoMultiplier = 4f;
-				reloadMultiplier = 1.7f;
-				shootEffect = Fx.shootTitan;
-				smokeEffect = Fx.shootPyraFlame;
-				hitEffect = new MultiEffect(new ParticleEffect() {{
-					particles = 18;
-					sizeFrom = 10f;
-					sizeTo = 0f;
-					length = 35f;
-					baseLength = 43f;
-					lifetime = 35f;
-					colorFrom = colorTo = Pal2.smoke;
-				}}, new ParticleEffect() {{
-					particles = 32;
-					line = true;
-					sizeFrom = 9f;
-					sizeTo = 0f;
-					length = 43f;
-					baseLength = 33f;
-					lifetime = 22f;
-					colorFrom = Color.white;
-					colorTo = Pal2.missileYellow;
-				}}, new WaveEffect() {{
-					lifetime = 15;
-					sizeFrom = 1f;
-					sizeTo = 70f;
-					strokeFrom = 8f;
-					strokeTo = 0f;
-					colorFrom = Pal2.missileYellow;
-					colorTo = Color.white;
-				}});
-			}}, Items.surgeAlloy, new FlakBulletType(7f, 50f) {{
-				splashDamageRadius = 40f;
-				splashDamage = 250f;
-				lightningDamage = 38f;
-				lightning = 5;
-				lightningLength = 6;
-				lightningLengthRand = 2;
-				shrinkY = 0f;
-				hitSize = 30f;
-				homingDelay = 15f;
-				homingPower = 0.09f;
-				homingRange = 120f;
-				lifetime = 115;
-				hitSound = Sounds.explosion;
-				hitSoundVolume = 5f;
-				width = 16f;
-				height = 56f;
-				ammoMultiplier = 6f;
-				hitShake = 1.6f;
-				sprite = MOD_NAME + "-rocket";
-				backColor = caelumAmmo;
-				frontColor = Pal2.missileGray;
-				trailLength = 40;
-				trailWidth = 2f;
-				trailColor = Color.white.cpy().a(0.5f);
-				trailChance = 1f;
-				trailInterval = 16f;
-				trailEffect = new ParticleEffect() {{
-					particles = 3;
-					length = 16f;
-					baseLength = 1f;
-					lifetime = 45f;
-					colorFrom = colorTo = Pal2.missileGray.cpy().a(0.475f);
-					sizeFrom = 3f;
-					sizeTo = 0f;
-				}};
-				shootEffect = Fx.shootTitan;
-				smokeEffect = Fx.shootPyraFlame;
-				hitEffect = new MultiEffect(new ParticleEffect() {{
-					particles = 10;
-					sizeFrom = 10f;
-					sizeTo = 0f;
-					length = 5f;
-					baseLength = 33f;
-					lifetime = 35f;
-					colorFrom = caelumAmmo.cpy().a(0.71f);
-					colorTo = Pal2.smoke;
-				}}, new ParticleEffect() {{
-					particles = 12;
-					line = true;
-					sizeFrom = 9f;
-					sizeTo = 0f;
-					length = 13f;
-					baseLength = 43f;
-					lifetime = 22f;
-					colorFrom = caelumAmmo;
-					colorTo = Pal2.missileYellow;
-				}}, new WaveEffect() {{
-					lifetime = 10f;
-					sizeFrom = 1f;
-					sizeTo = 43f;
-					strokeFrom = 8f;
-					strokeTo = 0f;
-					colorFrom = caelumAmmo;
-					colorTo = Color.white;
-				}});
-			}}, Items2.uranium, new BasicBulletType(10f, 340f, MOD_NAME + "-rocket") {{
-				collidesGround = false;
-				status = StatusEffects.melting;
-				statusDuration = 180f;
-				pierceArmor = true;
-				hitShake = 1.2f;
-				homingDelay = 15f;
-				homingPower = 0.12f;
-				homingRange = 160f;
-				lifetime = 88f;
-				hitSound = Sounds.shootFuse;
-				hitSoundVolume = 0.2f;
-				width = 15f;
-				height = 53f;
-				shrinkY = 0f;
-				ammoMultiplier = 1f;
-				backColor = Pal2.ferium;
-				frontColor = Pal2.missileGray;
-				trailLength = 20;
-				trailWidth = 1.7f;
-				trailColor = Color.white;
-				trailChance = 1f;
-				trailInterval = 1;
-				trailRotation = true;
-				trailEffect = new ParticleEffect() {{
-					particles = 2;
-					length = -40f;
-					baseLength = 0f;
-					lifetime = 15f;
-					cone = 20f;
-					colorFrom = Pal2.missileYellow;
-					colorTo = Pal2.missileYellow.cpy().a(0.47f);
-					sizeFrom = 1f;
-					sizeTo = 5f;
-					shootEffect = Fx.shootTitan;
-					smokeEffect = Fx.shootPyraFlame;
-					hitEffect = new MultiEffect(new ParticleEffect() {{
-						particles = 9;
-						sizeFrom = 3f;
-						sizeTo = 0f;
-						length = 33f;
-						baseLength = 6f;
-						lifetime = 25f;
-						colorFrom = colorTo = Pal2.smoke;
-					}}, new ParticleEffect() {{
-						particles = 15;
-						line = true;
-						strokeFrom = 4f;
-						strokeTo = lenFrom = 0f;
-						lenTo = 10f;
-						length = 83f;
-						baseLength = 3f;
-						lifetime = 10f;
-						colorFrom = Color.white;
-						colorTo = Pal2.missileYellow;
-						cone = 40f;
-					}}, new WaveEffect() {{
-						lifetime = 10f;
-						sizeFrom = 1f;
-						sizeTo = strokeFrom = strokeTo = 0f;
-						colorFrom = caelumAmmo;
-						colorTo = Color.white;
-					}});
-				}};
-			}});
 		}};
 		mammoth = new ItemTurret("mammoth") {{
 			requirements(Category.turret, ItemStack.with(Items.copper, 95, Items.graphite, 55, Items.titanium, 65));
@@ -5521,7 +5259,7 @@ public final class Blocks2 {
 				}
 			};
 			drawer = new DrawTurret() {{
-				parts.addAll(new RegionPart("-charger") {{
+				parts.add(new RegionPart("-charger") {{
 					mirror = true;
 					under = true;
 					moveRot = 10;
@@ -5777,7 +5515,26 @@ public final class Blocks2 {
 			warmupMaintainTime = 45f;
 			shootWarmupSpeed = 0.08f;
 			outlineColor = Pal.darkOutline;
-			drawer = new DrawTurret("reinforced-");
+			drawer = new DrawTurret("reinforced-") {{
+				parts.add(new RegionPart("-blade") {{
+					mirror = true;
+					under = true;
+					x = 8f;
+					y = 0.75f;
+					moves.add(new PartMove() {{
+						progress = PartProgress.recoil;
+						y = -2f;
+					}});
+					moveX = 2.5f;
+				}}, new RegionPart("-mid") {{
+					under = true;
+					moves.add(new PartMove() {{
+						progress = PartProgress.recoil;
+						y = -2f;
+					}});
+					moveY = -2.5f;
+				}});
+			}};
 			shootSound = Sounds2.shootAltHeavy;
 			consumeAmmoOnce = false;
 			shoot = new ShootBarrel() {{
@@ -5799,6 +5556,165 @@ public final class Blocks2 {
 			coolant = consume(new ConsumeLiquid(Liquids.water, 0.5f));
 			buildCostMultiplier = 0.8f;
 			squareSprite = false;
+		}};
+		tracer = new ItemTurret("tracer") {{
+			requirements(Category.turret, ItemStack.with(Items.silicon, 550, Items.beryllium, 300, Items.oxide, 230, Items.thorium, 500));
+			unitSort = UnitSorts.strongest;
+			health = 2780;
+			armor = 3f;
+			size = 5;
+			reload = 120;
+			shootSound = Sounds.shootMissileLarge;
+			shake = 2;
+			minWarmup = 0.8f;
+			warmupMaintainTime = 30f;
+			shootWarmupSpeed = 0.02f;
+			shootY = 0;
+			outlineColor = new Color(0x2d2f39ff);
+			shoot = new ShootBarrel() {{
+				shots = 8;
+				shotDelay = 4f;
+				barrels = new float[]{
+						12, 11, -45,
+						12, -13, -135,
+						-12, 11, 45,
+						-12, -13, 135
+				};
+			}};
+			targetGround = false;
+			range = 550f;
+			fogRadiusMultiplier = 1.55f;
+			recoil = 0;
+			drawer = new DrawTurret("reinforced-") {{
+				parts.addAll(new RegionPart("-mid") {{
+					mirror = true;
+					under = true;
+					x = y = 12f;
+					moveX = -11f;
+					moveY = -10f;
+				}}, new RegionPart("-back") {{
+					mirror = true;
+					under = true;
+					x = 12f;
+					y = -12f;
+					moveX = -11f;
+					moveY = 12f;
+				}});
+				for (float[] i : new float[][]{{-16f, 45f}, {16f, -45f}}) {
+					parts.add(new HaloPart() {{
+						progress = PartProgress.warmup;
+						moveX = i[0];
+						moveY = 15f;
+						rotateSpeed = 0f;
+						shapeRotation = i[1];
+						shapes = 1;
+						color = Pal2.whiteClear;
+						colorTo = Pal2.monolithLight;
+						layer = 110;
+						tri = true;
+						radius = 0f;
+						radiusTo = 10f;
+						triLength = 0f;
+						triLengthTo = 16f;
+						haloRadius = 0f;
+						haloRotation = 0f;
+					}});
+				}
+				parts.add(new ShapePart() {{
+					progress = PartProgress.warmup;
+					colorTo = color = Pal2.monolithLight;
+					layer = 110;
+					stroke = 0;
+					strokeTo = 2;
+					circle = true;
+					hollow = true;
+					radius = 0;
+					radiusTo = 55;
+				}}, new HaloPart() {{
+					progress = PartProgress.warmup;
+					shapes = 4;
+					color = Pal2.whiteClear;
+					colorTo = Pal2.monolithLight;
+					layer = 110f;
+					tri = true;
+					radius = 0f;
+					radiusTo = 8f;
+					triLength = 0f;
+					triLengthTo = 30f;
+					haloRadius = 0f;
+					haloRadiusTo = 55f;
+					haloRotation = 0f;
+					haloRotateSpeed = -0.9f;
+				}});
+				for (float[] i : new float[][]{{16f, -135f}, {-16f, 135f}}) {
+					parts.add(new HaloPart() {{
+						progress = PartProgress.warmup;
+						moveX = i[0];
+						moveY = -17f;
+						rotateSpeed = 0f;
+						shapeRotation = i[1];
+						shapes = 1;
+						color = Pal2.whiteClear;
+						colorTo = Pal2.monolithLight;
+						layer = 110f;
+						tri = true;
+						radius = 0f;
+						radiusTo = 10f;
+						triLength = 0f;
+						triLengthTo = 16f;
+						haloRadius = 0f;
+						haloRotation = 0f;
+					}});
+				}
+			}};
+			inaccuracy = 20f;
+			shootCone = 360f;
+			rotateSpeed = 1.66f;
+			maxAmmo = 30;
+			ammoPerShot = 5;
+			consumeAmmoOnce = false;
+			ammoTypes.put(Items.silicon, new CtrlMissileBulletType(4f, 13f, MOD_NAME + "-tracer-missile") {{
+				width = 16f;
+				height = 17.5f;
+				lifetime = 180f;
+				rotateSpeed = 2.5f;
+				hitSound = Sounds.explosionMissile;
+				accel = 0.03f;
+				targetGround = false;
+				hitSize = 12;
+				health = 90;
+				trailColor = Pal2.monolithLight;
+				trailLength = 11;
+				maxRange = 30;
+				shake = 3f;
+				splashDamageRadius = 50f;
+				splashDamage = 35f;
+				hitShake = 3f;
+				shootEffect = smokeEffect = despawnEffect = Fx.none;
+				fragLifeMin = 0.3f;
+				fragBullets = 4;
+				fragBullet = new FlakBulletType(4f, 9.75f) {{
+					status = StatusEffects.slow;
+					statusDuration = 6f;
+					homingRange = 300f;
+					homingPower = 0.15f;
+					splashDamageRadius = 35f;
+					splashDamage = 36.7f;
+					hitSound = Sounds.explosion;
+					shootEffect = smokeEffect = Fx.none;
+					hitEffect = Fx2.explodeImpWave;
+					despawnEffect = Fx2.explodeImpWaveMini;
+					frontColor = Color.white;
+					backColor = Pal2.monolithLight;
+					trailLength = 11;
+					trailWidth = 2f;
+					trailColor = Pal2.monolithLight;
+					shrinkX = shrinkY = 0f;
+					width = 4f;
+					height = 4f;
+					lifetime = 30;
+				}};
+			}});
 		}};
 		rift = new ItemTurret("rift") {{
 			requirements(Category.turret, ItemStack.with(Items.graphite, 920, Items.silicon, 500, Items.surgeAlloy, 800, Items.tungsten, 1200, Items.carbide, 480));

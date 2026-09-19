@@ -48,7 +48,7 @@ public final class Liquids2 {
 			viscosities.put(this, 1f);
 		}};
 		promethium = new Liquid("promethium", Pal2.promethiumFront) {{
-			flammability = 4f;
+			flammability = 3.25f;
 			temperature = 0.6f;
 			viscosity = 0.9f;
 			explosiveness = 0.5f;
@@ -69,8 +69,8 @@ public final class Liquids2 {
 			temperature = 0.3f;
 			boilPoint = 0.6f;
 			viscosity = 0.7f;
-			flammability = 0.25f;
-			explosiveness = 1.25f;
+			flammability = 1.3f;
+			explosiveness = 0.3f;
 			gasColor = Color.grays(0.7f);
 			effect = StatusEffects.muddy;
 			coolant = false;
@@ -100,13 +100,13 @@ public final class Liquids2 {
 			heatCapacity = 2.5f;
 			explosiveness = 0.1f;
 			temperature = 0.15f;
-			boilPoint = 10000f;
+			boilPoint = Float.MAX_VALUE;
 			lightColor = color.cpy().a(0.3f);
 			colorFrom = color.cpy().a(0.5f);
 			colorTo = color.cpy().a(0.4f);
 			particleSpacing = 10;
 			particleEffect = WrapperEffect.wrap(Fx2.glowParticle, color);
-			canStayOn.addAll(Liquids.water, Liquids.cryofluid, Liquids.oil, Liquids.arkycite, Liquids.neoplasm);
+			canStayOn.addAll(Liquids.water, Liquids.cryofluid, Liquids.oil, Liquids.arkycite);
 			densities.put(this, 1 / 8f);
 			viscosities.put(this, 1f);
 		}
@@ -126,14 +126,13 @@ public final class Liquids2 {
 			explosiveness = 5f;
 			temperature = 5f;
 			coolant = false;
-			boilPoint = 10000f;
+			boilPoint = Float.MAX_VALUE;
 			lightColor = color.cpy().a(0.3f);
 			colorFrom = color.cpy().a(0.5f);
 			colorTo = color.cpy().a(0.4f);
 			particleSpacing = 10;
 			particleEffect = WrapperEffect.wrap(Fx2.glowParticle, color);
 			effect = StatusEffects2.ultFireBurn;
-			canStayOn.addAll(Liquids.water, Liquids.cryofluid, Liquids.oil, Liquids.arkycite, Liquids.neoplasm);
 			densities.put(this, 1 / 8f);
 			viscosities.put(this, 1f);
 		}
@@ -146,6 +145,7 @@ public final class Liquids2 {
 					s.maxThreshold = 1f;
 					s.minThreshold = 0.4f;
 				}, super::drawPuddle);
-			}};
+			}
+		};
 	}
 }

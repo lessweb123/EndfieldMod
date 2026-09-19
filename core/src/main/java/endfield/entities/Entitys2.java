@@ -329,9 +329,7 @@ public final class Entitys2 {
 					});
 				}
 			}
-			for (Building b : buildings) {
-				cons.get(b);
-			}
+			buildings.each(cons);
 
 			buildings.clear();
 		}

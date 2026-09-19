@@ -47,6 +47,7 @@ import endfield.gen.BuildingTetherUnit2;
 import endfield.gen.CopterUnit;
 import endfield.gen.DPSMechUnit;
 import endfield.gen.DamageAbsorbMechUnit;
+import endfield.gen.DayunTankUnit;
 import endfield.gen.InvincibleShipUnit;
 import endfield.gen.LegsUnit2;
 import endfield.gen.MechUnit2;
@@ -58,6 +59,7 @@ import endfield.gen.UnitWaterMove2;
 import endfield.graphics.Drawn;
 import endfield.graphics.Pal2;
 import endfield.type.unit.CopterUnitType;
+import endfield.type.unit.DayunTankUnitType;
 import endfield.type.unit.UnitType2;
 import endfield.type.weapons.AcceleratingWeapon;
 import endfield.type.weapons.BoostWeapon;
@@ -3118,11 +3120,11 @@ public final class UnitTypes2 {
 			fogRadius = 72f;
 			immunities.addAll(StatusEffects.unmoving, StatusEffects.blasted, StatusEffects.corroded, StatusEffects.sporeSlowed, StatusEffects.disarmed, StatusEffects.electrified);
 		}};
-		thunder = new UnitType2("thunder") {{
+		thunder = new DayunTankUnitType("thunder") {{
 			requirements(Items.silicon, 2500, Items.plastanium, 800, Items.surgeAlloy, 400, Items.phaseFabric, 300, Items2.chromium, 500);
 			tank();
 			drawShields = false;
-			constructor = TankUnit2::new;
+			constructor = DayunTankUnit::new;
 			damageMultiplier = 0.5f;
 			health = 52500f;
 			armor = 79f;

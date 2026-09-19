@@ -45,7 +45,7 @@ public final class Items2 {
 		}};
 		coldPlasmaBottle = new Item("cold-plasma-bottle") {{
 			cost = 1.1f;
-			explosiveness = 2.5f;
+			explosiveness = 0.1f;
 			hardness = 1;
 		}};
 		crystallineCircuit = new Item("crystalline-circuit", Pal2.crystalAmmoBack) {{
