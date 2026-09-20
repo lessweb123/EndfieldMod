@@ -1,9 +1,14 @@
 package endfield.content;
 
 import arc.graphics.Color;
+import arc.math.Mathf;
 import arc.struct.ObjectFloatMap;
+import arc.struct.Seq;
 import endfield.graphics.Pal2;
+import endfield.util.Get;
+import endfield.world.consumers.ConsumePowerMultiplier;
 import endfield.world.meta.Attributes2;
+import mindustry.Vars;
 import mindustry.content.Blocks;
 import mindustry.content.Fx;
 import mindustry.content.Items;
@@ -24,6 +29,8 @@ import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.type.PayloadStack;
 import mindustry.type.UnitType;
+import mindustry.world.Block;
+import mindustry.world.Tile;
 import mindustry.world.blocks.defense.Wall;
 import mindustry.world.blocks.defense.turrets.ContinuousLiquidTurret;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
@@ -50,8 +57,10 @@ import mindustry.world.blocks.units.UnitAssembler;
 import mindustry.world.blocks.units.UnitAssembler.AssemblerUnitPlan;
 import mindustry.world.blocks.units.UnitFactory;
 import mindustry.world.blocks.units.UnitFactory.UnitPlan;
+import mindustry.world.consumers.Consume;
 import mindustry.world.consumers.ConsumeItems;
 import mindustry.world.consumers.ConsumeLiquid;
+import mindustry.world.consumers.ConsumePower;
 import mindustry.world.meta.Attribute;
 import mindustry.world.meta.BuildVisibility;
 
@@ -402,6 +411,63 @@ public final class Overrides {
 		Items.fissileMatter.hidden = false;
 		Items.serpuloItems.addAll(Items2.stone, Items2.agglomerateSalt, Items2.rareEarth, Items2.siliconNitride, Items2.galliumNitride, Items2.crystallineCircuit, Items2.coldPlasmaBottle, Items2.gold, Items2.diamond, Items2.crystal, Items2.chromium, Items2.uranium, Items2.heavyAlloy);
 		Items.erekirItems.addAll(Items2.stone, Items2.uranium, Items2.chromium, Items2.crystal);
+
+		for (Block block : Vars.content.blocks()) {
+			if (block.subclass == BeamDrill.class) {
+				BeamDrill drill = (BeamDrill) block;
+
+				Seq<Consume> consumeBuilder = Get.consumeBuilder(block);
+
+				ConsumePower consumePower = (ConsumePower) consumeBuilder.find(c -> c instanceof ConsumePower);
+
+				if (consumePower != null) {
+					block.consume(new ConsumePowerMultiplier(consumePower.usage, 0f, false));
+				}
+
+				for (Consume consume : consumeBuilder) {
+					consume.multiplier = b -> {
+						int i = 0;
+						Tile[] tiles = ((BeamDrill.BeamDrillBuild) b).facing;
+						for (Tile tile : tiles) {
+							if (tile != null && tile.wallDrop() != null) ++i;
+						}
+						return (float) i / tiles.length;
+					};
+				}
+
+				drill.buildType = () -> drill.new BeamDrillBuild() {
+					@Override
+					public void updateTile() {
+						if (lasers[0] == null) updateLasers();
+
+						warmup = Mathf.approachDelta(warmup, Mathf.num(efficiency > 0), 1f / 60f);
+
+						updateFacing();
+
+						float multiplier = Mathf.lerp(1f, drill.optionalBoostIntensity, optionalEfficiency);
+						float drillTime = drill.getDrillTime(lastItem);
+						boostWarmup = Mathf.lerpDelta(boostWarmup, optionalEfficiency, 0.1f);
+						lastDrillSpeed = (facingAmount * multiplier * timeScale) / drillTime * efficiency;
+
+						time += edelta() * multiplier;
+
+						if (time >= drillTime) {
+							for (Tile tile : facing) {
+								Item drop = tile == null ? null : tile.wallDrop();
+								if (items.total() < drill.itemCapacity && drop != null) {
+									offload(drop);
+								}
+							}
+							time %= drillTime;
+						}
+
+						if (timer(0, drill.dumpTime / timeScale)) {
+							dump();
+						}
+					}
+				};
+			}
+		}
 	}
 
 	public static void init() {}

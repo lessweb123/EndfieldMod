@@ -330,6 +330,7 @@ import endfield.world.blocks.units.JumpGate;
 import endfield.world.blocks.units.MechPad;
 import endfield.world.blocks.units.PayloadSource2;
 import endfield.world.blocks.units.SelectableReconstructor;
+import endfield.world.blocks.units.UnitAssembler2;
 import endfield.world.blocks.units.UnitBoost;
 import endfield.world.blocks.units.UnitIniter;
 import endfield.world.consumers.ConsumeBufferedPowerDynamic;
@@ -782,6 +783,9 @@ final class ClassMap2 {
 		classes.put("MechPadBuild", MechPad.MechPadBuild.class);
 		classes.put("JumpGate", JumpGate.class);
 		classes.put("LegacyJumpGateBuild", JumpGate.JumpGateBuild.class);
+		classes.put("UnitAssembler2", UnitAssembler2.class);
+		classes.put("UnitAssemblerBuild2", UnitAssembler2.UnitAssemblerBuild2.class);
+		classes.put("AssemblerUnitPlan2", UnitAssembler2.AssemblerUnitPlan2.class);
 		classes.put("UnitBoost", UnitBoost.class);
 		classes.put("UnitBoostBuild", UnitBoost.UnitBoostBuild.class);
 		classes.put("UnitIniter", UnitIniter.class);

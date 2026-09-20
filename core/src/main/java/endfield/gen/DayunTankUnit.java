@@ -1,5 +1,6 @@
 package endfield.gen;
 
+import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
@@ -7,15 +8,18 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
-import arc.struct.Seq;
+import arc.struct.IntMap;
+import arc.struct.ObjectSet;
 import arc.util.Time;
 import endfield.type.unit.DayunTankUnitType;
 import mindustry.Vars;
+import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.units.StatusEntry;
 import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
+import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.ConstructBlock;
 import mindustry.world.blocks.defense.BaseShield;
@@ -28,7 +32,7 @@ import static mindustry.Vars.state;
 import static mindustry.Vars.tilesize;
 
 public class DayunTankUnit extends TankUnit2 {
-	public static Seq<Throwable> debugErrors = new Seq<>(Throwable.class);
+	public static IntMap<Effect> flyEffects = new IntMap<>();
 
 	public float crushEnergy = 0f;
 	public float crushEnergyMax = 600f;
@@ -40,7 +44,7 @@ public class DayunTankUnit extends TankUnit2 {
 	public float fullHealthMultiplier = 2.5f;
 	public float fullSpeedMultiplier = 2.5f;
 	public boolean strengthenAfterStart = true;
-	public Seq<String> whitelistBlockNames = new Seq<>(String.class);
+	public ObjectSet<String> whitelistBlockNames = new ObjectSet<>();
 
 	protected boolean start = false;
 	protected boolean keyLoaded = false;
@@ -162,44 +166,59 @@ public class DayunTankUnit extends TankUnit2 {
 			return;
 		}
 
-		try {
-			if (!headless && b.block != null) {
-				crushEnergy = Math.min(crushEnergyMax, crushEnergy + crushEnergyEach);
-				if (start) heal(b.health * healFraction);
-				TextureRegion flyRegion = b.block.fullIcon != null ? b.block.fullIcon : b.block.uiIcon;
-				int size = b.block.size;
-				float w = b.block.fullIcon != null ? b.block.fullIcon.width / 4f : size * tilesize;
-				float h = b.block.fullIcon != null ? b.block.fullIcon.height / 4f : size * tilesize;
-				//float baseX = b.x;
-				//float baseY = b.y;
-				float baseVx = vel.x;
-				float baseVy = vel.y;
-				float vx = (float) (Mathf.range(10f) / Math.sqrt(size));
-				float vy = (float) ((Mathf.range(5f) + 10f) / Math.sqrt(size));
-				//float g = -0.1f;
-				float rotSpeed = vx * 3f + Mathf.range(5f);
-				float frontSpeed = Math.abs(Mathf.range(Math.abs(Mathf.range((float) (0.5f + Math.sqrt(Math.min(size, 9)) * 0.5f)))));
-				Effect flyEffect = new Effect((float) (90f + Math.sqrt(size) * 30f), 1600f, e -> {
-					Draw.z(Layer.endPixeled - (5f - frontSpeed));
-					float x = e.x + (baseVx + vx) * e.lifetime * e.fin();
-					float y = e.y + (baseVy + (vy + 0.5f * e.lifetime * e.fin() * -0.1f)) * e.lifetime * e.fin();
-					float s = frontSpeed * e.lifetime * e.fin();
-					float c = Mathf.clamp(2f - (0.2f + 0.1f * Math.min(size, 4)) * s / (size * tilesize), 0.4f, 1f);
-					float ele = 0.8f * (vy * e.lifetime * e.fin() + frontSpeed * e.lifetime * e.fin());
+		if (!headless && b.block != null) {
+			crushEnergy = Math.min(crushEnergyMax, crushEnergy + crushEnergyEach);
+			if (start) heal(b.health * healFraction);
+
+			int size = b.block.size;
+
+			if (!flyEffects.containsKey(size)) {
+				flyEffects.put(size, new Effect((float) (90f + Math.sqrt(size) * 30f), 1600f, e -> {
+					FlyData data = e.data();
+
+					Draw.z(Layer.endPixeled - (5f - data.frontSpeed));
+					float x = e.x + (data.baseVx + data.vx) * e.lifetime * e.fin();
+					float y = e.y + (data.baseVy + (data.vy + 0.5f * e.lifetime * e.fin() * data.g)) * e.lifetime * e.fin();
+					float s = data.frontSpeed * e.lifetime * e.fin();
+					float c = Mathf.clamp(2f - (0.2f + 0.1f * Math.min(data.size, 4)) * s / (data.size * tilesize), 0.4f, 1f);
+					float ele = 0.8f * (data.vy * e.lifetime * e.fin() + data.frontSpeed * e.lifetime * e.fin());
 					Draw.color(c, c, c, Mathf.clamp((e.lifetime / 60f) * e.fout()));
-					Draw.rect(flyRegion, x, y, w + s, h + s * (h / w), rotSpeed * e.lifetime * e.fin());
+					Draw.rect(data.flyRegion, x, y, data.width + s, data.height + s * (data.height / data.width), data.rotSpeed * e.lifetime * e.fin());
 					Draw.z(Layer.flyingUnitLow - 1f);
-					Drawf.shadow(flyRegion, x - ele, y - ele, w, h,
-							rotSpeed * e.lifetime * e.fin());
+					Drawf.shadow(data.flyRegion, x - ele, y - ele, data.width, data.height, data.rotSpeed * e.lifetime * e.fin());
 					Draw.color();
-				});
-				flyEffect.at(b.x, b.y);
-				Effect.shake(b.block.size * 2f, b.block.size * 4f, b.x, b.y);
+				}));
 			}
-		} catch (Exception e) {
-			debugErrors.add(e);
+
+			Effect flyEffect = flyEffects.get(size, Fx.none);
+			flyEffect.at(b.x, b.y, 0, Color.white, new FlyData(b.block, vel.x, vel.y));
+			Effect.shake(size * 2f, size * 4f, b.x, b.y);
 		}
 
 		b.kill();
+	}
+
+	public static class FlyData {
+		public int size;
+		public TextureRegion flyRegion;
+		public float width, height;
+		public float baseVx, baseVy;
+		public float vx, vy;
+		public float g = -0.1f;
+		public float rotSpeed;
+		public float frontSpeed;
+
+		public FlyData(Block b, float bx, float by) {
+			size = b.size;
+			flyRegion = b.fullIcon != null ? b.fullIcon : b.uiIcon != null ? b.uiIcon : Core.atlas.white();
+			width = b.fullIcon != null ? b.fullIcon.width / 4f : size * tilesize;
+			height = b.fullIcon != null ? b.fullIcon.height / 4f : size * tilesize;
+			baseVx = bx;
+			baseVy = by;
+			vx = (float) (Mathf.range(10f) / Math.sqrt(size));
+			vy = (float) ((Mathf.range(5f) + 10f) / Math.sqrt(size));
+			rotSpeed = vx * 3f + Mathf.range(5f);
+			frontSpeed = Math.abs(Mathf.range(Math.abs(Mathf.range((float) (0.5f + Math.sqrt(Math.min(size, 9)) * 0.5f)))));
+		}
 	}
 }

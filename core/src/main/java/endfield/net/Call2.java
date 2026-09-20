@@ -1,6 +1,7 @@
 package endfield.net;
 
 import endfield.entities.Entitys2;
+import endfield.world.blocks.units.UnitAssembler2;
 import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.net.Net;
@@ -20,6 +21,8 @@ public final class Call2 {
 
 	public static void init() {
 		Net.registerPacket(DroneSpawnedCallPacket::new);
+		Net.registerPacket(AssemblerDroneSpawnedCallPacket2::new);
+		Net.registerPacket(AssemblerUnitSpawnedCallPacket2::new);
 		Net.registerPacket(LongInfoMessageCallPacket::new);
 		Net.registerPacket(ReleaseShieldWallBuildSyncPacket::new);
 		Net.registerPacket(RemoveStackPacket::new);
@@ -44,6 +47,31 @@ public final class Call2 {
 			DroneSpawnedCallPacket packet = new DroneSpawnedCallPacket();
 			packet.tile = tile;
 			packet.id = id;
+			Vars.net.send(packet, true);
+		}
+	}
+
+	public static void assemblerDroneSpawned(Tile tile, int id) {
+		if (Vars.net.server() || !Vars.net.active()) {
+			UnitAssembler2.assemblerDroneSpawned(tile, id);
+		}
+
+		if (Vars.net.server()) {
+			AssemblerDroneSpawnedCallPacket2 packet = new AssemblerDroneSpawnedCallPacket2();
+			packet.tile = tile;
+			packet.id = id;
+			Vars.net.send(packet, true);
+		}
+	}
+
+	public static void assemblerUnitSpawned(Tile tile) {
+		if (Vars.net.server() || !Vars.net.active()) {
+			UnitAssembler2.assemblerUnitSpawned(tile);
+		}
+
+		if (Vars.net.server()) {
+			AssemblerUnitSpawnedCallPacket2 packet = new AssemblerUnitSpawnedCallPacket2();
+			packet.tile = tile;
 			Vars.net.send(packet, true);
 		}
 	}

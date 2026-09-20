@@ -117,6 +117,7 @@ import endfield.world.blocks.sandbox.RandomSource;
 import endfield.world.blocks.storage.CoreStorageBlock;
 import endfield.world.blocks.storage.CrashCore;
 import endfield.world.blocks.units.PayloadSource2;
+import endfield.world.blocks.units.UnitAssembler2;
 import endfield.world.blocks.units.UnitIniter;
 import endfield.world.consumers.ConsumeLiquidEfficiency;
 import endfield.world.consumers.ConsumeLiquidExplode;
@@ -385,6 +386,7 @@ public final class Blocks2 {
 	public static StackBridge plastaniumBridge;
 	public static StackHelper stackHelper;
 	public static Conveyor2 chromiumEfficientConveyor, chromiumArmorConveyor;
+	public static Conveyor3 hardLightRail;
 	public static TubeConveyor chromiumTubeConveyor;
 	public static TubeSorter chromiumTubeSorter;
 	public static StackConveyor chromiumStackConveyor;
@@ -393,7 +395,6 @@ public final class Blocks2 {
 	public static MultiJunction chromiumJunction;
 	public static MultiRouter chromiumRouter;
 	public static RailItemBridge chromiumItemBridge;
-	public static Conveyor3 hardLightRail;
 	public static NodeBridge phaseItemNode;
 	public static Unloader machineryUnloader;
 	public static Unloader rapidUnloader;
@@ -506,6 +507,7 @@ public final class Blocks2 {
 	//unit
 	public static RepairTower unitMaintenanceDepot;
 	public static Reconstructor titanReconstructor;
+	public static UnitAssembler2 specialistFactory;
 	//unit-erekir
 	public static RepairTower largeUnitRepairTower;
 	public static UnitAssemblerModule seniorAssemblerModule;
@@ -1674,38 +1676,47 @@ public final class Blocks2 {
 		chromiumEfficientConveyor = new Conveyor2("chromium-efficient-conveyor") {{
 			requirements(Category.distribution, ItemStack.with(Items.lead, 1, Items2.chromium, 1));
 			health = 240;
-			armor = 3f;
-			speed = 0.18f;
-			displayedSpeed = 18;
+			armor = 5f;
+			speed = 0.115f;
+			displayedSpeed = 15f;
 		}};
 		chromiumArmorConveyor = new Conveyor2("chromium-armor-conveyor") {{
 			requirements(Category.distribution, ItemStack.with(Items.metaglass, 1, Items.thorium, 1, Items.plastanium, 1, Items2.chromium, 1));
 			health = 560;
-			armor = 5f;
-			speed = 0.18f;
-			displayedSpeed = 18;
+			armor = 8f;
+			speed = 0.115f;
+			displayedSpeed = 15f;
 			noSideBlend = true;
 		}};
 		chromiumTubeConveyor = new TubeConveyor("chromium-tube-conveyor") {{
 			requirements(Category.distribution, ItemStack.with(Items.metaglass, 2, Items.thorium, 1, Items.plastanium, 1, Items2.chromium, 2));
 			health = 670;
-			armor = 5f;
-			speed = 0.18f;
-			displayedSpeed = 18;
+			armor = 8f;
+			speed = 0.115f;
+			displayedSpeed = 15f;
 			noSideBlend = true;
 			placeableLiquid = true;
 			displayFlow = true;
 			hideDetails = false;
 		}};
+		hardLightRail = new Conveyor3("hard-light-rail") {{
+			requirements(Category.distribution, BuildVisibility.hidden, ItemStack.with(Items2.chromium, 1, Items.phaseFabric, 1));
+			health = 320;
+			armor = 1f;
+			speed = 0.115f;
+			displayedSpeed = 15f;
+			placeableLiquid = true;
+			drawTeamOverlay = false;
+		}};
 		chromiumTubeSorter = new TubeSorter("chromium-tube-sorter") {{
 			requirements(Category.distribution, ItemStack.with(Items.copper, 1, Items.metaglass, 1, Items2.chromium, 1));
 			health = 450;
-			armor = 4f;
+			armor = 8f;
 		}};
 		chromiumStackConveyor = new StackConveyor("chromium-stack-conveyor") {{
 			requirements(Category.distribution, ItemStack.with(Items.graphite, 1, Items.silicon, 1, Items.plastanium, 1, Items2.chromium, 1));
 			health = 380;
-			armor = 4f;
+			armor = 5f;
 			speed = 0.125f;
 			itemCapacity = 20;
 			outputRouter = false;
@@ -1713,7 +1724,7 @@ public final class Blocks2 {
 		chromiumStackRouter = new StackRouter("chromium-stack-router") {{
 			requirements(Category.distribution, ItemStack.with(Items.graphite, 4, Items.silicon, 5, Items.plastanium, 3, Items2.chromium, 1));
 			health = 380;
-			armor = 4f;
+			armor = 5f;
 			speed = 0.125f;
 			itemCapacity = 20;
 			buildCostMultiplier = 0.8f;
@@ -1721,7 +1732,7 @@ public final class Blocks2 {
 		chromiumStackBridge = new RailStackBridge("chromium-stack-bridge") {{
 			requirements(Category.distribution, ItemStack.with(Items.lead, 15, Items.silicon, 12, Items.plastanium, 10, Items2.chromium, 10));
 			health = 420;
-			armor = 4f;
+			armor = 5f;
 			hasPower = false;
 			itemCapacity = 20;
 			range = 8;
@@ -1732,7 +1743,7 @@ public final class Blocks2 {
 		chromiumRouter = new MultiRouter("chromium-router") {{
 			requirements(Category.distribution, ItemStack.with(Items.copper, 3, Items2.chromium, 2));
 			health = 420;
-			armor = 4f;
+			armor = 5f;
 			speed = 2;
 			itemCapacity = 20;
 			liquidCapacity = 200f;
@@ -1742,7 +1753,7 @@ public final class Blocks2 {
 		chromiumJunction = new MultiJunction("chromium-junction") {{
 			requirements(Category.distribution, ItemStack.with(Items.copper, 2, Items2.chromium, 2));
 			health = 420;
-			armor = 4f;
+			armor = 5f;
 			speed = 12;
 			capacity = itemCapacity = 12;
 			chromiumEfficientConveyor.junctionReplacement =  chromiumArmorConveyor.junctionReplacement =  chromiumTubeConveyor.junctionReplacement = this;
@@ -1750,23 +1761,14 @@ public final class Blocks2 {
 		chromiumItemBridge = new RailItemBridge("chromium-item-bridge") {{
 			requirements(Category.distribution, ItemStack.with(Items.graphite, 6, Items.silicon, 8, Items.plastanium, 4, Items2.chromium, 3));
 			health = 420;
-			armor = 4f;
+			armor = 5f;
 			hasPower = false;
-			transportTime = 3f;
+			transportTime = 4f;
 			range = 8;
 			arrowSpacing = 6;
 			bridgeWidth = 8;
 			buildCostMultiplier = 0.8f;
 			chromiumEfficientConveyor.bridgeReplacement =  chromiumArmorConveyor.bridgeReplacement =  chromiumTubeConveyor.bridgeReplacement = this;
-		}};
-		hardLightRail = new Conveyor3("hard-light-rail") {{
-			requirements(Category.distribution, BuildVisibility.hidden, ItemStack.with(Items2.chromium, 1, Items.phaseFabric, 1));
-			health = 300;
-			armor = 1f;
-			speed = 0.115f;
-			displayedSpeed = 15f;
-			placeableLiquid = true;
-			drawTeamOverlay = false;
 		}};
 		phaseItemNode = new NodeBridge("phase-item-node") {{
 			requirements(Category.distribution, ItemStack.with(Items.lead, 30, Items2.chromium, 10, Items.silicon, 15, Items.phaseFabric, 10));
@@ -3393,6 +3395,21 @@ public final class Blocks2 {
 			consumePower(35f);
 			consumeLiquid(Liquids.cryofluid, 4f);
 			consumeItems(ItemStack.with(Items.silicon, 1500, Items2.crystallineCircuit, 300, Items2.uranium, 400, Items2.chromium, 500));
+		}};
+		specialistFactory = new UnitAssembler2("specialist-factory") {{
+			requirements(Category.units, ItemStack.with(Items.thorium, 360, Items.titanium, 400, Items.silicon, 400, Items.plastanium, 100));
+			size = 5;
+			plans.addAll(
+					new AssemblerUnitPlan2(UnitTypes.fortress, 1980, ItemStack.with(Items.lead, 10, Items.silicon, 180, Items.graphite, 40, Items.titanium, 80, Items.metaglass, 40)),
+					new AssemblerUnitPlan2(UnitTypes.zenith, 1980, ItemStack.with(Items.silicon, 185, Items.graphite, 40, Items.titanium, 80, Items.metaglass, 40)),
+					new AssemblerUnitPlan2(UnitTypes.bryde, 3060, ItemStack.with(Items.silicon, 190, Items.graphite, 40, Items.titanium, 80, Items.metaglass, 75)),
+					new AssemblerUnitPlan2(UnitTypes.spiroct, 1800, ItemStack.with(Items.coal, 10, Items.silicon, 180, Items.graphite, 40, Items.titanium, 80, Items.metaglass, 40)),
+					new AssemblerUnitPlan2(UnitTypes.quasar, 2880, ItemStack.with(Items.lead, 20, Items.silicon, 200, Items.graphite, 40, Items.titanium, 100, Items.metaglass, 40)),
+					new AssemblerUnitPlan2(UnitTypes.mega, 2700, ItemStack.with(Items.lead, 15, Items.silicon, 200, Items.graphite, 40, Items.titanium, 80, Items.metaglass, 40)),
+					new AssemblerUnitPlan2(UnitTypes.cyerce, 3240, ItemStack.with(Items.silicon, 185, Items.graphite, 40, Items.titanium, 80, Items.metaglass, 65))
+			);
+			areaSize = 9;
+			consumePower(8f);
 		}};
 		//unit-erekir
 		largeUnitRepairTower = new RepairTower("large-unit-repair-tower") {{
