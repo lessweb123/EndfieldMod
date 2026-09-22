@@ -15,7 +15,9 @@ import endfield.ui.markdown.Markdown.MarkdownStyle;
 import endfield.ui.markdown.UrlHandler.ResourceHandle;
 import endfield.ui.markdown.elemdraw.DrawImg;
 import endfield.util.Strings2;
+import kotlin.Pair;
 import kotlin.collections.CollectionsKt;
+import kotlin.collections.MapsKt;
 import kotlin.text.StringsKt;
 import mindustry.ui.Fonts;
 import org.commonmark.node.Node;
@@ -45,9 +47,12 @@ public abstract class RendererContext {
 
 	Map<String, Object> resourceCache = new HashMap<>();
 	Map<String, UrlHandler> urlHandlers;
+	UrlHandler defaultUrlHandler;
 
 	public RendererContext(Markdown e) {
 		element = e;
+		urlHandlers = MapsKt.toMap(CollectionsKt.flatMap(element.provider.urlHandlers(), h -> CollectionsKt.map(h.matchedSchemes(), it -> new Pair<>(it, h))));
+		defaultUrlHandler = element.provider.defaultUrlHandler();
 	}
 
 	public float prefWidth() {
@@ -94,7 +99,8 @@ public abstract class RendererContext {
 
 	UrlHandler resolveUrlHandler(String url) {
 		MatchResult schemeMatch = Strings2.matchAt(schemeTypePattern, url, 0);
-		String scheme = schemeMatch == null ? "https" : StringsKt.trimEnd(schemeMatch.group(), ':');
+		if (schemeMatch == null) return defaultUrlHandler;
+		String scheme = StringsKt.trimEnd(schemeMatch.group(), ':');
 
 		UrlHandler urlHandler = urlHandlers.get(scheme);
 

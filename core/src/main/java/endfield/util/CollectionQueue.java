@@ -411,9 +411,9 @@ public class CollectionQueue<E> extends AbstractQueue<E> implements Eachable<E> 
 	public void each(Cons<? super E> cons) {
 		E[] vs = values;
 
-		for(int index = 0; index < size; index++){
+		for (int index = 0; index < size; index++) {
 			int i = head + index;
-			if(i >= vs.length){
+			if (i >= vs.length) {
 				i -= vs.length;
 			}
 			cons.get(vs[i]);
@@ -424,9 +424,9 @@ public class CollectionQueue<E> extends AbstractQueue<E> implements Eachable<E> 
 	public void forEach(Consumer<? super E> action) {
 		E[] vs = values;
 
-		for(int index = 0; index < size; index++){
+		for (int index = 0; index < size; index++) {
 			int i = head + index;
-			if(i >= vs.length){
+			if (i >= vs.length) {
 				i -= vs.length;
 			}
 			action.accept(vs[i]);

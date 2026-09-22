@@ -330,7 +330,7 @@ public class UnitAssembler2 extends PayloadBlock {
 								}
 
 								Seq<PayloadStack> payloads = plan.requirements;
-								if (payloads != null){
+								if (payloads != null) {
 									for (int i = 0; i < payloads.size; i++) {
 										if (length % 6 == 0) {
 											solid.row();

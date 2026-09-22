@@ -5,9 +5,11 @@ import org.commonmark.ext.gfm.tables.internal.TableBlockParser;
 import org.commonmark.parser.Parser;
 
 public class TablesExtension implements Parser.ParserExtension, MDLayoutRenderer.DrawRendererExtension {
+	public static final int MAX_CELLS = 200;
+
 	@Override
 	public void extend(Parser.Builder parserBuilder) {
-		parserBuilder.customBlockParserFactory(new TableBlockParser.Factory());
+		parserBuilder.customBlockParserFactory(new TableBlockParser.Factory(MAX_CELLS));
 	}
 
 	@Override

@@ -330,6 +330,7 @@ public class Markdown extends WidgetGroup {
 		public static BaseDrawable defaultDraw = new BaseDrawable();
 
 		public Drawable loadingImg = defaultDraw;
+		public Drawable errorImg = defaultDraw;
 
 		//globals
 		public float linesPadding;

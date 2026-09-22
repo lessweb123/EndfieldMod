@@ -46,6 +46,7 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValue;
 import mindustry.world.meta.StatValues;
+import org.jetbrains.annotations.Nullable;
 
 public class AdaptiveCrafter extends Block {
 	/** Liquid output directions, specified in the same order as outputLiquids. Use -1 to dump in every direction. Rotations are relative to block. */
@@ -258,12 +259,12 @@ public class AdaptiveCrafter extends Block {
 			drawer.drawLight(this);
 		}
 
-		public Recipe getRecipe() {
+		public @Nullable Recipe getRecipe() {
 			if (recipeIndex < 0 || recipeIndex >= recipes.size) return null;
 			return recipes.get(recipeIndex);
 		}
 
-		public Recipe getDisplayRecipe() {
+		public @Nullable Recipe getDisplayRecipe() {
 			if (recipeIndex < 0 && recipes.size > 0) {
 				return recipes.first();
 			}
@@ -332,7 +333,6 @@ public class AdaptiveCrafter extends Block {
 				warmup = Mathf.approachDelta(warmup, 0f, warmupSpeed);
 			}
 
-			//TODO may look bad, revert to edelta() if so
 			totalProgress += warmup * Time.delta;
 
 			if (progress >= 1f) {

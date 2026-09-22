@@ -1,4 +1,5 @@
 #define HIGHP
+#define PI 3.1415926535897932384626433832795
 
 uniform sampler2D u_texture;
 
@@ -12,7 +13,6 @@ uniform vec4 u_color;
 varying vec2 v_texCoords;
 
 const float threshold = 0.01;
-const float PI = 3.14159265359;
 
 void main() {
 	vec2 v = u_stroke * (1.0 / u_resolution);

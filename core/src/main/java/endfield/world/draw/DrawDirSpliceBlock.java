@@ -22,7 +22,7 @@ import mindustry.world.draw.DrawBlock;
 import static endfield.graphics.Pixmaps2.rotatePixmap90;
 
 public class DrawDirSpliceBlock extends DrawBlock {
-	public TextureRegion[] regions = new TextureRegion[16];
+	public TextureRegion[] regions;
 	public Intf<Building> spliceBits;
 	public Boolf2<BuildPlan, BuildPlan> planSplicer = (plan, other) -> false;
 
@@ -46,7 +46,7 @@ public class DrawDirSpliceBlock extends DrawBlock {
 	@Override
 	public void load(Block block) {
 		if (split) {
-			regions = Sprites.splitLayer(block.name + suffix, size * 32, 0);
+			regions = Sprites.splitLayer(block.name + suffix, size * 32, 16);
 		} else {
 			Pixmap[] splicers = new Pixmap[4];
 
@@ -62,6 +62,8 @@ public class DrawDirSpliceBlock extends DrawBlock {
 					splicers[i] = Core.atlas.getPixmap(block.name + suffix + "-" + i).crop();
 				}
 			}
+
+			regions = new TextureRegion[16];
 
 			for (int i = 0; i < regions.length; i++) {
 				regions[i] = getSpliceRegion(splicers, i);

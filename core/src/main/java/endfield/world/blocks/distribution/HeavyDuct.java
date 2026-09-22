@@ -43,7 +43,7 @@ public class HeavyDuct extends Duct {
 	@Override
 	public void load() {
 		super.load();
-		regions = Sprites.splitLayer(name + "-sheet", 32, 0);
+		regions = Sprites.splitLayer(name + "-sheet", 32, 5);
 	}
 
 	@Override

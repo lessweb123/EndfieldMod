@@ -29,7 +29,7 @@ public class DrawAnim extends DrawFrames {
 
 	@Override
 	public void load(Block block) {
-		regions = Sprites.splitLayer(block.name + "-frame", (size > 0 ? size : block.size) * 32, 0);
+		regions = Sprites.splitLayer(block.name + "-frame", (size > 0 ? size : block.size) * 32);
 		icon = Core.atlas.find(block.name + "-frame-icon");
 	}
 }

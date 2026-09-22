@@ -49,7 +49,7 @@ public class SizedVent extends SteamVent {
 	@Override
 	public void load() {
 		super.load();
-		splitRegion = Sprites.splitLayer(name + "-sheet", size * 32, 0);
+		splitRegion = Sprites.splitLayer(name + "-variants", size * 32);
 	}
 
 	@Override

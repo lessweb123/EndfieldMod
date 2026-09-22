@@ -8,6 +8,8 @@ import arc.math.geom.Point2;
 import arc.struct.IntIntMap;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+
 /**
  * The utility set for split sprite.
  * <p>This class may be considered for merging into {@link Get} in future versions.
@@ -96,26 +98,18 @@ public final class Sprites {
 	 *
 	 * @param name       sprite name
 	 * @param size       split size, pixels per grid
-	 * @param layerCount Total number of segmentation layers
+	 * @param width Total number of segmentation layers
+	 * @param height Total
 	 * @throws NullPointerException       If the {@code name} is {@code null}.
 	 * @throws NegativeArraySizeException If {@code size} or {@code layerCount} is negative.
 	 */
-	public static TextureRegion[][] splitLayers(String name, int size, int layerCount) {
-		TextureRegion[][] layers = new TextureRegion[layerCount][];
-
-		for (int i = 0; i < layerCount; i++) {
-			layers[i] = splitLayer(name, size, i);
-		}
-		return layers;
-	}
-
-	public static TextureRegion[][] splitLayers2(String name, int size, int width, int height) {
+	public static TextureRegion[][] splitLayers(String name, int size, int width, int height) {
 		TextureRegion region = Core.atlas.find(name);
 
-		TextureRegion[][] layers = new TextureRegion[height / size][width / size];
+		TextureRegion[][] layers = new TextureRegion[height][width];
 
-		for (int y = 0; y < height / size; y++) {
-			for (int x = 0; x < width / size; x++) {
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
 				layers[y][x] = new TextureRegion(region, x * size, y * size, size, size);
 			}
 		}
@@ -129,19 +123,38 @@ public final class Sprites {
 	 *
 	 * @param name  sprite name
 	 * @param size  split size, pixels per grid
-	 * @param layer Number of segmentation layers
+	 * @param width Number of segmentation layers
 	 * @return Split sprites by size and layer parameter ratio.
 	 * @throws NullPointerException	   If the {@code name} is {@code null}.
-	 * @throws IllegalArgumentException If {@code size} or {@code layer} is negative.
+	 * @throws IllegalArgumentException If {@code size} or {@code width} is negative.
 	 */
-	public static TextureRegion[] splitLayer(String name, int size, int layer) {
+	public static TextureRegion[] splitLayer(String name, int size, int width) {
 		TextureRegion region = Core.atlas.find(name);
-		int margin = 0;
+		TextureRegion[] tiles = new TextureRegion[width];
+
+		for (int i = 0; i < width; i++) {
+			tiles[i] = new TextureRegion(region, i * size, 0, size, size);
+		}
+		return tiles;
+	}
+
+	public static TextureRegion[] splitWidth(String name, int width) {
+		TextureRegion region = Core.atlas.find(name);
+		TextureRegion[] tiles = new TextureRegion[width];
+
+		int size = region.width / width;
+		for (int i = 0; i < width; i++) {
+			tiles[i] = new TextureRegion(region, i * size, 0, size, size);
+		}
+		return tiles;
+	}
+
+	public static TextureRegion[] splitLayer(String name, int size) {
+		TextureRegion region = Core.atlas.find(name);
 		int countX = region.width / size;
 		TextureRegion[] tiles = new TextureRegion[countX];
-
 		for (int i = 0; i < countX; i++) {
-			tiles[i] = new TextureRegion(region, i * (margin + size), layer * (margin + size), size, size);
+			tiles[i] = new TextureRegion(region, i * size, 0, size, size);
 		}
 		return tiles;
 	}
@@ -268,6 +281,13 @@ public final class Sprites {
 			}
 		}
 
+		return tiles;
+	}
+
+	public static TextureRegion[] errors(int length) {
+		TextureRegion[] tiles = new TextureRegion[length];
+		TextureRegion tile = Core.atlas.find("env-error");
+		Arrays.fill(tiles, tile);
 		return tiles;
 	}
 }

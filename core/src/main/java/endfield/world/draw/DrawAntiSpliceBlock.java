@@ -46,15 +46,15 @@ public class DrawAntiSpliceBlock extends DrawBlock {
 		icon = Core.atlas.find(block.name + "-icon");
 
 		if (split) {
-			regions = Sprites.split(block.name + "-sheet", 32, 16, 16);
+			regions = Sprites.split(block.name + "-variants", 32, 16, 16);
 		} else {
-			icon = Core.atlas.find(block.name + "_icon");
+			icon = Core.atlas.find(block.name + "-icon");
 
 			for (int i = 0; i < regions.length; i++) {
 				regions[i] = Core.atlas.find(block.name + "_" + splices[i]);
 			}
 			for (int i = 0; i < inner.length; i++) {
-				inner[i] = Core.atlas.find(block.name + "_" + splices[i * 2 + 1] + "_inner");
+				inner[i] = Core.atlas.find(block.name + "_" + splices[i * 2 + 1] + "-inner");
 			}
 		}
 	}

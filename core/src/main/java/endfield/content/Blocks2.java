@@ -77,6 +77,7 @@ import endfield.world.blocks.environment.ConnectedFloor;
 import endfield.world.blocks.environment.ConnectedStaticWall;
 import endfield.world.blocks.environment.DepthCliff;
 import endfield.world.blocks.environment.OreVein;
+import endfield.world.blocks.environment.TiledFloor2;
 import endfield.world.blocks.heat.HeatBelt;
 import endfield.world.blocks.heat.HeatDirectionBridge;
 import endfield.world.blocks.heat.ThermalHeater;
@@ -220,6 +221,7 @@ import mindustry.world.blocks.environment.Prop;
 import mindustry.world.blocks.environment.StaticWall;
 import mindustry.world.blocks.environment.SteamVent;
 import mindustry.world.blocks.environment.TallBlock;
+import mindustry.world.blocks.environment.TiledFloor;
 import mindustry.world.blocks.environment.TreeBlock;
 import mindustry.world.blocks.heat.HeatConductor;
 import mindustry.world.blocks.heat.HeatProducer;
@@ -294,13 +296,21 @@ import static endfield.Vars2.MOD_NAME;
 public final class Blocks2 {
 	//environment
 	public static DepthCliff cliff;
-	public static Floor coreZoneCenter, coreZoneCenterLarge, coreZoneCenterHuge, coreZoneDot, darkPanel7, darkPanel8, darkPanel9, darkPanel10, darkPanel11, darkPanelDamaged;
+	public static Floor coreZoneCenter, coreZoneDot, darkPanel7, darkPanel8, darkPanel9, darkPanel10, darkPanel11, darkPanelDamaged;
 	public static ConnectedFloor metalTiles15, metalTiles16, metalTiles17, metalTiles18;
+	public static StaticWall metalFloor1Tiled, metalFloor2Tiled;
+	public static Floor blueMetalFloor1Tiled;
+	public static Floor metalPole, metalPlates5, metalHeatSink, metalHeatSinkOff, metalLightLarge, metalLightLargeBroken, metalBump, metalPadding, metalFloor8, metalFloor9, metalFloor10, metalFloor11, metalFloor12, metalFrame, metalBumpe, metalPlating, metalFlooring;
+	public static Floor floorLight, brokenFloorLight, metalPlates1;
+	public static Floor metalBankFloor, damagedPlates1, damagedPlates2, damagedPlates3, damagedPlated4, metalPlates6, metalPlates, metalPlates2, metalPlates3, metalPlates4, metalGrating;
+	public static StaticWall metalWall, metalWall1, metalWall3, metalWall4, metalWall5, metalWall6, metalWall7;
+	public static TiledFloor metalVent;
 	public static Floor asphalt;
 	public static ConnectedFloor asphaltTiles;
 	public static Floor siliceoustone;
+	public static Floor feldsparRubble;
 	public static SteamVent shaleVent, shaleFissure;
-	public static Floor basaltSpikes, basaltPlates;
+	public static Floor basaltSpikes, basaltPlates, basaltHolePlates;
 	public static TallBlock basaltRock;
 	public static StaticWall basaltWall, basaltGraphiticWall, basaltPyratiticWall;
 	public static Floor snowySand;
@@ -324,6 +334,7 @@ public final class Blocks2 {
 	public static Floor shaleWater;
 	public static Floor basaltWater;
 	public static Floor mudWater;
+	public static Floor shallowSlag, shallowSlagPlates;
 	public static Floor corruptedMoss, corruptedSporeMoss;
 	public static StaticWall corruptedSporeRocks, corruptedSporePine;
 	public static TreeBlock corruptedSporeFern, corruptedSporePlant, corruptedSporeTree;
@@ -607,15 +618,7 @@ public final class Blocks2 {
 	public static void load() {
 		//environment
 		cliff = new DepthCliff("cliff");
-		coreZoneCenter = new Floor("core-zone-center", 0) {{
-			blendGroup = Blocks.coreZone;
-			allowCorePlacement = true;
-		}};
-		coreZoneCenterLarge = new Floor("core-zone-center-large", 0) {{
-			blendGroup = Blocks.coreZone;
-			allowCorePlacement = true;
-		}};
-		coreZoneCenterHuge = new Floor("core-zone-center-huge", 0) {{
+		coreZoneCenter = new TiledFloor("core-zone-center", 1, 3) {{
 			blendGroup = Blocks.coreZone;
 			allowCorePlacement = true;
 		}};
@@ -649,6 +652,174 @@ public final class Blocks2 {
 			drawEdgeOut = false;
 			drawEdgeIn = false;
 		}};
+		metalPlates = new TiledFloor("metal-plates", 3, 4) {{
+			drawEdgeOut = false;
+			drawEdgeIn = false;
+			clipSize = 600;
+		}};
+		metalPlates1 = new TiledFloor("metal-plates1", 2, 8) {{
+			drawEdgeOut = false;
+			drawEdgeIn = false;
+			clipSize = 3000;
+		}};
+		metalPlates2 = new ConnectedFloor("metal-plates2") {{
+			autotile = true;
+			drawEdgeIn = drawEdgeOut = false;
+		}};
+		metalPlates3 = new ConnectedFloor("metal-plates3") {{
+			autotile = true;
+			variants = 0;
+			drawEdgeIn = drawEdgeOut = false;
+		}};
+		metalPlates4 = new ConnectedFloor("metal-plates4") {{
+			autotile = true;
+			drawEdgeIn = drawEdgeOut = false;
+		}};
+		metalPlates5 = new TiledFloor("metal-plates5", 2, 3) {{
+			drawEdgeOut = false;
+			drawEdgeIn = false;
+			clipSize = 3000;
+		}};
+		metalPlates6 = new ConnectedFloor("metal-plates6") {{
+			autotile = true;
+			drawEdgeIn = drawEdgeOut = false;
+			emitLight = true;
+			lightRadius = 30f;
+			lightColor = Team.crux.color.cpy().a(0.1f);
+		}};
+		damagedPlates1 = new ConnectedFloor("damaged-metal1") {{
+			autotile = true;
+			drawEdgeIn = drawEdgeOut = false;
+			autotileVariants = 3;
+			autotileMidVariants = 6;
+		}};
+		metalHeatSink = new TiledFloor("metal-heat-sink", 1, 2) {{
+			drawEdgeOut = false;
+			drawEdgeIn = false;
+			clipSize = 3000;
+			lightRadius = 110;
+			emitLight = true;
+			lightColor = Pal.turretHeat.cpy().a(0.9f);
+			attributes.set(Attribute.heat, 1.5f);
+			walkEffect = new ParticleEffect() {{
+				particles = 3;
+				sizeFrom = 2.5f;
+				length = 17;
+				lifetime = 30;
+				sizeInterp = Interp.pow5In;
+				interp = Interp.pow5Out;
+				colorFrom = new Color(0xfff1d2ff);
+				colorTo = new Color(0xffd197ff);
+			}};
+			damageTaken = 8f;
+			status = StatusEffects.melting;
+		}};
+		metalHeatSinkOff = new TiledFloor("metal-heat-sink-off", 1, 2) {{
+			drawEdgeOut = false;
+			drawEdgeIn = false;
+			clipSize = 3000;
+		}};
+		metalLightLarge = new TiledFloor("metal-light-large", 1, 2) {{
+			drawEdgeOut = false;
+			drawEdgeIn = false;
+			clipSize = 3000;
+			lightRadius = 150;
+			emitLight = true;
+			lightColor = Pal.techBlue.cpy().a(0.9f);
+		}};
+		metalLightLargeBroken = new TiledFloor("metal-light-large-broken", 4, 2) {{
+			drawEdgeOut = false;
+			drawEdgeIn = false;
+			clipSize = 3000;
+			lightRadius = 10;
+			emitLight = true;
+			lightColor = Color.gray.cpy().a(0.05f);
+		}};
+		metalPadding = new TiledFloor("metal-padding", 5, 5) {{
+			drawEdgeOut = false;
+			drawEdgeIn = false;
+			clipSize = 3000;
+		}};
+		metalBump = new TiledFloor("metal-bump", 1, 3) {{
+			drawEdgeOut = false;
+			drawEdgeIn = false;
+			clipSize = 3000;
+		}};
+		metalPole = new Floor("metal-pole", 0);
+		floorLight = new Floor("floor-light", 0) {{
+			lightRadius = 70;
+			emitLight = true;
+			drawEdgeIn = drawEdgeOut = false;
+			lightColor = Pal.techBlue.cpy().a(0.7f);
+		}};
+		brokenFloorLight = new Floor("floor-light-broken", 4) {{
+			lightRadius = 5;
+			emitLight = true;
+			drawEdgeIn = drawEdgeOut = false;
+			lightColor = Color.gray.cpy().a(0.05f);
+		}};
+		metalBankFloor = new ConnectedFloor("metal-bank-floor") {{
+			autotile = true;
+			drawEdgeIn = drawEdgeOut = false;
+			emitLight = true;
+			lightRadius = 20f;
+			lightColor = Pal.reactorPurple.cpy().a(0.1f);
+		}};
+		metalFloor8 = new ConnectedFloor("metal-floor8") {{
+			autotile = true;
+			drawEdgeIn = drawEdgeOut = false;
+		}};
+		metalFloor9 = new ConnectedFloor("metal-floor9") {{
+			autotile = true;
+			drawEdgeIn = drawEdgeOut = false;
+		}};
+		metalFloor10 = new ConnectedFloor("metal-floor10") {{
+			autotile = true;
+			drawEdgeIn = drawEdgeOut = false;
+		}};
+		metalFloor11 = new ConnectedFloor("metal-floor11") {{
+			autotile = true;
+			drawEdgeIn = drawEdgeOut = false;
+		}};
+		metalFloor12 = new ConnectedFloor("metal-floor12") {{
+			autotile = true;
+			drawEdgeIn = drawEdgeOut = false;
+		}};
+		metalFloor1Tiled = new ConnectedStaticWall("metal-floor-1-tiled") {{
+			autotile = true;
+		}};
+		metalFloor2Tiled = new ConnectedStaticWall("metal-floor-2-tiled") {{
+			autotile = true;
+		}};
+		blueMetalFloor1Tiled = new ConnectedFloor("blue-metal-floor-1-tiled") {{
+			autotile = true;
+			drawEdgeIn = drawEdgeOut = false;
+		}};
+		metalFrame = new Floor("metal-frame", 0);
+		metalBumpe = new Floor("metal-bumpe", 0);
+		metalPlating = new Floor("metal-plating", 0);
+		metalFlooring = new Floor("metal-flooring", 2);
+		metalWall = new StaticWall("metal-wall") {{
+			variants = 6;
+		}};
+		metalWall1 = new StaticWall("metal-wall1") {{
+			variants = 4;
+		}};
+		metalWall3 = new StaticWall("metal-wall3");
+		metalWall4 = new StaticWall("metal-wall4") {{
+			variants = 2;
+		}};
+		metalWall5 = new StaticWall("metal-wall5") {{
+			variants = 0;
+		}};
+		metalWall6 = new StaticWall("metal-wall6") {{
+			variants = 4;
+		}};
+		metalVent = new TiledFloor("metal-vent", 1, 3) {{
+			drawEdgeOut = false;
+			drawEdgeIn = false;
+			attributes.set(Attribute.steam, 1f);
+		}};
 		asphalt = new Floor("asphalt", 0) {{
 			drawEdgeOut = false;
 			drawEdgeIn = false;
@@ -660,6 +831,10 @@ public final class Blocks2 {
 			blendGroup = asphalt;
 		}};
 		siliceoustone = new Floor("siliceoustone", 4);
+		feldsparRubble = new TiledFloor2("feldspar-rubble") {{
+			tilingVariants = 2;
+			tilingSize = 4;
+		}};
 		shaleVent = new SteamVent("shale-vent") {{
 			variants = 3;
 			parent = blendGroup = Blocks.shale;
@@ -676,7 +851,14 @@ public final class Blocks2 {
 			playerUnmineable = true;
 			attributes.set(Attribute.water, -0.3f);
 		}};
-		basaltPlates = new Floor("basalt-plates") {{
+		basaltPlates = new TiledFloor2("basalt-plates") {{
+			tilingVariants = 2;
+			tilingSize = 4;
+			itemDrop = Items2.stone;
+			playerUnmineable = true;
+			attributes.set(Attribute.water, -0.3f);
+		}};
+		basaltHolePlates = new TiledFloor2("basalt-hole-plates") {{
 			tilingVariants = 2;
 			tilingSize = 4;
 			itemDrop = Items2.stone;
@@ -939,6 +1121,41 @@ public final class Blocks2 {
 			cacheLayer = CacheLayer.water;
 			albedo = 0.9f;
 			supportsOverlay = true;
+		}};
+		shallowSlag = new Floor("shallow-slag") {{
+			speedMultiplier = 0.25f;
+			liquidDrop = Liquids.slag;
+			liquidMultiplier = 0.5f;
+			isLiquid = true;
+			status = StatusEffects.burning;
+			attributes.set(Attribute.heat, 0.8f);
+			cacheLayer = CacheLayer2.shallowSlag;
+			variants = 5;
+			drawEdgeOut = false;
+			emitLight = true;
+			lightRadius = 40f;
+			lightColor = Color.orange.cpy().a(0.38f);
+			obstructsLight = true;
+			forceDrawLight = true;
+		}};
+		shallowSlagPlates = new TiledFloor2("shallow-slag-plates") {{
+			speedMultiplier = 0.1f;
+			tilingVariants = 2;
+			tilingSize = 4;
+			liquidDrop = Liquids.slag;
+			liquidMultiplier = 0.5f;
+			isLiquid = true;
+			status = StatusEffects.burning;
+			attributes.set(Attribute.heat, 0.8f);
+			supportsOverlay = true;
+			overlayAlpha = 1;
+			cacheLayer = CacheLayer2.shallowSlag;
+			emitLight = true;
+			lightRadius = 40f;
+			lightColor = Color.orange.cpy().a(0.38f);
+			obstructsLight = true;
+			forceDrawLight = true;
+			drawEdgeOut = false;
 		}};
 		corruptedMoss = new Floor("corrupted-moss", 3) {{
 			speedMultiplier = 0.9f;

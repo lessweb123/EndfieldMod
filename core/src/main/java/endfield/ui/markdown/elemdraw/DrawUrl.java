@@ -20,8 +20,6 @@ public class DrawUrl extends Markdown.MarkdownDraw implements Markdown.ActivityD
 	public String text = "";
 	public String url = "";
 	public Font font = Fonts.def;
-	public float fontOffX;
-	public float fontOffY;
 	public boolean italic;
 	public Color color = Color.white;
 	public float scl;
@@ -29,18 +27,16 @@ public class DrawUrl extends Markdown.MarkdownDraw implements Markdown.ActivityD
 
 	TextButton button;
 
-	public static DrawUrl get(String str, String url, Font font, float fontOffsetX, float fontOffsetY, Color color, float scl) {
-		return get(str, url, font, fontOffsetX, fontOffsetY, false, color, scl, color);
+	public static DrawUrl get(String str, String url, Font font, Color color, float scl) {
+		return get(str, url, font, false, color, scl, color);
 	}
 
-	public static DrawUrl get(String str, String url, Font font, float fontOffsetX, float fontOffsetY, boolean italic, Color color, float scl, Color overColor) {
+	public static DrawUrl get(String str, String url, Font font, boolean italic, Color color, float scl, Color overColor) {
 		return Pools.obtain(DrawUrl.class, () -> {
 			DrawUrl draw = new DrawUrl();
 			draw.text = str;
 			draw.url = url;
 			draw.font = font;
-			draw.fontOffX = fontOffsetX;
-			draw.fontOffY = fontOffsetY;
 			draw.italic = italic;
 			draw.color = color;
 			draw.scl = scl;
@@ -56,12 +52,12 @@ public class DrawUrl extends Markdown.MarkdownDraw implements Markdown.ActivityD
 
 	@Override
 	public float prefWidth() {
-		return button.getWidth() + fontOffX * scl;
+		return button.getWidth() * scl;
 	}
 
 	@Override
 	public float prefHeight() {
-		return button.getHeight() + fontOffY * scl;
+		return button.getHeight() * scl;
 	}
 
 	@Override

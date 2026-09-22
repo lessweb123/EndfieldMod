@@ -45,7 +45,7 @@ public class InvertedJunction extends Junction {
 	public void load() {
 		super.load();
 		place = Core.atlas.find(placeSprite);
-		locs = Sprites.splitLayer(MOD_NAME + "-junction", 32, 0);
+		locs = Sprites.splitLayer(MOD_NAME + "-junction", 32, 2);
 		arrow1 = Core.atlas.find(MOD_NAME + "-arrow-1");
 		arrow2 = Core.atlas.find(MOD_NAME + "-arrow-2");
 		flip = Core.atlas.find(MOD_NAME + "-flip");

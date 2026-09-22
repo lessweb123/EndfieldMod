@@ -35,7 +35,7 @@ public class OverchargeDuct extends Duct {
 	public void init() {
 		super.init();
 
-		glowRegions = Sprites.splitLayer(name + "-glow", 32, 0);
+		glowRegions = Sprites.splitLayer(name + "-glow", 32, 5);
 	}
 
 	@Override

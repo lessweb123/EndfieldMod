@@ -20,8 +20,6 @@ public class ConnectedFloor extends Floor {
 
 	@Override
 	public void load() {
-		region = Core.atlas.find(name);
-
 		customShadowRegion = Core.atlas.find(name + "-shadow");
 		teamRegion = Core.atlas.find(name + "-team");
 
@@ -54,27 +52,37 @@ public class ConnectedFloor extends Floor {
 		}
 
 		if (variants > 0) {
-			variantRegions = Sprites.splitLayer(name + "-sheet", 32, 0);
+			variantRegions = Sprites.splitLayer(name + "-variants", 32, variants);
 		} else {
-			variantRegions = new TextureRegion[]{region};
+			variantRegions = new TextureRegion[]{Core.atlas.find(name)};
 		}
 
 		if (autotile) {
 			autotileRegions = Sprites.split(name + "-autotile", 32, 12, 4);
+
 			if (autotileVariants > 1) {
-				autotileVariantRegions = new TextureRegion[variants][];
-				for (int i = 0; i < variants; i++) {
+				autotileVariantRegions = new TextureRegion[autotileVariants][];
+				for (int i = 0; i < autotileVariants; i++) {
 					autotileVariantRegions[i] = Sprites.split(name + "-" + (i + 1) + "-autotile", 32, 12, 4);
 				}
 			}
 			if (autotileMidVariants > 1) {
-				autotileMidRegions = Sprites.splitLayer(name + "-mid", 32, 0);
+				autotileMidRegions = Sprites.splitLayer(name + "-mid", 32, autotileMidVariants);
 			}
 		}
 
 		if (Core.atlas.has(name + "-edge")) {
 			edges = Core.atlas.find(name + "-edge").split(tsize, tsize);
+			if (edges.length != 3 || edges[0].length != 3) {
+				TextureRegion error = Core.atlas.find("error");
+				edges = new TextureRegion[][]{
+						new TextureRegion[]{error, error, error},
+						new TextureRegion[]{error, error, error},
+						new TextureRegion[]{error, error, error},
+				};
+			}
 		}
+		region = variantRegions[0];
 		edgeRegion = Core.atlas.find("edge");
 	}
 

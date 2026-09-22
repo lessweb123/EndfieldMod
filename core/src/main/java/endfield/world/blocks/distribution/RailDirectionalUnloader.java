@@ -31,7 +31,7 @@ public class RailDirectionalUnloader extends DirectionalUnloader {
 	public void load() {
 		super.load();
 
-		regions = Sprites.splitLayer(name + "-base", 32, 0);
+		regions = Sprites.splitLayer(name + "-base", 32, 6);
 	}
 
 	@Override

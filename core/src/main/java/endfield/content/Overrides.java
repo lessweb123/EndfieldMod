@@ -438,6 +438,10 @@ public final class Overrides {
 				drill.buildType = () -> drill.new BeamDrillBuild() {
 					@Override
 					public void updateTile() {
+						if (timer(0, drill.dumpTime / timeScale)) {
+							dump();
+						}
+
 						if (lasers[0] == null) updateLasers();
 
 						warmup = Mathf.approachDelta(warmup, Mathf.num(efficiency > 0), 1f / 60f);
@@ -459,10 +463,6 @@ public final class Overrides {
 								}
 							}
 							time %= drillTime;
-						}
-
-						if (timer(0, drill.dumpTime / timeScale)) {
-							dump();
 						}
 					}
 				};

@@ -20,11 +20,13 @@ public class RangeExtractor {
 
 	private boolean capturing = false, loaded = false;
 
-	protected RangeExtractor(boolean isLow) {
+	public RangeExtractor(boolean isLow) {
 		low = isLow;
 
 		buffer = new FrameBuffer();
 		buffer.getTexture().setFilter(TextureFilter.nearest);
+
+		setupShader();
 	}
 
 	public static void load() {
@@ -32,19 +34,18 @@ public class RangeExtractor {
 		lowRangeExtractor = new RangeExtractor(true);
 	}
 
-	public void setupShader() {
+	void setupShader() {
 		if (loaded) return;
 
 		loaded = true;
 
 		extractShader = new Shader(Shaders2.shadersDir.child("general-highp.vert"), Shaders2.shadersDir.child(low ? "range-low.frag" : "range.frag"));
 
-		if (low) buffer.resize(Core.graphics.getWidth() / 2, Core.graphics.getHeight() / 2);
-		else buffer.resize(Core.graphics.getWidth(), Core.graphics.getHeight());
+		buffer.resize(Core.graphics.getWidth(), Core.graphics.getHeight());
 	}
 
 	public void capture() {
-		if (capturing) return;
+		if (capturing) throw new IllegalStateException("capturing already running");
 
 		if (low) buffer.resize(Core.graphics.getWidth() / 2, Core.graphics.getHeight() / 2);
 		else buffer.resize(Core.graphics.getWidth(), Core.graphics.getHeight());
@@ -54,7 +55,7 @@ public class RangeExtractor {
 	}
 
 	public void render() {
-		if (!capturing) return;
+		if (!capturing) throw new IllegalStateException("capturing not started");
 
 		capturing = false;
 

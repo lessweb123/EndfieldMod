@@ -117,6 +117,11 @@ public class BaseProvider implements MarkdownProvider, CurtainProvider, InsProvi
 	}
 
 	@Override
+	public UrlHandler defaultUrlHandler() {
+		return new HttpHandler();
+	}
+
+	@Override
 	public void handleLayoutException(Throwable exception) {
 		Log.err("Markdown layout error, detail info: ", exception);
 	}
@@ -184,8 +189,7 @@ public class BaseProvider implements MarkdownProvider, CurtainProvider, InsProvi
 		drawTextWrap(context, text, s -> {
 			DrawUrl draw = DrawUrl.get(
 					s, node.getDestination(),
-					scope.font, scope.fontOffsetX, scope.fontOffsetY,
-					scope.fontIsItalic, scope.fontColor, scope.fontScale,
+					scope.font, scope.fontIsItalic, scope.fontColor, scope.fontScale,
 					context.mdStyle().linkOverColor
 			);
 			context.draw(draw);
@@ -251,8 +255,6 @@ public class BaseProvider implements MarkdownProvider, CurtainProvider, InsProvi
 			context.draw(DrawStr.get(
 					format.get(n.get()) + ".",
 					scope.font,
-					scope.fontOffsetX,
-					scope.fontOffsetY,
 					false,
 					scope.fontColor,
 					scope.fontScale
@@ -322,8 +324,21 @@ public class BaseProvider implements MarkdownProvider, CurtainProvider, InsProvi
 				AtomicReference<Drawable> resource = new AtomicReference<>();
 				BaseDrawable res = new BaseDrawable() {
 					@Override
+					public float getMinWidth() {
+						Drawable drawable = resource.get();
+						return drawable == null ? context.mdStyle().loadingImg.getMinWidth() : drawable.getMinWidth();
+					}
+
+					@Override
+					public float getMinHeight() {
+						Drawable drawable = resource.get();
+						return drawable == null ? context.mdStyle().loadingImg.getMinHeight() : drawable.getMinHeight();
+					}
+
+					@Override
 					public void draw(float x, float y, float width, float height) {
-						if (resource.get() != null) resource.get().draw(x, y, width, height);
+						Drawable drawable = resource.get();
+						if (drawable != null) drawable.draw(x, y, width, height);
 						else context.mdStyle().loadingImg.draw(x, y, width, height);
 					}
 				};
@@ -338,7 +353,11 @@ public class BaseProvider implements MarkdownProvider, CurtainProvider, InsProvi
 							context.mdInvalidate();
 						});
 					} catch (Exception e) {
-						Core.app.post(() -> context.invalidResource(url));
+						Core.app.post(() -> {
+							resource.set(context.mdStyle().errorImg);
+							context.mdInvalidate();
+							context.invalidResource(url);
+						});
 						Log.err(e);
 					} finally {
 						Streams.close(input);

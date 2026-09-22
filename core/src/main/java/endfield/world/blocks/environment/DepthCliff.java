@@ -105,7 +105,7 @@ public class DepthCliff extends Block {
 	@Override
 	public void load() {
 		super.load();
-		cliffs = Sprites.splitLayer(name + "-sheet", 48, 0);
+		cliffs = Sprites.splitLayer(name + "-variants", 48, 12);
 	}
 
 	@Override

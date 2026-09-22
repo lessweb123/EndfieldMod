@@ -13,8 +13,6 @@ public class ConnectedStaticWall extends StaticWall {
 
 	@Override
 	public void load() {
-		region = Core.atlas.find(name);
-
 		customShadowRegion = Core.atlas.find(name + "-shadow");
 		teamRegion = Core.atlas.find(name + "-team");
 
@@ -41,6 +39,8 @@ public class ConnectedStaticWall extends StaticWall {
 				}
 			}
 		} else {
+			region = Core.atlas.find(name);
+
 			variantRegions = new TextureRegion[]{region};
 		}
 
@@ -56,6 +56,10 @@ public class ConnectedStaticWall extends StaticWall {
 
 		if (autotile) {
 			autotileRegions = Sprites.split(name + "-autotile", 32, 12, 4);
+
+			if (autotileMidVariants > 1) {
+				autotileMidRegions = Sprites.splitLayer(name + "-mid", 32, autotileMidVariants);
+			}
 		}
 	}
 

@@ -1,5 +1,6 @@
 package endfield.ui.markdown.elemdraw;
 
+import arc.Core;
 import arc.func.Cons;
 import arc.graphics.g2d.Font;
 import arc.graphics.gl.Shader;
@@ -9,11 +10,12 @@ import endfield.ui.markdown.RendererContext.Scope;
 import endfield.util.Strings2;
 import kotlin.text.StringsKt;
 
+import java.text.BreakIterator;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 public final class DrawText2 {
 	static final int MAX_SPLITTABLE_WIDTH = 32 * 16;
-	static final Pattern wordSplitMatcher = Pattern.compile("[^a-zA-Z0-9_]");
 
 	static Shader distanceFieldShader = createDistanceFieldShader();
 
@@ -40,7 +42,7 @@ public final class DrawText2 {
 				varying vec4 v_color;
 				varying vec2 v_texCoords;
 				
-				void main(){
+				void main() {
 					if (u_smoothing > 0.0) {
 						float smoothing = 0.25 / u_smoothing;
 						vec4 color = texture2D(u_texture, v_texCoords);
@@ -55,16 +57,16 @@ public final class DrawText2 {
 	}
 
 	public static void drawTextWrap(RendererContext context, String str) {
-		drawTextWrap(context, str, context.getScope().font, context.getScope().currOffsetX, context.getScope().currOffsetY, context.getScope().fontIsItalic, context.getScope().fontScale);
+		drawTextWrap(context, str, context.getScope().font, context.getScope().fontIsItalic, context.getScope().fontScale);
 	}
 
 	public static void drawTextWrap(RendererContext context, String str, Cons<String> doDraw) {
 		drawTextWrap(context, str, context.getScope().font, context.getScope().fontScale, doDraw);
 	}
 
-	public static void drawTextWrap(RendererContext context, String str, Font font, float offsetX, float offsetY, boolean italic, float scl) {
+	public static void drawTextWrap(RendererContext context, String str, Font font, boolean italic, float scl) {
 		drawTextWrap(context, str, font, scl, s -> {
-			context.draw(DrawStr.get(s, font, offsetX, offsetY, italic, context.getScope().fontColor, scl));
+			context.draw(DrawStr.get(s, font, italic, context.getScope().fontColor, scl));
 		});
 	}
 
@@ -73,41 +75,38 @@ public final class DrawText2 {
 			Font.FontData data = font.getData();
 
 			int lastIndex = 0;
-			int splitIndex = 0;
 			float currWidth = 0f;
-			float splitWidth = 0f;
 
 			Scope currScope = context.getScope();
+
+			Locale locale = Locale.getDefault();
 
 			for (int i = 0; i < str.length(); i++) {
 				char c = str.charAt(i);
 
 				Font.Glyph glyph = data.getGlyph(c);
 
-				if (wordSplitMatcher.matcher(String.valueOf(c)).matches()) {
-					splitIndex = i;
-					splitWidth = 0f;
-				}
+				if (currWidth + glyph.xadvance * scl > availWidth(currScope)) {
+					int boundary = findBreakBoundary(str, lastIndex, i, locale);
+					int breakIdx = boundary <= lastIndex ? i : boundary;
 
-				if (splitWidth + glyph.xadvance > MAX_SPLITTABLE_WIDTH) {
-					splitIndex = i;
-				}
-
-				if (currWidth + glyph.xadvance * scl > currScope.boundX - currScope.currOffsetX - currScope.marginRight) {
-					String appendText = str.substring(lastIndex, splitIndex);
-					CharSequence remText = StringsKt.trimStart(str.substring(splitIndex, i));
+					String appendText = str.substring(lastIndex, breakIdx);
+					CharSequence remText = StringsKt.trimStart(str.substring(breakIdx, i));
 
 					doDraw.get(appendText);
 					currScope = context.row(Scl.scl(context.mdStyle().linesPadding));
 
-					lastIndex = splitIndex;
-					splitIndex = i;
-					splitWidth = Strings2.sumOf(remText, it -> data.getGlyph(it).xadvance);
-					currWidth = splitWidth * scl;
+					lastIndex = breakIdx;
+
+					var remWidth = 0f;
+					for (int j = 0; j < remText.length(); j++) {
+						char ch = remText.charAt(j);
+						remWidth += data.getGlyph(ch).xadvance;
+					}
+					currWidth = remWidth * scl;
 				}
 
 				currWidth += glyph.xadvance * scl;
-				splitWidth += glyph.xadvance;
 			}
 
 			if (lastIndex < str.length()) {
@@ -116,5 +115,26 @@ public final class DrawText2 {
 		} else {
 			doDraw.get(str);
 		}
+	}
+
+	static float availWidth(Scope currScope) {
+		return currScope.boundX - currScope.currOffsetX - currScope.marginRight;
+	}
+
+	static int findBreakBoundary(String text, int fromIndex, int toIndex) {
+		return findBreakBoundary(text, fromIndex, toIndex, Core.bundle.getLocale());
+	}
+
+	static int findBreakBoundary(String text, int fromIndex, int toIndex, Locale locale) {
+		if (fromIndex >= toIndex) return -1;
+		BreakIterator it = BreakIterator.getLineInstance(locale);
+		it.setText(text);
+		int lastBoundary = -1;
+		int b = it.first();
+		while (b != BreakIterator.DONE && b <= toIndex) {
+			if (b > fromIndex) lastBoundary = b;
+			b = it.next();
+		}
+		return lastBoundary;
 	}
 }

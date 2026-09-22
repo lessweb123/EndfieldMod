@@ -52,6 +52,7 @@ import endfield.util.script.Scripts2;
 import endfield.world.Worlds;
 import endfield.world.patterns.PatternManager;
 import mindustry.Vars;
+import mindustry.game.EventType.AtlasPackEvent;
 import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.game.EventType.DisposeEvent;
 import mindustry.game.EventType.FileTreeInitEvent;
@@ -173,6 +174,10 @@ public final class EndFieldMod extends Mod {
 				Shaders2.dispose();
 				ScreenSampler.dispose();
 			}
+		});
+
+		Events.on(AtlasPackEvent.class, event -> {
+			for (var h : CacheLayer2.handles) h.getPack(event.multiPacker);
 		});
 
 		// To prevent damage to other mod, it can only be enabled during testing

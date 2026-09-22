@@ -125,7 +125,7 @@ public class PressureLiquidConduit extends GenericPressureBlock implements Conne
 		}
 
 		bottomRegion = Core.atlas.find(name + "-bottom", MOD_PREFIX + "liquid-bottom");
-		topRegions = Sprites.splitLayer(name + "-sheet", 32, 0);
+		topRegions = Sprites.splitLayer(name + "-sheet", 32, 16);
 	}
 
 	@Override

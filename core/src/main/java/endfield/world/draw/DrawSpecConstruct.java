@@ -50,6 +50,6 @@ public class DrawSpecConstruct extends DrawBlock {
 
 	@Override
 	public void load(Block block) {
-		constructRegions = Sprites.splitLayer(block.name + "-construct", (size > 0 ? size : block.size) * 32, 0);
+		constructRegions = Sprites.splitLayer(block.name + "-construct", (size > 0 ? size : block.size) * 32);
 	}
 }

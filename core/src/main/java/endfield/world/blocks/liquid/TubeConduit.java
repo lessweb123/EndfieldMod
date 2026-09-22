@@ -72,7 +72,7 @@ public class TubeConduit extends Conduit {
 		editorRegion = Core.atlas.find(name + "-full");
 		coverRegion = Core.atlas.find(name + "-cover");
 
-		topRegion = Sprites.splitLayers2(name + "-sheet", 32, 512, 64);
+		topRegion = Sprites.splitLayers(name + "-sheet", 32, 16, 2);
 		capRegion = new TextureRegion[]{topRegion[1][0], topRegion[1][1]};
 
 		botRegions = new TextureRegion[5];

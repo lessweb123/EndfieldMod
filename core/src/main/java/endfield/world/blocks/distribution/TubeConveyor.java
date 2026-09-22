@@ -51,7 +51,7 @@ public class TubeConveyor extends Conveyor2 {
 	public void load() {
 		super.load();
 
-		topRegion = Sprites.splitLayers(name + "-sheet", 32, 2);
+		topRegion = Sprites.splitLayers(name + "-sheet", 32, 16, 2);
 		capRegion = new TextureRegion[]{topRegion[1][0], topRegion[1][1]};
 	}
 

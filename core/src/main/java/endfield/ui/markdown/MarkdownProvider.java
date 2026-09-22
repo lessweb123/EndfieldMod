@@ -85,6 +85,8 @@ public interface MarkdownProvider {
 
 	List<UrlHandler> urlHandlers();
 
+	UrlHandler defaultUrlHandler();
+
 	void handleLayoutException(Throwable exception);
 
 	void add(RendererContext context, Document node);

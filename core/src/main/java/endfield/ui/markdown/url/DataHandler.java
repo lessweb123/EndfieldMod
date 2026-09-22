@@ -1,6 +1,7 @@
 package endfield.ui.markdown.url;
 
 import endfield.ui.markdown.UrlHandler;
+import kotlin.text.StringsKt;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -27,29 +28,32 @@ public class DataHandler implements UrlHandler {
 
 	@Override
 	public ResourceHandle getResource(String url) {
-		url = url.replaceFirst("data:", "");
-
-		Matcher dataMatch = dataTypePattern.matcher(url);
-
-		if (dataMatch.lookingAt() && dataMatch.group().equals("base64,")) {
-			return new Base64Handle(url.substring(dataMatch.end()));
-		} else {
-			Matcher mimeMatch = mimeTypePattern.matcher(url);
-
-			return new StringHandle(url.substring(mimeMatch.lookingAt() ? mimeMatch.end() : 0));
+		String noScheme = url.replaceFirst("data:", "");
+		int comma = noScheme.indexOf(',');
+		if (comma < 0) {
+			return new StringHandle("");
 		}
+
+		String header = StringsKt.take(noScheme, comma);
+		String payload = noScheme.substring(comma + 1);
+
+		for (String it : header.split(";")) {
+			if (it.equalsIgnoreCase("base64")) return new Base64Handle(payload);
+		}
+
+		return new StringHandle(payload);
 	}
 
 	public static class Base64Handle extends ResourceHandle {
-		String base64;
+		String payload;
 
-		public Base64Handle(String s) {
-			base64 = s;
+		public Base64Handle(String pay) {
+			payload = pay;
 		}
 
 		@Override
 		public InputStream openStream() {
-			return Base64.getDecoder().wrap(new ByteArrayInputStream(base64.getBytes(StandardCharsets.UTF_8)));
+			return Base64.getDecoder().wrap(new ByteArrayInputStream(payload.trim().getBytes(StandardCharsets.UTF_8)));
 		}
 	}
 

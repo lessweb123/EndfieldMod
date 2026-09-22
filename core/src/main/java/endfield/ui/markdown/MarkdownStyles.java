@@ -56,6 +56,7 @@ public final class MarkdownStyles {
 		MarkdownStyle style = new MarkdownStyle();
 
 		style.loadingImg = Tex.nomap;
+		style.errorImg = Tex.nomap;
 
 		style.linesPadding = 16f;
 		style.paragraphPadding = 32f;

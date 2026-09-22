@@ -47,7 +47,7 @@ public class DrawFrame extends DrawBlock {
 	@Override
 	public void load(Block block) {
 		if (split) {
-			regions = Sprites.splitLayer(block.name + "-frame", (size > 0 ? size : block.size) * 32, 0);
+			regions = Sprites.splitLayer(block.name + "-frame", (size > 0 ? size : block.size) * 32, frames);
 		} else {
 			regions = new TextureRegion[frames];
 			for (int i = 0; i < frames; i++) {

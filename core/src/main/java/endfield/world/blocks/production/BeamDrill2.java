@@ -35,6 +35,10 @@ public class BeamDrill2 extends BeamDrill {
 	public class BeamDrillBuild2 extends BeamDrillBuild {
 		@Override
 		public void updateTile() {
+			if (timer(timerDump, dumpTime / timeScale)) {
+				dump();
+			}
+
 			if (lasers[0] == null) updateLasers();
 
 			warmup = Mathf.approachDelta(warmup, Mathf.num(efficiency > 0), 1f / 60f);
@@ -56,10 +60,6 @@ public class BeamDrill2 extends BeamDrill {
 					}
 				}
 				time %= drillTime;
-			}
-
-			if (timer(timerDump, dumpTime / timeScale)) {
-				dump();
 			}
 		}
 	}

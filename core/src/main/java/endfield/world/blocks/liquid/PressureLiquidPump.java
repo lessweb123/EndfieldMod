@@ -31,6 +31,8 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import static endfield.Vars2.MOD_PREFIX;
 
 public class PressureLiquidPump extends GenericPressureBlock implements ConnectedTile {
@@ -117,7 +119,7 @@ public class PressureLiquidPump extends GenericPressureBlock implements Connecte
 			}
 		}
 
-		tiles = Sprites.splitLayer(name + "-sheet", 32, 0);
+		tiles = Sprites.splitLayer(name + "-sheet", 32, 4);
 		topRegion = Core.atlas.find(name + "-top");
 		bottomRegion = Core.atlas.find(name + "-bottom", MOD_PREFIX + "liquid-bottom");
 		arrowRegion = Core.atlas.find(name + "-arrow");
@@ -125,27 +127,24 @@ public class PressureLiquidPump extends GenericPressureBlock implements Connecte
 
 	@Override
 	public int mask(BuildPlan plan, Eachable<BuildPlan> list) {
-		int[] tiling = {0};
+		AtomicInteger tiling = new AtomicInteger();
 
 		list.each(next -> {
-			try {
-				if (
-						next.breaking ||
-								next == plan ||
-								!(next.block instanceof PressureBlock && ((PressureBlock) next.block).pressureConfig().hasPressure)
-				) return;
+			if (
+					next.breaking ||
+							next == plan ||
+							!(next.block instanceof PressureBlock && ((PressureBlock) next.block).pressureConfig().hasPressure)
+			) return;
 
-				if (!(next.block instanceof ConnectedTile a && !a.connectsTo(next, plan)) || connectsTo(plan, next)) {
-					if (facingEdge(plan, next, Mathf.mod((1 + plan.rotation) % 2 - 1, 4))) {
-						tiling[0] |= 1;
-					} else if (facingEdge(plan, next, Mathf.mod((1 + plan.rotation) % 2 - 1 + 2, 4))) tiling[0] |= 2;
-//                    }else tiling[0] |= 2;
-				}
-			} catch (Exception ignored) {
+			if (!(next.block instanceof ConnectedTile a && !a.connectsTo(next, plan)) || connectsTo(plan, next)) {
+				if (facingEdge(plan, next, Mathf.mod((1 + plan.rotation) % 2 - 1, 4))) {
+					tiling.set(tiling.get() | 1);
+				} else if (facingEdge(plan, next, Mathf.mod((1 + plan.rotation) % 2 - 1 + 2, 4))) tiling.set(tiling.get() | 2);
+//				} else tiling.set(tiling.get | 2);
 			}
 		});
 
-		return tiling[0];
+		return tiling.get();
 	}
 
 	@Override

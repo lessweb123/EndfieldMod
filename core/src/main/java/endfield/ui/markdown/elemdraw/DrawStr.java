@@ -19,8 +19,6 @@ import static endfield.ui.markdown.elemdraw.DrawText2.distanceFieldShader;
 public class DrawStr extends Markdown.MarkdownDraw {
 	public String text = "";
 	public Font font = Fonts.def;
-	public float fontOffX;
-	public float fontOffY;
 	public boolean italic;
 	public float scl;
 	public Color color = Color.white;
@@ -34,13 +32,11 @@ public class DrawStr extends Markdown.MarkdownDraw {
 	Mat transform = new Mat();
 	Affine2 affine2 = new Affine2();
 
-	public static DrawStr get(String str, Font font, float fontOffsetX, float fontOffsetY, boolean italic, Color color, float scl) {
+	public static DrawStr get(String str, Font font, boolean italic, Color color, float scl) {
 		return Pools.obtain(DrawStr.class, () -> {
 			DrawStr draw = new DrawStr();
 			draw.text = str;
 			draw.font = font;
-			draw.fontOffX = fontOffsetX;
-			draw.fontOffY = fontOffsetY;
 			draw.italic = italic;
 			draw.scl = scl;
 			draw.color = color;
@@ -53,8 +49,6 @@ public class DrawStr extends Markdown.MarkdownDraw {
 		super.reset();
 		text = "";
 		font = Fonts.def;
-		fontOffX = 0f;
-		fontOffY = 0f;
 		italic = false;
 		scl = 0f;
 		color = Color.white;
@@ -110,11 +104,11 @@ public class DrawStr extends Markdown.MarkdownDraw {
 							.translate(x + offsetX, y - offsetY)
 							.mul(affineTrans.set(affine2.idt().shear(0.25f, 0f)))
 			);
-			cache.setPosition(fontOffX, fontOffY);
+			cache.setPosition(0f, 0f);
 			cache.draw();
 			Draw.trans(last);
 		} else {
-			cache.setPosition(x + offsetX + fontOffX, y - offsetY + fontOffY);
+			cache.setPosition(x + offsetX, y - offsetY);
 			cache.draw();
 		}
 		if (shouldDistanceField) Draw.shader();
