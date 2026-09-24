@@ -20,7 +20,7 @@ public class CrawlUnit2 extends CrawlUnit implements Unitc2 {
 
 	@Override
 	public int classId() {
-		return Entitys.getId(CrawlUnit2.class);
+		return Entitys.getId(getClass());
 	}
 
 	@Override

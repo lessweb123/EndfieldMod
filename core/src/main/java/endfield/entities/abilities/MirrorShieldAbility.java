@@ -169,20 +169,22 @@ public abstract class MirrorShieldAbility extends Ability implements ICollideBlo
 			bullet.rotation(reflectAngel);
 			bullet.collided.add(unit.id);
 		} else {
-			bullet.type.create(
-					unit, unit.team,
-					bullet.x, bullet.y, reflectAngel,
-					bullet.damage * albedo,
-					1,
-					(bullet.type.splashDamage > bullet.damage ? albedo : 1) * (1 - bullet.time / bullet.lifetime),
-					bullet.data,
-					bullet.mover,
-					unit.aimX,
-					unit.aimY
-			);
+			bullet.trns(-bullet.vel.x, -bullet.vel.y);
 
-			float rotation;
-			bullet.rotation(rotation = bullet.rotation() + Mathf.range(refractAngleRange));
+			float penX = Math.abs(unit.x - bullet.x), penY = Math.abs(unit.y - bullet.y);
+
+			if (penX > penY) {
+				bullet.vel.x *= -1;
+			} else {
+				bullet.vel.y *= -1;
+			}
+
+			bullet.owner = unit;
+			bullet.team = unit.team;
+			bullet.time += 1f;
+
+			float rotation = bullet.rotation();
+			bullet.rotation(rotation + Mathf.range(refractAngleRange));
 			bullet.damage *= 1 - albedo;
 			bullet.collided.add(unit.id);
 

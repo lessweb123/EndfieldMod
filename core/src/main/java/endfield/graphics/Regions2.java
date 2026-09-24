@@ -8,10 +8,11 @@ import arc.graphics.g2d.TextureAtlas.AtlasRegion;
 import arc.struct.ObjectMap;
 import arc.struct.ObjectSet;
 import arc.struct.Seq;
-import endfield.Vars2;
+
+import static endfield.Vars2.internalTree;
 
 public final class Regions2 {
-	public static Fi spritesDir = Vars2.internalTree.child("sprites");
+	public static Fi spritesDir = internalTree.child("sprites");
 
 	public static AtlasRegion white;
 
@@ -36,6 +37,17 @@ public final class Regions2 {
 		textures.add(Textures2.white);
 		regions.add(white);
 		regionmap.put(white.name, white);
+
+		Seq<Fi> fis = internalTree.child("sprites-add").findAll(f -> f.extension().equals("png"));
+
+		for (Fi fi : fis) {
+			try {
+				Texture texture = new Texture(fi);
+				Core.atlas.addRegion(fi.nameWithoutExtension(), texture, 0, 0, texture.width, texture.height);
+			} catch (Exception e) {
+				arc.util.Log.err(e);
+			}
+		}
 	}
 
 	public static AtlasRegion create(Texture texture, String name) {

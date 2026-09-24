@@ -113,7 +113,7 @@ public final class VapourizeEffect {
 
 		@Override
 		public int classId() {
-			return Entitys.getId(VapourizeEffectState.class);
+			return Entitys.getId(getClass());
 		}
 
 		@Override

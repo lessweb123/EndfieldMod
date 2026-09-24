@@ -180,11 +180,6 @@ public class TractorBeamUnit extends PayloadUnit2 {
 	}
 
 	@Override
-	public int classId() {
-		return Entitys.getId(TractorBeamUnit.class);
-	}
-
-	@Override
 	public void update() {
 		super.update();
 

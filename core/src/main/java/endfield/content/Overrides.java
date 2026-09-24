@@ -155,6 +155,12 @@ public final class Overrides {
 		if (Blocks.largePlasmaBore instanceof BeamDrill drill) {
 			ObjectFloatMap<Item> map = drill.drillMultipliers;
 
+			map.put(Items.scrap, 3f);
+			map.put(Items.copper, 2.5f);
+			map.put(Items.lead, 2.5f);
+			map.put(Items2.stone, 2f);
+			map.put(Items2.rareEarth, 2f);
+			map.put(Items.coal, 2f);
 			map.put(Items.pyratite, 1.5f);
 			map.put(Items.beryllium, 1.5f);
 			map.put(Items.graphite, 1.5f);

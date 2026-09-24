@@ -34,11 +34,6 @@ public class EnergyUnit extends Unit2 implements Energyc {
 	protected Trail[] trails = {};
 
 	@Override
-	public int classId() {
-		return Entitys.getId(EnergyUnit.class);
-	}
-
-	@Override
 	public void destroy() {
 		super.destroy();
 

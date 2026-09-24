@@ -297,11 +297,6 @@ public class Spawner extends BaseEntity implements Syncc, Timedc, IScaled, Rotc 
 	}
 
 	@Override
-	public int classId() {
-		return Entitys.getId(Spawner.class);
-	}
-
-	@Override
 	public void snapSync() {}
 
 	@Override

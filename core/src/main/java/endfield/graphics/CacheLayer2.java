@@ -14,6 +14,7 @@ import endfield.graphics.Shaders2.ShaderWrapper;
 import endfield.graphics.gl.CaptureBuffer;
 import mindustry.graphics.CacheLayer;
 import mindustry.graphics.CacheLayer.ShaderLayer;
+import mindustry.graphics.MultiPacker;
 import mindustry.graphics.Shaders;
 
 import static mindustry.Vars.renderer;
@@ -63,6 +64,10 @@ public final class CacheLayer2 {
 
 		public CaptureBuffer applyLiquidBuffer = new CaptureBuffer();
 
+		public LiquidUnderFloorLayer(Shader shader) {
+			this(shader, Color.clear, "white");
+		}
+
 		public LiquidUnderFloorLayer(Shader shader, Color baseColor) {
 			this(shader, baseColor, "white");
 		}
@@ -82,7 +87,7 @@ public final class CacheLayer2 {
 		}
 
 		@Override
-		public void getPack() {
+		public void getPack(MultiPacker packer) {
 			TextureRegion region = Core.atlas.find(textureName);
 			Pixmap pix = new Pixmap(region.width, region.height);
 			pix.draw(Core.atlas.getPixmap(region));

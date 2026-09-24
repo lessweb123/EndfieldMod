@@ -16,7 +16,7 @@ public class ElevationMoveUnit2 extends ElevationMoveUnit implements Unitc2 {
 
 	@Override
 	public int classId() {
-		return Entitys.getId(ElevationMoveUnit2.class);
+		return Entitys.getId(getClass());
 	}
 
 	@Override

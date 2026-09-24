@@ -66,11 +66,6 @@ public class DayunTankUnit extends TankUnit2 {
 	}
 
 	@Override
-	public int classId() {
-		return Entitys.getId(getClass());
-	}
-
-	@Override
 	public void update() {
 		super.update();
 
@@ -146,10 +141,10 @@ public class DayunTankUnit extends TankUnit2 {
 
 	public boolean isWhitelisted(Building b) {
 		if (b instanceof CoreBlock.CoreBuild) return true;
-		else if (b instanceof BaseShield.BaseShieldBuild && b.efficiency > 0.1f) return true;
+		if (b instanceof BaseShield.BaseShieldBuild && b.efficiency > 0.1f) return true;
 		//if (b instanceof MelonicArrayPillar.MelonicArrayPillarBuild) return true;
-		else if (whitelistBlockNames.contains(b.block.name)) return true;
-		else return false;
+
+		return whitelistBlockNames.contains(b.block.name);
 	}
 
 	@Override

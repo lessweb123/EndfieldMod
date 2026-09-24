@@ -25,6 +25,7 @@ import endfield.content.UnitCommands2;
 import endfield.content.UnitTypes2;
 import endfield.content.Weathers2;
 import endfield.game.Team2;
+import endfield.graphics.AtlasPackHandle;
 import endfield.graphics.CacheLayer2;
 import endfield.graphics.MathRenderer;
 import endfield.graphics.Pixmaps2;
@@ -177,7 +178,7 @@ public final class EndFieldMod extends Mod {
 		});
 
 		Events.on(AtlasPackEvent.class, event -> {
-			for (var h : CacheLayer2.handles) h.getPack(event.multiPacker);
+			for (AtlasPackHandle handle : CacheLayer2.handles) handle.getPack(event.multiPacker);
 		});
 
 		// To prevent damage to other mod, it can only be enabled during testing

@@ -16,11 +16,6 @@ import static endfield.Vars2.boardTimeTotal;
 public class DPSMechUnit extends MechUnit2 {
 	public float totalOrigin, totalReal, hits, firstHitTime, lastHitTime, showBoardTime;
 
-	@Override
-	public int classId() {
-		return Entitys.getId(DPSMechUnit.class);
-	}
-
 	public void recordDamage(float amount, boolean ignoreArmor) {
 		float real = (ignoreArmor ? amount : Math.max(amount - armor, Vars.minArmorDamage * amount)) / healthMultiplier;
 		totalOrigin += amount;

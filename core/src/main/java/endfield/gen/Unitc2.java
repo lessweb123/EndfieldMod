@@ -23,4 +23,9 @@ public interface Unitc2 extends Unitc, ExtraVariable {
 	default <T> Prov<T> provAs() {
 		return this::as;
 	}
+
+	@Override
+	default int classId() {
+		return Entitys.getId(getClass());
+	}
 }

@@ -20,7 +20,7 @@ public class MechUnit2 extends MechUnit implements Unitc2 {
 
 	@Override
 	public int classId() {
-		return Entitys.getId(MechUnit2.class);
+		return Entitys.getId(getClass());
 	}
 
 	@Override

@@ -20,7 +20,7 @@ public class UnitWaterMove2 extends UnitWaterMove implements Unitc2 {
 
 	@Override
 	public int classId() {
-		return Entitys.getId(UnitWaterMove2.class);
+		return Entitys.getId(getClass());
 	}
 
 	@Override

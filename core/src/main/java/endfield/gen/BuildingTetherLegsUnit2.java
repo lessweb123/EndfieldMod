@@ -12,11 +12,6 @@ public class BuildingTetherLegsUnit2 extends LegsUnit2 implements BuildingTether
 	public @Nullable Building building;
 
 	@Override
-	public int classId() {
-		return Entitys.getId(BuildingTetherLegsUnit2.class);
-	}
-
-	@Override
 	public void update() {
 		super.update();
 

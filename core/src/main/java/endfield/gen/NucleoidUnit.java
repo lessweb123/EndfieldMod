@@ -28,11 +28,6 @@ public class NucleoidUnit extends Unit2 implements Nucleoidc {
 	public float reinforcementsReload;
 
 	@Override
-	public int classId() {
-		return Entitys.getId(NucleoidUnit.class);
-	}
-
-	@Override
 	public void setType(UnitType type) {
 		super.setType(type);
 

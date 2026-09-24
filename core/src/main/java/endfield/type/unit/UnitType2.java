@@ -105,7 +105,7 @@ public class UnitType2 extends UnitType {
 
 	public void init(Unit unit) {}
 
-	public void read(Unit sglUnitEntity, Reads read, int revision) {}
+	public void read(Unit unit, Reads read, int revision) {}
 
-	public void write(Unit sglUnitEntity, Writes write) {}
+	public void write(Unit unit, Writes write) {}
 }

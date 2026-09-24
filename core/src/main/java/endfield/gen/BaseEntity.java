@@ -180,7 +180,7 @@ public abstract class BaseEntity implements Drawc, IPosition, ExtraVariable {
 
 	@Override
 	public int classId() {
-		return 0;
+		return Entitys.getId(getClass());
 	}
 
 	@Override

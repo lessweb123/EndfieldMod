@@ -14,6 +14,6 @@ public class DiffBullet extends Bullet {
 
 	@Override
 	public int classId() {
-		return Entitys.getId(DiffBullet.class);
+		return Entitys.getId(getClass());
 	}
 }

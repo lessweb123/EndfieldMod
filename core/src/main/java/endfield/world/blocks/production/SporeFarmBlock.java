@@ -46,8 +46,8 @@ public class SporeFarmBlock extends Block {
 	public void load() {
 		super.load();
 
-		sporeRegions = Sprites.split(name + "-spore", 32, 5, 1);
-		groundRegions = Sprites.split(name + "-ground", 32, 5, 1);
+		sporeRegions = Sprites.splitLayer(name + "-spore", 32, 5);
+		groundRegions = Sprites.splitLayer(name + "-ground", 32, 5);
 
 		fenceRegions = Sprites.split(name + "-fence", 32, 12, 4);
 		cageFloor = Core.atlas.find(name + "-floor");
@@ -89,10 +89,10 @@ public class SporeFarmBlock extends Block {
 			float rrot2 = (tileX() * 69f + tileY() * 42f) % 4f;
 
 			if (growth < frames - 0.5f) {
-				Tile tiled = Vars.world.tileWorld(x, y);
+				Tile t = Vars.world.tileWorld(x, y);
 
-				if (tiled != null && tiled.floor() != Blocks.air) {
-					Floor floor = tiled.floor();
+				if (tile != null && t != null && t.floor() != Blocks.air) {
+					Floor floor = t.floor();
 					floor.drawBase(tile);
 				}
 
@@ -104,15 +104,19 @@ public class SporeFarmBlock extends Block {
 				Draw.rect(sporeRegions[Mathf.floor(growth)], x, y, rrot2 * 90f);
 			}
 
-			int tileIndex = 0;
-			for (int i = 0; i < 8; i++) {
-				Tile other = tile.nearby(Geometry.d8[i]);
-				if (other != null && other.block() == block && other.build != null && other.build.team == team) {
-					tileIndex |= (1 << i);
+			if (tile != null) {
+				int tileIndex = 0;
+				for (int i = 0; i < 8; i++) {
+					Tile other = tile.nearby(Geometry.d8[i]);
+					if (other != null && other.block() == block && other.build != null && other.build.team == team) {
+						tileIndex |= (1 << i);
+					}
 				}
-			}
 
-			Draw.rect(fenceRegions[TileBitmask.values[tileIndex]], x, y, 8f, 8f);
+				Draw.rect(fenceRegions[TileBitmask.values[tileIndex]], x, y, 8f, 8f);
+			} else {
+				Draw.rect(fenceRegions[TileBitmask.values[0]], x, y, 8f, 8f);
+			}
 			drawTeamTop();
 		}
 

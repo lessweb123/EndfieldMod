@@ -20,7 +20,7 @@ public class PayloadUnit2 extends PayloadUnit implements Unitc2 {
 
 	@Override
 	public int classId() {
-		return Entitys.getId(PayloadUnit2.class);
+		return Entitys.getId(getClass());
 	}
 
 	@Override

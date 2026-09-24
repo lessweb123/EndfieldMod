@@ -2,11 +2,6 @@ package endfield.gen;
 
 public class InvincibleShipUnit extends Unit2 {
 	@Override
-	public int classId() {
-		return Entitys.getId(InvincibleShipUnit.class);
-	}
-
-	@Override
 	public void damage(float amount) {}
 
 	@Override

@@ -14,11 +14,6 @@ public class CopterUnit extends Unit2 implements Copterc {
 	protected transient float rotorSpeedScl = 1f;
 
 	@Override
-	public int classId() {
-		return Entitys.getId(CopterUnit.class);
-	}
-
-	@Override
 	public void add() {
 		if (added) return;
 		index__unit = Groups.unit.addIndex(this);

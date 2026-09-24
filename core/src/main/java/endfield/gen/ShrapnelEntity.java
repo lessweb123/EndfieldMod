@@ -68,11 +68,6 @@ public class ShrapnelEntity extends BaseEntity implements Poolable {
 	}
 
 	@Override
-	public int classId() {
-		return Entitys.getId(ShrapnelEntity.class);
-	}
-
-	@Override
 	public boolean serialize() {
 		return false;
 	}

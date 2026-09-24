@@ -84,11 +84,6 @@ public class RenderGroupEntity extends BaseEntity implements Poolable {
 	}
 
 	@Override
-	public int classId() {
-		return Entitys.getId(RenderGroupEntity.class);
-	}
-
-	@Override
 	public void update() {
 		regions.removeAll(r -> {
 			r.update();

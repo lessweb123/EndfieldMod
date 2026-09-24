@@ -1,31 +1,36 @@
 package endfield.world.blocks.defense;
 
-import arc.graphics.g2d.Draw;
+import arc.Core;
 import arc.graphics.g2d.TextureRegion;
-import arc.math.geom.Geometry;
 import endfield.util.Sprites;
-import mindustry.world.Tile;
-import mindustry.world.blocks.TileBitmask;
+import mindustry.game.Team;
 import mindustry.world.blocks.defense.Wall;
 
 public class ConnectedWall extends Wall {
-	public TextureRegion[] autotileRegions;
-
 	public ConnectedWall(String name) {
 		super(name);
 	}
 
 	@Override
 	public void load() {
-		variants = 0;
+		region = Core.atlas.find(name);
 
-		super.load();
+		customShadowRegion = Core.atlas.find(name + "-shadow");
 
-		autotileRegions = Sprites.split(name + "-autotile", 32, 12, 4);
+		teamRegion = Core.atlas.find(name + "-team");
+
+		teamRegions = new TextureRegion[Team.all.length];
+		for (Team team : Team.all) {
+			teamRegions[team.id] = teamRegion.found() && team.hasPalette ? Core.atlas.find(name + "-team-" + team.name, teamRegion) : teamRegion;
+		}
+
+		if (autotile) {
+			autotileRegions = Sprites.split(name + "-autotile", 32, 12, 4);
+		}
 	}
 
 	public class ConnectedWallBuild extends WallBuild {
-		@Override
+		/*@Override
 		public void draw() {
 			int tileIndex = 0;
 			for (int i = 0; i < 8; i++) {
@@ -35,6 +40,6 @@ public class ConnectedWall extends Wall {
 				}
 			}
 			Draw.rect(autotileRegions[TileBitmask.values[tileIndex]], x, y);
-		}
+		}*/
 	}
 }

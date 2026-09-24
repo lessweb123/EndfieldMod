@@ -12,11 +12,6 @@ public class BuildingTetherUnit2 extends Unit2 implements BuildingTetherc {
 	public @Nullable Building building;
 
 	@Override
-	public int classId() {
-		return Entitys.getId(BuildingTetherUnit2.class);
-	}
-
-	@Override
 	public void update() {
 		super.update();
 

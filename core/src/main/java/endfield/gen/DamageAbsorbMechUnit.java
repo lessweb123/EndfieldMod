@@ -8,11 +8,6 @@ import mindustry.entities.Damage;
 
 public class DamageAbsorbMechUnit extends MechUnit2 implements DamageAbsorbc {
 	@Override
-	public int classId() {
-		return Entitys.getId(DamageAbsorbMechUnit.class);
-	}
-
-	@Override
 	public float realDamage(boolean isStatus, float amount) {
 		return !isStatus && type instanceof UnitType2 fu ? amount * Mathm.clamp(1 - fu.absorption) : amount;
 	}

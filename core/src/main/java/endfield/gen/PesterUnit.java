@@ -76,11 +76,6 @@ public class PesterUnit extends Unit2 implements Pesterc {
 	protected Trail[] trails = {};
 
 	@Override
-	public int classId() {
-		return Entitys.getId(PesterUnit.class);
-	}
-
-	@Override
 	public void setType(UnitType type) {
 		super.setType(type);
 		if (!Vars.net.active()) lastTargetPos.set(x, y);

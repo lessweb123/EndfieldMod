@@ -20,7 +20,7 @@ public class TankUnit2 extends TankUnit implements Unitc2 {
 
 	@Override
 	public int classId() {
-		return Entitys.getId(TankUnit2.class);
+		return Entitys.getId(getClass());
 	}
 
 	@Override

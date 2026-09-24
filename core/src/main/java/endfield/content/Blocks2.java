@@ -700,7 +700,7 @@ public final class Blocks2 {
 			lightRadius = 110;
 			emitLight = true;
 			lightColor = Pal.turretHeat.cpy().a(0.9f);
-			attributes.set(Attribute.heat, 1.5f);
+			attributes.set(Attribute.heat, 1.25f);
 			walkEffect = new ParticleEffect() {{
 				particles = 3;
 				sizeFrom = 2.5f;
@@ -711,7 +711,6 @@ public final class Blocks2 {
 				colorFrom = new Color(0xfff1d2ff);
 				colorTo = new Color(0xffd197ff);
 			}};
-			damageTaken = 8f;
 			status = StatusEffects.melting;
 		}};
 		metalHeatSinkOff = new TiledFloor("metal-heat-sink-off", 1, 2) {{
@@ -1465,6 +1464,7 @@ public final class Blocks2 {
 			crushDamageMultiplier = 0.5f;
 			maxShareStep = 3;
 			hideDetails = false;
+			autotile = true;
 		}};
 		oldTracks = new Wall("old-tracks") {{
 			requirements(Category.defense, ItemStack.with(Items.scrap, 12));

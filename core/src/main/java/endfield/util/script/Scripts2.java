@@ -12,9 +12,6 @@ import rhino.NativeArray;
 import rhino.Scriptable;
 import rhino.Wrapper;
 
-import java.util.Arrays;
-import java.util.Iterator;
-
 /**
  * Utility class for transition between Java and JS scripts, as well as providing a custom top level scope for the sake of
  * cross-mod compatibility. Use the custom scope for programmatically compiling Rhino functions.
@@ -67,7 +64,10 @@ public final class Scripts2 {
 	}
 
 	public static Object[] convertArgs(Object[] arr, Class<?>[] types) {
-		Iterator<Class<?>> iterator = Arrays.stream(types).iterator();
-		return Arrays.stream(arr).map(a -> JavaAdapter.convertResult(a, iterator.next())).toArray();
+		Object[] res = new Object[arr.length];
+		for (int i = 0; i < arr.length; i++) {
+			res[i] = JavaAdapter.convertResult(arr[i], types[i]);
+		}
+		return res;
 	}
 }

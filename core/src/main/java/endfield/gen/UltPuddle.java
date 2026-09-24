@@ -117,7 +117,7 @@ public class UltPuddle extends Puddle {
 
 	@Override
 	public int classId() {
-		return Entitys.getId(UltPuddle.class);
+		return Entitys.getId(getClass());
 	}
 
 	@Override

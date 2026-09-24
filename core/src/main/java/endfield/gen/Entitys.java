@@ -95,5 +95,6 @@ public final class Entitys {
 		register(RenderGroupEntity.class, RenderGroupEntity::new);
 		register(ShrapnelEntity.class, ShrapnelEntity::new);
 		register(VapourizeEffectState.class, VapourizeEffectState::new);
+		register(PressureGraphUpdater.class, PressureGraphUpdater::new);
 	}
 }

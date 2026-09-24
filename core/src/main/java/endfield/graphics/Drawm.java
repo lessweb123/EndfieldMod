@@ -70,16 +70,16 @@ public final class Drawm {
 	 * to get the region. Must be followed by a #generateTeamRegion.
 	 */
 	public static void customTeamRegion(MultiPacker packer, String name) {
-		PixmapRegion teamr = Core.atlas.getPixmap(name + "-team");
+		PixmapRegion teamRegion = Core.atlas.getPixmap(name + "-team");
 
 		for (Team team : Team.all) {
 			if (team.hasPalette) {
-				Pixmap out = new Pixmap(teamr.width, teamr.height);
-				for (int x = 0; x < teamr.width; x++) {
-					for (int y = 0; y < teamr.height; y++) {
-						int color = teamr.getRaw(x, y);
+				Pixmap out = new Pixmap(teamRegion.width, teamRegion.height);
+				for (int x = 0; x < teamRegion.width; x++) {
+					for (int y = 0; y < teamRegion.height; y++) {
+						int color = teamRegion.getRaw(x, y);
 						int index = color == 0xffffffff ? 0 : color == 0xdcc6c6ff ? 1 : color == 0x9d7f7fff ? 2 : -1;
-						out.setRaw(x, y, index == -1 ? teamr.getRaw(x, y) : team.palettei[index]);
+						out.setRaw(x, y, index == -1 ? teamRegion.getRaw(x, y) : team.palettei[index]);
 					}
 				}
 				packer.add(PageType.main, name + "-team-" + team.name, out);

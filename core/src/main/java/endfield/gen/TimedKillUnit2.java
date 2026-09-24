@@ -20,7 +20,7 @@ public class TimedKillUnit2 extends TimedKillUnit implements Unitc2 {
 
 	@Override
 	public int classId() {
-		return Entitys.getId(TimedKillUnit2.class);
+		return Entitys.getId(getClass());
 	}
 
 	@Override

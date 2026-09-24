@@ -18,11 +18,6 @@ public class OrnitopterUnit extends Unit2 implements Ornitopterc {
 	protected boolean hasDriftAngle = false;
 
 	@Override
-	public int classId() {
-		return Entitys.getId(OrnitopterUnit.class);
-	}
-
-	@Override
 	public void afterRead() {
 		super.afterRead();
 		setBlades(type);

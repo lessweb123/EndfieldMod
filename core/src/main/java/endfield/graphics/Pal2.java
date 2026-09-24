@@ -14,9 +14,9 @@ public final class Pal2 {
 	public static final Color whiteClear = new Color(0xffffff00);
 	public static final Color carbideAmmoBack = new Color(0xab8ec5ff);
 	public static final Color goldAmmoBack = new Color(0xf8df87ff);
-	public static final Color crystalAmmoBack = new Color(0xfff4c2ff);
-	public static final Color crystalAmmoBright = new Color(0xffd36eff);
-	public static final Color crystalAmmoDark = new Color(0xf0a63fff);
+	public static final Color crystalAmmoBack = new Color(0xffeee3ff);
+	public static final Color crystalAmmoBright = new Color(0xffc9a6ff);
+	public static final Color crystalAmmoDark = new Color(0xffb38dff);
 	public static final Color uraniumAmmoBack = new Color(0xa5b2c2ff);
 	public static final Color uraniumAmmoFront = new Color(0xebf4ffff);
 	public static final Color chromiumAmmoBack = new Color(0x8f94b3ff);

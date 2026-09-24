@@ -29,6 +29,7 @@ public class ShapedWall extends ConnectedWall {
 
 	public ShapedWall(String name) {
 		super(name);
+		clipSize = Vars.tilesize * 2 + 2;
 		teamPassable = true;
 	}
 
@@ -84,7 +85,6 @@ public class ShapedWall extends ConnectedWall {
 
 			for (Point2 point : Sprites.proximityPos) {
 				Building other = Vars.world.build(tile.x + point.x, tile.y + point.y);
-				if (other == null || other.team != team) continue;
 				if (checkWall(other)) {
 					connectedWalls.add((ShapedWallBuild) other);
 				}
@@ -124,18 +124,12 @@ public class ShapedWall extends ConnectedWall {
 		//todo healthChanged sometimes not trigger properly
 		public void damageShared(Building build, float damage) {
 			if (build.dead()) return;
-			float dm = Vars.state.rules.blockHealth(team);
-			if (Mathf.zero(dm)) {
-				damage = build.health + 1;
-			} else {
-				damage /= dm;
-			}
+			float multip = Vars.state.rules.blockHealth(team);
+			damage = Mathf.zero(multip) ? build.health + 1 : damage / multip;
 			if (!Vars.net.client()) {
 				build.health -= damage;
 			}
-			if (damaged()) {
-				healthChanged();
-			}
+			build.healthChanged();
 			if (build.health <= 0) {
 				Call.buildDestroyed(build);
 			}

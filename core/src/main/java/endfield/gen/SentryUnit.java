@@ -14,11 +14,6 @@ public class SentryUnit extends TimedKillUnit2 implements Sentryc {
 	public float anchorDrag;
 
 	@Override
-	public int classId() {
-		return Entitys.getId(SentryUnit.class);
-	}
-
-	@Override
 	public void setType(UnitType type) {
 		super.setType(type);
 		if (type instanceof SentryUnitType sType) {
