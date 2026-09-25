@@ -23,13 +23,13 @@ import mindustry.gen.Healthc;
 import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 
 public class EndNukeBulletType extends BasicBulletType {
 	public static int lastMax, lastUnit, lastBuilding;
 
 	public EndNukeBulletType() {
-		this(17f, 1000f, MOD_NAME + "-large-missile");
+		this(17f, 1000f, modName + "-large-missile");
 	}
 
 	public EndNukeBulletType(float speed, float damage, String bulletSprite) {

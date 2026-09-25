@@ -9,7 +9,6 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import endfield.util.Sprites;
 import mindustry.Vars;
-import mindustry.content.Blocks;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
 import mindustry.gen.Building;
@@ -17,7 +16,6 @@ import mindustry.type.Liquid;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.TileBitmask;
-import mindustry.world.blocks.environment.Floor;
 import mindustry.world.meta.Attribute;
 
 // Do you feel familiar? Yes, it has been added back now.
@@ -89,13 +87,6 @@ public class SporeFarmBlock extends Block {
 			float rrot2 = (tileX() * 69f + tileY() * 42f) % 4f;
 
 			if (growth < frames - 0.5f) {
-				Tile t = Vars.world.tileWorld(x, y);
-
-				if (tile != null && t != null && t.floor() != Blocks.air) {
-					Floor floor = t.floor();
-					floor.drawBase(tile);
-				}
-
 				Draw.rect(cageFloor, x, y);
 			}
 
@@ -104,19 +95,16 @@ public class SporeFarmBlock extends Block {
 				Draw.rect(sporeRegions[Mathf.floor(growth)], x, y, rrot2 * 90f);
 			}
 
-			if (tile != null) {
-				int tileIndex = 0;
-				for (int i = 0; i < 8; i++) {
-					Tile other = tile.nearby(Geometry.d8[i]);
-					if (other != null && other.block() == block && other.build != null && other.build.team == team) {
-						tileIndex |= (1 << i);
-					}
+			int tileIndex = 0;
+			for (int i = 0; i < 8; i++) {
+				Tile other = tile.nearby(Geometry.d8[i]);
+				if (other != null && other.block() == block && other.build != null && other.build.team == team) {
+					tileIndex |= (1 << i);
 				}
-
-				Draw.rect(fenceRegions[TileBitmask.values[tileIndex]], x, y, 8f, 8f);
-			} else {
-				Draw.rect(fenceRegions[TileBitmask.values[0]], x, y, 8f, 8f);
 			}
+
+			Draw.rect(fenceRegions[TileBitmask.values[tileIndex]], x, y, 8f, 8f);
+
 			drawTeamTop();
 		}
 

@@ -41,12 +41,8 @@ public final class Regions2 {
 		Seq<Fi> fis = internalTree.child("sprites-add").findAll(f -> f.extension().equals("png"));
 
 		for (Fi fi : fis) {
-			try {
-				Texture texture = new Texture(fi);
-				Core.atlas.addRegion(fi.nameWithoutExtension(), texture, 0, 0, texture.width, texture.height);
-			} catch (Exception e) {
-				arc.util.Log.err(e);
-			}
+			Texture texture = new Texture(fi);
+			Core.atlas.addRegion(fi.nameWithoutExtension(), texture, 0, 0, texture.width, texture.height);
 		}
 	}
 

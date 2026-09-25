@@ -24,7 +24,7 @@ import mindustry.type.Planet;
 
 import java.nio.FloatBuffer;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 
 /**
  * Defines the {@linkplain Shader shader}s this mod offers.
@@ -37,7 +37,7 @@ public final class Shaders2 {
 	public static DepthShader depth;
 	public static DepthAtmosphereShader depthAtmosphere;
 	public static AlphaShader alphaShader;
-	public static SurfaceShader2 brine, glacium, coldPlasma, deepColdPlasma, boundWater, pit, waterPit, shallowSlag;
+	public static SurfaceShader2 brine, acid, glacium, coldPlasma, deepColdPlasma, boundWater, pit, waterPit, shallowSlag;
 	public static AberrationShader aberration;
 	public static MaskShader alphaMask;
 	public static WaveShader wave;
@@ -67,6 +67,7 @@ public final class Shaders2 {
 		alphaShader = new AlphaShader();
 
 		brine = new SurfaceShader2(shadersDir.child("general-highp.vert"), shadersDir.child("brine.frag"));
+		acid = new SurfaceShader2(shadersDir.child("general-highp.vert"), shadersDir.child("acid.frag"));
 		glacium = new SurfaceShader2(shadersDir.child("general-highp.vert"), shadersDir.child("glacium.frag"));
 		coldPlasma = new SurfaceShader2(shadersDir.child("general-highp.vert"), shadersDir.child("cold-plasma.frag"));
 		deepColdPlasma = new DualSurfaceShader(shadersDir.child("general-highp.vert"), shadersDir.child("deep-cold-plasma.frag")) {
@@ -81,8 +82,8 @@ public final class Shaders2 {
 			}
 		};
 		boundWater = new SurfaceShader2(shadersDir.child("general-highp.vert"), shadersDir.child("bound-water.frag"));
-		pit = new PitShader(shadersDir.child("general-highp.vert"), shadersDir.child("pit.frag"), MOD_NAME + "-concrete-blank1", MOD_NAME + "-stone-variants", MOD_NAME + "-truss");
-		waterPit = new PitShader(shadersDir.child("general-highp.vert"), shadersDir.child("water-pit.frag"), MOD_NAME + "-concrete-blank1", MOD_NAME + "-stone-variants", MOD_NAME + "-truss");
+		pit = new PitShader(shadersDir.child("general-highp.vert"), shadersDir.child("pit.frag"), modName + "-concrete-blank1", modName + "-stone-variants", modName + "-truss");
+		waterPit = new PitShader(shadersDir.child("general-highp.vert"), shadersDir.child("water-pit.frag"), modName + "-concrete-blank1", modName + "-stone-variants", modName + "-truss");
 		shallowSlag = new SurfaceShader2(shadersDir.child("general-highp.vert"), shadersDir.child("shallow-slag.frag"));
 
 		aberration = new AberrationShader();

@@ -1,6 +1,7 @@
 package endfield.util;
 
 import arc.Core;
+import arc.graphics.Texture;
 import arc.graphics.g2d.TextureAtlas.AtlasRegion;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
@@ -164,6 +165,8 @@ public final class Sprites {
 	}
 
 	public static TextureRegion[][] split(TextureRegion region, int size) {
+		Texture texture = region.texture;
+
 		int x = region.getX();
 		int y = region.getY();
 		int width = region.width;
@@ -177,7 +180,7 @@ public final class Sprites {
 		for (int cy = 0; cy < sh; cy++, y += size) {
 			x = startX;
 			for (int cx = 0; cx < sw; cx++, x += size) {
-				tiles[cx][cy] = new TextureRegion(region.texture, x, y, size, size);
+				tiles[cx][cy] = new TextureRegion(texture, x, y, size, size);
 			}
 		}
 
@@ -223,6 +226,8 @@ public final class Sprites {
 	}
 
 	public static TextureRegion[][] splitTiles(TextureRegion region, int size, int pad) {
+		Texture texture = region.texture;
+
 		int x = region.getX();
 		int y = region.getY();
 		int width = region.width;
@@ -240,7 +245,7 @@ public final class Sprites {
 		for (int cy = 0; cy < sh; cy++, y += pHeight) {
 			x = startX;
 			for (int cx = 0; cx < sw; cx++, x += pWidth) {
-				tiles[cx][cy] = new TextureRegion(region.texture, x + pad, y + pad, size, size);
+				tiles[cx][cy] = new TextureRegion(texture, x + pad, y + pad, size, size);
 			}
 		}
 
@@ -256,6 +261,8 @@ public final class Sprites {
 	}
 
 	public static TextureRegion[] splitArray(TextureRegion region, int size, int pad, int @Nullable [] indexMap) {
+		Texture texture = region.texture;
+
 		int x = region.getX();
 		int y = region.getY();
 		int width = region.width;
@@ -274,9 +281,9 @@ public final class Sprites {
 			for (int cx = 0; cx < sw; cx++, x += pWidth) {
 				int index = cx + cy * sw;
 				if (indexMap != null) {
-					tiles[indexMap[index]] = new TextureRegion(region.texture, x + pad, y + pad, size, size);
+					tiles[indexMap[index]] = new TextureRegion(texture, x + pad, y + pad, size, size);
 				} else {
-					tiles[index] = new TextureRegion(region.texture, x + pad, y + pad, size, size);
+					tiles[index] = new TextureRegion(texture, x + pad, y + pad, size, size);
 				}
 			}
 		}

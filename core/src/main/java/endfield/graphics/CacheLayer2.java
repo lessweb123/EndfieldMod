@@ -27,7 +27,7 @@ import static mindustry.Vars.renderer;
 public final class CacheLayer2 {
 	public static Seq<AtlasPackHandle> handles = new Seq<>(AtlasPackHandle.class);
 
-	public static ShaderLayer brine, glacium, coldPlasma, deepColdPlasma, pit, waterPit;
+	public static ShaderLayer brine, acid, glacium, coldPlasma, deepColdPlasma, pit, waterPit;
 	public static LiquidUnderFloorLayer shallowSlag;
 
 	/** Don't let anyone instantiate this class. */
@@ -36,6 +36,7 @@ public final class CacheLayer2 {
 	/** Loads the cache layers. */
 	public static void load() {
 		brine = new ShaderLayer(Shaders2.brine);
+		acid = new ShaderLayer(Shaders2.acid);
 		glacium = new ShaderLayer(Shaders2.glacium);
 		coldPlasma = new ShaderLayer(Shaders2.coldPlasma);
 		deepColdPlasma = new ShaderLayer(Shaders2.deepColdPlasma);

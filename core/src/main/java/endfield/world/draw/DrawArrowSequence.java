@@ -13,7 +13,7 @@ import mindustry.graphics.Layer;
 
 import java.util.Objects;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 
 public class DrawArrowSequence extends DrawPart {
 	public float x, y, rotation;
@@ -76,6 +76,6 @@ public class DrawArrowSequence extends DrawPart {
 
 	@Override
 	public void load(String name) {
-		arrowRegion = Core.atlas.find(Objects.requireNonNullElse(arrowName, MOD_NAME + "-arrow"));
+		arrowRegion = Core.atlas.find(Objects.requireNonNullElse(arrowName, modName + "-arrow"));
 	}
 }

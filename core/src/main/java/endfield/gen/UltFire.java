@@ -31,7 +31,7 @@ import mindustry.graphics.Pal;
 import mindustry.world.Tile;
 import mindustry.world.meta.Attribute;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 
 public class UltFire extends Fire {
 	public static final float baseLifetime = 1200f;
@@ -43,7 +43,7 @@ public class UltFire extends Fire {
 	});
 
 	static {
-		ultRegion = Sprites.split(MOD_NAME + "-ult-fire", 160, 10, 4);
+		ultRegion = Sprites.split(modName + "-ult-fire", 160, 10, 4);
 	}
 
 	public static void create(float x, float y, Team team) {

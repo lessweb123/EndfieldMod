@@ -11,7 +11,7 @@ import endfield.math.Mathm;
 import mindustry.Vars;
 import mindustry.entities.part.DrawPart;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 
 public class AimPart extends DrawPart {
 	public Color color;
@@ -39,7 +39,7 @@ public class AimPart extends DrawPart {
 		for (int i = 0; i <= length / spacing; i++) {
 			Tmp.v1.trns(params.rotation + rt, i * spacing);
 			float f = Interp.pow3Out.apply(Mathm.clamp((fout * length - i * spacing) / spacing)) * (0.6f + track * 0.4f) * wp;
-			Draw.rect(Core.atlas.find(MOD_NAME + "-aim-shoot"), px + Tmp.v1.x, py + Tmp.v1.y, 120 * Draw.scl * f, 120 * Draw.scl * f, params.rotation - 90 + rt);
+			Draw.rect(Core.atlas.find(modName + "-aim-shoot"), px + Tmp.v1.x, py + Tmp.v1.y, 120 * Draw.scl * f, 120 * Draw.scl * f, params.rotation - 90 + rt);
 		}
 		if (!drawLine) return;
 		Tmp.v1.trns(params.rotation + rt, 0, (2 - track) * Vars.tilesize * width);

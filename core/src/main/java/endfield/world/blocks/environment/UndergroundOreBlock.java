@@ -1,6 +1,7 @@
 package endfield.world.blocks.environment;
 
 import arc.graphics.g2d.Draw;
+import endfield.world.meta.Attributes2;
 import mindustry.graphics.Layer;
 import mindustry.type.Item;
 import mindustry.world.Tile;
@@ -15,6 +16,14 @@ public class UndergroundOreBlock extends OverlayFloor {
 
 	/** Used by {@link endfield.world.blocks.production.OreDetector OreDetector} **/
 	public boolean shouldDrawBase = false;
+
+	public UndergroundOreBlock(String name, Item ore, float dens) {
+		this(name, ore);
+
+		//density = dens;
+
+		attributes.set(Attributes2.density, dens);
+	}
 
 	public UndergroundOreBlock(String name, Item ore) {
 		this(name);

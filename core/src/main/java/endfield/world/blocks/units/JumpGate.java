@@ -56,7 +56,7 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatValues;
 import mindustry.world.modules.ItemModule;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 
 public class JumpGate extends Block {
 	public Seq<UnitRecipe> recipeList = new Seq<>(UnitRecipe.class);
@@ -105,8 +105,8 @@ public class JumpGate extends Block {
 	public void load() {
 		super.load();
 
-		arrowRegion = Core.atlas.find(MOD_NAME + "-jump-gate-arrow");
-		pointerRegion = Core.atlas.find(MOD_NAME + "-jump-gate-pointer");
+		arrowRegion = Core.atlas.find(modName + "-jump-gate-arrow");
+		pointerRegion = Core.atlas.find(modName + "-jump-gate-pointer");
 	}
 
 	@Override

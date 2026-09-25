@@ -3,7 +3,7 @@ package endfield.ui;
 import arc.Core;
 import arc.scene.style.TextureRegionDrawable;
 
-import static endfield.Vars2.MOD_PREFIX;
+import static endfield.Vars2.modName;
 
 public final class Icon2 {
 	public static TextureRegionDrawable keplerIcon, aboutIcon, artistIcon, configureIcon, contributeIcon, databaseIcon, debuggingIcon, defaultShowIcon, fullSwordIcon, gasesIcon;
@@ -81,6 +81,6 @@ public final class Icon2 {
 	}
 
 	public static TextureRegionDrawable texture(String name) {
-		return new TextureRegionDrawable(Core.atlas.find(MOD_PREFIX + name));
+		return new TextureRegionDrawable(Core.atlas.find(modName + "-" + name));
 	}
 }

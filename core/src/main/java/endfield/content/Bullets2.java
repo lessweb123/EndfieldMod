@@ -70,7 +70,7 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 
 /**
  * Some preset bullets. Perhaps it will be used multiple times.
@@ -210,7 +210,7 @@ public final class Bullets2 {
 			smokeEffect = Fx2.instShoot(hitColor, frontColor);
 			despawnSound = hitSound = Sounds.explosionReactorNeoplasm;
 			fragBullets = 22;
-			fragBullet = new BasicBulletType(2f, 300f, MOD_NAME + "-circle-bolt") {{
+			fragBullet = new BasicBulletType(2f, 300f, modName + "-circle-bolt") {{
 				width = height = 10f;
 				shrinkY = shrinkX = 0.7f;
 				backColor = trailColor = lightColor = lightningColor = hitColor = Pal2.ancientLightMid;
@@ -647,7 +647,7 @@ public final class Bullets2 {
 				UltFire.createChance(b, 12, 0.0075f);
 			}
 		};
-		annMissile = new BasicBulletType(5.6f, 80f, MOD_NAME + "-strike") {{
+		annMissile = new BasicBulletType(5.6f, 80f, modName + "-strike") {{
 			trailColor = lightningColor = backColor = lightColor = frontColor = Pal.techBlue;
 			lightning = 3;
 			lightningCone = 360;

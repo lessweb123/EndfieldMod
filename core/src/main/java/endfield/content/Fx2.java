@@ -58,7 +58,7 @@ import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.payloads.Payload;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 
 /**
  * Defines the {@linkplain Effect visual effects} this mod offers.
@@ -372,7 +372,7 @@ public final class Fx2 {
 	public static final Effect boolSelector = new Effect(0, 0, e -> {
 	});
 	public static final Effect spawn = new Effect(100f, e -> {
-		TextureRegion pointerRegion = Core.atlas.find(MOD_NAME + "-jump-gate-pointer");
+		TextureRegion pointerRegion = Core.atlas.find(modName + "-jump-gate-pointer");
 
 		Draw.color(e.color);
 
@@ -1057,7 +1057,7 @@ public final class Fx2 {
 			e.lifetime = e.rotation;
 
 			Draw.color(e.color);
-			TextureRegion arrowRegion = Core.atlas.find(MOD_NAME + "-jump-gate-arrow");
+			TextureRegion arrowRegion = Core.atlas.find(modName + "-jump-gate-arrow");
 			float scl = Mathf.curve(e.fout(), 0f, 0.1f);
 			Lines.stroke(2 * scl);
 			Lines.line(pos.getX(), pos.getY(), e.x, e.y);
@@ -1077,7 +1077,7 @@ public final class Fx2 {
 			Lines.spikes(e.x, e.y, e.rotation / i / 1.5f, e.rotation / 12f, 4, -e.time * 1.25f);
 		}
 
-		TextureRegion arrowRegion = Core.atlas.find(MOD_NAME + "-jump-gate-arrow");
+		TextureRegion arrowRegion = Core.atlas.find(modName + "-jump-gate-arrow");
 		float scl = Mathf.curve(e.fout(), 0f, 0.1f);
 
 		for (int l = 0; l < 4; l++) {
@@ -3781,7 +3781,7 @@ public final class Fx2 {
 			Fill.circle(e.x, e.y, r * fin);
 			float ww = r * 2f * fin, hh = r * 2f * fin;
 			Draw.color(e.color.cpy().a(e.time > 10 ? fout : 1));
-			Draw.rect(Core.atlas.find(MOD_NAME + "-firebird-light"), e.x, e.y, ww, hh);
+			Draw.rect(Core.atlas.find(modName + "-firebird-light"), e.x, e.y, ww, hh);
 		});
 	}
 
@@ -3994,7 +3994,7 @@ public final class Fx2 {
 
 	public static Effect railShoot(Color color, float length, float width, float lifetime, float spacing) {
 		return new Effect(lifetime, length * 2f, e -> {
-			TextureRegion arrowRegion = Core.atlas.find(MOD_NAME + "-jump-gate-arrow");
+			TextureRegion arrowRegion = Core.atlas.find(modName + "-jump-gate-arrow");
 
 			Draw.color(color);
 

@@ -46,7 +46,7 @@ import mindustry.world.meta.StatValues;
 import org.jetbrains.annotations.ApiStatus.Obsolete;
 import org.jetbrains.annotations.Nullable;
 
-import static endfield.Vars2.MOD_PREFIX;
+import static endfield.Vars2.modName;
 import static mindustry.Vars.content;
 
 public final class StatValues2 {
@@ -865,7 +865,7 @@ public final class StatValues2 {
 		return table -> {
 			table.table(display -> {
 				display.add(new Stack() {{
-					add(new Image(liquid != null ? liquid.uiIcon : Core.atlas.find(MOD_PREFIX + "air")).setScaling(Scaling.fit));
+					add(new Image(liquid != null ? liquid.uiIcon : Core.atlas.find(modName + "-air")).setScaling(Scaling.fit));
 
 					if (amount * 60f / time != 0) {
 						Table t = new Table().left().bottom();

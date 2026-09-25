@@ -214,6 +214,7 @@ import endfield.world.blocks.liquid.LiquidMassDriver;
 import endfield.world.blocks.liquid.LiquidOverflowValve;
 import endfield.world.blocks.liquid.LiquidUnloader;
 import endfield.world.blocks.liquid.MergingLiquidBlock;
+import endfield.world.blocks.liquid.Pipe;
 import endfield.world.blocks.liquid.PressureLiquidBridge;
 import endfield.world.blocks.liquid.PressureLiquidConduit;
 import endfield.world.blocks.liquid.PressureLiquidJunction;
@@ -716,6 +717,8 @@ final class ClassMap2 {
 		classes.put("MergingLiquidBuild", MergingLiquidBlock.MergingLiquidBuild.class);
 		classes.put("Valve", Valve.class);
 		classes.put("ValveBuild", Valve.ValveBuild.class);
+		classes.put("Pipe", Pipe.class);
+		classes.put("PipeBuild", Pipe.PipeBuild.class);
 		classes.put("PressureLiquidBridge", PressureLiquidBridge.class);
 		classes.put("PressureLiquidBridgeBuild", PressureLiquidBridge.PressureLiquidBridgeBuild.class);
 		classes.put("PressureLiquidConduit", PressureLiquidConduit.class);

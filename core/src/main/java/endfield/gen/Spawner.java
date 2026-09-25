@@ -32,7 +32,6 @@ import mindustry.game.EventType.UnitCreateEvent;
 import mindustry.game.Team;
 import mindustry.gen.Groups;
 import mindustry.gen.Icon;
-import mindustry.gen.Player;
 import mindustry.gen.Rotc;
 import mindustry.gen.Syncc;
 import mindustry.gen.Timedc;
@@ -48,7 +47,7 @@ import mindustry.ui.Fonts;
 
 import java.nio.FloatBuffer;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 
 public class Spawner extends BaseEntity implements Syncc, Timedc, IScaled, Rotc {
 	public final Trail[] trails = {new Trail(30), new Trail(50), new Trail(70)};
@@ -218,7 +217,7 @@ public class Spawner extends BaseEntity implements Syncc, Timedc, IScaled, Rotc 
 	public void draw() {
 		if (type.health > 8000 && team != Vars.player.team()) Sounds2.alertLoop();
 
-		TextureRegion arrowRegion = Core.atlas.find(MOD_NAME + "-jump-gate-arrow");
+		TextureRegion arrowRegion = Core.atlas.find(modName + "-jump-gate-arrow");
 
 		Drawf.light(x, y, clipSize() * fout(), team.color, 0.7f);
 		Draw.z(Layer.effect - 1f);

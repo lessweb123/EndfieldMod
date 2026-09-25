@@ -6,7 +6,7 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.struct.FloatSeq;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 
 public class PointTrail {
 	public TextureRegion swordTrail;
@@ -26,7 +26,7 @@ public class PointTrail {
 	}
 
 	public void load() {
-		swordTrail = Core.atlas.find(MOD_NAME + "-sword-trail");
+		swordTrail = Core.atlas.find(modName + "-sword-trail");
 	}
 
 	public void draw() {

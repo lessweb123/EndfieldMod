@@ -4,7 +4,7 @@ import mindustry.Vars;
 import mindustry.ctype.Content;
 import mindustry.mod.Mods.LoadedMod;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 
 public final class Mods2 {
 	/** If needed, please call {@link #loaded()} for the LoadedMod of this mod. */
@@ -23,7 +23,7 @@ public final class Mods2 {
 
 	/** Safely obtain the {@code LoadedMod} for this mod. */
 	public static LoadedMod loaded() {
-		if (loaded == null) loaded = Vars.mods.getMod(MOD_NAME);
+		if (loaded == null) loaded = Vars.mods.getMod(modName);
 		return loaded;
 	}
 

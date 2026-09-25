@@ -30,16 +30,5 @@ public class ConnectedWall extends Wall {
 	}
 
 	public class ConnectedWallBuild extends WallBuild {
-		/*@Override
-		public void draw() {
-			int tileIndex = 0;
-			for (int i = 0; i < 8; i++) {
-				Tile other = tile.nearby(Geometry.d8[i]);
-				if (other != null && other.block() == block && other.build != null && other.build.team == team) {
-					tileIndex |= (1 << i);
-				}
-			}
-			Draw.rect(autotileRegions[TileBitmask.values[tileIndex]], x, y);
-		}*/
 	}
 }

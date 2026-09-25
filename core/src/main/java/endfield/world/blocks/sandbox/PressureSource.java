@@ -24,7 +24,7 @@ import mindustry.world.blocks.liquid.LiquidBlock;
 import mindustry.world.meta.BuildVisibility;
 import org.jetbrains.annotations.Nullable;
 
-import static endfield.Vars2.MOD_PREFIX;
+import static endfield.Vars2.modName;
 
 public class PressureSource extends GenericPressureBlock {
 	public TextureRegion bottomRegion;
@@ -62,7 +62,7 @@ public class PressureSource extends GenericPressureBlock {
 	public void load() {
 		super.load();
 
-		bottomRegion = Core.atlas.find(name + "-bottom", MOD_PREFIX + "liquid-bottom");
+		bottomRegion = Core.atlas.find(name + "-bottom", modName + "-liquid-bottom");
 	}
 
 	@Override

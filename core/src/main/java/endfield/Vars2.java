@@ -26,12 +26,11 @@ import mindustry.type.Sector;
  */
 public final class Vars2 {
 	/** Commonly used static read-only String. Do not change unless you know what you're doing. */
-	public static final String MOD_NAME = "endfield";
-	public static final String MOD_PREFIX = MOD_NAME + '-';
+	public static final String modName = "endfield";
 	/** The author of this mod. */
-	public static final String AUTHOR = "LessWeb";
+	public static final String author = "LessWeb";
 	/** The GitHub address of this mod. */
-	public static final String LINK_GIT_HUB = "https://github.com/lessweb123/EndfieldMod";
+	public static final String linkGitHub = "https://github.com/lessweb123/EndfieldMod";
 
 	public static PlatformImpl platformImpl;
 

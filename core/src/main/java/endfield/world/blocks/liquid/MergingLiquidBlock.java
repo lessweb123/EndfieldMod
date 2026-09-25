@@ -2,8 +2,8 @@ package endfield.world.blocks.liquid;
 
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
+import arc.struct.Queue;
 import arc.struct.Seq;
-import endfield.util.CollectionQueue;
 import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.type.Liquid;
@@ -11,7 +11,7 @@ import mindustry.world.blocks.liquid.LiquidBlock;
 import mindustry.world.modules.LiquidModule;
 
 public class MergingLiquidBlock extends LiquidBlock {
-	public static final CollectionQueue<MergingLiquidBuild> buildQueue = new CollectionQueue<>(16, MergingLiquidBuild.class);
+	public static final Queue<MergingLiquidBuild> buildQueue = new Queue<>();
 	// terrible
 	public static final LiquidModule tmpLiquids = new LiquidModule();
 
@@ -136,8 +136,8 @@ public class MergingLiquidBlock extends LiquidBlock {
 				prev.remove(next);
 				capacity += next.block.liquidCapacity;
 
-				for (Building b : next.chainTargets()) {
-					if (b instanceof MergingLiquidBuild other && other.chainTargets().contains(next) && !(other.removing) && other.chained != chained) {
+				for (Building b : next.proximity) {
+					if (b instanceof MergingLiquidBuild other && other.proximity.contains(next) && !(other.removing) && other.chained != chained) {
 						other.chained = chained;
 						buildQueue.addFirst(other);
 					}
@@ -165,10 +165,6 @@ public class MergingLiquidBlock extends LiquidBlock {
 					build.liquids.set(liquid, frac * build.block.liquidCapacity);
 				}
 			});
-		}
-
-		public Seq<Building> chainTargets() {
-			return proximity;
 		}
 
 		@Override

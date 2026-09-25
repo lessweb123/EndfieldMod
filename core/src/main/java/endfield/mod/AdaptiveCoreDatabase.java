@@ -15,7 +15,7 @@ import mindustry.world.Block;
 
 import java.util.Arrays;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 
 /**
  * from mod {@code AdaptiveCoreDatabase}.
@@ -35,7 +35,7 @@ public final class AdaptiveCoreDatabase {
 		Seq<LoadedMod> mods = Vars.mods.list();
 		for (LoadedMod mod : mods) {
 			try {
-				if (mod == null || mod.meta == null || mod.meta.hidden || mod.name.equals(MOD_NAME) || !mod.enabled()) continue;
+				if (mod == null || mod.meta == null || mod.meta.hidden || mod.name.equals(modName) || !mod.enabled()) continue;
 
 				String name = mod.meta.name;
 				Fi metaFile = mod.root.child("adc.json");

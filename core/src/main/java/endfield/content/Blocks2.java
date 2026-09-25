@@ -76,6 +76,7 @@ import endfield.world.blocks.distribution.TubeSorter;
 import endfield.world.blocks.environment.ConnectedFloor;
 import endfield.world.blocks.environment.ConnectedStaticWall;
 import endfield.world.blocks.environment.DepthCliff;
+import endfield.world.blocks.environment.LineMarkingOverlay;
 import endfield.world.blocks.environment.OreVein;
 import endfield.world.blocks.environment.TiledFloor2;
 import endfield.world.blocks.heat.HeatBelt;
@@ -284,7 +285,7 @@ import mindustry.world.meta.BuildVisibility;
 import mindustry.world.meta.Env;
 import mindustry.world.meta.Stat;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 
 /**
  * Defines the {@linkplain Block blocks} this mod offers.
@@ -305,6 +306,7 @@ public final class Blocks2 {
 	public static Floor metalBankFloor, damagedPlates1, damagedPlates2, damagedPlates3, damagedPlated4, metalPlates6, metalPlates, metalPlates2, metalPlates3, metalPlates4, metalGrating;
 	public static StaticWall metalWall, metalWall1, metalWall3, metalWall4, metalWall5, metalWall6, metalWall7;
 	public static TiledFloor metalVent;
+	public static Floor lineMarkingFloor1;
 	public static Floor asphalt;
 	public static ConnectedFloor asphaltTiles;
 	public static Floor siliceoustone;
@@ -319,6 +321,14 @@ public final class Blocks2 {
 	public static StaticWall arkyciteSandWall;
 	public static Prop arkyciteSandBoulder;
 	public static Prop darksandBoulder;
+	public static Floor frostone;
+	public static StaticWall frostoneWall;
+	public static Prop frostoneBoulder;
+	public static SteamVent hydrogenVent;
+	public static Floor gravelFerric, ferricShale;
+	public static StaticWall ferricShaleWall;
+	public static Prop ferricShaleBoulder;
+	public static TallBlock ferricRock;
 	public static Floor concreteBlank, concreteFill, concreteNumber, concreteStripe, concrete;
 	public static Floor stoneFullTiles, stoneFull, stoneHalf, stoneTiles;
 	public static ConnectedStaticWall concreteWall;
@@ -326,7 +336,7 @@ public final class Blocks2 {
 	public static Floor gravel;
 	public static Floor deepSlate, deepSlateBrick;
 	public static StaticWall deepSlateWall, deepSlateBrickWall;
-	public static Floor brine;
+	public static Floor brine, acid;
 	public static Floor coldPlasma, deepColdPlasma;
 	public static Floor metalFloorWater, metalFloorWater2, metalFloorWater3;
 	public static Floor metalFloorWater4, metalFloorWater5, metalFloorDamagedWater;
@@ -819,6 +829,7 @@ public final class Blocks2 {
 			drawEdgeIn = false;
 			attributes.set(Attribute.steam, 1f);
 		}};
+		lineMarkingFloor1 = new LineMarkingOverlay("line-marking-floor-1");
 		asphalt = new Floor("asphalt", 0) {{
 			drawEdgeOut = false;
 			drawEdgeIn = false;
@@ -911,6 +922,50 @@ public final class Blocks2 {
 		darksandBoulder = new Prop("darksand-boulder") {{
 			variants = 2;
 			Blocks.darksand.asFloor().decoration = this;
+		}};
+		frostoneWall = new StaticWall("frostone-wall") {{
+			variants = 2;
+		}};
+		frostoneBoulder = new Prop("frostone-boulder") {{
+			variants = 3;
+		}};
+		frostone = new Floor("frostone", 5) {{
+			attributes.set(Attribute.water, 0.1f);
+			wall = frostoneWall;
+			decoration = frostoneBoulder;
+		}};
+		hydrogenVent = new SteamVent("hydrogen-vent") {{
+			variants = 3;
+			effect = Fx.vapor;
+			effectColor = Liquids.hydrogen.color;
+			effectSpacing = 30f;
+			parent = blendGroup = frostone;
+			liquidDrop = Liquids.hydrogen;
+			attributes.set(Attributes2.hydrogen, 1f);
+		}};
+		ferricShaleWall = new StaticWall("ferric-shale-wall") {{
+			variants = 2;
+			attributes.set(Attribute.sand, 0.7f);
+		}};
+		ferricShaleBoulder = new Prop("ferric-shale-boulder") {{
+			variants = 2;
+		}};
+		gravelFerric = new Floor("gravel-ferric", 5) {{
+			itemDrop = Items.sand;
+			attributes.set(Attribute.water, -0.5f);
+			playerUnmineable = true;
+			wall = ferricShaleWall;
+		}};
+		ferricShale = new Floor("ferric-shale", 3) {{
+			itemDrop = Items2.stone;
+			attributes.set(Attribute.water, -0.5f);
+			playerUnmineable = true;
+			wall = ferricShaleWall;
+			decoration = ferricShaleBoulder;
+		}};
+		ferricRock = new TallBlock("ferric-rock") {{
+			variants = 3;
+			clipSize = 160f;
 		}};
 		concreteBlank = new Floor("concrete-blank", 3);
 		concreteFill = new Floor("concrete-fill", 0);
@@ -1009,11 +1064,19 @@ public final class Blocks2 {
 		brine = new Floor("pooled-brine", 0) {{
 			drownTime = 200f;
 			speedMultiplier = 0.1f;
-			variants = 0;
 			liquidDrop = Liquids2.brine;
 			liquidMultiplier = 1.1f;
 			isLiquid = true;
 			cacheLayer = CacheLayer2.brine;
+			albedo = 1f;
+		}};
+		acid = new Floor("pooled-acid", 0) {{
+			isLiquid = true;
+			status = StatusEffects.corroded;
+			drownTime = 300f;
+			speedMultiplier = 0.5f;
+			liquidDrop = Liquids2.acid;
+			cacheLayer = CacheLayer2.acid;
 			albedo = 1f;
 		}};
 		coldPlasma = new Floor("pooled-cold-plasma", 0) {{
@@ -4369,7 +4432,7 @@ public final class Blocks2 {
 		}};
 		largeRocketLauncher = new ItemTurret("large-rocket-launcher") {{
 			requirements(Category.turret, ItemStack.with(Items.graphite, 360, Items.titanium, 220, Items.thorium, 100, Items.silicon, 110, Items.plastanium, 70));
-			ammo(Items.pyratite, new MissileBulletType(10f, 44f, MOD_NAME + "-rocket") {{
+			ammo(Items.pyratite, new MissileBulletType(10f, 44f, modName + "-rocket") {{
 				shrinkY = 0;
 				inaccuracy = 4;
 				trailChance = 0.8f;
@@ -4412,7 +4475,7 @@ public final class Blocks2 {
 					colorFrom = Pal2.missileYellow;
 					colorTo = Pal2.missileYellowBack;
 				}});
-			}}, Items.blastCompound, new MissileBulletType(10f, 46f, MOD_NAME + "-missile") {{
+			}}, Items.blastCompound, new MissileBulletType(10f, 46f, modName + "-missile") {{
 				recoil = 1;
 				shrinkY = 0;
 				inaccuracy = 4;
@@ -4509,7 +4572,7 @@ public final class Blocks2 {
 		}};
 		rocketSilo = new ItemTurret("rocket-silo") {{
 			requirements(Category.turret, ItemStack.with(Items.lead, 300, Items.graphite, 150, Items.titanium, 120, Items.silicon, 120, Items.plastanium, 50));
-			ammo(Items.graphite, new MissileBulletType(8f, 22f, MOD_NAME + "-missile") {{
+			ammo(Items.graphite, new MissileBulletType(8f, 22f, modName + "-missile") {{
 				buildingDamageMultiplier = 0.3f;
 				splashDamage = 15f;
 				splashDamageRadius = 18f;
@@ -4530,7 +4593,7 @@ public final class Blocks2 {
 				ammoMultiplier = 2f;
 				smokeEffect = Fx.shootSmallFlame;
 				hitEffect = Fx.flakExplosion;
-			}}, Items.pyratite, new MissileBulletType(7f, 14f, MOD_NAME + "-missile") {{
+			}}, Items.pyratite, new MissileBulletType(7f, 14f, modName + "-missile") {{
 				buildingDamageMultiplier = 0.3f;
 				splashDamage = 39f;
 				splashDamageRadius = 32f;
@@ -4553,7 +4616,7 @@ public final class Blocks2 {
 				ammoMultiplier = 2f;
 				smokeEffect = Fx.shootSmallFlame;
 				hitEffect = Fx.flakExplosionBig;
-			}}, Items.blastCompound, new MissileBulletType(7f, 17f, MOD_NAME + "-missile") {{
+			}}, Items.blastCompound, new MissileBulletType(7f, 17f, modName + "-missile") {{
 				buildingDamageMultiplier = 0.3f;
 				splashDamage = 55f;
 				splashDamageRadius = 45f;
@@ -4575,7 +4638,7 @@ public final class Blocks2 {
 				ammoMultiplier = 2f;
 				smokeEffect = Fx.shootSmallFlame;
 				hitEffect = Fx.flakExplosionBig;
-			}}, Items.surgeAlloy, new MissileBulletType(9f, 47f, MOD_NAME + "-missile") {{
+			}}, Items.surgeAlloy, new MissileBulletType(9f, 47f, modName + "-missile") {{
 				buildingDamageMultiplier = 0.3f;
 				splashDamage = 75f;
 				splashDamageRadius = 45f;
@@ -5165,7 +5228,20 @@ public final class Blocks2 {
 				status = StatusEffects.freezing;
 				damage = 0.4f;
 			}}, Liquids.oil, new LiquidBulletType(Liquids.oil) {{
-				layer = 98;
+				layer = Layer.bullet - 2f;
+				lifetime = 30f;
+				speed = 8f;
+				puddleSize = 6f;
+				orbSize = 5f;
+				knockback = 1.5f;
+				statusDuration = 600f;
+				status = StatusEffects.tarred;
+				damage = 0.4f;
+				incendAmount = 1;
+				incendSpread = 1f;
+				incendChance = 1f;
+			}}, Liquids2.promethium, new LiquidBulletType(Liquids2.promethium) {{
+				layer = Layer.bullet - 2f;
 				lifetime = 30f;
 				speed = 8f;
 				puddleSize = 6f;
@@ -5186,19 +5262,17 @@ public final class Blocks2 {
 				statusDuration = 600f;
 				status = StatusEffects.melting;
 				damage = 9.5f;
-			}}, Liquids2.coldPlasma, new LiquidBulletType(Liquids2.coldPlasma) {{
+			}}, Liquids2.acid, new LiquidBulletType(Liquids2.acid) {{
 				lifetime = 30f;
 				speed = 7f;
 				puddleSize = 6f;
 				orbSize = 5f;
-				knockback = 0.6f;
-				healPercent = 5f;
-				collidesTeam = true;
-				status = StatusEffects.electrified;
+				knockback = 1.7f;
 				statusDuration = 600f;
-				damage = 1.5f;
+				status = StatusEffects.corroded;
+				damage = 0.8f;
 			}}, Liquids2.lightOil, new LiquidBulletType(Liquids2.lightOil) {{
-				layer = 98f;
+				layer = Layer.bullet - 2f;
 				lifetime = 30f;
 				speed = 8f;
 				puddleSize = 6f;
@@ -5210,7 +5284,7 @@ public final class Blocks2 {
 				despawnEffect = Fx.flakExplosion;
 				damage = 0.4f;
 			}}, Liquids2.nitratedOil, new LiquidBulletType(Liquids2.nitratedOil) {{
-				layer = 98f;
+				layer = Layer.bullet - 2f;
 				lifetime = 30f;
 				speed = 7.5f;
 				puddleSize = 6f;
@@ -5224,7 +5298,7 @@ public final class Blocks2 {
 				splashDamageRadius = 30f;
 				damage = 2.5f;
 			}}, Liquids2.blastReagent, new LiquidBulletType(Liquids2.blastReagent) {{
-				layer = 98f;
+				layer = Layer.bullet - 2f;
 				lifetime = 30f;
 				speed = 7f;
 				puddleSize = 6f;
@@ -5237,6 +5311,17 @@ public final class Blocks2 {
 				splashDamage = 66f;
 				splashDamageRadius = 45f;
 				damage = 6.5f;
+			}}, Liquids2.coldPlasma, new LiquidBulletType(Liquids2.coldPlasma) {{
+				lifetime = 30f;
+				speed = 7f;
+				puddleSize = 6f;
+				orbSize = 5f;
+				knockback = 0.6f;
+				healPercent = 5f;
+				collidesTeam = true;
+				status = StatusEffects.electrified;
+				statusDuration = 600f;
+				damage = 1.5f;
 			}});
 			size = 4;
 			health = 2700;
@@ -5907,7 +5992,7 @@ public final class Blocks2 {
 			maxAmmo = 30;
 			ammoPerShot = 5;
 			consumeAmmoOnce = false;
-			ammoTypes.put(Items.silicon, new CtrlMissileBulletType(4f, 13f, MOD_NAME + "-tracer-missile") {{
+			ammoTypes.put(Items.silicon, new CtrlMissileBulletType(4f, 13f, modName + "-tracer-missile") {{
 				width = 16f;
 				height = 17.5f;
 				lifetime = 180f;

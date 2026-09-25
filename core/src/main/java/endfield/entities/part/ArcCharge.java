@@ -19,7 +19,7 @@ import mindustry.entities.part.DrawPart;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 import static mindustry.Vars.mobile;
 import static mindustry.Vars.tilesize;
 
@@ -38,7 +38,7 @@ public class ArcCharge extends DrawPart {
 	public Floatf<PartParams> chargeY = t -> 1;
 	public Floatf<PartParams> shootY = t -> 1;
 
-	public String arrowSuffix = MOD_NAME + "-jump-gate-arrow", pointerSuffix = MOD_NAME + "-jump-gate-pointer";
+	public String arrowSuffix = modName + "-jump-gate-arrow", pointerSuffix = modName + "-jump-gate-pointer";
 
 	public TextureRegion arrowRegion, pointerRegion;
 

@@ -51,8 +51,14 @@ public final class StatusEffects2 {
 			damage = -4;
 			effectChance = 0.3f;
 			effect = Fx2.glowParticle;
-			init(() -> opposite(StatusEffects.sapped, StatusEffects.slow, breached));
-		}};
+		}
+			@Override
+			public void init() {
+				super.init();
+
+				opposite(StatusEffects.sapped, StatusEffects.slow, breached);
+			}
+		};
 		breached = new StatusEffect2("breached") {{
 			color = new Color(0x666484ff);
 			healthMultiplier = 0.9f;
@@ -198,6 +204,8 @@ public final class StatusEffects2 {
 			}
 		};
 	}
+
+	public static void init() {}
 
 	public static class StatusEffect2 extends StatusEffect {
 		public Color outlineColor = Pal.gray;

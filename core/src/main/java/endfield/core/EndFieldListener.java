@@ -10,7 +10,7 @@ import mindustry.entities.pattern.ShootPattern;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 
-import static endfield.Vars2.MOD_PREFIX;
+import static endfield.Vars2.modName;
 
 public final class EndFieldListener implements IListener {
 	float[] bulletDps, unitDps;
@@ -29,7 +29,7 @@ public final class EndFieldListener implements IListener {
 
 	@Override
 	public String toString() {
-		return MOD_PREFIX + "listener";
+		return modName + "-listener";
 	}
 
 	public float getUnitDps(UnitType unit) {

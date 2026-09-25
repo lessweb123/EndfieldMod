@@ -23,8 +23,8 @@ public final class Liquids2 {
 
 	public static ObjectFloatMap<Liquid> densities = new ObjectFloatMap<>(), viscosities = new ObjectFloatMap<>();
 
-	public static Liquid brine, promethium;
-	public static Liquid gas, lightOil, nitratedOil, blastReagent;
+	public static Liquid brine, acid, promethium;
+	public static Liquid chlorine, gas, lightOil, nitratedOil, blastReagent;
 	public static CrystalLiquid coldPlasma, hotPlasma;
 
 	/** Don't let anyone instantiate this class. */
@@ -47,6 +47,15 @@ public final class Liquids2 {
 			densities.put(this, 1 / 8f);
 			viscosities.put(this, 1f);
 		}};
+		acid = new Liquid("acid", Pal2.acidFront) {{
+			coolant = false;
+			heatCapacity = 0.3f;
+			effect = StatusEffects.corroded;
+			boilPoint = 0.9f;
+			viscosity = 0.65f;
+			gasColor = color;
+			temperature = 0.56f;
+		}};
 		promethium = new Liquid("promethium", Pal2.promethiumFront) {{
 			flammability = 3.25f;
 			temperature = 0.6f;
@@ -55,6 +64,12 @@ public final class Liquids2 {
 			boilPoint = 0.5f;
 			coolant = false;
 			canStayOn.addAll(Liquids.water);
+		}};
+		chlorine = new Liquid("chlorine", Pal2.chlorineFront) {{
+			barColor = color;
+			gas = true;
+			explosiveness = 0.6f;
+			flammability = 0.8f;
 		}};
 		gas = new Liquid("gas", Pal2.gasFront) {{
 			gasColor = barColor = lightColor = color;

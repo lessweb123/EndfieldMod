@@ -32,7 +32,7 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatValues;
 import org.jetbrains.annotations.Nullable;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 
 public class LightenGenerator extends NuclearReactor {
 	public float range = 36;
@@ -246,7 +246,7 @@ public class LightenGenerator extends NuclearReactor {
 				Drawn.circlePercent(x, y, range, (float) items.total() / itemCapacity, 135);
 			}
 			Draw.alpha(light);
-			Draw.rect(Core.atlas.find(MOD_NAME + "-lightnin-generator-lights"), x, y);
+			Draw.rect(Core.atlas.find(modName + "-lightnin-generator-lights"), x, y);
 		}
 
 		@Override

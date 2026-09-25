@@ -16,7 +16,7 @@ import mindustry.type.Weather;
 import mindustry.type.weather.ParticleWeather;
 import mindustry.world.meta.Attribute;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 
 /**
  * Defines the {@linkplain Weather weather} this mod offers.
@@ -73,7 +73,7 @@ public final class Weathers2 {
 			spawns = 6;
 			spawnChance = 0.5f;
 			sound = Sounds2.hailRain;
-			addBullets(new FallingRockBulletType(MOD_NAME + "-hailstone-small") {{
+			addBullets(new FallingRockBulletType(modName + "-hailstone-small") {{
 				speed = 0.5f;
 				lifetime = 20f;
 				fallHeight = 10f;
@@ -81,7 +81,7 @@ public final class Weathers2 {
 				variants = 5;
 				hitEffect = Fx.none;
 				despawnEffect = Fx2.fellStone;
-			}}, 1f, new FallingRockBulletType(MOD_NAME + "-hailstone-medium") {{
+			}}, 1f, new FallingRockBulletType(modName + "-hailstone-medium") {{
 				speed = 0.5f;
 				lifetime = 30f;
 				fallHeight = 11f;
@@ -91,7 +91,7 @@ public final class Weathers2 {
 				despawnEffect = Fx2.fellStone;
 				damage = splashDamage = 10f;
 				splashDamageRadius = 25f;
-			}}, 1 / 12f, new FallingRockBulletType(MOD_NAME + "-hailstone-big") {{
+			}}, 1 / 12f, new FallingRockBulletType(modName + "-hailstone-big") {{
 				speed = 0.5f;
 				lifetime = 20f;
 				fallHeight = 15f;
@@ -103,7 +103,7 @@ public final class Weathers2 {
 				hitSound = Sounds2.bigHailstoneHit;
 				damage = splashDamage = 95f;
 				splashDamageRadius = 40f;
-			}}, 1f / 1600f, new FallingRockBulletType(MOD_NAME + "-hailstone-giant") {{
+			}}, 1f / 1600f, new FallingRockBulletType(modName + "-hailstone-giant") {{
 				speed = 1f;
 				lifetime = 200f;
 				fallHeight = 20f;
@@ -137,14 +137,14 @@ public final class Weathers2 {
 			noiseSpeed = 20f;
 			drawParticles = true;
 			randomParticleRotation = true;
-			particleRegion = MOD_NAME + "-stone-small-0";
+			particleRegion = modName + "-stone-small-0";
 			minAlpha = 0.2f;
 			maxAlpha = 0.8f;
 			sinSclMin = 60f;
 			sinSclMax = 120f;
 			sinMagMin = sizeMin = 10f;
 			sinMagMax = sizeMax = 80f;
-			addBullets(new FallingRockBulletType(MOD_NAME + "-stone-small") {{
+			addBullets(new FallingRockBulletType(modName + "-stone-small") {{
 				speed = 2f;
 				lifetime = 20f;
 				fallHeight = 1f;
@@ -152,7 +152,7 @@ public final class Weathers2 {
 				variants = 3;
 				hitEffect = Fx.none;
 				despawnEffect = Fx2.fellStone;
-			}}, 1f, new FallingRockBulletType(MOD_NAME + "-stone-medium") {{
+			}}, 1f, new FallingRockBulletType(modName + "-stone-medium") {{
 				speed = 2f;
 				lifetime = 30f;
 				fallHeight = 2f;
@@ -162,7 +162,7 @@ public final class Weathers2 {
 				despawnEffect = Fx2.fellStone;
 				damage = splashDamage = 10f;
 				splashDamageRadius = 25f;
-			}}, 1f / 12f, new FallingRockBulletType(MOD_NAME + "-stone-big") {{
+			}}, 1f / 12f, new FallingRockBulletType(modName + "-stone-big") {{
 				speed = 1f;
 				lifetime = 20f;
 				fallHeight = 5f;

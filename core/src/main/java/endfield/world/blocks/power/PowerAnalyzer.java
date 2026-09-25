@@ -20,7 +20,7 @@ import mindustry.world.blocks.power.PowerBlock;
 import mindustry.world.blocks.power.PowerNode;
 import mindustry.world.meta.BlockStatus;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 
 public class PowerAnalyzer extends PowerBlock {
 	public float displayLength = 8f;
@@ -50,7 +50,7 @@ public class PowerAnalyzer extends PowerBlock {
 		super.load();
 
 		topRegion = Core.atlas.find(name + "-top");
-		arrowRegion = Core.atlas.find(name + "-arrow", MOD_NAME + "-power-analyzer-arrow");
+		arrowRegion = Core.atlas.find(name + "-arrow", modName + "-power-analyzer-arrow");
 	}
 
 	@Override

@@ -18,7 +18,6 @@ import mindustry.content.UnitTypes;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.bullet.BulletType;
 import mindustry.entities.bullet.ContinuousFlameBulletType;
-import mindustry.entities.bullet.ContinuousLaserBulletType;
 import mindustry.entities.bullet.LiquidBulletType;
 import mindustry.entities.bullet.RailBulletType;
 import mindustry.entities.bullet.ShrapnelBulletType;
@@ -34,7 +33,6 @@ import mindustry.world.Tile;
 import mindustry.world.blocks.defense.Wall;
 import mindustry.world.blocks.defense.turrets.ContinuousLiquidTurret;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
-import mindustry.world.blocks.defense.turrets.LaserTurret;
 import mindustry.world.blocks.defense.turrets.LiquidTurret;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.distribution.Duct;
@@ -268,7 +266,18 @@ public final class Overrides {
 			shootEffect = smokeEffect = Fx2.shoot(Pal2.uraniumAmmoBack);
 		}});
 		if (Blocks.tsunami instanceof LiquidTurret turret) {
-			turret.ammoTypes.put(Liquids2.nitratedOil, new LiquidBulletType(Liquids2.nitratedOil) {{
+			turret.ammoTypes.putAll(Liquids2.acid, new LiquidBulletType(Liquids2.acid) {{
+				lifetime = 49f;
+				speed = 4f;
+				knockback = 1.3f;
+				puddleSize = 8f;
+				orbSize = 4f;
+				drag = 0.001f;
+				ammoMultiplier = 0.4f;
+				statusDuration = 60f * 4f;
+				damage = 0.4f;
+				layer = Layer.bullet - 2f;
+			}}, Liquids2.promethium, new LiquidBulletType(Liquids2.promethium) {{
 				lifetime = 49f;
 				speed = 4f;
 				knockback = 1.3f;
@@ -279,8 +288,22 @@ public final class Overrides {
 				statusDuration = 60f * 4f;
 				damage = 0.2f;
 				layer = Layer.bullet - 2f;
-			}});
-			turret.ammoTypes.put(Liquids2.coldPlasma, new LiquidBulletType(Liquids2.coldPlasma) {{
+			}}, Liquids2.nitratedOil, new LiquidBulletType(Liquids2.nitratedOil) {{
+				lifetime = 49f;
+				speed = 4f;
+				knockback = 1.3f;
+				puddleSize = 8f;
+				orbSize = 4f;
+				drag = 0.001f;
+				hitEffect = Fx.flakExplosion;
+				despawnEffect = Fx.flakExplosion;
+				ammoMultiplier = 0.4f;
+				statusDuration = 60f * 4f;
+				damage = 0.2f;
+				splashDamage = 22f;
+				splashDamageRadius = 20f;
+				layer = Layer.bullet - 2f;
+			}}, Liquids2.coldPlasma, new LiquidBulletType(Liquids2.coldPlasma) {{
 				lifetime = 49f;
 				speed = 4f;
 				knockback = 1.3f;
@@ -303,7 +326,6 @@ public final class Overrides {
 			}
 		}
 		if (Blocks.spectre instanceof ItemTurret turret) {
-			turret.range = 280f;
 			turret.ammoTypes.put(Items2.uranium, new BasicBulletType(9f, 105f) {{
 				rangeChange = 5f;
 				hitSize = 5f;
@@ -317,13 +339,6 @@ public final class Overrides {
 				statusDuration = 270f;
 				lifetime = 37.5f;
 			}});
-		}
-		if (Blocks.meltdown instanceof LaserTurret turret) {
-			turret.range = 225f;
-			if (turret.shootType instanceof ContinuousLaserBulletType type) {
-				type.damage = 84f;
-				type.length = 230f;
-			}
 		}
 		//blocks-turret-erekir
 		Blocks.breach.armor = 2f;

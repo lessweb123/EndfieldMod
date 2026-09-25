@@ -12,7 +12,7 @@ import endfield.math.Mathm;
 import mindustry.entities.part.DrawPart;
 import mindustry.graphics.Layer;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 
 /**
  * @author Yuria
@@ -74,6 +74,6 @@ public class DrawArrowSequence extends DrawPart {
 
 	@Override
 	public void load(String name) {
-		arrowRegion = Core.atlas.find(arrowName.isEmpty() ? MOD_NAME + "-jump-gate-arrow" : arrowName);
+		arrowRegion = Core.atlas.find(arrowName.isEmpty() ? modName + "-jump-gate-arrow" : arrowName);
 	}
 }

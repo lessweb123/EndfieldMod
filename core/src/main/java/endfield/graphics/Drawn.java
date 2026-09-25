@@ -43,7 +43,7 @@ import mindustry.graphics.Shaders;
 import mindustry.ui.Fonts;
 import org.jetbrains.annotations.Nullable;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 
 public final class Drawn {
 	public static final int[] oneArr = {1};
@@ -435,9 +435,9 @@ public final class Drawn {
 			float length = size / 2f + 3 + sin;
 			Tmp.v1.trns(i * 90, -length);
 			Draw.color(Pal.gray);
-			Draw.rect(Core.atlas.find(MOD_NAME + "-linked-arrow-back"), x + Tmp.v1.x, y + Tmp.v1.y, i * 90);
+			Draw.rect(Core.atlas.find(modName + "-linked-arrow-back"), x + Tmp.v1.x, y + Tmp.v1.y, i * 90);
 			Draw.color(color);
-			Draw.rect(Core.atlas.find(MOD_NAME + "-linked-arrow"), x + Tmp.v1.x, y + Tmp.v1.y, i * 90);
+			Draw.rect(Core.atlas.find(modName + "-linked-arrow"), x + Tmp.v1.x, y + Tmp.v1.y, i * 90);
 		}
 		Draw.reset();
 	}

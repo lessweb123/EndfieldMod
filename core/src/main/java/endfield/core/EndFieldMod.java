@@ -64,9 +64,9 @@ import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable;
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.Setting;
 
-import static endfield.Vars2.AUTHOR;
-import static endfield.Vars2.LINK_GIT_HUB;
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.author;
+import static endfield.Vars2.linkGitHub;
+import static endfield.Vars2.modName;
 import static endfield.Vars2.platformImpl;
 
 /**
@@ -107,17 +107,17 @@ public final class EndFieldMod extends Mod {
 
 			if (Vars.headless || Vars2.isPlugin || Core.settings.getBool("closed-dialog")) return;
 
-			FLabel label = new FLabel(Core.bundle.format("text.author", AUTHOR));
+			FLabel label = new FLabel(Core.bundle.format("text.author", author));
 			BaseDialog dialog = new BaseDialog(Core.bundle.get("text.name"));
 			dialog.buttons.button(Core.bundle.get("close"), dialog::hide).size(210f, 64f);
 			dialog.buttons.button(Core.bundle.get("text.link-github"), () -> {
-				if (!Core.app.openURI(LINK_GIT_HUB)) {
+				if (!Core.app.openURI(linkGitHub)) {
 					Vars.ui.showErrorMessage("@linkfail");
-					Core.app.setClipboardText(LINK_GIT_HUB);
+					Core.app.setClipboardText(linkGitHub);
 				}
 			}).size(210f, 64f);
 			dialog.cont.pane(t -> {
-				t.image(Core.atlas.find(MOD_NAME + "-cover")).left().size(600f, 413f).pad(3f).row();
+				t.image(Core.atlas.find(modName + "-cover")).left().size(600f, 413f).pad(3f).row();
 				t.add(Core.bundle.get("text.version")).left().growX().wrap().pad(4f).labelAlign(Align.left).row();
 				t.add(label).left().row();
 				t.add(Core.bundle.get("text.type")).left().growX().wrap().pad(4f).labelAlign(Align.left).row();
@@ -228,6 +228,7 @@ public final class EndFieldMod extends Mod {
 
 		if (!Vars2.isPlugin) {
 			try {
+				StatusEffects2.init();
 				UnitTypes2.init();
 				Overrides.init();
 			} catch (Throwable e) {

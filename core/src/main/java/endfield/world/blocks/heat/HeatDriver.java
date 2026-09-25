@@ -30,7 +30,7 @@ import mindustry.world.meta.Env;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 
 public class HeatDriver extends Block {
 	public TextureRegion turretPart, turretLine, rPart, rLine, effect, arrow, preview;
@@ -84,8 +84,8 @@ public class HeatDriver extends Block {
 		turretLine = Core.atlas.find(name + "-turret-outline");
 		rPart = Core.atlas.find(name + "-reflect");
 		rLine = Core.atlas.find(name + "-reflect-outline");
-		effect = Core.atlas.find(name + "-effect", MOD_NAME + "-heat-driver-effect");
-		arrow = Core.atlas.find(name + "-arrow", MOD_NAME + "-heat-driver-arrow");
+		effect = Core.atlas.find(name + "-effect", modName + "-heat-driver-effect");
+		arrow = Core.atlas.find(name + "-arrow", modName + "-heat-driver-arrow");
 		preview = Core.atlas.find(name + "-preview");
 	}
 

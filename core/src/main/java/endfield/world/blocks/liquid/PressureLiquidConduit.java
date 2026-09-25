@@ -30,7 +30,7 @@ import mindustry.world.Block;
 import mindustry.world.meta.BlockGroup;
 import org.jetbrains.annotations.Nullable;
 
-import static endfield.Vars2.MOD_PREFIX;
+import static endfield.Vars2.modName;
 
 public class PressureLiquidConduit extends GenericPressureBlock implements ConnectedTile {
 	private static final Seq<BuildPlan> plansTmp = new Seq<>(BuildPlan.class);
@@ -124,7 +124,7 @@ public class PressureLiquidConduit extends GenericPressureBlock implements Conne
 			}
 		}
 
-		bottomRegion = Core.atlas.find(name + "-bottom", MOD_PREFIX + "liquid-bottom");
+		bottomRegion = Core.atlas.find(name + "-bottom", modName + "-liquid-bottom");
 		topRegions = Sprites.splitLayer(name + "-sheet", 32, 16);
 	}
 

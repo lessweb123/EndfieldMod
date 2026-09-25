@@ -13,7 +13,7 @@ import endfield.graphics.FillStripDrawable;
 import endfield.graphics.StripDrawable;
 import mindustry.graphics.Pal;
 
-import static endfield.Vars2.MOD_PREFIX;
+import static endfield.Vars2.modName;
 
 public final class Tex2 {
 	public static Drawable buttonLeft, buttonLeftDown, buttonLeftOver;
@@ -81,7 +81,7 @@ public final class Tex2 {
 	public static void init() {}
 
 	public static Drawable getDrawable(String name) {
-		return drawable(MOD_PREFIX + name);
+		return drawable(modName + "-" + name);
 	}
 
 	public static Drawable drawable(String name) {

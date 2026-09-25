@@ -28,7 +28,7 @@ import mindustry.mod.Mods.LoadedMod;
 import java.io.DataInputStream;
 import java.util.zip.InflaterInputStream;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 
 /** Renders a custom splash screen for the mod during game startup. */
 public class SplashDrawer implements IListener, Disposable {
@@ -97,7 +97,7 @@ public class SplashDrawer implements IListener, Disposable {
 					String key = stream.readUTF();
 					byte type = stream.readByte();
 
-					if (key.equals(MOD_NAME + "-loading-screen")) {
+					if (key.equals(modName + "-loading-screen")) {
 						if (type == 0) return stream.readBoolean(); // typeBool
 						return true; // Wrong type -> default to true
 					} else {

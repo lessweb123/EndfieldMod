@@ -22,7 +22,7 @@ import mindustry.world.meta.BuildVisibility;
 import mindustry.world.modules.ItemModule;
 import mindustry.world.modules.LiquidModule;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 
 /**
  * Inner building that are linked to a specific building.
@@ -62,9 +62,9 @@ public class LinkBlock extends Block {
 		destroySound = Sounds.none;
 		placeSound = Sounds.none;
 
-		localizedName = Core.bundle.get(getContentType() + "." + MOD_NAME + "-inner-block.name", this.name);
-		description = Core.bundle.getOrNull(getContentType() + "." + MOD_NAME + "-inner-block.description");
-		details = Core.bundle.getOrNull(getContentType() + "." + MOD_NAME + "-inner-block.details");
+		localizedName = Core.bundle.get(getContentType() + "." + modName + "-inner-block.name", this.name);
+		description = Core.bundle.getOrNull(getContentType() + "." + modName + "-inner-block.description");
+		details = Core.bundle.getOrNull(getContentType() + "." + modName + "-inner-block.details");
 	}
 
 	@Override

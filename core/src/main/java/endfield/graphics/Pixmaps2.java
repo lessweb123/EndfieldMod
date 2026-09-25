@@ -5,16 +5,10 @@ import arc.func.Intc2;
 import arc.graphics.Color;
 import arc.graphics.Pixmap;
 import arc.graphics.Pixmaps;
-import arc.graphics.Texture;
-import arc.graphics.TextureData;
 import arc.graphics.g2d.PixmapRegion;
-import arc.graphics.gl.FileTextureData;
-import arc.graphics.gl.PixmapTextureData;
 import arc.math.Mathf;
 import endfield.func.IntBoolf;
 import endfield.func.Intf2;
-import endfield.util.handler.FieldHandler;
-import org.jetbrains.annotations.UnknownNullability;
 
 public final class Pixmaps2 {
 	public static Pixmap white;
@@ -150,16 +144,5 @@ public final class Pixmaps2 {
 
 	public static PixmapRegion color(PixmapRegion region, Color from, Color to) {
 		return color(region, c -> c == from.rgba(), (x, y) -> to);
-	}
-
-	public static @UnknownNullability Pixmap pixmapOf(Texture texture) {
-		if (texture == null) return null;
-
-		TextureData data = texture.getTextureData();
-
-		if (data instanceof PixmapTextureData) return data.consumePixmap();
-		if (data instanceof FileTextureData) return FieldHandler.getDefault(data, "pixmap");
-
-		return null;
 	}
 }

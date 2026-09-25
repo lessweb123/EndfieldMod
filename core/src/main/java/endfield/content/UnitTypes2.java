@@ -126,7 +126,7 @@ import mindustry.type.weapons.RepairBeamWeapon;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.Env;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 
 /**
  * Defines the {@linkplain UnitType units} this mod offers.
@@ -228,7 +228,7 @@ public final class UnitTypes2 {
 				ejectEffect = Fx.casing2;
 				shootSound = Sounds.shootRipple;
 				alternate = false;
-				bullet = new MissileBulletType(11f, 108f, MOD_NAME + "-rocket") {{
+				bullet = new MissileBulletType(11f, 108f, modName + "-rocket") {{
 					hitSize = 40;
 					splashDamageRadius = 46;
 					splashDamage = 96;
@@ -313,7 +313,7 @@ public final class UnitTypes2 {
 				shootStatus = StatusEffects.slow;
 				shootStatusDuration = reload + 1f;
 				velocityRnd = 0.1f;
-				bullet = new ArtilleryBulletType(12f, 10f, MOD_NAME + "-rocket") {{
+				bullet = new ArtilleryBulletType(12f, 10f, modName + "-rocket") {{
 					backColor = Pal2.orangeBack;
 					frontColor = trailColor = hitColor = Pal2.missileGray;
 					width = 8f;
@@ -2947,7 +2947,7 @@ public final class UnitTypes2 {
 				velocityRnd = 0.075f;
 				inaccuracy = 6f;
 				ejectEffect = Fx.none;
-				bullet = new BasicBulletType(8, 200f, MOD_NAME + "-strike") {{
+				bullet = new BasicBulletType(8, 200f, modName + "-strike") {{
 					trailColor = lightningColor = backColor = lightColor = Pal.techBlue;
 					frontColor = Pal.techBlue;
 					lightning = 2;
@@ -3049,7 +3049,7 @@ public final class UnitTypes2 {
 				shootY = 5f;
 				top = true;
 				rotate = true;
-				bullet = new BasicBulletType(5.25f, 150f, MOD_NAME + "-strike") {{
+				bullet = new BasicBulletType(5.25f, 150f, modName + "-strike") {{
 					lifetime = 60;
 					knockback = 12f;
 					width = 11f;

@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.Properties;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 
 public final class Worlds {
 	public static final Seq<CommandableBlock.CommandableBuild> commandableBuilds = new Seq<>(CommandableBlock.CommandableBuild.class);
@@ -47,7 +47,7 @@ public final class Worlds {
 
 	/** Not needed for now. */
 	public static void init() {
-		SaveVersion.addCustomChunk(MOD_NAME + "-team-payload-data", teamPayloadData);
+		SaveVersion.addCustomChunk(modName + "-team-payload-data", teamPayloadData);
 	}
 
 	public static void loadFallback() {

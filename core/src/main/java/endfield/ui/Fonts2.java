@@ -13,12 +13,12 @@ import arc.graphics.g2d.Font;
 import arc.struct.Seq;
 import mindustry.Vars;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 
 public final class Fonts2 {
 	public static Font consolas, inconsoiata, jetbrainsmonomedium;
 
-	public static final String loaderSuffix = "." + MOD_NAME +".gen";
+	public static final String loaderSuffix = "." + modName +".gen";
 
 	/** Don't let anyone instantiate this class. */
 	private Fonts2() {}
@@ -31,7 +31,7 @@ public final class Fonts2 {
 			}
 		});
 
-		Core.assets.setLoader(Font.class, "-" + MOD_NAME, new FreetypeFontLoader(Vars.tree) {
+		Core.assets.setLoader(Font.class, "-" + modName, new FreetypeFontLoader(Vars.tree) {
 			@Override
 			public Font loadSync(AssetManager manager, String fileName, Fi file, FreeTypeFontLoaderParameter parameter) {
 				if (parameter == null)
@@ -48,7 +48,7 @@ public final class Fonts2 {
 			}
 		});
 
-		Core.assets.load("consolas-" + MOD_NAME, Font.class, new FreeTypeFontLoaderParameter("fonts/consolas.ttf", new FreeTypeFontParameter() {{
+		Core.assets.load("consolas-" + modName, Font.class, new FreeTypeFontLoaderParameter("fonts/consolas.ttf", new FreeTypeFontParameter() {{
 			size = 20;
 			incremental = true;
 			renderCount = 1;
@@ -57,7 +57,7 @@ public final class Fonts2 {
 			consolas = f;
 		};
 
-		Core.assets.load("inconsoiata-" + MOD_NAME, Font.class, new FreeTypeFontLoaderParameter("fonts/inconsoiata.ttf", new FreeTypeFontParameter() {{
+		Core.assets.load("inconsoiata-" + modName, Font.class, new FreeTypeFontLoaderParameter("fonts/inconsoiata.ttf", new FreeTypeFontParameter() {{
 			size = 20;
 			incremental = true;
 			renderCount = 1;
@@ -66,7 +66,7 @@ public final class Fonts2 {
 			inconsoiata = f;
 		};
 
-		Core.assets.load("jetbrainsmonomedium-" + MOD_NAME, Font.class, new FreeTypeFontLoaderParameter("fonts/jetbrainsmonomedium.ttf", new FreeTypeFontParameter() {{
+		Core.assets.load("jetbrainsmonomedium-" + modName, Font.class, new FreeTypeFontLoaderParameter("fonts/jetbrainsmonomedium.ttf", new FreeTypeFontParameter() {{
 			size = 19;
 			borderWidth = 0.3f;
 			shadowOffsetY = 2;

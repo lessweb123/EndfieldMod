@@ -325,7 +325,7 @@ public class TeslaTurret extends Block {
 							Healthc other = targets.get(i);
 
 							//lightning gets absorbed by plastanium
-							var absorber = Damage.findAbsorber(team, x, y, other.getX(), other.getY());
+							Building absorber = Damage.findAbsorber(team, x, y, other.getX(), other.getY());
 							if (absorber != null) {
 								other = absorber;
 							}

@@ -18,11 +18,11 @@ import mindustry.gen.Bullet;
 import mindustry.gen.Healthc;
 import mindustry.gen.Teamc;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 
 public class EndMissileBulletType extends BasicBulletType {
 	public EndMissileBulletType() {
-		super(14f, 1000f, MOD_NAME + "-missile");
+		super(14f, 1000f, modName + "-missile");
 
 		backColor = trailColor = hitColor = Pal2.red;
 		frontColor = Pal2.red.cpy().mul(2f);

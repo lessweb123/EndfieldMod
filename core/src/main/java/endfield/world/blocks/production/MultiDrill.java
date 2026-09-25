@@ -88,13 +88,13 @@ public class MultiDrill extends Block {
 	@Override
 	public boolean canPlaceOn(Tile tile, Team team, int rotation) {
 		if (tile != null) {
-			for (var other : tile.getLinkedTilesAs(this, tempTiles)) {
+			for (Tile other : tile.getLinkedTilesAs(this, tempTiles)) {
 				if (canMine(other)) {
 					return true;
 				}
 			}
-			for (var edge : Edges.getInsideEdges(size + 2)) {
-				var other = Vars.world.tile(tile.x + edge.x, tile.y + edge.y);
+			for (Point2 edge : Edges.getInsideEdges(size + 2)) {
+				Tile other = Vars.world.tile(tile.x + edge.x, tile.y + edge.y);
 				if (canMine(other)) {
 					return true;
 				}
@@ -107,17 +107,17 @@ public class MultiDrill extends Block {
 	public void drawPlace(int x, int y, int rotation, boolean valid) {
 		super.drawPlace(x, y, rotation, valid);
 
-		var tile = Vars.world.tile(x, y);
+		Tile tile = Vars.world.tile(x, y);
 		if (tile == null) return;
 
 		countOre(tile);
 
-		var off = 0;
+		int off = 0;
 		for (var ore : oreCount.keys()) {
-			var dx = x * Vars.tilesize + offset - 16;
-			var dy = y * Vars.tilesize + offset + size * Vars.tilesize / 2f;
+			float dx = x * Vars.tilesize + offset - 16;
+			float dy = y * Vars.tilesize + offset + size * Vars.tilesize / 2f;
 			Draw.mixcol(Color.darkGray, 1f);
-			var itemRegion = ore.fullIcon;
+			TextureRegion itemRegion = ore.fullIcon;
 			Draw.rect(itemRegion, dx + off, dy - 1);
 			Draw.reset();
 			Draw.rect(itemRegion, dx + off, dy);
@@ -149,7 +149,7 @@ public class MultiDrill extends Block {
 	}
 
 	public void countOre(Tile tile, Point2 edge) {
-		var other = Vars.world.tile(tile.x + edge.x, tile.y + edge.y);
+		Tile other = Vars.world.tile(tile.x + edge.x, tile.y + edge.y);
 		if (canMine(other)) {
 			oreCount.increment(other.drop(), 0, 1);
 		}
@@ -181,10 +181,10 @@ public class MultiDrill extends Block {
 		public void drawSelect() {
 			int off = 0;
 			for (Item ore : ores.keys()) {
-				var dx = x - size * Vars.tilesize / 2f;
-				var dy = y + size * Vars.tilesize / 2f;
+				float dx = x - size * Vars.tilesize / 2f;
+				float dy = y + size * Vars.tilesize / 2f;
 				Draw.mixcol(Color.darkGray, 1f);
-				var itemRegion = ore.fullIcon;
+				TextureRegion itemRegion = ore.fullIcon;
 				Draw.rect(itemRegion, dx + off, dy - 1);
 				Draw.reset();
 				Draw.rect(itemRegion, dx + off, dy);
@@ -220,7 +220,7 @@ public class MultiDrill extends Block {
 			timeDrilled += warmup * delta();
 
 			if (items.total() < ores.size * itemCapacity && canConsume()) {
-				var speed = Mathf.lerp(1f, liquidBoostIntensity, optionalEfficiency) * efficiency;
+				float speed = Mathf.lerp(1f, liquidBoostIntensity, optionalEfficiency) * efficiency;
 				warmup = Mathf.approachDelta(warmup, speed, warmupSpeed);
 
 				for (var ore : ores) {
@@ -236,7 +236,7 @@ public class MultiDrill extends Block {
 			}
 
 			for (var ore : ores) {
-				var delay = drillTime + hardnessDrillMultiplier * ore.key.hardness;
+				float delay = drillTime + hardnessDrillMultiplier * ore.key.hardness;
 				if (oreProgress.get(ore.key, 0f) >= delay && items.get(ore.key) < itemCapacity) {
 					offload(ore.key);
 					oreProgress.increment(ore.key, 0f, -delay);
@@ -271,7 +271,6 @@ public class MultiDrill extends Block {
 			super.write(write);
 
 			write.f(warmup);
-			write.f(timeDrilled);
 		}
 
 		@Override
@@ -279,7 +278,6 @@ public class MultiDrill extends Block {
 			super.read(read, revision);
 
 			warmup = read.f();
-			timeDrilled = read.f();
 		}
 	}
 }

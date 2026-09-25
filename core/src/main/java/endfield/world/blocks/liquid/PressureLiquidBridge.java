@@ -32,7 +32,7 @@ import mindustry.world.blocks.liquid.LiquidBlock;
 import mindustry.world.meta.BlockGroup;
 import org.jetbrains.annotations.Nullable;
 
-import static endfield.Vars2.MOD_PREFIX;
+import static endfield.Vars2.modName;
 
 public class PressureLiquidBridge extends GenericPressureBlock {
 	public int maxConnections = 4;
@@ -131,7 +131,7 @@ public class PressureLiquidBridge extends GenericPressureBlock {
 		bridgeRegion = Core.atlas.find(name + "-bridge");
 		bridgeBottomRegion = Core.atlas.find(name + "-bridge-bottom");
 		bridgeLiquidRegion = Core.atlas.find(name + "-bridge-liquid");
-		bottomRegion = Core.atlas.find(name + "-bottom", MOD_PREFIX + "liquid-bottom");
+		bottomRegion = Core.atlas.find(name + "-bottom", modName + "-liquid-bottom");
 	}
 
 	@Override

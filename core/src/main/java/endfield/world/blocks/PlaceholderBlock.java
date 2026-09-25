@@ -10,7 +10,7 @@ import mindustry.world.Tile;
 import mindustry.world.blocks.ConstructBlock;
 import mindustry.world.meta.BuildVisibility;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 
 public class PlaceholderBlock extends Block {
 	public PlaceholderBlock(String name) {
@@ -28,9 +28,9 @@ public class PlaceholderBlock extends Block {
 
 		buildVisibility = BuildVisibility.hidden;
 
-		localizedName = Core.bundle.get(getContentType() + "." + MOD_NAME + "-placeholder-block.name", this.name);
-		description = Core.bundle.getOrNull(getContentType() + "." + MOD_NAME + "-placeholder-block.description");
-		details = Core.bundle.getOrNull(getContentType() + "." + MOD_NAME + "-placeholder-block.details");
+		localizedName = Core.bundle.get(getContentType() + "." + modName + "-placeholder-block.name", this.name);
+		description = Core.bundle.getOrNull(getContentType() + "." + modName + "-placeholder-block.description");
+		details = Core.bundle.getOrNull(getContentType() + "." + modName + "-placeholder-block.details");
 	}
 
 	@Override

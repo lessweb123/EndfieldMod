@@ -25,7 +25,7 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 
 public class EnergyUnitType extends AncientUnitType {
 	public float outerEyeScl = 0.25f;
@@ -118,12 +118,12 @@ public class EnergyUnitType extends AncientUnitType {
 	public void load() {
 		super.load();
 
-		shadowRegion = Core.atlas.find(MOD_NAME + "-jump-gate-pointer");
+		shadowRegion = Core.atlas.find(modName + "-jump-gate-pointer");
 	}
 
 	@Override
 	public void loadIcon() {
-		uiIcon = fullIcon = Core.atlas.find(MOD_NAME + "-jump-gate-pointer");
+		uiIcon = fullIcon = Core.atlas.find(modName + "-jump-gate-pointer");
 	}
 
 	/*@Override

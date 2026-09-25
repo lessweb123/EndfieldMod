@@ -4,7 +4,7 @@ import arc.Core;
 import arc.graphics.g2d.TextureRegion;
 import arc.util.Time;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 
 public class NucleoidUnitType extends AncientUnitType {
 	public TextureRegion arrowRegion;
@@ -27,6 +27,6 @@ public class NucleoidUnitType extends AncientUnitType {
 	public void load() {
 		super.load();
 
-		arrowRegion = Core.atlas.find(MOD_NAME + "-jump-gate-arrow");
+		arrowRegion = Core.atlas.find(modName + "-jump-gate-arrow");
 	}
 }

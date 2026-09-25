@@ -43,7 +43,7 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import org.jetbrains.annotations.Nullable;
 
-import static endfield.Vars2.MOD_NAME;
+import static endfield.Vars2.modName;
 
 public class StaticNode extends Block {
 	protected static BuildPlan otherReq;
@@ -160,8 +160,8 @@ public class StaticNode extends Block {
 	public void load() {
 		super.load();
 
-		laser = Core.atlas.find(name + "-laser", MOD_NAME + "-static-laser");
-		laserEnd = Core.atlas.find(name + "-laser-end", MOD_NAME + "-static-laser-end");
+		laser = Core.atlas.find(name + "-laser", modName + "-static-laser");
+		laserEnd = Core.atlas.find(name + "-laser-end", modName + "-static-laser-end");
 	}
 
 	@Override

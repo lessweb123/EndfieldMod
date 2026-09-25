@@ -22,6 +22,8 @@ public final class Pal2 {
 	public static final Color chromiumAmmoBack = new Color(0x8f94b3ff);
 	public static final Color heavyAlloyAmmoFront = new Color(0x9b9daaff);
 	public static final Color heavyAlloyAmmoBack = new Color(0x686b7bff);
+	public static final Color acidFront = new Color(0xf4c55aff);
+	public static final Color chlorineFront = new Color(0xe6f66cff);
 	public static final Color gasFront = new Color(0xfbd367ff);
 	public static final Color promethiumFront = new Color(0x989aa4ff);
 	public static final Color coldPlasmaFront = new Color(0x8cdf64ff);

@@ -33,7 +33,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static endfield.Vars2.MOD_PREFIX;
+import static endfield.Vars2.modName;
 
 public class PressureLiquidPump extends GenericPressureBlock implements ConnectedTile {
 	public float pumpStrength = 0.1f;
@@ -121,7 +121,7 @@ public class PressureLiquidPump extends GenericPressureBlock implements Connecte
 
 		tiles = Sprites.splitLayer(name + "-sheet", 32, 4);
 		topRegion = Core.atlas.find(name + "-top");
-		bottomRegion = Core.atlas.find(name + "-bottom", MOD_PREFIX + "liquid-bottom");
+		bottomRegion = Core.atlas.find(name + "-bottom", modName + "-liquid-bottom");
 		arrowRegion = Core.atlas.find(name + "-arrow");
 	}
 

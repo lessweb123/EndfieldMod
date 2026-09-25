@@ -17,7 +17,7 @@ import mindustry.graphics.MultiPacker;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Prop;
 
-import static endfield.Vars2.MOD_PREFIX;
+import static endfield.Vars2.modName;
 
 /**
  * A breakable prop with a custom shape.
@@ -132,7 +132,7 @@ public class CustomShapeProp extends Prop implements MultiPropI {
 		shapeRegions = new TextureRegion[variants];
 
 		for (int i = 0; i < variants; i++) {
-			shapeRegions[i] = Core.atlas.find(name + "-shape" + (i + 1), MOD_PREFIX + "shape-err");
+			shapeRegions[i] = Core.atlas.find(name + "-shape" + (i + 1), modName + "-shape-err");
 			shapes.addUnique(createShape(shapeRegions[i]));
 		}
 	}

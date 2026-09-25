@@ -47,6 +47,7 @@ public class FuelHeater extends GenericCrafter {
 	public void init() {
 		filterItem = findConsumer(c -> c instanceof ConsumeItemFilter);
 		filterLiquid = findConsumer(c -> c instanceof ConsumeLiquidFilter);
+
 		super.init();
 	}
 
