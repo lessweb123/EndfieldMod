@@ -114,6 +114,7 @@ import mindustry.gen.Healthc;
 import mindustry.gen.Hitboxc;
 import mindustry.gen.Shieldc;
 import mindustry.gen.Sounds;
+import mindustry.gen.TargetDummyc;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
@@ -1303,8 +1304,6 @@ public final class UnitTypes2 {
 					lifetime = 42f;
 					pierceCap = 6;
 					pierceBuilding = true;
-					collidesAir = true;
-					reflectable = false;
 					incendChance = 0.2f;
 					incendAmount = 1;
 					particleAmount = 23;
@@ -2098,7 +2097,11 @@ public final class UnitTypes2 {
 						if (entity instanceof Unit unit) {
 							if (unit.shield > 0) {
 								Fx2.hitOut.at(unit.x, unit.y, b.rotation(), unit);
-								unit.health -= damage;
+								if (entity instanceof TargetDummyc) {
+									unit.rawDamage(damage);
+								} else {
+									unit.health -= damage;
+								}
 							}
 						}
 					}
@@ -2982,7 +2985,9 @@ public final class UnitTypes2 {
 					@Override
 					public void hitEntity(Bullet b, Hitboxc entity, float health) {
 						if (entity instanceof Healthc h && !h.dead()) {
-							if (h.health() <= damage) {
+							if (entity instanceof TargetDummyc td) {
+								td.rawDamage(damage);
+							} else if (h.health() <= damage) {
 								h.kill();
 							} else {
 								h.health(h.health() - damage);
@@ -3267,11 +3272,16 @@ public final class UnitTypes2 {
 					@Override
 					public void hitEntity(Bullet b, Hitboxc entity, float health) {
 						if (entity instanceof Healthc h && !h.dead()) {
-							float amount = h.health() - h.maxHealth() * percent;
-							if (h.health() <= amount) {
-								h.kill();
+							if (entity instanceof TargetDummyc td) {
+								td.rawDamage(h.maxHealth() * percent);
 							} else {
-								h.health(amount);
+								float amount = h.health() - h.maxHealth() * percent;
+
+								if (h.health() <= amount) {
+									h.kill();
+								} else {
+									h.health(amount);
+								}
 							}
 						}
 

@@ -22,6 +22,7 @@ import mindustry.gen.Bullet;
 import mindustry.gen.Call;
 import mindustry.gen.Hitboxc;
 import mindustry.gen.Sounds;
+import mindustry.gen.TargetDummyc;
 import mindustry.gen.Teamc;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
@@ -130,7 +131,11 @@ public class LightenGenerator extends NuclearReactor {
 				@Override
 				public void hitEntity(Bullet b, Hitboxc entity, float health) {
 					if (entity instanceof Unit u) {
-						u.health -= damage;
+						if (entity instanceof TargetDummyc) {
+							u.rawDamage(damage);
+						} else {
+							u.health -= damage;
+						}
 					}
 					super.hitEntity(b, entity, health);
 				}

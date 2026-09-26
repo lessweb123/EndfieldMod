@@ -7,7 +7,6 @@ import arc.graphics.g2d.TextureRegion;
 import arc.scene.ui.layout.Table;
 import arc.util.Eachable;
 import arc.util.Strings;
-import endfield.math.Mathm;
 import endfield.util.Sprites;
 import mindustry.entities.units.BuildPlan;
 import mindustry.game.Team;
@@ -15,10 +14,11 @@ import mindustry.gen.Unit;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.RuneOverlay;
 
-import static endfield.Vars2.modName;
 import static mindustry.Vars.tilesize;
 
 public class LineMarkingOverlay extends RuneOverlay {
+	public TextureRegion[] letterRegions2;
+
 	public LineMarkingOverlay(String name) {
 		super(name);
 	}
@@ -54,13 +54,14 @@ public class LineMarkingOverlay extends RuneOverlay {
 		region = variantRegions[0];
 		edgeRegion = Core.atlas.find("edge");
 
-		letterRegions = Sprites.splitArray(Core.atlas.find(name + "-full", modName + "default-line-marking-full"), 32);
+		letterRegions = Sprites.splitArray(Core.atlas.find(name + "-0"), 32);
+		letterRegions2 = Sprites.splitArray(Core.atlas.find(name + "-1"), 32);
 	}
 
 	@Override
 	public void drawBase(Tile tile) {
 		Draw.color(color);
-		Draw.rect(letterRegions[Mathm.clamp(tile.overlayData, 0, letterRegions.length - 1)], tile.worldx(), tile.worldy());
+		Draw.rect(tile.overlayData >= 0 ? letterRegions[Math.min(tile.overlayData, letterRegions.length - 1)] : letterRegions2[Math.min(-tile.overlayData -1, letterRegions2.length - 1)], tile.worldx(), tile.worldy());
 		Draw.color();
 	}
 
@@ -77,7 +78,7 @@ public class LineMarkingOverlay extends RuneOverlay {
 			data = num.byteValue();
 		}
 
-		TextureRegion reg = letterRegions[Mathm.clamp(data, 0, letterRegions.length - 1)];
+		TextureRegion reg = data >= 0 ? letterRegions[Math.min(data, letterRegions.length - 1)] : letterRegions2[Math.min(-data -1, letterRegions2.length - 1)];
 		Draw.tint(color);
 		Draw.rect(reg, plan.drawx(), plan.drawy());
 		Draw.tint(Color.white);
@@ -86,8 +87,10 @@ public class LineMarkingOverlay extends RuneOverlay {
 	@Override
 	public void buildEditorConfig(Table table) {
 		byte value = lastConfig instanceof Number num ? num.byteValue() : 0;
-		table.field(Byte.toString(value), val -> lastConfig = Strings.parseInt(val))
-				.valid(t -> Strings.canParsePositiveInt(t) && Strings.parseInt(t, 999) < letterRegions.length);
+		table.field(Byte.toString(value), val -> lastConfig = Strings.parseInt(val)).valid(t -> {
+			int val = Strings.parseInt(t, 999);
+			return val >= 0 ? val < letterRegions.length : -val -1 < letterRegions2.length;
+		});
 	}
 
 	@Override

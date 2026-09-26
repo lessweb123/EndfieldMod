@@ -71,7 +71,10 @@ public final class TechTrees {
 		});
 		//wall
 		vanillaNode(scrapWall, () -> node(oldTracks));
-		vanillaNode(copperWall, () -> node(armoredWall, () -> node(armoredWallLarge, () -> node(armoredWallHuge, () -> node(armoredWallGigantic)))));
+		vanillaNode(copperWall, () -> node(armoredWall, () -> {
+			node(armoredWallLarge, () -> node(armoredWallHuge, () -> node(armoredWallGigantic)));
+			node(titaniumAlloyWall, () -> node(titaniumAlloyWallLarge, () -> node(titaniumAlloyWallHuge, () -> node(titaniumAlloyWallGigantic))));
+		}));
 		vanillaNode(copperWallLarge, () -> node(copperWallHuge, () -> node(copperWallGigantic)));
 		vanillaNode(titaniumWallLarge, () -> node(titaniumWallHuge, () -> node(titaniumWallGigantic)));
 		vanillaNode(doorLarge, () -> node(doorHuge, () -> node(doorGigantic)));

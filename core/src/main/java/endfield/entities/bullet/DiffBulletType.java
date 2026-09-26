@@ -16,6 +16,7 @@ import mindustry.game.Team;
 import mindustry.gen.Bullet;
 import mindustry.gen.Entityc;
 import mindustry.gen.Healthc;
+import mindustry.gen.TargetDummyc;
 import mindustry.gen.Teamc;
 import mindustry.graphics.Pal;
 
@@ -59,12 +60,13 @@ public class DiffBulletType extends BulletType {
 				Healthc hc = d.healthcs.get(i);
 				if (hc != null && !hc.dead()) {
 					if (!b.hasCollided(hc.id())) {
-
 						switch (damageType) {
 							case 1 -> hc.damage(damage);
 							case 2 -> hc.damagePierce(damage);
-							case 3 -> {
-								if (hc.health() <= damage) hc.kill();
+							case 3 -> hc.damageArmorMult(damage, armorMultiplier);
+							case 4 -> {
+								if (hc instanceof TargetDummyc td) td.rawDamage(damage);
+								else if (hc.health() <= damage) hc.kill();
 								else hc.health(hc.health() - damage);
 							}
 						}

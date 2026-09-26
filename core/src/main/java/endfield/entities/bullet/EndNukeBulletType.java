@@ -20,6 +20,7 @@ import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Bullet;
 import mindustry.gen.Healthc;
+import mindustry.gen.TargetDummyc;
 import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
 
@@ -111,7 +112,11 @@ public class EndNukeBulletType extends BasicBulletType {
 					Tmp.v2.trns(Angles.angle(bx, by, unit.x, unit.y), (16f + 5f / unit.mass()) * damageScl);
 					unit.vel.add(Tmp.v2);
 
-					unit.health -= (unit.maxHealth / 10f + splashDamage) * damageScl;
+					if (t instanceof TargetDummyc) {
+						unit.rawDamage((unit.maxHealth / 10f + splashDamage) * damageScl);
+					} else {
+						unit.health -= (unit.maxHealth / 10f + splashDamage) * damageScl;
+					}
 
 					if (lastUnit < lastMax && unit.health <= 0f) {
 						Vars2.vaporBatch.discon = null;

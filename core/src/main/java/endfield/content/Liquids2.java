@@ -92,7 +92,7 @@ public final class Liquids2 {
 			densities.put(this, 1 / 8f);
 			viscosities.put(this, 1f);
 		}};
-		nitratedOil = new Liquid("nitrated-oil", new Color(0x3c3e45ff)) {{
+		nitratedOil = new Liquid("nitrated-oil", Pal2.nitratedOilFront) {{
 			temperature = 0.5f;
 			viscosity = 0.8f;
 			flammability = 1.5f;

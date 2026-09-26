@@ -8,6 +8,7 @@ import endfield.entities.Entitys2;
 import mindustry.entities.Damage;
 import mindustry.entities.Units;
 import mindustry.entities.abilities.Ability;
+import mindustry.gen.TargetDummyc;
 import mindustry.gen.Unit;
 import mindustry.type.UnitType;
 
@@ -76,7 +77,7 @@ public class TerritoryFieldAbility extends Ability {
 
 		if (open) {
 			Units.nearbyEnemies(unit.team, unit.x, unit.y, range * 2, u -> {
-				if (!Entitys2.containsExclude(u.id) && !u.dead && u.type != null && (u.health > unit.type.health * 2 || u.type.armor >= unit.type.armor * 2)) {
+				if (!Entitys2.containsExclude(u.id) && !(u instanceof TargetDummyc) && !u.dead && u.type != null && (u.health > unit.type.health * 2 || u.type.armor >= unit.type.armor * 2)) {
 					u.health -= u.health;
 					u.remove();
 				}

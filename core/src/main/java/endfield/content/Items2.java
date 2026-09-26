@@ -13,7 +13,8 @@ public final class Items2 {
 	public static Item stone, agglomerateSalt, rareEarth;
 	public static Item siliconNitride, galliumNitride, coldPlasmaBottle, crystallineCircuit, crystallineElectronicUnit;
 	public static Item diamond, crystal;
-	public static Item gold, uranium, chromium, heavyAlloy;
+	public static Item gold, uranium, chromium;
+	public static Item titaniumAlloy, heavyAlloy;
 
 	/** Don't let anyone instantiate this class. */
 	private Items2() {}
@@ -38,10 +39,12 @@ public final class Items2 {
 		}};
 		siliconNitride = new Item("silicon-nitride", new Color(0xdfdfdfff)) {{
 			hardness = 4;
+			healthScaling = 0.1f;
 		}};
 		galliumNitride = new Item("gallium-nitride", new Color(0xbff3ffff)) {{
 			cost = 1.2f;
 			hardness = 3;
+			healthScaling = 0.5f;
 		}};
 		coldPlasmaBottle = new Item("cold-plasma-bottle") {{
 			cost = 1.1f;
@@ -51,14 +54,17 @@ public final class Items2 {
 		crystallineCircuit = new Item("crystalline-circuit", Pal2.crystalAmmoBack) {{
 			cost = -0.75f;
 			hardness = 4;
+			healthScaling = 0.2f;
 		}};
 		crystallineElectronicUnit = new Item("crystalline-electronic-unit", Pal2.crystalAmmoDark) {{
 			cost = -1.75f;
 			hardness = 7;
+			healthScaling = 0.25f;
 		}};
 		diamond = new Item("diamond", new Color(0x0029afff)) {{
 			cost = 1.35f;
 			hardness = 6;
+			healthScaling = 0.5f;
 		}};
 		crystal = new Item("crystal", Pal2.crystalAmmoBack) {{
 			cost = 1.25f;
@@ -80,6 +86,11 @@ public final class Items2 {
 			cost = 5f;
 			hardness = 9;
 			healthScaling = 1.8f;
+		}};
+		titaniumAlloy = new Item("titanium-alloy", Pal2.titaniumAlloyAmmoBack) {{
+			cost = 1.1f;
+			hardness = 6;
+			healthScaling = 0.6f;
 		}};
 		heavyAlloy = new Item("heavy-alloy", Pal2.heavyAlloyAmmoBack) {{
 			cost = 4f;

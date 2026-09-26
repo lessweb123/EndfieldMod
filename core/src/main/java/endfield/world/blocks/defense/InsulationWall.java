@@ -50,7 +50,7 @@ public class InsulationWall extends Wall {
 
 	@Override
 	public TextureRegion getPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
-		return plan.config == Boolean.TRUE ? openRegion : region;
+		return Boolean.TRUE.equals(plan.config) ? openRegion : region;
 	}
 
 	public class InsulationWallBuild extends WallBuild {

@@ -29,6 +29,7 @@ import mindustry.game.Teams.TeamData;
 import mindustry.gen.Building;
 import mindustry.gen.Bullet;
 import mindustry.gen.Groups;
+import mindustry.gen.TargetDummyc;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.world.Tile;
@@ -205,7 +206,11 @@ public class EndCreepLaserBulletType extends ContinuousBulletType implements Las
 		buildings.clear();
 		Groups.unit.intersect(rect.x, rect.y, rect.width, rect.height, unit -> {
 			if (unit.team != b.team && Mathf.within(x, y, unit.x, unit.y, range + unit.hitSize / 2f) && unit.checkTarget(false, true)) {
-				unit.health -= 12000f + unit.maxHealth / 50f;
+				if (unit instanceof TargetDummyc) {
+					unit.rawDamage(12000f + unit.maxHealth / 50f);
+				} else {
+					unit.health -= 12000f + unit.maxHealth / 50f;
+				}
 			}
 		});
 

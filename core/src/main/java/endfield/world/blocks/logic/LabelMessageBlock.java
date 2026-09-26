@@ -12,7 +12,6 @@ import arc.util.io.Writes;
 import arc.util.pooling.Pools;
 import endfield.ui.Elements;
 import mindustry.Vars;
-import mindustry.game.Team;
 import mindustry.gen.Icon;
 import mindustry.gen.WorldLabel;
 import mindustry.graphics.Drawf;
@@ -70,7 +69,7 @@ public class LabelMessageBlock extends MessageBlock {
 		public int targetPos = -1;
 
 		@Override
-		public void damage(Team source, float damage) {}
+		public void damage(float damage) {}
 
 		@Override
 		public void buildConfiguration(Table table) {

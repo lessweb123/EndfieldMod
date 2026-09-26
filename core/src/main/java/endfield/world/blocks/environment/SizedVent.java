@@ -2,11 +2,9 @@ package endfield.world.blocks.environment;
 
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
-import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.util.Time;
 import endfield.util.Arrays2;
-import endfield.util.Sprites;
 import mindustry.content.Blocks;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
@@ -24,10 +22,8 @@ import static mindustry.Vars.world;
  *
  * @author LessWeb
  */
-public class SizedVent extends SteamVent {
+public class SizedVent extends Floor {
 	protected static Point2[][] offsets = new Point2[0][];
-
-	public TextureRegion[] splitRegion;
 
 	public int border;
 
@@ -47,12 +43,6 @@ public class SizedVent extends SteamVent {
 	}
 
 	@Override
-	public void load() {
-		super.load();
-		splitRegion = Sprites.splitLayer(name + "-variants", size * 32);
-	}
-
-	@Override
 	public void drawBase(Tile tile) {
 		parent.drawBase(tile);
 		if (checkAdjacent(tile)) {
@@ -62,13 +52,8 @@ public class SizedVent extends SteamVent {
 				y += tilesize / 2f;
 			}
 
-			Draw.rect(splitRegion[variant(tile.x, tile.y)], x, y);
+			Draw.rect(variantRegions[variant(tile.x, tile.y)], x, y);
 		}
-	}
-
-	@Override
-	public int variant(int x, int y) {
-		return Mathf.randomSeed(Point2.pack(x, y), 0, Math.max(0, splitRegion.length - 1));
 	}
 
 	@Override
@@ -109,6 +94,11 @@ public class SizedVent extends SteamVent {
 		return true;
 	}
 
+	@Override
+	protected TextureRegion[][] edges(int x, int y) {
+		return parent instanceof EdgeFloor floor ? floor.edges(x, y) : super.edges(x, y);
+	}
+
 	public static Point2[] getOffsets(int size) {
 		if (size < 1) throw new IllegalArgumentException("Size may not < 1 (" + size + " < 1).");
 
@@ -123,7 +113,7 @@ public class SizedVent extends SteamVent {
 		return offsets[index];
 	}
 
-	protected static Point2[] createOffsets(int size) {
+	public static Point2[] createOffsets(int size) {
 		if (size == 1) return new Point2[]{new Point2(0, 0)};
 		int offset = (size - 1) / 2;
 
@@ -134,10 +124,5 @@ public class SizedVent extends SteamVent {
 		}
 
 		return out;
-	}
-
-	@Override
-	public Floor asFloor() {
-		return this;
 	}
 }

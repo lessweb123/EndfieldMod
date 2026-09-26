@@ -31,7 +31,7 @@ public class RegenerationAbility extends Ability {
 		super.update(unit);
 		float healDelta = Time.delta * healby;
 		if (unit.health < unit.maxHealth) {
-			unit.health(unit.health + healDelta);
+			unit.health += healDelta;
 			clampHealth(unit);
 		}
 	}

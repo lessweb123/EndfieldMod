@@ -22,11 +22,15 @@ public class ParticleFlameBulletType extends BulletType {
 	protected final Color tc = new Color(), tc2 = new Color();
 
 	public Color[] colors = {Pal.lightFlame, Pal.darkFlame, Color.gray};
-	public Color[] smokeColors = {};
+	public Color[] smokeColors;
 	public float particleSpread = 10f, particleSizeScl = 1.5f;
 	public int particleAmount = 8;
 
-	protected Color[] hitColors;
+	public Color[] hitColors;
+
+	public ParticleFlameBulletType() {
+		this(1f, 1f);
+	}
 
 	public ParticleFlameBulletType(float speed, float damage) {
 		super(speed, damage);
@@ -36,8 +40,9 @@ public class ParticleFlameBulletType extends BulletType {
 		status = StatusEffects.burning;
 		statusDuration = 60f * 4f;
 		hitSize = 7f;
-		collidesAir = false;
 		keepVelocity = false;
+		reflectable = false;
+		absorbable = false;
 		hittable = false;
 		layer = Layer.effect + 0.001f;
 	}
@@ -45,6 +50,7 @@ public class ParticleFlameBulletType extends BulletType {
 	@Override
 	public void init() {
 		super.init();
+
 		hitColors = Arrays.copyOf(colors, Math.max(1, colors.length - 1));
 		shootEffect = new Effect(lifetime + 15f, range * 2f, e -> {
 			Draw.color(tc.lerp(colors, e.fin()));

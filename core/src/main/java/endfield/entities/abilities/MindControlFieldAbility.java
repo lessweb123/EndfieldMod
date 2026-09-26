@@ -5,6 +5,7 @@ import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.abilities.Ability;
+import mindustry.gen.TargetDummyc;
 import mindustry.gen.Unit;
 
 public class MindControlFieldAbility extends Ability {
@@ -32,7 +33,11 @@ public class MindControlFieldAbility extends Ability {
 					other.team = unit.team;
 					other.heal();
 				} else {
-					other.health -= damage;
+					if (other instanceof TargetDummyc) {
+						other.rawDamage(damage);
+					} else {
+						other.health -= damage;
+					}
 				}
 			});
 			Units.nearbyBuildings(unit.x, unit.y, range, other -> {

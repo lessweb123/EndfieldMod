@@ -14,6 +14,7 @@ import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
 import mindustry.entities.units.StatusEntry;
 import mindustry.entities.units.WeaponMount;
+import mindustry.gen.TargetDummyc;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.MultiPacker;
@@ -65,7 +66,6 @@ public final class StatusEffects2 {
 			speedMultiplier = 0.8f;
 			reloadMultiplier = 0.9f;
 			transitionDamage = 220f;
-			permanent = true;
 		}};
 		radiation = new StatusEffect2("radiation") {{
 			damage = 1.6f;
@@ -186,7 +186,11 @@ public final class StatusEffects2 {
 			public void applied(Unit unit, float time, boolean extend) {
 				super.applied(unit, time, extend);
 
-				unit.health -= 100f;
+				if (unit instanceof TargetDummyc) {
+					unit.rawDamage(100f);
+				} else {
+					unit.health -= 100f;
+				}
 			}
 
 			@Override

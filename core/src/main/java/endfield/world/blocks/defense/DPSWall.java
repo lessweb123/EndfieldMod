@@ -33,13 +33,6 @@ public class DPSWall extends Wall {
 		public @Nullable BlockUnitc unit;
 
 		@Override
-		public void health(float health) {
-			super.health(health);
-
-			damage(health);
-		}
-
-		@Override
 		public void damage(float damage) {
 			totalDamage += damage;
 			hits += 1;

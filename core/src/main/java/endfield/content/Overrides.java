@@ -81,8 +81,8 @@ public final class Overrides {
 		//blocks-environment
 		Blocks.stone.itemDrop = Blocks.craters.itemDrop = Blocks.charr.itemDrop = Blocks.basalt.itemDrop = Blocks.dacite.itemDrop = Items2.stone;
 		Blocks.stone.playerUnmineable = Blocks.craters.playerUnmineable = Blocks.charr.playerUnmineable = Blocks.basalt.playerUnmineable = Blocks.dacite.playerUnmineable = true;
-		Blocks.sandWater.itemDrop = Blocks.darksandWater.itemDrop = Blocks.darksandTaintedWater.itemDrop = Items.sand;
-		Blocks.sandWater.playerUnmineable = Blocks.darksandWater.playerUnmineable = Blocks.darksandTaintedWater.playerUnmineable = true;
+		//Blocks.sandWater.itemDrop = Blocks.darksandWater.itemDrop = Blocks.darksandTaintedWater.itemDrop = Items.sand;
+		//Blocks.sandWater.playerUnmineable = Blocks.darksandWater.playerUnmineable = Blocks.darksandTaintedWater.playerUnmineable = true;
 		Blocks.deepTaintedWater.asFloor().liquidMultiplier = 1.5f;
 		Blocks.oxidationChamber.canOverdrive = Blocks.neoplasiaReactor.canOverdrive = true;
 		Blocks.slag.attributes.set(Attribute.heat, 1f);
@@ -171,10 +171,7 @@ public final class Overrides {
 		if (Blocks.rtgGenerator instanceof ConsumeGenerator generator) {
 			ObjectFloatMap<Item> map = generator.itemDurationMultipliers;
 
-			//map.put(Items2.rareEarth, 5f);
-			//map.put(Items2.crystal, 35f);
 			map.put(Items2.uranium, 2f);
-			//map.put(Items2.heavyAlloy, 115f);
 		}
 		Blocks.impactReactor.liquidCapacity = 80f;
 		Blocks.neoplasiaReactor.canOverdrive = true;
@@ -228,10 +225,22 @@ public final class Overrides {
 				hitColor = backColor = trailColor = Pal2.uraniumAmmoBack;
 				frontColor = Pal2.uraniumAmmoFront;
 			}});
+			turret.ammoTypes.put(Items2.chromium, new BasicBulletType(5f, 32f) {{
+				rangeChange = 10f;
+				width = 10f;
+				height = 13f;
+				lifetime = 50f;
+				pierceCap = 2;
+				armorMultiplier = -1f;
+				ammoMultiplier = 8f;
+				hitEffect = despawnEffect = Fx.hitBulletColor;
+				hitColor = backColor = trailColor = Pal2.chromiumAmmoBack;
+				frontColor = Pal2.chromiumAmmoFront;
+			}});
 		}
 		if (Blocks.scorch instanceof ItemTurret turret) {
 			BulletType type = turret.ammoTypes.get(Items.pyratite);
-			if (type != null) type.damage = 60;
+			if (type != null) type.damage = 60f;
 		}
 		if (Blocks.wave instanceof LiquidTurret turret) {
 			turret.ammoTypes.put(Liquids2.nitratedOil, new LiquidBulletType(Liquids2.nitratedOil) {{

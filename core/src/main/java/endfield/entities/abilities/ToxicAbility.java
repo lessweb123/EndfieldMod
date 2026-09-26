@@ -7,6 +7,7 @@ import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
 import mindustry.entities.Units;
 import mindustry.entities.abilities.Ability;
+import mindustry.gen.TargetDummyc;
 import mindustry.gen.Unit;
 import mindustry.type.StatusEffect;
 
@@ -34,7 +35,11 @@ public class ToxicAbility extends Ability {
 
 		if (i >= reload) {
 			Units.nearby(null, unit.x, unit.y, range, other -> {
-				other.health -= damage;
+				if (other instanceof TargetDummyc) {
+					other.rawDamage(damage);
+				} else {
+					other.health -= damage;
+				}
 				other.apply(status, 60f * 15f);
 			});
 			Units.nearbyBuildings(unit.x, unit.y, range, b -> {

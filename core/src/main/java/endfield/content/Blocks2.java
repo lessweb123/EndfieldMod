@@ -30,6 +30,7 @@ import endfield.entities.bullet.CritBulletType;
 import endfield.entities.bullet.CtrlMissileBulletType;
 import endfield.entities.bullet.EffectBulletType;
 import endfield.entities.bullet.EndNukeBulletType;
+import endfield.entities.bullet.ParticleFlameBulletType;
 import endfield.entities.bullet.PositionLightningBulletType;
 import endfield.entities.effect.WrapperEffect;
 import endfield.graphics.CacheLayer2;
@@ -149,6 +150,7 @@ import mindustry.entities.bullet.ArtilleryBulletType;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.bullet.BulletType;
 import mindustry.entities.bullet.ContinuousFlameBulletType;
+import mindustry.entities.bullet.FireBulletType;
 import mindustry.entities.bullet.FlakBulletType;
 import mindustry.entities.bullet.LaserBulletType;
 import mindustry.entities.bullet.LiquidBulletType;
@@ -361,6 +363,7 @@ public final class Blocks2 {
 	//wall
 	public static Wall copperWallHuge, copperWallGigantic;
 	public static Wall armoredWall, armoredWallLarge, armoredWallHuge, armoredWallGigantic;
+	public static Wall titaniumAlloyWall, titaniumAlloyWallLarge, titaniumAlloyWallHuge, titaniumAlloyWallGigantic;
 	public static Wall titaniumWallHuge, titaniumWallGigantic;
 	public static Door doorHuge, doorGigantic;
 	public static Wall plastaniumWallHuge, plastaniumWallGigantic;
@@ -560,6 +563,7 @@ public final class Blocks2 {
 	public static ContinuousLiquidTurret furnace;
 	public static ItemTurret mammoth;
 	public static ItemTurret dragonBreath;
+	public static LiquidTurret inferno;
 	public static PowerTurret breakthrough;
 	public static ItemTurret cloudBreaker;
 	public static LiquidTurret turbulence;
@@ -1327,6 +1331,29 @@ public final class Blocks2 {
 			size = 4;
 			health = 5760;
 			armor = 5f;
+		}};
+		titaniumAlloyWall = new Wall("titanium-alloy-wall") {{
+			requirements(Category.defense, ItemStack.with(Items2.titaniumAlloy, 6));
+			health = 1400;
+			armor = 9f;
+		}};
+		titaniumAlloyWallLarge = new Wall("titanium-alloy-wall-large") {{
+			requirements(Category.defense, ItemStack.mult(titaniumAlloyWall.requirements, 4));
+			size = 2;
+			health = 5600;
+			armor = 9f;
+		}};
+		titaniumAlloyWallHuge = new Wall("titanium-alloy-wall-huge") {{
+			requirements(Category.defense, ItemStack.mult(titaniumAlloyWall.requirements, 9));
+			size = 3;
+			health = 12600;
+			armor = 9f;
+		}};
+		titaniumAlloyWallGigantic = new Wall("titanium-alloy-wall-gigantic") {{
+			requirements(Category.defense, ItemStack.mult(titaniumAlloyWall.requirements, 9));
+			size = 4;
+			health = 22400;
+			armor = 9f;
 		}};
 		titaniumWallHuge = new Wall("titanium-wall-huge") {{
 			requirements(Category.defense, ItemStack.mult(Blocks.titaniumWall.requirements, 9));
@@ -4350,6 +4377,7 @@ public final class Blocks2 {
 				lifetime = 19f;
 				pierce = true;
 				pierceCap = 2;
+				armorMultiplier = 0.3f;
 				width = 11f;
 				height = 15f;
 				ammoMultiplier = 6f;
@@ -4362,6 +4390,7 @@ public final class Blocks2 {
 				rangeChange = 40f;
 				status = StatusEffects.slow;
 				statusDuration = 6f;
+				armorMultiplier = 0.6f;
 				lifetime = 19f;
 				knockback = 6f;
 				width = 11f;
@@ -4947,6 +4976,99 @@ public final class Blocks2 {
 			coolantMultiplier = 1.5f;
 			coolant = consumeCoolant(0.1f);
 		}};
+		inferno = new LiquidTurret("inferno") {{
+			requirements(Category.turret, ItemStack.with(Items.copper, 135, Items.lead, 90, Items.graphite, 80, Items.metaglass, 60));
+			ammo(Liquids.oil, new BulletType(4f, 82f) {{
+				splashDamage = 73f;
+				splashDamageRadius = 25f;
+				reloadMultiplier = 1.8f;
+				rangeChange = 60f;
+				hitSize = 16f;
+				status = StatusEffects.melting;
+				statusDuration = 480f;
+				lifetime = 44f;
+				hitSound = Sounds.explosion;
+				pierce = true;
+				reflectable = false;
+				absorbable = false;
+				hittable = false;
+				shootEffect = new ParticleEffect() {{
+					particles = 5;
+					lifetime = 33f;
+					sizeFrom = 2f;
+					sizeTo = 0f;
+					interp = Interp.pow5Out;
+					sizeInterp = Interp.pow10In;
+					length = 58f;
+					baseLength = 0f;
+					colorFrom = new Color(0xf68021ff);
+					colorTo = Color.white;
+					cone = 12;
+				}};
+				smokeEffect = new ParticleEffect() {{
+					particles = 3;
+					line = true;
+					strokeFrom = 1.5f;
+					strokeTo = 0f;
+					lenFrom = 23f;
+					lenTo = 8f;
+					length = 56f;
+					baseLength = 0f;
+					lifetime = 12f;
+					colorFrom = Color.white;
+					colorTo = Pal2.missileYellow;
+					cone = 10;
+				}};
+				hitEffect = new ParticleEffect() {{
+					particles = 4;
+					sizeFrom = 3;
+					sizeTo = 0;
+					length = 16;
+					baseLength = 0;
+					lifetime = 16;
+					colorFrom = new Color(0xf8ad42ff);
+					colorTo = new Color(0xf68021ff);
+					cone = 360;
+				}};
+				despawnEffect = Fx.blastExplosion;
+				intervalDelay = 4f;
+				bulletInterval = 0.3f;
+				intervalBullets = 1;
+				intervalBullet = new FireBulletType(8f, 28f) {{
+					lifetime = 8f;
+					status = StatusEffects.burning;
+					statusDuration = 360;
+					makeFire = true;
+				}};
+			}}, Liquids2.promethium, new ParticleFlameBulletType(6f, 224f) {{
+				rangeChange = 80f;
+				lifetime = 36f;
+				hitSize = 18f;
+				particleSizeScl = 2.5f;
+				particleAmount = 11;
+				collidesAir = true;
+				status = StatusEffects.melting;
+				statusDuration = 480f;
+				layer = Layer.bullet - 0.001f;
+				smokeColors = new Color[]{Pal.darkFlame, Color.darkGray, Color.gray};
+			}});
+			size = 2;
+			health = 1400;
+			liquidCapacity = 20f;
+			reload = 3;
+			range = 87.88f;
+			maxAmmo = 60;
+			shootSound = Sounds.shootFlame;
+			targetGround = true;
+			targetAir = true;
+			smokeEffect = shootEffect = null;
+			rotateSpeed = 8;
+			recoil = 2;
+			recoilTime = 105;
+			cooldownTime = 105;
+			heatColor = new Color(0xf68021ff);
+			shootY = 3.5f;
+		}};
 		breakthrough = new PowerTurret("breakthrough") {{
 			requirements(Category.turret, ItemStack.with(Items.silicon, 320, Items.titanium, 180, Items.thorium, 150, Items.plastanium, 100, Items.phaseFabric, 30));
 			size = 4;
@@ -5076,8 +5198,9 @@ public final class Blocks2 {
 				knockback = 5f;
 				width = 8f;
 				height = 14f;
-				pierce = pierceArmor = true;
+				pierce = true;
 				pierceCap = 5;
+				armorMultiplier = 0.7f;
 				critChance = 0.05f;
 				critMultiplier = 4.5f;
 				critColor = Pal.thoriumAmmoBack;
@@ -5126,8 +5249,9 @@ public final class Blocks2 {
 				knockback = 4f;
 				width = 9f;
 				height = 16f;
-				pierce = pierceArmor = true;
+				pierce = true;
 				pierceCap = 8;
+				armorMultiplier = 0.4f;
 				critChance = 0.05f;
 				critMultiplier = 3f;
 				despawnHitEffects = false;
@@ -5185,6 +5309,69 @@ public final class Blocks2 {
 					lifetime = 10f;
 					colorFrom = Pal2.missileYellow;
 					colorTo = Color.white;
+					cone = 60f;
+				}};
+				despawnEffect = Fx.none;
+			}
+				@Override
+				public void removed(Bullet b) {
+					super.removed(b);
+
+					if (b.fdata != 1f) createFrags(b, b.x, b.y);
+				}
+			}, Items2.chromium, new CritBulletType(20f, 340f) {{
+				status = StatusEffects2.breached;
+				statusDuration = 600f;
+				ammoMultiplier = 3f;
+				lifetime = 25f;
+				rangeChange = 120f;
+				width = 15f;
+				height = 26f;
+				knockback = 18f;
+				impact = true;
+				armorMultiplier = -2f;
+				pierce = true;
+				pierceCap = 3;
+				trailChance = 0f;
+				trailInterval = 0.5f;
+				trailLength = 6;
+				trailWidth = 2f;
+				critChance = 0.05f;
+				critMultiplier = 2.5f;
+				critColor = Pal2.chromiumAmmoBack;
+				frontColor = Color.white;
+				backColor = Pal2.chromiumAmmoBack;
+				trailColor = Pal2.chromiumAmmoBack.cpy().a(0.5f);
+				trailRotation = true;
+				trailEffect = new ParticleEffect() {{
+					sizeInterp = Interp.pow3In;
+					particles = 3;
+					strokeFrom = 1.1f;
+					strokeTo = 0f;
+					line = true;
+					lenFrom = 8f;
+					lenTo = 0f;
+					length = 45f;
+					baseLength = 0f;
+					lifetime = 10f;
+					colorFrom = Pal2.discDark;
+					colorTo = Pal2.chromiumDark;
+					cone = 10f;
+				}};
+				shootEffect = Fx.bigShockwave;
+				smokeEffect = Fx.shootBigSmoke;
+				hitEffect = new ParticleEffect() {{
+					particles = 6;
+					line = true;
+					strokeFrom = 5f;
+					strokeTo = 0f;
+					lenFrom = 16f;
+					lenTo = 0f;
+					length = 100f;
+					baseLength = 0f;
+					lifetime = 10f;
+					colorFrom = Pal2.discDark;
+					colorTo = Pal2.chromiumDark;
 					cone = 60f;
 				}};
 				despawnEffect = Fx.none;
@@ -5355,6 +5542,34 @@ public final class Blocks2 {
 				statusDuration = 600f;
 				shootEffect = Fx.instShoot;
 				smokeEffect = Fx.none;
+			}}, Liquids2.nitratedOil, new BasicBulletType(18f, 85f, "circle-bullet") {{
+				trailChance = 1;
+				trailEffect = new ParticleEffect() {{
+					particles = 4;
+					sizeFrom = 4f;
+					sizeTo = 0f;
+					interp = Interp.circleOut;
+					sizeInterp = Interp.pow3In;
+					length = 7f;
+					baseLength = 2f;
+					lifetime = 60f;
+					layer = 99f;
+					colorFrom = colorTo = Pal2.nitratedOilBack;
+				}};
+				width = 10f;
+				height = 8f;
+				rangeChange = 22f;
+				backColor = frontColor = new Color(0x313131ff);
+				lifetime = 12.72f;
+				shootEffect = smokeEffect = Fx.none;
+				knockback = 22f;
+				statusDuration = 180f;
+				status = StatusEffects.tarred;
+				hitEffect = Fx.flakExplosionBig;
+				despawnEffect = Fx.none;
+				scaledSplashDamage = true;
+				splashDamage = 150f;
+				splashDamageRadius = 30f;
 			}});
 			health = 2200;
 			size = 3;
@@ -5699,6 +5914,38 @@ public final class Blocks2 {
 				frontColor = Color.white.cpy();
 				knockback = 0.9f;
 				lifetime *= 1.05f;
+			}}, Items2.chromium, new BasicBulletType(8.75f, 137f) {{
+				rangeChange = 30f;
+				pierce = true;
+				pierceCap = 1;
+				pierceBuilding = true;
+				armorMultiplier = -3f;
+				status = StatusEffects2.breached;
+				hitSize = 5.4f;
+				width = 16.8f;
+				height = 23.52f;
+				impact = true;
+				shootEffect = Fx.shootBig;
+				smokeEffect = Fx.shootBigSmoke;
+				backColor = hitColor = trailColor = Pal2.chromiumAmmoBack;
+				frontColor = Color.white.cpy();
+				knockback = 0.9f;
+				lifetime *= 1.2f;
+				fragBullets = 5;
+				fragRandomSpread = 60f;
+				fragBullet = new BasicBulletType(8.25f, 15f) {{
+					hitEffect = Fx.none;
+					width = 9f;
+					height = 10f;
+					impact = true;
+					pierceCap = 2;
+					pierceBuilding = pierceArmor = true;
+					lifetime /= 3f;
+					frontColor = Color.white.cpy();
+					backColor = hitColor = trailColor = Pal2.chromiumAmmoBack;
+					status = StatusEffects.slow;
+					statusDuration = 30f;
+				}};
 			}});
 			size = 5;
 			health = 6500;
@@ -5882,14 +6129,14 @@ public final class Blocks2 {
 			health = 2780;
 			armor = 3f;
 			size = 5;
-			reload = 120;
+			reload = 120f;
 			shootSound = Sounds.shootMissileLarge;
 			shake = 2;
 			minWarmup = 0.8f;
 			warmupMaintainTime = 30f;
 			shootWarmupSpeed = 0.02f;
 			shootY = 0;
-			outlineColor = new Color(0x2d2f39ff);
+			outlineColor = Pal.darkOutline;
 			shoot = new ShootBarrel() {{
 				shots = 8;
 				shotDelay = 4f;

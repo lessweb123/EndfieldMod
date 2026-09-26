@@ -21,6 +21,7 @@ import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Building;
 import mindustry.gen.Bullet;
 import mindustry.gen.Healthc;
+import mindustry.gen.TargetDummyc;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 
@@ -126,7 +127,11 @@ public class EndRailBulletType extends BulletType {
 				Tmp.v2.trns(b.rotation(), 6f + 5f / unit.mass());
 				unit.vel.add(Tmp.v2);
 
-				unit.health -= 32000f + unit.maxHealth / 40f;
+				if (unit instanceof TargetDummyc) {
+					unit.rawDamage(32000f + unit.maxHealth / 40f);
+				} else {
+					unit.health -= 32000f + unit.maxHealth / 40f;
+				}
 			} else if (h instanceof Building build && !build.block.privileged) {
 				build.health -= 32000f + build.maxHealth / 40f;
 				if (build.health <= 0f) build.kill();
