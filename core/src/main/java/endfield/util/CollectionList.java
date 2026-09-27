@@ -421,54 +421,78 @@ public class CollectionList<E> extends AbstractList<E> implements Eachable<E>, C
 		return true;
 	}
 
-	public void add(CollectionList<? extends E> array) {
-		addAll(array.items, 0, array.size);
+	public boolean add(Collection<? extends E> c) {
+		if (c instanceof CollectionList<? extends E> list) {
+			return addAll(list.items, 0, list.size);
+		} else {
+			return addAll(c);
+		}
 	}
 
-	public void add(E[] array) {
-		addAll(array, 0, array.length);
+	public boolean add(E[] array) {
+		return addAll(array, 0, array.length);
 	}
 
-	public void addAll(CollectionList<? extends E> array) {
-		addAll(array.items, 0, array.size);
-	}
+	public boolean addAll(List<? extends E> c, int start, int count) {
+		if (start + count > c.size())
+			throw new IllegalArgumentException("start + count must be <= size: " + start + " + " + count + " <= " + c.size());
 
-	public void addAll(CollectionList<? extends E> array, int start, int count) {
-		if (start + count > array.size)
-			throw new IllegalArgumentException("start + count must be <= size: " + start + " + " + count + " <= " + array.size);
-		addAll(array.items, start, count);
+		if (c instanceof CollectionList<? extends E> list) {
+			return addAll(list.items, start, count);
+		} else {
+			boolean modified = false;
+			for (int i = start; i < start + count; i++) {
+				if (add(c.get(i))) modified = true;
+			}
+			return modified;
+		}
 	}
 
 	@SuppressWarnings("unchecked")
-	public void addAll(E... array) {
-		addAll(array, 0, array.length);
+	public boolean addAll(E... array) {
+		return addAll(array, 0, array.length);
 	}
 
-	public void addAll(E[] array, int start, int count) {
+	public boolean addAll(E[] array, int start, int count) {
+		if (array.length == 0 || count == 0) return false;
+
 		int sizeNeeded = size + count;
 		if (sizeNeeded > items.length) items = resize(Math.max(8, (int) (sizeNeeded * 1.75f)));
 		System.arraycopy(array, start, items, size, count);
 		size += count;
+
+		return true;
 	}
 
 	@Override
 	public boolean addAll(Collection<? extends E> c) {
+		if (c.isEmpty()) return false;
+
+		int sizeNeeded = size + c.size();
+		if (sizeNeeded > items.length) resize(Math.max(8, (int) (sizeNeeded * 1.75f)));
+
+		if (c instanceof CollectionList<? extends E> list) {
+			return addAll(list.items, 0, list.size);
+		}
+
 		return super.addAll(c);
 	}
 
-	public void addAll(Iterable<? extends E> items) {
+	public boolean addAll(Iterable<? extends E> items) {
 		if (items instanceof CollectionList<? extends E> list) {
-			addAll(list);
+			return addAll(list);
 		} else {
+			boolean modified = false;
 			for (E t : items) {
-				add(t);
+				if (add(t)) modified = true;
 			}
+			return modified;
 		}
 	}
 
-	public void set(CollectionList<? extends E> array) {
+	public void set(Collection<? extends E> c) {
 		clear();
-		addAll(array);
+		addAll(c);
 	}
 
 	public void set(E[] array) {
@@ -535,19 +559,23 @@ public class CollectionList<E> extends AbstractList<E> implements Eachable<E>, C
 		return false;
 	}
 
-	public boolean containsAll(CollectionList<E> list) {
-		return containsAll(list, false);
+	@Override
+	public boolean containsAll(Collection<?> c) {
+		return containsAll(c, false);
 	}
 
-	public boolean containsAll(CollectionList<E> list, boolean identity) {
-		E[] others = list.items;
+	public boolean containsAll(Collection<?> c, boolean identity) {
+		if (c instanceof CollectionList<?> list) {
+			Object[] others = list.items;
 
-		for (int i = 0; i < list.size; i++) {
-			if (!contains(others[i], identity)) {
-				return false;
+			for (int i = 0; i < list.size; i++) {
+				if (!contains(others[i], identity)) {
+					return false;
+				}
 			}
+			return true;
 		}
-		return true;
+		return super.containsAll(c);
 	}
 
 	@Override
@@ -835,11 +863,19 @@ public class CollectionList<E> extends AbstractList<E> implements Eachable<E>, C
 		sort(Structs.comparing(keyExtractor));
 	}
 
-	public void selectFrom(CollectionList<E> base, Boolf<E> predicate) {
+	public void selectFrom(Iterable<E> c, Boolf<E> predicate) {
 		clear();
-		for (E e : base.items) {
-			if (predicate.get(e)) {
-				add(e);
+		if (c instanceof CollectionList<E> list) {
+			for (E e : list.items) {
+				if (predicate.get(e)) {
+					add(e);
+				}
+			}
+		} else {
+			for (E e : c) {
+				if (predicate.get(e)) {
+					add(e);
+				}
 			}
 		}
 	}
@@ -848,11 +884,6 @@ public class CollectionList<E> extends AbstractList<E> implements Eachable<E>, C
 		CollectionObjectSet<E> set = asSet();
 		clear();
 		addAll(set);
-	}
-
-	@SuppressWarnings("unchecked")
-	public <R> CollectionList<R> as() {
-		return (CollectionList<R>) this;
 	}
 
 	public CollectionList<E> select(Boolf<E> predicate) {

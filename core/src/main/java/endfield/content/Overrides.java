@@ -327,12 +327,23 @@ public final class Overrides {
 			}});
 		}
 		if (Blocks.foreshadow instanceof ItemTurret turret) {
-			turret.ammoTypes.clear();
-			if (turret.ammoTypes.get(Items.surgeAlloy) instanceof RailBulletType type) {
-				type.damage = 1450f;
-				type.pierceDamageFactor = 0.5f;
-				type.buildingDamageMultiplier = 0.3f;
-			}
+			turret.ammoTypes.put(Items2.titaniumAlloy, new RailBulletType() {{
+				rangeChange = 100f;
+				shootEffect = Fx2.instShoot;
+				hitEffect = Fx2.instHit;
+				pierceEffect = Fx.railHit;
+				smokeEffect = Fx.smokeCloud;
+				pointEffect = Fx2.instTrail;
+				despawnEffect = Fx2.instBomb;
+				hitColor = trailColor = lightColor = Pal2.titaniumAlloyAmmoBack;
+				pointEffectSpace = 20f;
+				damage = 1050f;
+				buildingDamageMultiplier = 0.3f;
+				pierceDamageFactor = 0.3f;
+				length = 600f;
+				hitShake = 5f;
+				armorMultiplier = -10f;
+			}});
 		}
 		if (Blocks.spectre instanceof ItemTurret turret) {
 			turret.ammoTypes.put(Items2.uranium, new BasicBulletType(9f, 105f) {{
@@ -456,12 +467,12 @@ public final class Overrides {
 
 				for (Consume consume : consumeBuilder) {
 					consume.multiplier = b -> {
-						int i = 0;
+						float i = 0f;
 						Tile[] tiles = ((BeamDrill.BeamDrillBuild) b).facing;
 						for (Tile tile : tiles) {
-							if (tile != null && tile.wallDrop() != null) ++i;
+							if (tile != null && tile.wallDrop() != null) i += 1;
 						}
-						return (float) i / tiles.length;
+						return i / tiles.length;
 					};
 				}
 

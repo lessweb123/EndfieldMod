@@ -21,7 +21,6 @@ import arc.math.geom.Vec3;
 import arc.struct.IntMap;
 import arc.util.Time;
 import arc.util.Tmp;
-import arc.util.pooling.Pool.Poolable;
 import arc.util.pooling.Pools;
 import endfield.entities.UnitPointEntry;
 import endfield.entities.abilities.MirrorFieldAbility;
@@ -199,6 +198,81 @@ public final class Fx2 {
 				Draw.z(z);
 			}
 		}
+	});
+	public static final Effect instBomb = new Effect(15f, 100f, e -> {
+		Draw.color(e.color);
+		Lines.stroke(e.fout() * 4f);
+		Lines.circle(e.x, e.y, 4f + e.finpow() * 20f);
+
+		for (int i = 0; i < 4; i++) {
+			Drawf.tri(e.x, e.y, 6f, 80f * e.fout(), i * 90 + 45);
+		}
+
+		Draw.color();
+		for (int i = 0; i < 4; i++) {
+			Drawf.tri(e.x, e.y, 3f, 30f * e.fout(), i * 90 + 45);
+		}
+
+		Drawf.light(e.x, e.y, 150f, e.color, 0.9f * e.fout());
+	});
+	public static final Effect instTrail = new Effect(30, e -> {
+		for (int i = 0; i < 2; i++) {
+			Draw.color(e.color);
+
+			float m = i == 0 ? 1f : 0.5f;
+
+			float rot = e.rotation + 180f;
+			float w = 15f * e.fout() * m;
+			Drawf.tri(e.x, e.y, w, (30f + Mathf.randomSeedRange(e.id, 15f)) * m, rot);
+			Drawf.tri(e.x, e.y, w, 10f * m, rot + 180f);
+		}
+
+		Drawf.light(e.x, e.y, 60f, e.color, 0.6f * e.fout());
+	});
+	public static final Effect instShoot = new Effect(24f, e -> {
+		e.scaled(10f, b -> {
+			Draw.color(Color.white, e.color, b.fin());
+			Lines.stroke(b.fout() * 3f + 0.2f);
+			Lines.circle(b.x, b.y, b.fin() * 50f);
+		});
+
+		Draw.color(e.color);
+
+		for (int i : Mathf.signs) {
+			Drawf.tri(e.x, e.y, 13f * e.fout(), 85f, e.rotation + 90f * i);
+			Drawf.tri(e.x, e.y, 13f * e.fout(), 50f, e.rotation + 20f * i);
+		}
+
+		Drawf.light(e.x, e.y, 180f, e.color, 0.9f * e.fout());
+	});
+	public static final Effect instHit = new Effect(20f, 200f, e -> {
+		Draw.color(e.color);
+
+		for (int i = 0; i < 2; i++) {
+			Draw.color(e.color);
+
+			float m = i == 0 ? 1f : 0.5f;
+
+			for (int j = 0; j < 5; j++) {
+				float rot = e.rotation + Mathf.randomSeedRange(e.id + j, 50f);
+				float w = 23f * e.fout() * m;
+				Drawf.tri(e.x, e.y, w, (80f + Mathf.randomSeedRange(e.id + j, 40f)) * m, rot);
+				Drawf.tri(e.x, e.y, w, 20f * m, rot + 180f);
+			}
+		}
+
+		e.scaled(10f, c -> {
+			Draw.color(e.color);
+			Lines.stroke(c.fout() * 2f + 0.2f);
+			Lines.circle(e.x, e.y, c.fin() * 30f);
+		});
+
+		e.scaled(12f, c -> {
+			Draw.color(e.color);
+			Angles.randLenVectors(e.id, 25, 5f + e.fin() * 80f, e.rotation, 60f, (x, y) -> {
+				Fill.square(e.x + x, e.y + y, c.fout() * 3f, 45f);
+			});
+		});
 	});
 	public static final Effect centrifugeFull = new Effect(30f, e -> {
 		Draw.color(e.color);
@@ -450,7 +524,9 @@ public final class Fx2 {
 					Fill.circle(i.x + Tmp.v1.x, i.y + Tmp.v1.y, engine.radius * 3f * i.fout(Interp.slowFast));
 				});
 
-				Angles.randLenVectors(e.id + index, 42, 2330, e.rotation + ang - 90, 0f, (x, y) -> Lines.lineAngle(e.x + x + Tmp.v1.x, e.y + y + Tmp.v1.y, Mathf.angle(x, y), e.fout() * 60));
+				Angles.randLenVectors(e.id + index, 42, 2330, e.rotation + ang - 90, 0f, (x, y) -> {
+					Lines.lineAngle(e.x + x + Tmp.v1.x, e.y + y + Tmp.v1.y, Mathf.angle(x, y), e.fout() * 60);
+				});
 			}
 		}
 	});
@@ -517,11 +593,15 @@ public final class Fx2 {
 		});
 
 		Lines.stroke(e.fout());
-		Angles.randLenVectors(e.id + 1, 8, 1f + 60f * e.finpow(), (x, y) -> Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 1f + e.fout() * 3f));
+		Angles.randLenVectors(e.id + 1, 8, 1f + 60f * e.finpow(), (x, y) -> {
+			Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 1f + e.fout() * 3f);
+		});
 
 		Draw.color(Color.gray);
 
-		Angles.randLenVectors(e.id, 5, 2f + 70 * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 4f + 0.5f));
+		Angles.randLenVectors(e.id, 5, 2f + 70 * e.finpow(), (x, y) -> {
+			Fill.circle(e.x + x, e.y + y, e.fout() * 4f + 0.5f);
+		});
 
 		Drawf.light(e.x, e.y, e.fout(Interp.pow2Out) * 100f, Pal.techBlue, 0.7f);
 	});
@@ -559,7 +639,9 @@ public final class Fx2 {
 	public static final Effect largeTechBlueHitCircle = new Effect(20f, e -> {
 		Draw.color(Pal.techBlue);
 		Fill.circle(e.x, e.y, e.fout() * 44);
-		Angles.randLenVectors(e.id, 5, 60f * e.fin(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 8));
+		Angles.randLenVectors(e.id, 5, 60f * e.fin(), (x, y) -> {
+			Fill.circle(e.x + x, e.y + y, e.fout() * 8);
+		});
 		Draw.color(Pal.techBlue);
 		Fill.circle(e.x, e.y, e.fout() * 30);
 		Drawf.light(e.x, e.y, e.fout() * 55f, Pal.techBlue, 0.7f);
@@ -593,7 +675,9 @@ public final class Fx2 {
 		Lines.circle(e.x, e.y, e.fin() * 35);
 
 		Lines.stroke(e.fout() * 2.25f);
-		Angles.randLenVectors(e.id, 9, 7f + 60f * e.finpow(), (x, y) -> Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 4f + e.fout() * 12f));
+		Angles.randLenVectors(e.id, 9, 7f + 60f * e.finpow(), (x, y) -> {
+			Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 4f + e.fout() * 12f);
+		});
 
 		Fill.circle(e.x, e.y, e.fout() * 22);
 		Draw.color(Pal.techBlue);
@@ -613,7 +697,9 @@ public final class Fx2 {
 		Lines.circle(e.x, e.y, e.fin() * 100 + 15);
 		Lines.stroke(e.fout() * 2.5f);
 		Lines.circle(e.x, e.y, e.fin() * 60 + 15);
-		Angles.randLenVectors(e.id, 15, 7f + 60f * e.finpow(), (x, y) -> Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 4f + e.fout() * 16f));
+		Angles.randLenVectors(e.id, 15, 7f + 60f * e.finpow(), (x, y) -> {
+			Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 4f + e.fout() * 16f);
+		});
 		Drawf.light(e.x, e.y, e.fout() * 120f, Pal.techBlue, 0.7f);
 	});
 	public static final Effect crossBlastArrow_45 = new Effect(65, 140, e -> {
@@ -3785,15 +3871,6 @@ public final class Fx2 {
 		});
 	}
 
-	public static Effect edessp(float lifetime) {
-		return new Effect(lifetime, e -> {
-			if (e.data instanceof EdesspEntry entry) {
-				float ex = e.x + Angles.trnsx(e.rotation + entry.rRot * e.fin(), entry.range * e.fout()), ey = e.y + Angles.trnsy(e.rotation + entry.rRot * e.fin(), entry.range * e.fout());
-				Draw.rect(entry.region, ex, ey, entry.region.width / 3f * e.fin(), entry.region.height / 3f * e.fin(), entry.rot);
-			}
-		}).followParent(true);
-	}
-
 	public static Effect fireworksShoot(float r) {
 		return new Effect(30, e -> {
 			Draw.z(Layer.effect - 0.1f);
@@ -4480,39 +4557,6 @@ public final class Fx2 {
 		float segLength();
 
 		float arc();
-	}
-
-	/**
-	 * @see #edessp(float)
-	 */
-	public static class EdesspEntry implements Poolable {
-		public TextureRegion region;
-		public float range;
-		public float rot, rRot;
-
-		public EdesspEntry() {}
-
-		/*public EdesspEntry(TextureRegion reg, float ran, float rt, float rrt) {
-			region = reg;
-			range = ran;
-			rot = rt;
-			rRot = rrt;
-		}*/
-
-		public EdesspEntry set(TextureRegion reg, float ran, float rt, float rrt) {
-			region = reg;
-			range = ran;
-			rot = rt;
-			rRot = rrt;
-
-			return this;
-		}
-
-		@Override
-		public void reset() {
-			region = null;
-			range = rot = rRot = 0f;
-		}
 	}
 
 	public static abstract class LightningEffect extends Effect {

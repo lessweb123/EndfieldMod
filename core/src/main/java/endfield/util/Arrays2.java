@@ -25,7 +25,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 public final class Arrays2 {
-	static final CollectionObjectSet<Object[]> ARRAY_SET = new CollectionObjectSet<>(Object[].class);
+	static final CollectionObjectSet<Object[]> arraySet = new CollectionObjectSet<>(Object[].class);
 
 	private Arrays2() {}
 
@@ -985,11 +985,11 @@ public final class Arrays2 {
 		if (bufLen < 0)
 			return "???";
 		StringBuilder buf = new StringBuilder(bufLen);
-		deepToString(a, buf, ARRAY_SET);
+		deepToString(a, buf, arraySet);
 		return buf.toString();
 	}
 
-	public static void deepToString(Object[] arr, StringBuilder buf, Set<Object[]> dejaVu) {
+	static void deepToString(Object[] arr, StringBuilder buf, Set<Object[]> dejaVu) {
 		if (arr == null) {
 			buf.append("null");
 			return;

@@ -2699,9 +2699,9 @@ public final class Blocks2 {
 			updateEffect = new Effect(80f, e -> {
 				Fx.rand.setSeed(e.id);
 				Draw.color(Color.lightGray, Color.gray, e.fin());
-				Angles.randLenVectors(e.id, 4, 2f + 12f * e.fin(Interp.pow3Out), (x, y) ->
-						Fill.circle(e.x + x, e.y + y, e.fout() * Fx.rand.random(1, 2.5f))
-				);
+				Angles.randLenVectors(e.id, 4, 2f + 12f * e.fin(Interp.pow3Out), (x, y) -> {
+					Fill.circle(e.x + x, e.y + y, e.fout() * Fx.rand.random(1, 2.5f));
+				});
 			}).layer(Layer.blockOver + 1);
 			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawRegion("-rotate", 3f, true), /*new DrawFrames(), new DrawArcSmelt(), */new DrawDefault());
 			ambientSound = Sounds.loopGrind;
@@ -2790,7 +2790,9 @@ public final class Blocks2 {
 			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawAnim(), new DrawDefault(), new DrawRegion("-top"));
 			updateEffect = new Effect(20f, e -> {
 				Draw.color(Pal.gray, Color.lightGray, e.fin());
-				Angles.randLenVectors(e.id, 6, 3f + e.fin() * 6f, (x, y) -> Fill.square(e.x + x, e.y + y, e.fout() * 2f, 45f));
+				Angles.randLenVectors(e.id, 6, 3f + e.fin() * 6f, (x, y) -> {
+					Fill.square(e.x + x, e.y + y, e.fout() * 2f, 45f);
+				});
 			});
 			consumeItem(Items2.stone, 2);
 			consumePower(1.2f);
@@ -5093,7 +5095,9 @@ public final class Blocks2 {
 
 				Draw.color(e.color, Color.white, e.fout());
 
-				Angles.randLenVectors(e.id, 20, 80f * e.finpow(), (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 5f));
+				Angles.randLenVectors(e.id, 20, 80f * e.finpow(), (x, y) -> {
+					Fill.circle(e.x + x, e.y + y, e.fout() * 5f);
+				});
 
 				for (int i = 0; i < 4; i++) {
 					Drawf.tri(e.x, e.y, 9f * e.fout(), 170f, e.rotation + Mathf.randomSeed(e.id, 360f) + 90f * i + e.finpow() * (0.5f - Mathf.randomSeed(e.id)) * 150f);
@@ -5127,9 +5131,9 @@ public final class Blocks2 {
 					Lines.circle(e.x, e.y, 4f + e.fout() * 120f);
 					Fill.circle(e.x, e.y, e.fin() * 23.5f);
 
-					Angles.randLenVectors(e.id, 20, 50f * e.fout(), (x, y) ->
-							Fill.circle(e.x + x, e.y + y, e.fin() * 6f)
-					);
+					Angles.randLenVectors(e.id, 20, 50f * e.fout(), (x, y) -> {
+						Fill.circle(e.x + x, e.y + y, e.fin() * 6f);
+					});
 
 					Draw.color();
 					Fill.circle(e.x, e.y, e.fin() * 13);
@@ -5148,8 +5152,9 @@ public final class Blocks2 {
 				knockback = 5f;
 				width = 7f;
 				height = 12f;
-				pierce = pierceArmor = true;
+				pierce = true;
 				pierceCap = 3;
+				armorMultiplier = 0.7f;
 				critChance = 0.08f;
 				critMultiplier = 2.5f;
 				critColor = Pal2.titaniumAmmoBack;
@@ -5200,7 +5205,7 @@ public final class Blocks2 {
 				height = 14f;
 				pierce = true;
 				pierceCap = 5;
-				armorMultiplier = 0.7f;
+				armorMultiplier = 0.4f;
 				critChance = 0.05f;
 				critMultiplier = 4.5f;
 				critColor = Pal.thoriumAmmoBack;
@@ -5249,9 +5254,8 @@ public final class Blocks2 {
 				knockback = 4f;
 				width = 9f;
 				height = 16f;
-				pierce = true;
+				pierce = pierceArmor = true;
 				pierceCap = 8;
-				armorMultiplier = 0.4f;
 				critChance = 0.05f;
 				critMultiplier = 3f;
 				despawnHitEffects = false;

@@ -325,7 +325,6 @@ import endfield.world.blocks.storage.ResourcesDispatchingCenter;
 import endfield.world.blocks.storage.SpaceUnloader;
 import endfield.world.blocks.storage.TurretCoreBlock;
 import endfield.world.blocks.units.Collector;
-import endfield.world.blocks.units.DerivativeUnitFactory;
 import endfield.world.blocks.units.IndestructibleUnitFactory;
 import endfield.world.blocks.units.JumpGate;
 import endfield.world.blocks.units.MechPad;
@@ -777,8 +776,6 @@ final class ClassMap2 {
 		classes.put("SmartPowerSourceBuild", SmartPowerSource.SmartPowerSourceBuild.class);
 		classes.put("Collector", Collector.class);
 		classes.put("CollectorBuild", Collector.CollectorBuild.class);
-		classes.put("DerivativeUnitFactory", DerivativeUnitFactory.class);
-		classes.put("DerivativeUnitFactoryBuild", DerivativeUnitFactory.DerivativeUnitFactoryBuild.class);
 		classes.put("SelectableReconstructor", SelectableReconstructor.class);
 		classes.put("SelectableReconstructorBuild", SelectableReconstructor.SelectableReconstructorBuild.class);
 		classes.put("DynamicUnitPlan", SelectableReconstructor.DynamicUnitPlan.class);

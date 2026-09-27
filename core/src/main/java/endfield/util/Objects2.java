@@ -133,7 +133,7 @@ public final class Objects2 {
 						} else if (value instanceof short[] shorts) {
 							Arrays2.shortToString(buf, shorts);
 						} else if (value instanceof Object[] objects) {
-							Arrays2.deepToString(objects, buf, Arrays2.ARRAY_SET);
+							Arrays2.deepToString(objects, buf, Arrays2.arraySet);
 						} else {
 							// It shouldn't have happened...
 							buf.append("???");

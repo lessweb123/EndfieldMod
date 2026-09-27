@@ -13,7 +13,6 @@ import static endfield.Vars2.methodInvokeHelper;
 public class MethodHandler<T> {
 	public final Class<T> clazz;
 
-	@Deprecated
 	public MethodHandler(Class<T> c) {
 		clazz = c;
 	}
@@ -23,7 +22,7 @@ public class MethodHandler<T> {
 	 *
 	 * @see #invoke(Object, String, Object...)
 	 */
-	public static <O, R> R invokeDefault(O object, String name, Object... args) {
+	public static <T, R> R invokeDefault(T object, String name, Object... args) {
 		return methodInvokeHelper.invoke(object, name, args);
 	}
 
@@ -33,7 +32,7 @@ public class MethodHandler<T> {
 	 *
 	 * @see #invokeStatic(String, Object...)
 	 */
-	public static <U, R> R invokeDefault(Class<U> clazz, String name, Object... args) {
+	public static <T, R> R invokeDefault(Class<T> clazz, String name, Object... args) {
 		return methodInvokeHelper.invokeStatic(clazz, name, args);
 	}
 
@@ -42,19 +41,19 @@ public class MethodHandler<T> {
 	 *
 	 * @see #newInstance(Object...)
 	 */
-	public static <U> U newInstanceDefault(Class<U> clazz, Object... args) {
+	public static <T> T newInstanceDefault(Class<T> clazz, Object... args) {
 		return methodInvokeHelper.newInstance(clazz, args);
 	}
 
-	public static <O, R> R invokeTypedDefault(O object, String name, Class<?>[] parameterTypes, Object... args) {
+	public static <T, R> R invokeTypedDefault(T object, String name, Class<?>[] parameterTypes, Object... args) {
 		return methodInvokeHelper.invokeTyped(object, name, parameterTypes, args);
 	}
 
-	public static <U, R> R invokeTypedDefault(Class<U> clazz, String name, Class<?>[] parameterTypes, Object... args) {
+	public static <T, R> R invokeTypedDefault(Class<T> clazz, String name, Class<?>[] parameterTypes, Object... args) {
 		return methodInvokeHelper.invokeStaticTyped(clazz, name, parameterTypes, args);
 	}
 
-	public static <U> U newInstanceTypedDefault(Class<U> clazz, Class<?>[] parameterTypes, Object... args) {
+	public static <T> T newInstanceTypedDefault(Class<T> clazz, Class<?>[] parameterTypes, Object... args) {
 		return methodInvokeHelper.newInstanceTyped(clazz, parameterTypes, args);
 	}
 
@@ -115,5 +114,13 @@ public class MethodHandler<T> {
 	 */
 	public T newInstance(Object... args) {
 		return methodInvokeHelper.newInstance(clazz, args);
+	}
+
+	public <R> R invokeTyped(String name, Class<?>[] parameterTypes, Object... args) {
+		return methodInvokeHelper.invokeStaticTyped(clazz, name, parameterTypes, args);
+	}
+
+	public T newInstanceTyped(Class<?>[] parameterTypes, Object... args) {
+		return methodInvokeHelper.newInstanceTyped(clazz, parameterTypes, args);
 	}
 }

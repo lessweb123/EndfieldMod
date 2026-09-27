@@ -16,12 +16,12 @@ public class BeamDrill2 extends BeamDrill {
 	@Override
 	public void init() {
 		for (Consume c : consumeBuilder) c.multiplier = b -> {
-			int i = 0;
+			float i = 0f;
 			Tile[] tiles = ((BeamDrillBuild) b).facing;
 			for (Tile tile : tiles) {
-				if (tile != null && tile.wallDrop() != null) ++i;
+				if (tile != null && tile.wallDrop() != null) i += 1;
 			}
-			return (float) i / tiles.length;
+			return i / tiles.length;
 		};
 
 		super.init();
