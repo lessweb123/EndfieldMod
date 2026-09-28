@@ -11,13 +11,6 @@ public class IntBoolHolder implements Cloneable, Comparable<IntBoolHolder> {
 		value = v;
 	}
 
-	public IntBoolHolder set(int k, boolean v) {
-		key = k;
-		value = v;
-
-		return this;
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		return o instanceof IntBoolHolder that && key == that.key && value == that.value;

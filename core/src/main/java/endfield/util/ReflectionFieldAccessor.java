@@ -6,7 +6,7 @@ public class ReflectionFieldAccessor extends AbstractFieldAccessor {
 	public ReflectionFieldAccessor(Field f) {
 		super(f);
 
-		if (!Reflects.setAccessible(f)) throw new IllegalStateException("Unable to access field: " + f);
+		if (!Reflects.setAccessible(f)) throw new IllegalArgumentException("Unable to access field: " + f);
 	}
 
 	@SuppressWarnings("unchecked")

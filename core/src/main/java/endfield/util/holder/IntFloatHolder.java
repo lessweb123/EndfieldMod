@@ -14,13 +14,6 @@ public class IntFloatHolder implements Cloneable, Comparable<IntFloatHolder> {
 		value = v;
 	}
 
-	public IntFloatHolder set(int k, float v) {
-		key = k;
-		value = v;
-
-		return this;
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		return o instanceof IntFloatHolder that && key == that.key && value == that.value;

@@ -7,6 +7,7 @@ import endfield.util.aspector.RuntimeAspector.AspectDelegate.DeclDelegate;
 import endfield.util.aspector.Shared;
 import endfield.util.aspector.Stub;
 import endfield.util.aspector.Using;
+import endfield.util.aspector.accesses.PackageAccessHandler;
 import endfield.util.aspector.classes.ASMClassAccessor;
 import endfield.util.aspector.classes.BytecodeClassLoader;
 import endfield.util.aspector.classes.ClassDecl;
@@ -20,8 +21,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Random;
-
-import static endfield.Vars2.platformImpl;
 
 @TestOnly
 public class Test extends @Stub Random {
@@ -39,7 +38,7 @@ public class Test extends @Stub Random {
 		try {
 			BytecodeClassLoader loader = new BytecodeClassLoader(RuntimeAspector.class.getClassLoader());
 
-			Package pack = RuntimeAspector.withMaker(it -> new ProxyAspectFactory(it), it -> platformImpl.packageAccessHandler(it), it -> {
+			Package pack = RuntimeAspector.withMaker(ProxyAspectFactory::new, PackageAccessHandler::packageAccessHandler, it -> {
 				it.use(loader);
 
 				DeclDelegate<?> aspectDecl = it.apply(it.open(ClassLoader.class), LoaderAspect.class);

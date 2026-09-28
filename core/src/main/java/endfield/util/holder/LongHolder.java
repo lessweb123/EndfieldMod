@@ -16,13 +16,6 @@ public class LongHolder<V> implements Cloneable, Comparable<LongHolder<?>> {
 		value = v;
 	}
 
-	public LongHolder<V> set(long k, V v) {
-		key = k;
-		value = v;
-
-		return this;
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		return o instanceof LongHolder<?> that && key == that.key && Objects.equals(value, that.value);

@@ -39,8 +39,6 @@ public class CollectionList<E> extends AbstractList<E> implements Eachable<E>, C
 
 	public final Class<E> componentType;
 
-	//public final boolean specifiedType
-
 	public E[] items;
 
 	public int size;
@@ -50,7 +48,6 @@ public class CollectionList<E> extends AbstractList<E> implements Eachable<E>, C
 
 	public CollectionList() {
 		this(Object.class);
-		//specifiedType = true;
 	}
 
 	public CollectionList(Class<?> type) {
@@ -999,9 +996,8 @@ public class CollectionList<E> extends AbstractList<E> implements Eachable<E>, C
 
 	@Override
 	public <T> T[] toArray(T[] a) {
-		if (a.length < size) {
+		if (a.length < size)
 			return toArray(a.getClass().getComponentType());
-		}
 
 		System.arraycopy(items, 0, a, 0, size);
 		if (a.length > size)
@@ -1011,7 +1007,7 @@ public class CollectionList<E> extends AbstractList<E> implements Eachable<E>, C
 
 	@Override
 	public int hashCode() {
-		if (!ordered) return super.hashCode();
+		if (!ordered) return System.identityHashCode(this);
 		E[] es = items;
 		int hashCode = 1;
 		for (int i = 0; i < size; i++) {

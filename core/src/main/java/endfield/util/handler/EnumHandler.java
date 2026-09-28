@@ -21,16 +21,16 @@ import endfield.util.Reflects;
  * @since 1.0.9
  */
 public class EnumHandler<T extends Enum<T>> {
-	public static final Class<?>[] ENUM_PARAMETER_TYPES = {String.class, int.class};
-	public static final FieldAccessor ORDINAL_ACCESSOR, NAME_ACCESSOR;
+	public static final Class<?>[] enumParameterTypes = {String.class, int.class};
+	public static final FieldAccessor ordinalAccessor, nameAccessor;
 
 	final FieldAccessor valuesAccessor;
 
 	public final Class<T> clazz;
 
 	static {
-		ORDINAL_ACCESSOR = Reflects.newFieldAccessor(Enum.class, "ordinal");
-		NAME_ACCESSOR = Reflects.newFieldAccessor(Enum.class, "name");
+		ordinalAccessor = Reflects.newFieldAccessor(Enum.class, "ordinal");
+		nameAccessor = Reflects.newFieldAccessor(Enum.class, "name");
 	}
 
 	/**
@@ -126,8 +126,8 @@ public class EnumHandler<T extends Enum<T>> {
 	public void swap(T from, T to) {
 		int fromOrdinal = from.ordinal(), toOrdinal = to.ordinal();
 
-		ORDINAL_ACCESSOR.setInt(from, toOrdinal);
-		ORDINAL_ACCESSOR.setInt(to, fromOrdinal);
+		ordinalAccessor.setInt(from, toOrdinal);
+		ordinalAccessor.setInt(to, fromOrdinal);
 
 		T[] values = valuesAccessor.getObject(null);
 
@@ -141,7 +141,7 @@ public class EnumHandler<T extends Enum<T>> {
 			if (t.name().equals(newName)) return;
 		}
 
-		NAME_ACCESSOR.set(instance, newName);
+		nameAccessor.set(instance, newName);
 	}
 
 	/** Directly return the shared array of {@code values()}, do not easily change its contents. */

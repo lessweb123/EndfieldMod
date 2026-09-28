@@ -139,7 +139,6 @@ import endfield.world.blocks.defense.RectOverdriveProjector;
 import endfield.world.blocks.defense.RegenWall;
 import endfield.world.blocks.defense.ReleaseShieldWall;
 import endfield.world.blocks.defense.RepairProjector;
-import endfield.world.blocks.defense.SandboxWall;
 import endfield.world.blocks.defense.ShapedWall;
 import endfield.world.blocks.defense.Shelter;
 import endfield.world.blocks.defense.StaticNode;
@@ -561,8 +560,6 @@ final class ClassMap2 {
 		classes.put("ReleaseShieldWallBuild", ReleaseShieldWall.ReleaseShieldWallBuild.class);
 		classes.put("ConnectedWall", ConnectedWall.class);
 		classes.put("ConnectedWallBuild", ConnectedWall.ConnectedWallBuild.class);
-		classes.put("SandboxWall", SandboxWall.class);
-		classes.put("SandboxWallBuild", SandboxWall.SandboxWallBuild.class);
 		classes.put("ShapedWall", ShapedWall.class);
 		classes.put("ShapedWallBuild", ShapedWall.ShapedWallBuild.class);
 		classes.put("AparajitoWall", AparajitoWall.class);

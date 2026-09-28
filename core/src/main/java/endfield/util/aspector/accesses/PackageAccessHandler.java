@@ -1,5 +1,6 @@
 package endfield.util.aspector.accesses;
 
+import endfield.Vars2;
 import endfield.util.aspector.PackageAccessor;
 import endfield.util.aspector.classes.ClassAccessor;
 import endfield.util.aspector.classes.ClassDecl;
@@ -41,11 +42,11 @@ public abstract class PackageAccessHandler {
 
 			AccessBuilder builder = new AccessBuilder(name, targetName);
 
-			for (EMethod method : CollectionsKt.filter(targetDecl.methods(), it -> (it.flags & (Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL)) == 0)) {
-				builder.registerEnhanceMethod(method);
+			for (EMethod method : targetDecl.methods()) {
+				if ((method.flags & (Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL)) == 0) builder.registerEnhanceMethod(method);
 			}
-			for (EConstructor<?> constructor : CollectionsKt.filter(targetDecl.constructors(), it -> (it.flags & (Modifier.PRIVATE | Modifier.FINAL)) == 0)) {
-				builder.registerEnhanceConstructor(constructor);
+			for (EConstructor<?> constructor : targetDecl.constructors()) {
+				if ((constructor.flags & (Modifier.PRIVATE | Modifier.FINAL)) == 0) builder.registerEnhanceConstructor(constructor);
 			}
 
 			byte[] bytecode = genPackageAccessClass(builder);
@@ -59,13 +60,17 @@ public abstract class PackageAccessHandler {
 			throw new IllegalArgumentException("Cannot enhance a primitive type.");
 		if (accessTarget.isInterface())
 			throw new IllegalArgumentException("Cannot enhance an interface type: $accessTarget.");
-		if (Modifier.isFinal(accessTarget.getModifiers()) || Modifier.isPrivate(accessTarget.getModifiers()))
+		if ((accessTarget.getModifiers() & (Modifier.FINAL | Modifier.PRIVATE)) != 0)
 			throw new IllegalArgumentException("Cannot enhance access class with modifiers final or private.");
 	}
 
 	protected abstract byte[] genPackageAccessClass(AccessBuilder builder);
 
 	protected abstract Class<?> loadClass(ClassName className, byte[] bytecode, Class<?> accessTarget);
+
+	public static PackageAccessHandler packageAccessHandler(ClassAccessor accessor) {
+		return Vars2.platformImpl.packageAccessHandler(accessor);
+	}
 
 	public static class AccessBuilder {
 		public ClassName className;

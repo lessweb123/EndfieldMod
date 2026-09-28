@@ -16,13 +16,6 @@ public class ShortHolder<V> implements Cloneable, Comparable<ShortHolder<?>> {
 		value = v;
 	}
 
-	public ShortHolder<V> set(short k, V v) {
-		key = k;
-		value = v;
-
-		return this;
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		return o instanceof ShortHolder<?> that && key == that.key && Objects.equals(value, that.value);

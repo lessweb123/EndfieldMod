@@ -13,13 +13,6 @@ public class ObjectLongHolder<K> implements Cloneable {
 		value = v;
 	}
 
-	public ObjectLongHolder<K> set(K k, long v) {
-		key = k;
-		value = v;
-
-		return this;
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		return o instanceof ObjectLongHolder<?> that && Objects.equals(key, that.key) && value == that.value;

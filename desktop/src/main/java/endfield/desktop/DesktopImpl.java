@@ -35,8 +35,7 @@ import static endfield.desktop.Unsafer.unsafe;
 
 public class DesktopImpl implements PlatformImpl {
 	static Lookup lookup;
-
-	static final Class<?>[] LOOKUP_PARAMETER_TYPES = {Class.class, Class.class, int.class};
+	static Constructor<Lookup> lookupCtor;
 
 	static final CollectionObjectMap<Class<?>, Lookup> lookupMap;
 	static final Function<Class<?>, Lookup> lookupBuilder;
@@ -44,7 +43,7 @@ public class DesktopImpl implements PlatformImpl {
 	static {
 		try {
 			lookup = (Lookup) ReflectionFactory.getReflectionFactory()
-					.newConstructorForSerialization(Lookup.class, Lookup.class.getDeclaredConstructor(LOOKUP_PARAMETER_TYPES))
+					.newConstructorForSerialization(Lookup.class, lookupCtor = Lookup.class.getDeclaredConstructor(Class.class, Class.class, int.class))
 					.newInstance(EndFieldMod.class, null, -1);
 
 			Demodulator.openModules();
@@ -71,7 +70,7 @@ public class DesktopImpl implements PlatformImpl {
 		}
 
 		lookupMap = new CollectionObjectMap<>(Class.class, Lookup.class);
-		lookupBuilder = clazz -> methodInvokeHelper.newInstanceTyped(Lookup.class, LOOKUP_PARAMETER_TYPES, clazz, null, 95);
+		lookupBuilder = clazz -> methodInvokeHelper.newInstance(lookupCtor, clazz, null, 95);
 	}
 
 	@Override

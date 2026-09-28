@@ -14,7 +14,7 @@ import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import endfield.io.ExpendTypeIO;
+import endfield.io.ETypeIO;
 import endfield.math.Mathm;
 import endfield.world.blocks.IControlBlock;
 import mindustry.Vars;
@@ -392,7 +392,7 @@ public class PayloadCrane extends Block {
 			write.f(target.x);
 			write.f(target.y);
 
-			ExpendTypeIO.write(payload, write);
+			ETypeIO.write(payload, write);
 
 			write.i(cranePoints.size);
 			for (int i = 0; i < cranePoints.size; i++) {
@@ -410,7 +410,7 @@ public class PayloadCrane extends Block {
 
 			target.set(read.f(), read.f());
 
-			payload = ExpendTypeIO.read(read);
+			payload = ETypeIO.read(read);
 
 			int pointsSize = read.i();
 			for (int i = 0; i < pointsSize; i++) {

@@ -70,7 +70,10 @@ public final class TechTrees {
 			nodeProduce(Items2.chromium);
 		});
 		//wall
-		vanillaNode(scrapWall, () -> node(oldTracks));
+		vanillaNode(scrapWall, () -> {
+			node(oldTracks);
+			node(Blocks2.stoneWall, () -> node(stoneWallLarge, () -> node(stoneWallHuge, () -> node(stoneWallGigantic))));
+		});
 		vanillaNode(copperWall, () -> node(armoredWall, () -> {
 			node(armoredWallLarge, () -> node(armoredWallHuge, () -> node(armoredWallGigantic)));
 			node(titaniumAlloyWall, () -> node(titaniumAlloyWallLarge, () -> node(titaniumAlloyWallHuge, () -> node(titaniumAlloyWallGigantic))));
@@ -322,12 +325,11 @@ public final class TechTrees {
 		vanillaNode(parallax, () -> node(cobweb));
 		vanillaNode(segment, () -> node(dissipation));
 		vanillaNode(tsunami, () -> {
-			node(turbulence);
+			node(turbulence, () -> node(furnace));
 			node(ironStream);
 		});
 		vanillaNode(spectre, () -> node(evilSpirits));
 		vanillaNode(meltdown, () -> node(judgement));
-		vanillaNode(tsunami, () -> node(furnace));
 		//turret-erekir
 		vanillaNode(disperse, () -> node(tracer, Seq.with(new OnSector(SectorPresets.crevice))));
 		vanillaNode(breach, () -> node(rupture, Seq.with(new OnSector(SectorPresets.stronghold)), () -> node(rift, Seq.with(new OnSector(SectorPresets.karst)))));

@@ -361,6 +361,7 @@ public final class Blocks2 {
 	public static TallBlock oreClusterTitanium;
 	public static OreBlock oreSilicon, oreCrystal, oreUranium, oreChromium;
 	//wall
+	public static Wall stoneWall, stoneWallLarge, stoneWallHuge, stoneWallGigantic;
 	public static Wall copperWallHuge, copperWallGigantic;
 	public static Wall armoredWall, armoredWallLarge, armoredWallHuge, armoredWallGigantic;
 	public static Wall titaniumAlloyWall, titaniumAlloyWallLarge, titaniumAlloyWallHuge, titaniumAlloyWallGigantic;
@@ -370,7 +371,7 @@ public final class Blocks2 {
 	public static Wall thoriumWallHuge, thoriumWallGigantic;
 	public static Wall phaseWallHuge, phaseWallGigantic;
 	public static Wall surgeWallHuge, surgeWallGigantic;
-	public static Wall siliconNitrideWall, siliconNitrideWallLarge;
+	public static Wall siliconNitrideWall, siliconNitrideWallLarge, siliconNitrideWallHuge, siliconNitrideWallGigantic;
 	public static Wall diamondWall, diamondWallLarge;
 	public static Wall uraniumWall, uraniumWallLarge;
 	public static Wall chromiumWall, chromiumWallLarge;
@@ -1297,6 +1298,25 @@ public final class Blocks2 {
 			oreScale = 32;
 		}};
 		//wall
+		stoneWall = new Wall("stone-wall") {{
+			requirements(Category.defense, ItemStack.with(Items2.stone, 6));
+			health = 320;
+		}};
+		stoneWallLarge = new Wall("stone-wall-large") {{
+			requirements(Category.defense, ItemStack.mult(stoneWall.requirements, 4));
+			size = 2;
+			health = 1280;
+		}};
+		stoneWallHuge = new Wall("stone-wall-huge") {{
+			requirements(Category.defense, ItemStack.mult(stoneWall.requirements, 9));
+			size = 3;
+			health = 2880;
+		}};
+		stoneWallGigantic = new Wall("stone-wall-gigantic") {{
+			requirements(Category.defense, ItemStack.mult(stoneWall.requirements, 16));
+			size = 4;
+			health = 5120;
+		}};
 		copperWallHuge = new Wall("copper-wall-huge") {{
 			requirements(Category.defense, ItemStack.mult(Blocks.copperWall.requirements, 9));
 			size = 3;
@@ -1454,6 +1474,18 @@ public final class Blocks2 {
 			requirements(Category.defense, ItemStack.mult(siliconNitrideWall.requirements, 4));
 			size = 2;
 			health = 2160;
+			armor = 18f;
+		}};
+		siliconNitrideWallHuge = new Wall("silicon-nitride-wall-huge") {{
+			requirements(Category.defense, ItemStack.mult(siliconNitrideWall.requirements, 9));
+			size = 3;
+			health = 4860;
+			armor = 18f;
+		}};
+		siliconNitrideWallGigantic = new Wall("silicon-nitride-wall-gigantic") {{
+			requirements(Category.defense, ItemStack.mult(siliconNitrideWall.requirements, 16));
+			size = 4;
+			health = 8640;
 			armor = 18f;
 		}};
 		diamondWall = new Wall("diamond-wall") {{
@@ -5107,8 +5139,10 @@ public final class Blocks2 {
 			heatColor = Pal.lancerLaser;
 			shootSound = Sounds.shootCorvus;
 			chargeSound = Sounds.chargeCorvus;
-			shootType = new LaserBulletType(1550f) {{
+			shootType = new LaserBulletType(1650f) {{
 				ammoMultiplier = 1;
+				armorMultiplier = 4f;
+				buildingDamageMultiplier = 0.25f;
 				drawSize = length * 2f;
 				hitEffect = Fx.hitLiquid;
 				shootEffect = Fx.hitLiquid;

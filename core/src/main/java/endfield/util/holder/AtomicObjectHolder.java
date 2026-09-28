@@ -1,13 +1,11 @@
 package endfield.util.holder;
 
-import arc.util.pooling.Pool.Poolable;
-
 import java.util.Map.Entry;
 
 /**
  * @since 1.0.7
  */
-public class AtomicObjectHolder<K, V> implements Entry<K, V>, Cloneable, Poolable {
+public class AtomicObjectHolder<K, V> implements Entry<K, V>, Cloneable {
 	public volatile K key;
 	public volatile V value;
 
@@ -16,19 +14,6 @@ public class AtomicObjectHolder<K, V> implements Entry<K, V>, Cloneable, Poolabl
 	public AtomicObjectHolder(K k, V v) {
 		key = k;
 		value = v;
-	}
-
-	@Override
-	public void reset() {
-		key = null;
-		value = null;
-	}
-
-	public AtomicObjectHolder<K, V> set(K k, V v) {
-		key = k;
-		value = v;
-
-		return this;
 	}
 
 	@SuppressWarnings("unchecked")

@@ -16,13 +16,6 @@ public class CharHolder<V> implements Cloneable, Comparable<CharHolder<?>> {
 		value = v;
 	}
 
-	public CharHolder<V> set(char k, V v) {
-		key = k;
-		value = v;
-
-		return this;
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		return o instanceof CharHolder<?> that && key == that.key && Objects.equals(value, that.value);

@@ -4,6 +4,7 @@ import arc.func.Prov;
 import arc.math.geom.Point2;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import endfield.func.Intg;
 import mindustry.Vars;
 import mindustry.content.TechTree.TechNode;
 import mindustry.ctype.ContentType;
@@ -19,9 +20,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
 
-public final class ExpendTypeIO {
+public final class ETypeIO {
 	/** Don't let anyone instantiate this class. */
-	private ExpendTypeIO() {}
+	private ETypeIO() {}
 
 	public static void writePoint2(Writes write, Point2 p) {
 		write.i(p.x);
@@ -62,7 +63,7 @@ public final class ExpendTypeIO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T extends Enum<T>> T[] readEnums(Reads read, FromOrdinal<T> prov, Class<T> type) {
+	public static <T extends Enum<T>> T[] readEnums(Reads read, Intg<T> prov, Class<T> type) {
 		int size = read.i();
 		T[] out = (T[]) Array.newInstance(type, size);
 
@@ -105,10 +106,5 @@ public final class ExpendTypeIO {
 			}
 			default -> throw new IllegalArgumentException("Unknown payload type: " + type);
 		};
-	}
-
-	@FunctionalInterface
-	public interface FromOrdinal<T extends Enum<T>> {
-		T get(int ordinal);
 	}
 }

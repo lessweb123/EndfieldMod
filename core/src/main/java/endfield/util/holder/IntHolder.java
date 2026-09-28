@@ -16,13 +16,6 @@ public class IntHolder<V> implements Cloneable, Comparable<IntHolder<?>> {
 		value = v;
 	}
 
-	public IntHolder<V> set(int k, V v) {
-		key = k;
-		value = v;
-
-		return this;
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		return o instanceof IntHolder<?> that && key == that.key && Objects.equals(value, that.value);

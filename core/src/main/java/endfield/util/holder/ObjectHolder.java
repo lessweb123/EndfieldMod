@@ -66,13 +66,6 @@ public class ObjectHolder<K, V> implements Entry<K, V>, Cloneable {
 		return oldValue;
 	}
 
-	public ObjectHolder<K, V> set(K k, V v) {
-		key = k;
-		value = v;
-
-		return this;
-	}
-
 	@SuppressWarnings("unchecked")
 	public ObjectHolder<K, V> copy() {
 		try {

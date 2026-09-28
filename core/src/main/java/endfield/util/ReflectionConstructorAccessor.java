@@ -7,7 +7,7 @@ public class ReflectionConstructorAccessor<T> extends AbstractConstructorAccesso
 	public ReflectionConstructorAccessor(Constructor<T> cons) {
 		super(cons);
 
-		if (!Reflects.setAccessible(constructor)) throw new IllegalStateException("Unable to access constructor: " + cons);
+		if (!Reflects.setAccessible(constructor)) throw new IllegalArgumentException("Unable to access constructor: " + cons);
 	}
 
 	@Override

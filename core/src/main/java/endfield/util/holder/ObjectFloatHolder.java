@@ -16,13 +16,6 @@ public class ObjectFloatHolder<K> implements Cloneable {
 		value = v;
 	}
 
-	public ObjectFloatHolder<K> set(K k, float v) {
-		key = k;
-		value = v;
-
-		return this;
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		return o instanceof ObjectFloatHolder<?> that && Objects.equals(key, that.key) && value == that.value;
