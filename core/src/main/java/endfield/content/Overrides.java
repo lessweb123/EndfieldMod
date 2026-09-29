@@ -450,7 +450,7 @@ public final class Overrides {
 		Items.phaseFabric.hardness = 3;
 		Items.carbide.hardness = 6;
 		Items.fissileMatter.hidden = false;
-		Items.serpuloItems.addAll(Items2.stone, Items2.agglomerateSalt, Items2.rareEarth, Items2.siliconNitride, Items2.galliumNitride, Items2.crystallineCircuit, Items2.coldPlasmaBottle, Items2.gold, Items2.diamond, Items2.crystal, Items2.chromium, Items2.uranium, Items2.heavyAlloy);
+		Items.serpuloItems.addAll(Items2.stone, Items2.agglomerateSalt, Items2.rareEarth, Items2.siliconNitride, Items2.galliumNitride, Items2.crystallineCircuit, Items2.coldPlasmaBottle, Items2.gold, Items2.diamond, Items2.crystal, Items2.chromium, Items2.uranium, Items2.titaniumAlloy, Items2.heavyAlloy);
 		Items.erekirItems.addAll(Items2.stone, Items2.uranium, Items2.chromium, Items2.crystal);
 
 		for (Block block : Vars.content.blocks()) {

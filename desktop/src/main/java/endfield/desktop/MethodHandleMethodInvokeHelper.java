@@ -4,7 +4,6 @@ import arc.func.Prov;
 import endfield.util.CollectionObjectMap;
 import endfield.util.FunctionType;
 import endfield.util.MethodInvokeHelper;
-import endfield.util.NoSuchFunctionException;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.invoke.MethodHandle;
@@ -73,7 +72,7 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 			curr = curr.getSuperclass();
 		}
 
-		throw new NoSuchFunctionException("no such method " + name + " in class: " + clazz + " with assignable parameter: " + types);
+		throw new RuntimeException("no such method " + name + " in class: " + clazz + " with assignable parameter: " + types);
 	}
 
 	protected MethodHandle getConstructor(Class<?> clazz, FunctionType types) throws IllegalAccessException {
@@ -107,7 +106,7 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 
 		if (res != null) return res;
 
-		throw new NoSuchFunctionException("no such constructor in class: " + clazz + " with assignable parameter: " + types);
+		throw new RuntimeException("no such constructor in class: " + clazz + " with assignable parameter: " + types);
 	}
 
 	protected @Nullable Method findMethod(Class<?> type, String name, Class<?>[] paramType) {

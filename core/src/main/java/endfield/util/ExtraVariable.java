@@ -20,6 +20,7 @@ import endfield.util.atomic.AtomicDouble;
 import endfield.util.atomic.AtomicFloat;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -90,12 +91,12 @@ public interface ExtraVariable {
 	 *
 	 * @param <T>   Get the type of variable
 	 * @param field Variable name
-	 * @throws NoSuchVariableException If the obtained variable does not exist
+	 * @throws NoSuchElementException If the obtained variable does not exist
 	 */
 	@SuppressWarnings("unchecked")
-	default <T> T getVarThr(String field) throws NoSuchVariableException {
+	default <T> T getVarThr(String field) throws NoSuchElementException {
 		if (!extra().containsKey(field))
-			throw new NoSuchVariableException("No such field with name: " + field);
+			throw new NoSuchElementException("No such field with name: " + field);
 
 		return (T) extra().get(field);
 	}

@@ -17,7 +17,9 @@ import endfield.util.aspector.classes.ClassAccessor;
 import endfield.util.handler.ObjectHandler;
 import sun.reflect.ReflectionFactory;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles.Lookup;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -30,7 +32,6 @@ import static endfield.Vars2.accessibleHelper;
 import static endfield.Vars2.classHelper;
 import static endfield.Vars2.fieldAccessHelper;
 import static endfield.Vars2.methodInvokeHelper;
-import static endfield.desktop.DesktopConstant.clone;
 import static endfield.desktop.Unsafer.unsafe;
 
 public class DesktopImpl implements PlatformImpl {
@@ -84,7 +85,7 @@ public class DesktopImpl implements PlatformImpl {
 		try {
 			// If the object implements the Cloneable interface, call Object.clone() directly, which is faster than copyField().
 			if (object instanceof Cloneable) {
-				return (T) clone.invokeExact(object);
+				return (T) CloneHelper.clone.invokeExact(object);
 			}
 
 			Class<?> type = object.getClass();
@@ -149,5 +150,19 @@ public class DesktopImpl implements PlatformImpl {
 	public <T> Class<T> ensureInitialized(Class<T> targetClass) {
 		unsafe.ensureClassInitialized(targetClass);
 		return targetClass;
+	}
+
+	static final class CloneHelper {
+		static final MethodHandle clone;
+
+		static {
+			try {
+				clone = lookup.findVirtual(Object.class, "clone", MethodType.methodType(Object.class));
+			} catch (NoSuchMethodException | IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		private CloneHelper() {}
 	}
 }

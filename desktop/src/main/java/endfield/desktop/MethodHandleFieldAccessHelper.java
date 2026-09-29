@@ -3,7 +3,6 @@ package endfield.desktop;
 import arc.func.Prov;
 import endfield.util.CollectionObjectMap;
 import endfield.util.FieldAccessHelper;
-import endfield.util.NoSuchVariableException;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.invoke.MethodHandle;
@@ -71,7 +70,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			}
 		}
 
-		throw new NoSuchVariableException("field " + name + " was not found in class: " + clazz);
+		throw new RuntimeException("field " + name + " was not found in class: " + clazz);
 	}
 
 	protected @Nullable Field findField(Class<?> clazz, String name) {
@@ -958,6 +957,52 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public boolean getBooleanStatic(Field field) {
 		try {
 			return (boolean) getter(field).invoke();
+		} catch (RuntimeException | Error e) {
+			throw e;
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setObject(Object object, Field field, Object value) {
+		try {
+			setter(field).invoke(object, value);
+		} catch (RuntimeException | Error e) {
+			throw e;
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setObjectStatic(Field field, Object value) {
+		try {
+			setter(field).invoke(value);
+		} catch (RuntimeException | Error e) {
+			throw e;
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T getObject(Object object, Field field) {
+		try {
+			return (T) getter(field).invoke(object);
+		} catch (RuntimeException | Error e) {
+			throw e;
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T getObjectStatic(Field field) {
+		try {
+			return (T) getter(field).invoke();
 		} catch (RuntimeException | Error e) {
 			throw e;
 		} catch (Throwable e) {

@@ -2,7 +2,6 @@ package endfield.desktop;
 
 import endfield.util.CollectionObjectMap;
 import endfield.util.FunctionType;
-import endfield.util.NoSuchFunctionException;
 import endfield.util.ReflectionMethodInvokeHelper;
 import endfield.util.holder.ObjectHolder;
 import org.jetbrains.annotations.Nullable;
@@ -63,7 +62,7 @@ public class NativeMethodInvokeHelper extends ReflectionMethodInvokeHelper {
 			curr = curr.getSuperclass();
 		}
 
-		throw new NoSuchFunctionException("no such method " + name + " in class: " + clazz + " with assignable parameter: " + types);
+		throw new RuntimeException("no such method " + name + " in class: " + clazz + " with assignable parameter: " + types);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -99,7 +98,7 @@ public class NativeMethodInvokeHelper extends ReflectionMethodInvokeHelper {
 
 		if (res != null) return res;
 
-		throw new NoSuchFunctionException("no such constructor in class: " + clazz + " with assignable parameter: " + types);
+		throw new RuntimeException("no such constructor in class: " + clazz + " with assignable parameter: " + types);
 	}
 
 	protected @Nullable Method findMethod(Class<?> type, String name, Class<?>[] paramType) {

@@ -3,7 +3,6 @@ package endfield.desktop;
 import arc.func.Prov;
 import endfield.util.CollectionObjectMap;
 import endfield.util.FieldAccessHelper;
-import endfield.util.NoSuchVariableException;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
@@ -43,7 +42,7 @@ public class UnsafeFieldAccessHelper implements FieldAccessHelper {
 			}
 		}
 
-		throw new NoSuchVariableException("field " + name + " was not found in class: " + clazz);
+		throw new RuntimeException("field " + name + " was not found in class: " + clazz);
 	}
 
 	protected @Nullable Field findField(Class<?> clazz, String name) {

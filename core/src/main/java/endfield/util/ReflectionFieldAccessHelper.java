@@ -37,7 +37,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 			}
 		}
 
-		throw new NoSuchVariableException("field " + name + " was not found in class: " + clazz);
+		throw new RuntimeException("field " + name + " was not found in class: " + clazz);
 	}
 
 	protected @Nullable Field findField(Class<?> clazz, String name) {
@@ -407,6 +407,370 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 	public <T> T getStatic(Class<?> clazz, String name) {
 		try {
 			return (T) getField(clazz, name, true).get(null);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setByte(Object object, Field field, byte value) {
+		try {
+			field.setByte(object, value);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setByteStatic(Field field, byte value) {
+		try {
+			field.setByte(null, value);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public byte getByte(Object object, Field field) {
+		try {
+			return field.getByte(object);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public byte getByteStatic(Field field) {
+		try {
+			return field.getByte(null);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setShort(Object object, Field field, short value) {
+		try {
+			field.setShort(object, value);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setShortStatic(Field field, short value) {
+		try {
+			field.setShort(null, value);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public short getShort(Object object, Field field) {
+		try {
+			return field.getShort(object);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public short getShortStatic(Field field) {
+		try {
+			return field.getShort(null);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setInt(Object object, Field field, int value) {
+		try {
+			field.setInt(object, value);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setIntStatic(Field field, int value) {
+		try {
+			field.setInt(null, value);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public int getInt(Object object, Field field) {
+		try {
+			return field.getInt(object);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public int getIntStatic(Field field) {
+		try {
+			return field.getInt(null);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setLong(Object object, Field field, long value) {
+		try {
+			field.setLong(object, value);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setLongStatic(Field field, long value) {
+		try {
+			field.setLong(null, value);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public long getLong(Object object, Field field) {
+		try {
+			return field.getLong(object);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public long getLongStatic(Field field) {
+		try {
+			return field.getLong(null);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setFloat(Object object, Field field, float value) {
+		try {
+			field.setFloat(object, value);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setFloatStatic(Field field, float value) {
+		try {
+			field.setFloat(null, value);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public float getFloat(Object object, Field field) {
+		try {
+			return field.getFloat(object);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public float getFloatStatic(Field field) {
+		try {
+			return field.getFloat(null);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setDouble(Object object, Field field, double value) {
+		try {
+			field.setDouble(object, value);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setDoubleStatic(Field field, double value) {
+		try {
+			field.setDouble(null, value);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public double getDouble(Object object, Field field) {
+		try {
+			return field.getDouble(object);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public double getDoubleStatic(Field field) {
+		try {
+			return field.getDouble(null);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setChar(Object object, Field field, char value) {
+		try {
+			field.setChar(object, value);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setCharStatic(Field field, char value) {
+		try {
+			field.setChar(null, value);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public char getChar(Object object, Field field) {
+		try {
+			return field.getChar(object);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public char getCharStatic(Field field) {
+		try {
+			return field.getChar(null);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setBoolean(Object object, Field field, boolean value) {
+		try {
+			field.setBoolean(object, value);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setBooleanStatic(Field field, boolean value) {
+		try {
+			field.setBoolean(null, value);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public boolean getBoolean(Object object, Field field) {
+		try {
+			return field.getBoolean(object);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public boolean getBooleanStatic(Field field) {
+		try {
+			return field.getBoolean(null);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setObject(Object object, Field field, Object value) {
+		try {
+			field.set(object, value);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setObjectStatic(Field field, Object value) {
+		try {
+			field.set(null, value);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T getObject(Object object, Field field) {
+		try {
+			return (T) field.get(object);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T getObjectStatic(Field field) {
+		try {
+			return (T) field.get(null);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void set(Object object, Field field, Object value) {
+		try {
+			field.set(object, value);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setStatic(Field field, Object value) {
+		try {
+			field.set(null, value);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T get(Object object, Field field) {
+		try {
+			return (T) field.get(object);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T getStatic(Field field) {
+		try {
+			return (T) field.get(null);
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}

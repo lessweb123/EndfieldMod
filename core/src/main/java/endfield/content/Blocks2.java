@@ -389,7 +389,7 @@ public final class Blocks2 {
 	public static Wall shieldedWallLarge, shieldedWallHuge;
 	public static AparajitoWall aparajito, aparajitoLarge;
 	//drill
-	public static Drill titaniumDrill;
+	public static Drill titaniumDrill, shovel;
 	public static SolidPump largeWaterExtractor;
 	public static SolidPump slagExtractor;
 	public static Fracker oilRig;
@@ -1300,22 +1300,22 @@ public final class Blocks2 {
 		//wall
 		stoneWall = new Wall("stone-wall") {{
 			requirements(Category.defense, ItemStack.with(Items2.stone, 6));
-			health = 320;
+			health = 280;
 		}};
 		stoneWallLarge = new Wall("stone-wall-large") {{
 			requirements(Category.defense, ItemStack.mult(stoneWall.requirements, 4));
 			size = 2;
-			health = 1280;
+			health = 1120;
 		}};
 		stoneWallHuge = new Wall("stone-wall-huge") {{
 			requirements(Category.defense, ItemStack.mult(stoneWall.requirements, 9));
 			size = 3;
-			health = 2880;
+			health = 2520;
 		}};
 		stoneWallGigantic = new Wall("stone-wall-gigantic") {{
 			requirements(Category.defense, ItemStack.mult(stoneWall.requirements, 16));
 			size = 4;
-			health = 5120;
+			health = 4480;
 		}};
 		copperWallHuge = new Wall("copper-wall-huge") {{
 			requirements(Category.defense, ItemStack.mult(Blocks.copperWall.requirements, 9));
@@ -1729,6 +1729,38 @@ public final class Blocks2 {
 			drillTime = 340f;
 			tier = 4;
 			consumeLiquid(Liquids.water, 0.06f).optional(true, true);
+		}};
+		shovel = new Drill("shovel") {{
+			requirements(Category.production, ItemStack.with(Items.copper, 80, Items.graphite, 30, Items.silicon, 40, Items.titanium, 60));
+			size = 3;
+			drillTime = 36f;
+			rotateSpeed = 6f;
+			heatColor = Pal.surge;
+			hasPower = true;
+			updateEffect = Fx.mineBig;
+			updateEffectChance = 0.05f;
+			drillEffect = Fx.none;
+			warmupSpeed = 0.02f;
+			hasLiquids = false;
+			liquidBoostIntensity = 1f;
+			consumePower(2.5f);
+			buildCostMultiplier = 0.8f;
+			buildType = () -> new DrillBuild() {
+				@Override
+				public void draw() {
+					Draw.alpha(warmup);
+					Draw.rect(rotatorRegion, x, y, timeDrilled * rotateSpeed);
+					Draw.alpha(1);
+					Draw.color();
+					Draw.rect(topRegion, x, y);
+					Draw.color(heatColor);
+					Draw.alpha(warmup * 0.6f * (1 - 0.3f + Mathf.absin(Time.time, 3, 0.3f)));
+					Draw.blend(Blending.additive);
+					Draw.rect(rimRegion, x, y);
+					Draw.blend();
+					Draw.color();
+				}
+			};
 		}};
 		largeWaterExtractor = new SolidPump("large-water-extractor") {{
 			requirements(Category.production, ItemStack.with(Items.lead, 60, Items.titanium, 80, Items.thorium, 110, Items.graphite, 80, Items.metaglass, 80));
@@ -2611,13 +2643,15 @@ public final class Blocks2 {
 					Fx.rand.setSeed(b.id * 2l + i);
 					float lenScl = Fx.rand.random(0.25f, 1f);
 					int j = i;
-					b.scaled(b.lifetime * lenScl, e -> Angles.randLenVectors(e.id + j - 1, e.fin(Interp.pow10Out), (int) (2.8f * intensity), 25f * intensity, (x, y, in, out) -> {
-						float fout = e.fout(Interp.pow5Out) * Fx.rand.random(0.5f, 1f);
-						float rad = fout * ((2f + intensity) * 2.35f);
+					b.scaled(b.lifetime * lenScl, e -> {
+						Angles.randLenVectors(e.id + j - 1, e.fin(Interp.pow10Out), (int) (2.8f * intensity), 25f * intensity, (x, y, in, out) -> {
+							float fout = e.fout(Interp.pow5Out) * Fx.rand.random(0.5f, 1f);
+							float rad = fout * ((2f + intensity) * 2.35f);
 
-						Fill.circle(e.x + x, e.y + y, rad);
-						Drawf.light(e.x + x, e.y + y, rad * 2.6f, Pal2.uraniumAmmoBack, 0.7f);
-					}));
+							Fill.circle(e.x + x, e.y + y, rad);
+							Drawf.light(e.x + x, e.y + y, rad * 2.6f, Pal2.uraniumAmmoBack, 0.7f);
+						});
+					});
 				}
 
 				b.scaled(baseLifetime, e -> {
@@ -6319,6 +6353,7 @@ public final class Blocks2 {
 					lifetime = 30;
 				}};
 			}});
+			consumePower(1f);
 		}};
 		rift = new ItemTurret("rift") {{
 			requirements(Category.turret, ItemStack.with(Items.graphite, 920, Items.silicon, 500, Items.surgeAlloy, 800, Items.tungsten, 1200, Items.carbide, 480));

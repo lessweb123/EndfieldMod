@@ -66,7 +66,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 			curr = curr.getSuperclass();
 		}
 
-		throw new NoSuchFunctionException("no such method " + name + " in class: " + clazz + " with assignable parameter: " + types);
+		throw new RuntimeException("no such method " + name + " in class: " + clazz + " with assignable parameter: " + types);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -104,7 +104,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 
 		if (res != null) return res;
 
-		throw new NoSuchFunctionException("no such constructor in class: " + clazz + " with assignable parameter: " + types);
+		throw new RuntimeException("no such constructor in class: " + clazz + " with assignable parameter: " + types);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -180,6 +180,35 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 			throw new RuntimeException(e);
 		} finally {
 			funcType.recycle();
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T invoke(Method method, Object object, Object... args) {
+		try {
+			return (T) method.invoke(object, args);
+		} catch (IllegalAccessException | InvocationTargetException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T invokeStatic(Method method, Object... args) {
+		try {
+			return (T) method.invoke(null, args);
+		} catch (IllegalAccessException | InvocationTargetException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public <T> T newInstance(Constructor<T> constructor, Object... args) {
+		try {
+			return constructor.newInstance(args);
+		} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+			throw new RuntimeException(e);
 		}
 	}
 }

@@ -14,6 +14,7 @@ import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -109,7 +110,6 @@ public final class Reflects {
 	}
 
 	/**
-	 * @throws NoSuchFunctionException If no method can be found
 	 * @throws RuntimeException Any exception that occurs in reflection
 	 */
 	public static <T> Prov<T> supply(Class<T> type, String name, Class<?>[] parameterTypes, T object, Object... args) {
@@ -125,7 +125,6 @@ public final class Reflects {
 	/**
 	 * Reflectively instantiates a type without throwing exceptions.
 	 *
-	 * @throws NoSuchFunctionException If no constructor can be found
 	 * @throws RuntimeException Any exception that occurs in reflection
 	 */
 	public static <T> Prov<T> supply(Class<T> type, Class<?>[] parameterTypes, Object... args) {
@@ -404,5 +403,13 @@ public final class Reflects {
 	 */
 	public static Lookup lookup(Class<?> clazz) {
 		return platformImpl.lookup(clazz);
+	}
+
+	public static <T> T newInstance(Constructor<T> constructor, Object[] args) throws InvocationTargetException, InstantiationException, IllegalAccessException {
+		return constructor.newInstance(args);
+	}
+
+	public static Object invoke(Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
+		return method.invoke(args);
 	}
 }

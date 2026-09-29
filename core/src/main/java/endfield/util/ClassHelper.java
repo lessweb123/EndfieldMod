@@ -36,7 +36,7 @@ public interface ClassHelper {
 		try {
 			return clazz.getDeclaredField(name);
 		} catch (NoSuchFieldException e) {
-			throw new NoSuchVariableException(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -44,7 +44,7 @@ public interface ClassHelper {
 		try {
 			return clazz.getDeclaredMethod(name, parameterTypes);
 		} catch (NoSuchMethodException e) {
-			throw new NoSuchFunctionException(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -52,7 +52,7 @@ public interface ClassHelper {
 		try {
 			return clazz.getDeclaredConstructor(parameterTypes);
 		} catch (NoSuchMethodException e) {
-			throw new NoSuchFunctionException(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -99,7 +99,7 @@ public interface ClassHelper {
 		for (Field field : fields) {
 			if (filler.get(field)) return field;
 		}
-		throw new NoSuchVariableException("Field not found");
+		throw new RuntimeException("Field not found");
 	}
 
 	default Method getMethod(Class<?> clazz, Boolf<Method> filler) {
@@ -107,7 +107,7 @@ public interface ClassHelper {
 		for (Method method : methods) {
 			if (filler.get(method)) return method;
 		}
-		throw new NoSuchFunctionException("Method not found");
+		throw new RuntimeException("Method not found");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -116,7 +116,7 @@ public interface ClassHelper {
 		for (Constructor<T> constructor : constructors) {
 			if (filler.get(constructor)) return constructor;
 		}
-		throw new NoSuchFunctionException("Constructor not found");
+		throw new RuntimeException("Constructor not found");
 	}
 
 	<T> T allocateInstance(Class<? extends T> clazz);

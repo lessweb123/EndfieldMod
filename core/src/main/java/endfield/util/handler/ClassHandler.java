@@ -1,8 +1,6 @@
 package endfield.util.handler;
 
 import arc.func.Boolf;
-import endfield.util.NoSuchFunctionException;
-import endfield.util.NoSuchVariableException;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
@@ -69,7 +67,7 @@ public final class ClassHandler {
 	 * Return to search for fields in the class by name, including private ones. If it cannot be found, a
 	 * {@code RuntimeException} will be thrown.
 	 *
-	 * @throws NoSuchVariableException If no field can be found
+	 * @throws RuntimeException If no field can be found
 	 * @see Class#getDeclaredField(String)
 	 */
 	public static Field getField(Class<?> type, String name) {
@@ -80,7 +78,7 @@ public final class ClassHandler {
 	 * Return to search for methods in the class based on name and parameter type, including private
 	 * ones. If it cannot be found, a {@code RuntimeException} will be thrown.
 	 *
-	 * @throws NoSuchFunctionException If no method can be found
+	 * @throws RuntimeException If no method can be found
 	 * @see Class#getDeclaredMethod(String, Class[])
 	 */
 	public static Method getMethod(Class<?> type, String name, Class<?>... parameterTypes) {
@@ -91,7 +89,7 @@ public final class ClassHandler {
 	 * Return the constructor function in the class based on the parameter type, including private ones. If
 	 * it cannot be found, a {@code RuntimeException} will be thrown.
 	 *
-	 * @throws NoSuchFunctionException If no constructor can be found
+	 * @throws RuntimeException If no constructor can be found
 	 * @see Class#getDeclaredConstructor(Class[])
 	 */
 	public static <T> Constructor<T> getConstructor(Class<T> type, Class<?>... args) {

@@ -2,8 +2,6 @@ package endfield.desktop;
 
 import arc.func.Boolf;
 import endfield.util.ClassHelper;
-import endfield.util.NoSuchFunctionException;
-import endfield.util.NoSuchVariableException;
 import endfield.util.Reflects;
 import org.jetbrains.annotations.Nullable;
 
@@ -109,7 +107,7 @@ public class DesktopClassHelper implements ClassHelper {
 			if (field.getName().equals(name)) return field;
 		}
 
-		throw new NoSuchVariableException(name);
+		throw new RuntimeException(name);
 	}
 
 	@Override
@@ -119,7 +117,7 @@ public class DesktopClassHelper implements ClassHelper {
 			if (method.getName().equals(name) && Arrays.equals((Class<?>[]) mtypes.get(method), parameterTypes)) return method;
 		}
 
-		throw new NoSuchFunctionException(Reflects.methodToString(clazz, name, parameterTypes));
+		throw new RuntimeException(Reflects.methodToString(clazz, name, parameterTypes));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -130,7 +128,7 @@ public class DesktopClassHelper implements ClassHelper {
 			if (Arrays.equals((Class<?>[]) ctypes.get(constructor), parameterTypes)) return constructor;
 		}
 
-		throw new NoSuchFunctionException(Reflects.methodToString(clazz, "<init>", parameterTypes));
+		throw new RuntimeException(Reflects.methodToString(clazz, "<init>", parameterTypes));
 	}
 
 	@Override
@@ -188,7 +186,7 @@ public class DesktopClassHelper implements ClassHelper {
 			}
 		}
 
-		throw new NoSuchVariableException("Field not found");
+		throw new RuntimeException("Field not found");
 	}
 
 	@Override
@@ -198,7 +196,7 @@ public class DesktopClassHelper implements ClassHelper {
 			if (filler.get(method)) return method;
 		}
 
-		throw new NoSuchFunctionException("Method not found");
+		throw new RuntimeException("Method not found");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -209,7 +207,7 @@ public class DesktopClassHelper implements ClassHelper {
 			if (filler.get(constructor)) return constructor;
 		}
 
-		throw new NoSuchFunctionException("Constructor not found");
+		throw new RuntimeException("Constructor not found");
 	}
 
 	@SuppressWarnings("unchecked")

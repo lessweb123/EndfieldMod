@@ -83,327 +83,83 @@ public interface FieldAccessHelper {
 
 	<T> T getStatic(Class<?> clazz, String name);
 
-	default void setByte(Object object, Field field, byte value) {
-		try {
-			field.setByte(object, value);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	void setByte(Object object, Field field, byte value);
 
-	default void setByteStatic(Field field, byte value) {
-		try {
-			field.setByte(null, value);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	void setByteStatic(Field field, byte value);
 
-	default byte getByte(Object object, Field field) {
-		try {
-			return field.getByte(object);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	byte getByte(Object object, Field field);
 
-	default byte getByteStatic(Field field) {
-		try {
-			return field.getByte(null);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	byte getByteStatic(Field field);
 
-	default void setShort(Object object, Field field, short value) {
-		try {
-			field.setShort(object, value);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	void setShort(Object object, Field field, short value);
 
-	default void setShortStatic(Field field, short value) {
-		try {
-			field.setShort(null, value);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	void setShortStatic(Field field, short value);
 
-	default short getShort(Object object, Field field) {
-		try {
-			return field.getShort(object);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	short getShort(Object object, Field field);
 
-	default short getShortStatic(Field field) {
-		try {
-			return field.getShort(null);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	short getShortStatic(Field field);
 
-	default void setInt(Object object, Field field, int value) {
-		try {
-			field.setInt(object, value);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	void setInt(Object object, Field field, int value);
 
-	default void setIntStatic(Field field, int value) {
-		try {
-			field.setInt(null, value);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	void setIntStatic(Field field, int value);
 
-	default int getInt(Object object, Field field) {
-		try {
-			return field.getInt(object);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	int getInt(Object object, Field field);
 
-	default int getIntStatic(Field field) {
-		try {
-			return field.getInt(null);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	int getIntStatic(Field field);
 
-	default void setLong(Object object, Field field, long value) {
-		try {
-			field.setLong(object, value);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	void setLong(Object object, Field field, long value);
 
-	default void setLongStatic(Field field, long value) {
-		try {
-			field.setLong(null, value);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	void setLongStatic(Field field, long value);
 
-	default long getLong(Object object, Field field) {
-		try {
-			return field.getLong(object);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	long getLong(Object object, Field field);
 
-	default long getLongStatic(Field field) {
-		try {
-			return field.getLong(null);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	long getLongStatic(Field field);
 
-	default void setFloat(Object object, Field field, float value) {
-		try {
-			field.setFloat(object, value);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	void setFloat(Object object, Field field, float value);
 
-	default void setFloatStatic(Field field, float value) {
-		try {
-			field.setFloat(null, value);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	void setFloatStatic(Field field, float value);
 
-	default float getFloat(Object object, Field field) {
-		try {
-			return field.getFloat(object);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	float getFloat(Object object, Field field);
 
-	default float getFloatStatic(Field field) {
-		try {
-			return field.getFloat(null);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	float getFloatStatic(Field field);
 
-	default void setDouble(Object object, Field field, double value) {
-		try {
-			field.setDouble(object, value);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	void setDouble(Object object, Field field, double value);
 
-	default void setDoubleStatic(Field field, double value) {
-		try {
-			field.setDouble(null, value);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	void setDoubleStatic(Field field, double value);
 
-	default double getDouble(Object object, Field field) {
-		try {
-			return field.getDouble(object);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	double getDouble(Object object, Field field);
 
-	default double getDoubleStatic(Field field) {
-		try {
-			return field.getDouble(null);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	double getDoubleStatic(Field field);
 
-	default void setChar(Object object, Field field, char value) {
-		try {
-			field.setChar(object, value);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	void setChar(Object object, Field field, char value);
 
-	default void setCharStatic(Field field, char value) {
-		try {
-			field.setChar(null, value);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	void setCharStatic(Field field, char value);
 
-	default char getChar(Object object, Field field) {
-		try {
-			return field.getChar(object);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	char getChar(Object object, Field field);
 
-	default char getCharStatic(Field field) {
-		try {
-			return field.getChar(null);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	char getCharStatic(Field field);
 
-	default void setBoolean(Object object, Field field, boolean value) {
-		try {
-			field.setBoolean(object, value);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	void setBoolean(Object object, Field field, boolean value);
 
-	default void setBooleanStatic(Field field, boolean value) {
-		try {
-			field.setBoolean(null, value);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	void setBooleanStatic(Field field, boolean value);
 
-	default boolean getBoolean(Object object, Field field) {
-		try {
-			return field.getBoolean(object);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	boolean getBoolean(Object object, Field field);
 
-	default boolean getBooleanStatic(Field field) {
-		try {
-			return field.getBoolean(null);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	boolean getBooleanStatic(Field field);
 
-	default void setObject(Object object, Field field, Object value) {
-		try {
-			field.set(object, value);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	void setObject(Object object, Field field, Object value);
 
-	default void setObjectStatic(Field field, Object value) {
-		try {
-			field.set(null, value);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	void setObjectStatic(Field field, Object value);
 
-	@SuppressWarnings("unchecked")
-	default <T> T getObject(Object object, Field field) {
-		try {
-			return (T) field.get(object);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	<T> T getObject(Object object, Field field);
 
-	@SuppressWarnings("unchecked")
-	default <T> T getObjectStatic(Field field) {
-		try {
-			return (T) field.get(null);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	<T> T getObjectStatic(Field field);
 
-	default void set(Object object, Field field, Object value) {
-		try {
-			field.set(object, value);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	void set(Object object, Field field, Object value);
 
-	default void setStatic(Field field, Object value) {
-		try {
-			field.set(null, value);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	void setStatic(Field field, Object value);
 
-	@SuppressWarnings("unchecked")
-	default <T> T get(Object object, Field field) {
-		try {
-			return (T) field.get(object);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	<T> T get(Object object, Field field);
 
-	@SuppressWarnings("unchecked")
-	default <T> T getStatic(Field field) {
-		try {
-			return (T) field.get(null);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	<T> T getStatic(Field field);
 }

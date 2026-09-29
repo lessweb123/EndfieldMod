@@ -68,8 +68,8 @@ public final class Items2 {
 		}};
 		crystal = new Item("crystal", Pal2.crystalAmmoBack) {{
 			cost = 1.25f;
-			explosiveness = 0.3f;
 			radioactivity = 0.1f;
+			charge = 0.1f;
 			hardness = 5;
 		}};
 		gold = new Item("gold", Pal2.goldAmmoBack) {{

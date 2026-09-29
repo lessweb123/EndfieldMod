@@ -1,7 +1,6 @@
 package endfield.util;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public interface MethodInvokeHelper {
@@ -17,29 +16,9 @@ public interface MethodInvokeHelper {
 
 	<T> T newInstanceTyped(Class<T> clazz, Class<?>[] parameterTypes, Object... args);
 
-	@SuppressWarnings("unchecked")
-	default <T> T invoke(Method method, Object object, Object... args) {
-		try {
-			return (T) method.invoke(object, args);
-		} catch (IllegalAccessException | InvocationTargetException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	<T> T invoke(Method method, Object object, Object... args);
 
-	@SuppressWarnings("unchecked")
-	default <T> T invokeStatic(Method method, Object... args) {
-		try {
-			return (T) method.invoke(null, args);
-		} catch (IllegalAccessException | InvocationTargetException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	<T> T invokeStatic(Method method, Object... args);
 
-	default <T> T newInstance(Constructor<T> constructor, Object... args) {
-		try {
-			return constructor.newInstance(args);
-		} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	<T> T newInstance(Constructor<T> constructor, Object... args);
 }

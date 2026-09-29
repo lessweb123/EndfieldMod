@@ -22,6 +22,8 @@ public class NativeJavaMethodHandle extends BaseFunction {
 	public NativeJavaMethodHandle(Scriptable scope, MethodHandle method) {
 		super(scope, null);
 
+		method = method.asFixedArity();
+
 		handle = method;
 
 		MethodType type = method.type();

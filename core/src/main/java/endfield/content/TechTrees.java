@@ -1,6 +1,7 @@
 package endfield.content;
 
 import arc.struct.Seq;
+import arc.util.Strings;
 import endfield.util.Constant;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
@@ -107,7 +108,10 @@ public final class TechTrees {
 		vanillaNode(carbideWallLarge, () -> node(carbideWallHuge, () -> node(carbideWallGigantic)));
 		vanillaNode(shieldedWall, () -> node(shieldedWallLarge, () -> node(shieldedWallHuge)));
 		//drill
-		vanillaNode(pneumaticDrill, () -> node(titaniumDrill));
+		vanillaNode(pneumaticDrill, () -> {
+			node(titaniumDrill);
+			node(shovel);
+		});
 		vanillaNode(waterExtractor, () -> {
 			node(largeWaterExtractor);
 			node(slagExtractor);
@@ -420,20 +424,21 @@ public final class TechTrees {
 
 	// -----legacy-addToResearch-----
 
-	public static void research(UnlockableContent content, UnlockableContent parentContent) {
-		research(content, parentContent, ItemStack.empty, Seq.with());
+	public static TechNode research(UnlockableContent content, UnlockableContent parentContent) {
+		return research(content, parentContent, content.researchRequirements(), Seq.with());
 	}
 
-	public static void research(UnlockableContent content, UnlockableContent parentContent, Seq<Objective> objectives) {
-		research(content, parentContent, ItemStack.empty, objectives);
+	public static TechNode research(UnlockableContent content, UnlockableContent parentContent, Seq<Objective> objectives) {
+		return research(content, parentContent, content.researchRequirements(), objectives);
 	}
 
-	public static void research(UnlockableContent content, UnlockableContent parentContent, ItemStack[] customRequirements) {
-		research(content, parentContent, customRequirements, Seq.with());
+	public static TechNode research(UnlockableContent content, UnlockableContent parentContent, ItemStack[] customRequirements) {
+		return research(content, parentContent, customRequirements, Seq.with());
 	}
 
-	public static void research(UnlockableContent content, UnlockableContent parentContent, ItemStack[] customRequirements, Seq<Objective> objectives) {
-		if (content == null || parentContent == null) return;
+	public static TechNode research(UnlockableContent content, UnlockableContent parentContent, ItemStack[] customRequirements, Seq<Objective> objectives) {
+		if (content == null) throw new IllegalArgumentException("The content cannot be null");
+		if (parentContent == null) throw new IllegalArgumentException("The parent content cannot be null");
 
 		TechNode lastNode = TechTree.all.find(t -> t.content == content);
 		if (lastNode != null) {
@@ -453,7 +458,7 @@ public final class TechTrees {
 		// find parent node.
 		TechNode parent = TechTree.all.find(t -> t.content == parentContent);
 
-		if (parent == null) return;
+		if (parent == null) throw new IllegalArgumentException(Strings.format("Unable to find node: @", parentContent));
 
 		// add this node to the parent
 		if (!parent.children.contains(node)) {
@@ -461,5 +466,7 @@ public final class TechTrees {
 		}
 		// reparent the node
 		node.parent = parent;
+
+		return node;
 	}
 }
