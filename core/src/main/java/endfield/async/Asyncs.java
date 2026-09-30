@@ -10,6 +10,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 /**
  * Provides multithreading utilities, primarily synchronizations from threads to the main thread for OpenGL
  * purposes.
@@ -23,7 +25,7 @@ public final class Asyncs {
 		try {
 			return future.get();
 		} catch (InterruptedException | ExecutionException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -40,7 +42,7 @@ public final class Asyncs {
 		try {
 			flag.acquire();
 		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -58,7 +60,7 @@ public final class Asyncs {
 		try {
 			flag.acquire();
 		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 
 		return out.get();

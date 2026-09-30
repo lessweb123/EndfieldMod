@@ -2,8 +2,8 @@ package endfield.gen;
 
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import endfield.world.blocks.IBuilding;
 import endfield.world.graph.PressureGraph;
+import mindustry.audio.AmbientSource;
 import mindustry.entities.EntityGroup;
 import mindustry.gen.Entityc;
 import mindustry.gen.Groups;
@@ -22,7 +22,7 @@ public class PressureGraphUpdater implements Entityc {
 
 	@Override
 	public void update() {
-		if (graph != null && !also(graph.builds, builds -> builds.retainAll(IBuilding::isValid)).isEmpty()) {
+		if (graph != null && !also(graph.builds, builds -> builds.retainAll(AmbientSource::isValid)).isEmpty()) {
 			graph.update();
 		} else {
 			remove();

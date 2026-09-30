@@ -3,6 +3,8 @@ package endfield.util.aspector.classes;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Proxy;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 public class NestedAnnotationValue extends AnnotationValue<Annotation, EAnnotation> {
 	public final EAnnotation rawValue;
 	Annotation value;
@@ -27,7 +29,7 @@ public class NestedAnnotationValue extends AnnotationValue<Annotation, EAnnotati
 					return annoValue == null ? method.invoke(obj, args) : annoValue.value();
 				});
 			} catch (ClassNotFoundException e) {
-				throw new RuntimeException(e);
+				throw sneakyThrow(e);
 			}
 		}
 

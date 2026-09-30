@@ -13,6 +13,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 public class HttpHandler implements UrlHandler {
 	@Override
 	public List<String> matchedSchemes() {
@@ -29,7 +31,7 @@ public class HttpHandler implements UrlHandler {
 		try {
 			return new HttpsHandle(new URI(url).toURL());
 		} catch (MalformedURLException | URISyntaxException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -74,7 +76,7 @@ public class HttpHandler implements UrlHandler {
 					return connection.getInputStream();
 				}
 			} catch (IOException e) {
-				throw new RuntimeException(e);
+				throw sneakyThrow(e);
 			}
 		}
 	}

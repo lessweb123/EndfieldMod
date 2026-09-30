@@ -9,8 +9,10 @@ import endfield.util.handler.ClassHandler;
 import mindustry.Vars;
 import org.jetbrains.annotations.UnknownNullability;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -30,7 +32,7 @@ import static endfield.Vars2.platformImpl;
  * @since 1.0.6
  */
 public final class Reflects {
-	public static final Lookup PUBLIC_LOOKUP = MethodHandles.publicLookup();
+	public static final Lookup publicLookup = MethodHandles.publicLookup();
 
 	/** Don't let anyone instantiate this class. */
 	private Reflects() {}
@@ -392,17 +394,21 @@ public final class Reflects {
 
 	/**
 	 * <pre>{@code
-	 * MethodHandle icons = platformImpl.lookup(Block.class).findVirtual(Block.class, "icons", MethodType.methodType(TextureRegion[].class));
+	 * MethodHandle icons = Reflects.lookup(Block.class).findVirtual(Block.class, "icons", MethodType.methodType(TextureRegion[].class));
 	 * }</pre>
 	 * <pre>{@code
 	 * Method method = Block.class.getDeclaredMethod("icons");
-	 * MethodHandle icons = platformImpl.lookup(method.getDeclaringClass()).unreflect(method);
+	 * MethodHandle icons = Reflects.lookup(method.getDeclaringClass()).unreflect(method);
 	 * }</pre>
 	 *
 	 * @return Retrieve a {@code lookup} that can access all members within a given {@code class}.
 	 */
 	public static Lookup lookup(Class<?> clazz) {
 		return platformImpl.lookup(clazz);
+	}
+
+	public static MethodHandle findSpecial(Class<?> refc, String name, Class<?> rtype, Class<?>... ptypes) {
+		return ReflectsKt.findSpecial(refc, name, MethodType.methodType(rtype, ptypes));
 	}
 
 	public static <T> T newInstance(Constructor<T> constructor, Object[] args) throws InvocationTargetException, InstantiationException, IllegalAccessException {

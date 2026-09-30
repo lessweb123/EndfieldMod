@@ -7,15 +7,16 @@ import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 
 import static endfield.desktop.DesktopImpl.lookup;
+import static endfield.util.GetKt.sneakyThrow;
 
 public final class MethodHandleVirtualMethodAccessor extends AbstractMethodAccessor {
 	final MethodHandle spreadHandle;
 
-	public MethodHandleVirtualMethodAccessor(Method met) {
-		super(met);
+	public MethodHandleVirtualMethodAccessor(Method method) {
+		super(method);
 
 		try {
-			MethodHandle target = lookup.unreflect(met).asFixedArity();
+			MethodHandle target = lookup.unreflect(method).asFixedArity();
 
 			int paramCount = target.type().parameterCount();
 
@@ -27,7 +28,7 @@ public final class MethodHandleVirtualMethodAccessor extends AbstractMethodAcces
 					.changeReturnType(Object.class);
 			spreadHandle = spread.asType(newType);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -36,10 +37,8 @@ public final class MethodHandleVirtualMethodAccessor extends AbstractMethodAcces
 	public <T> T invoke(Object object, Object... args) {
 		try {
 			return (T) spreadHandle.invokeExact(object, args);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 }

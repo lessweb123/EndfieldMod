@@ -44,6 +44,8 @@ import java.util.Map;
 import java.util.jar.JarFile;
 import java.util.zip.ZipFile;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 public class ASMClassAccessor implements ClassAccessor {
 	ClassLoader loaderPath;
 	@Nullable File filePath;
@@ -103,7 +105,7 @@ public class ASMClassAccessor implements ClassAccessor {
 					try {
 						stream = new FileInputStream(target);
 					} catch (FileNotFoundException e) {
-						throw new RuntimeException(e);
+						throw sneakyThrow(e);
 					}
 				}
 			} else {
@@ -113,7 +115,7 @@ public class ASMClassAccessor implements ClassAccessor {
 					try (ZipFile zip = extension.equals(".jar") ? new JarFile(filePath.getAbsolutePath()) : new ZipFile(filePath.getAbsolutePath())) {
 						stream = zip.getInputStream(zip.getEntry(path));
 					} catch (IOException e) {
-						throw new RuntimeException(e);
+						throw sneakyThrow(e);
 					}
 				}
 			}
@@ -123,7 +125,7 @@ public class ASMClassAccessor implements ClassAccessor {
 		try (InputStream inputStream = stream) {
 			return inputStream.readAllBytes();
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 

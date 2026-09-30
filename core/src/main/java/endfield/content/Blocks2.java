@@ -45,6 +45,7 @@ import endfield.util.Constant;
 import endfield.util.Get;
 import endfield.world.blocks.LinkBlock;
 import endfield.world.blocks.PlaceholderBlock;
+import endfield.world.blocks.TestBlock;
 import endfield.world.blocks.defense.AparajitoWall;
 import endfield.world.blocks.defense.BombLauncher;
 import endfield.world.blocks.defense.ChargeWall;
@@ -599,6 +600,7 @@ public final class Blocks2 {
 	public static DPSWall dpsWall, dpsWallLarge, dpsWallHuge, dpsWallGigantic;
 	public static PlatformTurret mustDieTurret, oneShotTurret, pointTurret;
 	public static NextWave nextWave;
+	public static TestBlock testBlock;
 
 	//internal
 	public static final int maxsize = 4;
@@ -7243,6 +7245,11 @@ public final class Blocks2 {
 		nextWave = new NextWave("next-wave") {{
 			requirements(Category.effect, BuildVisibility.sandboxOnly, ItemStack.empty);
 			size = 2;
+			health = 1000;
+			armor = 10f;
+		}};
+		testBlock = new TestBlock("test-block") {{
+			requirements(Category.effect, BuildVisibility.sandboxOnly, ItemStack.empty);
 			health = 1000;
 			armor = 10f;
 		}};

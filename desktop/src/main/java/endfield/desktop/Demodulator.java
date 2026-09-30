@@ -11,6 +11,7 @@ import java.lang.invoke.VarHandle;
 import java.util.Map;
 
 import static endfield.desktop.DesktopImpl.lookup;
+import static endfield.util.GetKt.sneakyThrow;
 
 /**
  * The anti modularity tool only provides one main method {@link Demodulator#makeOpenModule(Module, String, Module)}
@@ -34,7 +35,7 @@ public final class Demodulator {
 		try {
 			implAddOpens = lookup.findVirtual(Module.class, "implAddOpens", MethodType.methodType(void.class, String.class, Module.class));
 		} catch (NoSuchMethodException | IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 

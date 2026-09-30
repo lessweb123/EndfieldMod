@@ -10,6 +10,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 @SuppressWarnings("removal")
 public class MockPlatformImpl implements PlatformImpl {
 	public static Unsafe unsafe;
@@ -31,7 +33,7 @@ public class MockPlatformImpl implements PlatformImpl {
 
 	@Override
 	public Lookup lookup(Class<?> clazz) {
-		return Reflects.PUBLIC_LOOKUP;
+		return Reflects.publicLookup;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -46,7 +48,7 @@ public class MockPlatformImpl implements PlatformImpl {
 			ObjectHandler.copyField(object, result);
 			return result;
 		} catch (InstantiationException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 

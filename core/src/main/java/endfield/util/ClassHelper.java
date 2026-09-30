@@ -7,6 +7,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 public interface ClassHelper {
 	default @Nullable Field findField(Class<?> clazz, String name) {
 		try {
@@ -36,7 +38,7 @@ public interface ClassHelper {
 		try {
 			return clazz.getDeclaredField(name);
 		} catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -44,7 +46,7 @@ public interface ClassHelper {
 		try {
 			return clazz.getDeclaredMethod(name, parameterTypes);
 		} catch (NoSuchMethodException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -52,7 +54,7 @@ public interface ClassHelper {
 		try {
 			return clazz.getDeclaredConstructor(parameterTypes);
 		} catch (NoSuchMethodException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -99,7 +101,7 @@ public interface ClassHelper {
 		for (Field field : fields) {
 			if (filler.get(field)) return field;
 		}
-		throw new RuntimeException("Field not found");
+		throw sneakyThrow(new NoSuchFieldException("Field not found"));
 	}
 
 	default Method getMethod(Class<?> clazz, Boolf<Method> filler) {
@@ -107,7 +109,7 @@ public interface ClassHelper {
 		for (Method method : methods) {
 			if (filler.get(method)) return method;
 		}
-		throw new RuntimeException("Method not found");
+		throw sneakyThrow(new NoSuchMethodException("Method not found"));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -116,7 +118,7 @@ public interface ClassHelper {
 		for (Constructor<T> constructor : constructors) {
 			if (filler.get(constructor)) return constructor;
 		}
-		throw new RuntimeException("Constructor not found");
+		throw sneakyThrow(new NoSuchMethodException("Constructor not found"));
 	}
 
 	<T> T allocateInstance(Class<? extends T> clazz);

@@ -11,6 +11,7 @@ import java.lang.reflect.Modifier;
 import static endfield.desktop.DesktopClassHelper.function4;
 import static endfield.desktop.Unsafer.getGetMessage;
 import static endfield.desktop.Unsafer.getSetMessage;
+import static endfield.util.GetKt.sneakyThrow;
 
 public class UnsafeFieldAccessHelper implements FieldAccessHelper {
 	protected static final CollectionObjectMap<Class<?>, CollectionObjectMap<String, Field>> fieldMap = new CollectionObjectMap<>(Class.class, CollectionObjectMap.class);
@@ -42,7 +43,7 @@ public class UnsafeFieldAccessHelper implements FieldAccessHelper {
 			}
 		}
 
-		throw new RuntimeException("field " + name + " was not found in class: " + clazz);
+		throw sneakyThrow(new NoSuchFieldException("field " + name + " was not found in class: " + clazz));
 	}
 
 	protected @Nullable Field findField(Class<?> clazz, String name) {

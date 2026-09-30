@@ -11,19 +11,20 @@ import java.lang.reflect.Modifier;
 import static endfield.desktop.DesktopImpl.lookup;
 import static endfield.desktop.Unsafer.getGetMessage;
 import static endfield.desktop.Unsafer.getSetMessage;
+import static endfield.util.GetKt.sneakyThrow;
 
 public sealed class MethodHandleFieldAccessor extends AbstractFieldAccessor {
 	protected final MethodHandle getter, setter;
 
-	protected MethodHandleFieldAccessor(Field f) {
-		super(f);
+	protected MethodHandleFieldAccessor(Field field) {
+		super(field);
 
 		try {
-			Class<?> decl = f.getDeclaringClass();
-			String name = f.getName();
-			Class<?> type = f.getType(), rtype = type.isPrimitive() ? type : Object.class;
+			Class<?> decl = field.getDeclaringClass();
+			String name = field.getName();
+			Class<?> type = field.getType(), rtype = type.isPrimitive() ? type : Object.class;
 
-			if ((f.getModifiers() & Modifier.STATIC) != 0) {
+			if ((field.getModifiers() & Modifier.STATIC) != 0) {
 				getter = lookup.findStaticGetter(decl, name, type).asType(MethodType.methodType(rtype));
 				setter = lookup.findStaticSetter(decl, name, type).asType(MethodType.methodType(void.class, rtype));
 			} else {
@@ -31,37 +32,37 @@ public sealed class MethodHandleFieldAccessor extends AbstractFieldAccessor {
 				setter = lookup.findSetter(decl, name, type).asType(MethodType.methodType(void.class, Object.class, rtype));
 			}
 		} catch (NoSuchFieldException | IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
-	public static FieldAccessor getMethodHandleFieldAccessor(Field f) {
-		Class<?> type = f.getType();
+	public static FieldAccessor getMethodHandleFieldAccessor(Field field) {
+		Class<?> type = field.getType();
 
-		if ((f.getModifiers() & Modifier.STATIC) != 0) {
+		if ((field.getModifiers() & Modifier.STATIC) != 0) {
 			if (type.isPrimitive()) {
-				if (type == boolean.class) return new MethodHandleStaticBooleanFieldAccessor(f);
-				else if (type == byte.class) return new MethodHandleStaticByteFieldAccessor(f);
-				else if (type == char.class) return new MethodHandleStaticCharFieldAccessor(f);
-				else if (type == short.class) return new MethodHandleStaticShortFieldAccessor(f);
-				else if (type == int.class) return new MethodHandleStaticIntFieldAccessor(f);
-				else if (type == long.class) return new MethodHandleStaticLongFieldAccessor(f);
-				else if (type == float.class) return new MethodHandleStaticFloatFieldAccessor(f);
-				else if (type == double.class) return new MethodHandleStaticDoubleFieldAccessor(f);
-				else throw new IllegalArgumentException("unknown type of field " + f);
-			} else return new MethodHandleStaticObjectFieldAccessor(f);
+				if (type == boolean.class) return new MethodHandleStaticBooleanFieldAccessor(field);
+				else if (type == byte.class) return new MethodHandleStaticByteFieldAccessor(field);
+				else if (type == char.class) return new MethodHandleStaticCharFieldAccessor(field);
+				else if (type == short.class) return new MethodHandleStaticShortFieldAccessor(field);
+				else if (type == int.class) return new MethodHandleStaticIntFieldAccessor(field);
+				else if (type == long.class) return new MethodHandleStaticLongFieldAccessor(field);
+				else if (type == float.class) return new MethodHandleStaticFloatFieldAccessor(field);
+				else if (type == double.class) return new MethodHandleStaticDoubleFieldAccessor(field);
+				else throw new IllegalArgumentException("unknown type of field " + field);
+			} else return new MethodHandleStaticObjectFieldAccessor(field);
 		} else {
 			if (type.isPrimitive()) {
-				if (type == boolean.class) return new MethodHandleBooleanFieldAccessor(f);
-				else if (type == byte.class) return new MethodHandleByteFieldAccessor(f);
-				else if (type == char.class) return new MethodHandleCharFieldAccessor(f);
-				else if (type == short.class) return new MethodHandleShortFieldAccessor(f);
-				else if (type == int.class) return new MethodHandleIntFieldAccessor(f);
-				else if (type == long.class) return new MethodHandleLongFieldAccessor(f);
-				else if (type == float.class) return new MethodHandleFloatFieldAccessor(f);
-				else if (type == double.class) return new MethodHandleDoubleFieldAccessor(f);
-				else throw new IllegalArgumentException("unknown type of field " + f);
-			} else return new MethodHandleObjectFieldAccessor(f);
+				if (type == boolean.class) return new MethodHandleBooleanFieldAccessor(field);
+				else if (type == byte.class) return new MethodHandleByteFieldAccessor(field);
+				else if (type == char.class) return new MethodHandleCharFieldAccessor(field);
+				else if (type == short.class) return new MethodHandleShortFieldAccessor(field);
+				else if (type == int.class) return new MethodHandleIntFieldAccessor(field);
+				else if (type == long.class) return new MethodHandleLongFieldAccessor(field);
+				else if (type == float.class) return new MethodHandleFloatFieldAccessor(field);
+				else if (type == double.class) return new MethodHandleDoubleFieldAccessor(field);
+				else throw new IllegalArgumentException("unknown type of field " + field);
+			} else return new MethodHandleObjectFieldAccessor(field);
 		}
 	}
 
@@ -186,10 +187,8 @@ final class MethodHandleObjectFieldAccessor extends MethodHandleFieldAccessor {
 	public <T> T getObject(Object object) {
 		try {
 			return (T) getter.invokeExact(object);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -197,10 +196,8 @@ final class MethodHandleObjectFieldAccessor extends MethodHandleFieldAccessor {
 	public void setObject(Object object, Object value) {
 		try {
 			setter.invokeExact(object, value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 }
@@ -225,10 +222,8 @@ final class MethodHandleBooleanFieldAccessor extends MethodHandleFieldAccessor {
 	public boolean getBoolean(Object object) {
 		try {
 			return (boolean) getter.invokeExact(object);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -236,10 +231,8 @@ final class MethodHandleBooleanFieldAccessor extends MethodHandleFieldAccessor {
 	public void setBoolean(Object object, boolean value) {
 		try {
 			setter.invokeExact(object, value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 }
@@ -264,10 +257,8 @@ final class MethodHandleByteFieldAccessor extends MethodHandleFieldAccessor {
 	public byte getByte(Object object) {
 		try {
 			return (byte) getter.invokeExact(object);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -275,10 +266,8 @@ final class MethodHandleByteFieldAccessor extends MethodHandleFieldAccessor {
 	public void setByte(Object object, byte value) {
 		try {
 			setter.invokeExact(object, value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -328,10 +317,8 @@ final class MethodHandleCharFieldAccessor extends MethodHandleFieldAccessor {
 	public char getChar(Object object) {
 		try {
 			return (char) getter.invokeExact(object);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -339,10 +326,8 @@ final class MethodHandleCharFieldAccessor extends MethodHandleFieldAccessor {
 	public void setChar(Object object, char value) {
 		try {
 			setter.invokeExact(object, value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -392,10 +377,8 @@ final class MethodHandleShortFieldAccessor extends MethodHandleFieldAccessor {
 	public short getShort(Object object) {
 		try {
 			return (short) getter.invokeExact(object);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -403,10 +386,8 @@ final class MethodHandleShortFieldAccessor extends MethodHandleFieldAccessor {
 	public void setShort(Object object, short value) {
 		try {
 			setter.invokeExact(object, value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -466,10 +447,8 @@ final class MethodHandleIntFieldAccessor extends MethodHandleFieldAccessor {
 	public int getInt(Object object) {
 		try {
 			return (int) getter.invokeExact(object);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -477,10 +456,8 @@ final class MethodHandleIntFieldAccessor extends MethodHandleFieldAccessor {
 	public void setInt(Object object, int value) {
 		try {
 			setter.invokeExact(object, value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -540,10 +517,8 @@ final class MethodHandleLongFieldAccessor extends MethodHandleFieldAccessor {
 	public long getLong(Object object) {
 		try {
 			return (long) getter.invokeExact(object);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -551,10 +526,8 @@ final class MethodHandleLongFieldAccessor extends MethodHandleFieldAccessor {
 	public void setLong(Object object, long value) {
 		try {
 			setter.invokeExact(object, value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -617,7 +590,7 @@ final class MethodHandleFloatFieldAccessor extends MethodHandleFieldAccessor {
 		} catch (RuntimeException | Error e) {
 			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -628,7 +601,7 @@ final class MethodHandleFloatFieldAccessor extends MethodHandleFieldAccessor {
 		} catch (RuntimeException | Error e) {
 			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -688,10 +661,8 @@ final class MethodHandleDoubleFieldAccessor extends MethodHandleFieldAccessor {
 	public double getDouble(Object object) {
 		try {
 			return (double) getter.invokeExact(object);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -699,10 +670,8 @@ final class MethodHandleDoubleFieldAccessor extends MethodHandleFieldAccessor {
 	public void setDouble(Object object, double value) {
 		try {
 			setter.invokeExact(object, value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 }
@@ -727,10 +696,8 @@ final class MethodHandleStaticObjectFieldAccessor extends MethodHandleFieldAcces
 	public <T> T getObject(Object object) {
 		try {
 			return (T) getter.invokeExact();
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -738,10 +705,8 @@ final class MethodHandleStaticObjectFieldAccessor extends MethodHandleFieldAcces
 	public void setObject(Object object, Object value) {
 		try {
 			setter.invokeExact(value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 }
@@ -766,10 +731,8 @@ final class MethodHandleStaticBooleanFieldAccessor extends MethodHandleFieldAcce
 	public boolean getBoolean(Object object) {
 		try {
 			return (boolean) getter.invokeExact();
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -777,10 +740,8 @@ final class MethodHandleStaticBooleanFieldAccessor extends MethodHandleFieldAcce
 	public void setBoolean(Object object, boolean value) {
 		try {
 			setter.invokeExact(value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 }
@@ -805,10 +766,8 @@ final class MethodHandleStaticByteFieldAccessor extends MethodHandleFieldAccesso
 	public byte getByte(Object object) {
 		try {
 			return (byte) getter.invokeExact();
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -816,10 +775,8 @@ final class MethodHandleStaticByteFieldAccessor extends MethodHandleFieldAccesso
 	public void setByte(Object object, byte value) {
 		try {
 			setter.invokeExact(value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -869,10 +826,8 @@ final class MethodHandleStaticCharFieldAccessor extends MethodHandleFieldAccesso
 	public char getChar(Object object) {
 		try {
 			return (char) getter.invokeExact();
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -880,10 +835,8 @@ final class MethodHandleStaticCharFieldAccessor extends MethodHandleFieldAccesso
 	public void setChar(Object object, char value) {
 		try {
 			setter.invokeExact(value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -933,10 +886,8 @@ final class MethodHandleStaticShortFieldAccessor extends MethodHandleFieldAccess
 	public short getShort(Object object) {
 		try {
 			return (short) getter.invokeExact();
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -944,10 +895,8 @@ final class MethodHandleStaticShortFieldAccessor extends MethodHandleFieldAccess
 	public void setShort(Object object, short value) {
 		try {
 			setter.invokeExact(value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -1007,10 +956,8 @@ final class MethodHandleStaticIntFieldAccessor extends MethodHandleFieldAccessor
 	public int getInt(Object object) {
 		try {
 			return (int) getter.invokeExact();
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -1018,10 +965,8 @@ final class MethodHandleStaticIntFieldAccessor extends MethodHandleFieldAccessor
 	public void setInt(Object object, int value) {
 		try {
 			setter.invokeExact(value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -1081,10 +1026,8 @@ final class MethodHandleStaticLongFieldAccessor extends MethodHandleFieldAccesso
 	public long getLong(Object object) {
 		try {
 			return (long) getter.invokeExact();
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -1092,10 +1035,8 @@ final class MethodHandleStaticLongFieldAccessor extends MethodHandleFieldAccesso
 	public void setLong(Object object, long value) {
 		try {
 			setter.invokeExact(value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -1155,10 +1096,8 @@ final class MethodHandleStaticFloatFieldAccessor extends MethodHandleFieldAccess
 	public float getFloat(Object object) {
 		try {
 			return (float) getter.invokeExact();
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -1166,10 +1105,8 @@ final class MethodHandleStaticFloatFieldAccessor extends MethodHandleFieldAccess
 	public void setFloat(Object object, float value) {
 		try {
 			setter.invokeExact(value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -1229,10 +1166,8 @@ final class MethodHandleStaticDoubleFieldAccessor extends MethodHandleFieldAcces
 	public double getDouble(Object object) {
 		try {
 			return (double) getter.invokeExact();
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -1240,10 +1175,8 @@ final class MethodHandleStaticDoubleFieldAccessor extends MethodHandleFieldAcces
 	public void setDouble(Object object, double value) {
 		try {
 			setter.invokeExact(value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 }

@@ -4,6 +4,8 @@ import endfield.util.FieldAccessor;
 import endfield.util.Reflects;
 import mindustry.world.blocks.logic.MemoryBlock;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 public class CopyMemoryBlock extends MemoryBlock {
 	public static final FieldAccessor numberMemoryAccessor, objectMemoryAccessor;
 
@@ -12,7 +14,7 @@ public class CopyMemoryBlock extends MemoryBlock {
 			numberMemoryAccessor = Reflects.newFieldAccessor(MemoryBuild.class.getDeclaredField("numberMemory"));
 			objectMemoryAccessor = Reflects.newFieldAccessor(MemoryBuild.class.getDeclaredField("objectMemory"));
 		} catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 

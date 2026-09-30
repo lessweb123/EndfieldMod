@@ -12,6 +12,7 @@ import java.util.function.Function;
 
 import static endfield.desktop.DesktopClassHelper.function4;
 import static endfield.desktop.DesktopImpl.lookup;
+import static endfield.util.GetKt.sneakyThrow;
 
 public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	protected static final CollectionObjectMap<Class<?>, CollectionObjectMap<String, Field>> fieldMap = new CollectionObjectMap<>(Class.class, CollectionObjectMap.class);
@@ -31,7 +32,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 					lookup.findStaticGetter(dec, name, type) :
 					lookup.findGetter(dec, name, type);
 		} catch (IllegalAccessException | NoSuchFieldException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}, function8 = field -> {
 		try {
@@ -42,7 +43,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 					lookup.findStaticSetter(dec, name, type) :
 					lookup.findSetter(dec, name, type);
 		} catch (IllegalAccessException | NoSuchFieldException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	};
 
@@ -70,7 +71,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			}
 		}
 
-		throw new RuntimeException("field " + name + " was not found in class: " + clazz);
+		throw sneakyThrow(new NoSuchFieldException("field " + name + " was not found in class: " + clazz));
 	}
 
 	protected @Nullable Field findField(Class<?> clazz, String name) {
@@ -95,10 +96,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(object.getClass(), name, false);
 
 			setter(field).invoke(object, value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -108,10 +107,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(clazz, name, true);
 
 			setter(field).invoke(value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -121,10 +118,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(object.getClass(), name, false);
 
 			return (byte) getter(field).invoke(object);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -134,10 +129,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(clazz, name, true);
 
 			return (byte) getter(field).invoke();
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -147,10 +140,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(object.getClass(), name, false);
 
 			setter(field).invoke(object, value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -160,10 +151,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(clazz, name, true);
 
 			setter(field).invoke(value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -173,10 +162,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(object.getClass(), name, false);
 
 			return (short) getter(field).invoke(object);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -186,10 +173,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(clazz, name, true);
 
 			return (short) getter(field).invoke();
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -199,10 +184,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(object.getClass(), name, false);
 
 			setter(field).invoke(object, value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -212,10 +195,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(clazz, name, true);
 
 			setter(field).invoke(value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -225,10 +206,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(object.getClass(), name, false);
 
 			return (int) getter(field).invoke(object);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -238,10 +217,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(clazz, name, true);
 
 			return (int) getter(field).invoke();
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -251,10 +228,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(object.getClass(), name, false);
 
 			setter(field).invoke(object, value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -264,10 +239,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(clazz, name, true);
 
 			setter(field).invoke(value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -277,10 +250,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(object.getClass(), name, false);
 
 			return (long) getter(field).invoke(object);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -290,10 +261,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(clazz, name, true);
 
 			return (long) getter(field).invoke();
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -303,10 +272,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(object.getClass(), name, false);
 
 			setter(field).invoke(object, value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -316,10 +283,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(clazz, name, true);
 
 			setter(field).invoke(value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -329,10 +294,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(object.getClass(), name, false);
 
 			return (float) getter(field).invoke(object);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -342,10 +305,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(clazz, name, true);
 
 			return (float) getter(field).invoke();
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -355,10 +316,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(object.getClass(), name, false);
 
 			setter(field).invoke(object, value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -368,10 +327,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(clazz, name, true);
 
 			setter(field).invoke(value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -381,10 +338,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(object.getClass(), name, false);
 
 			return (double) getter(field).invoke(object);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -394,10 +349,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(clazz, name, true);
 
 			return (double) getter(field).invoke();
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -407,10 +360,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(object.getClass(), name, false);
 
 			setter(field).invoke(object, value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -420,10 +371,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(clazz, name, true);
 
 			setter(field).invoke(value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -433,10 +382,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(object.getClass(), name, false);
 
 			return (char) getter(field).invoke(object);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -446,10 +393,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(clazz, name, true);
 
 			return (char) getter(field).invoke();
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -459,10 +404,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(object.getClass(), name, false);
 
 			setter(field).invoke(object, value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -472,10 +415,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(clazz, name, true);
 
 			setter(field).invoke(value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -485,10 +426,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(object.getClass(), name, false);
 
 			return (boolean) getter(field).invoke(object);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -497,10 +436,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(clazz, name, true);
 			return (boolean) getter(field).invoke();
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -510,10 +447,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(object.getClass(), name, false);
 
 			setter(field).invoke(object, value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -523,10 +458,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(clazz, name, true);
 
 			setter(field).invoke(value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -537,10 +470,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(object.getClass(), name, false);
 
 			return (T) getter(field).invoke(object);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -551,10 +482,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(clazz, name, true);
 
 			return (T) getter(field).invoke();
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -564,10 +493,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(object.getClass(), name, false);
 
 			setter(field).invoke(object, value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -577,10 +504,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(clazz, name, true);
 
 			setter(field).invoke(value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -591,10 +516,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(object.getClass(), name, false);
 
 			return (T) getter(field).invoke(object);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -605,10 +528,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			Field field = getField(clazz, name, true);
 
 			return (T) getter(field).invoke();
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -616,10 +537,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public void setByte(Object object, Field field, byte value) {
 		try {
 			setter(field).invoke(object, value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -627,10 +546,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public void setByteStatic(Field field, byte value) {
 		try {
 			setter(field).invoke(value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -638,10 +555,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public byte getByte(Object object, Field field) {
 		try {
 			return (byte) getter(field).invoke(object);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -649,10 +564,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public byte getByteStatic(Field field) {
 		try {
 			return (byte) getter(field).invoke();
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -660,10 +573,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public void setShort(Object object, Field field, short value) {
 		try {
 			setter(field).invoke(object, value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -671,10 +582,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public void setShortStatic(Field field, short value) {
 		try {
 			setter(field).invoke(value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -682,10 +591,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public short getShort(Object object, Field field) {
 		try {
 			return (short) getter(field).invoke(object);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -693,10 +600,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public short getShortStatic(Field field) {
 		try {
 			return (short) getter(field).invoke();
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -704,10 +609,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public void setInt(Object object, Field field, int value) {
 		try {
 			setter(field).invoke(object, value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -715,10 +618,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public void setIntStatic(Field field, int value) {
 		try {
 			setter(field).invoke(value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -726,10 +627,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public int getInt(Object object, Field field) {
 		try {
 			return (int) getter(field).invoke(object);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -737,10 +636,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public int getIntStatic(Field field) {
 		try {
 			return (int) getter(field).invoke();
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -748,10 +645,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public void setLong(Object object, Field field, long value) {
 		try {
 			setter(field).invoke(object, value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -759,10 +654,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public void setLongStatic(Field field, long value) {
 		try {
 			setter(field).invoke(value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -770,10 +663,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public long getLong(Object object, Field field) {
 		try {
 			return (long) getter(field).invoke(object);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -781,10 +672,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public long getLongStatic(Field field) {
 		try {
 			return (long) getter(field).invoke();
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -792,10 +681,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public void setFloat(Object object, Field field, float value) {
 		try {
 			setter(field).invoke(object, value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -803,10 +690,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public void setFloatStatic(Field field, float value) {
 		try {
 			setter(field).invoke(value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -814,10 +699,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public float getFloat(Object object, Field field) {
 		try {
 			return (float) getter(field).invoke(object);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -825,10 +708,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public float getFloatStatic(Field field) {
 		try {
 			return (float) getter(field).invoke();
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -836,10 +717,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public void setDouble(Object object, Field field, double value) {
 		try {
 			setter(field).invoke(object, value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -847,10 +726,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public void setDoubleStatic(Field field, double value) {
 		try {
 			setter(field).invoke(value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -858,10 +735,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public double getDouble(Object object, Field field) {
 		try {
 			return (double) getter(field).invoke(object);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -869,10 +744,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public double getDoubleStatic(Field field) {
 		try {
 			return (double) getter(field).invoke();
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -880,10 +753,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public void setChar(Object object, Field field, char value) {
 		try {
 			setter(field).invoke(object, value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -891,10 +762,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public void setCharStatic(Field field, char value) {
 		try {
 			setter(field).invoke(value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -902,10 +771,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public char getChar(Object object, Field field) {
 		try {
 			return (char) getter(field).invoke(object);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -913,10 +780,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public char getCharStatic(Field field) {
 		try {
 			return (char) getter(field).invoke();
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -924,10 +789,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public void setBoolean(Object object, Field field, boolean value) {
 		try {
 			setter(field).invoke(object, value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -935,10 +798,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public void setBooleanStatic(Field field, boolean value) {
 		try {
 			setter(field).invoke(value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -946,10 +807,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public boolean getBoolean(Object object, Field field) {
 		try {
 			return (boolean) getter(field).invoke(object);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -957,10 +816,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public boolean getBooleanStatic(Field field) {
 		try {
 			return (boolean) getter(field).invoke();
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -968,10 +825,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public void setObject(Object object, Field field, Object value) {
 		try {
 			setter(field).invoke(object, value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -979,10 +834,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public void setObjectStatic(Field field, Object value) {
 		try {
 			setter(field).invoke(value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -991,10 +844,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public <T> T getObject(Object object, Field field) {
 		try {
 			return (T) getter(field).invoke(object);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -1003,10 +854,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public <T> T getObjectStatic(Field field) {
 		try {
 			return (T) getter(field).invoke();
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -1014,10 +863,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public void set(Object object, Field field, Object value) {
 		try {
 			setter(field).invoke(object, value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -1025,10 +872,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public void setStatic(Field field, Object value) {
 		try {
 			setter(field).invoke(value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -1037,10 +882,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public <T> T get(Object object, Field field) {
 		try {
 			return (T) getter(field).invoke(object);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -1049,10 +892,8 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	public <T> T getStatic(Field field) {
 		try {
 			return (T) getter(field).invoke();
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 }

@@ -3,11 +3,13 @@ package endfield.util;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class ReflectionMethodAccessor extends AbstractMethodAccessor {
-	public ReflectionMethodAccessor(Method met) {
-		super(met);
+import static endfield.util.GetKt.sneakyThrow;
 
-		if (!Reflects.setAccessible(met)) throw new IllegalArgumentException("Unable to access method: " + met);
+public class ReflectionMethodAccessor extends AbstractMethodAccessor {
+	public ReflectionMethodAccessor(Method method) {
+		super(method);
+
+		if (!Reflects.setAccessible(method)) throw new IllegalArgumentException("Unable to access method: " + method);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -16,7 +18,7 @@ public class ReflectionMethodAccessor extends AbstractMethodAccessor {
 		try {
 			return (T) method.invoke(object, args);
 		} catch (IllegalAccessException | InvocationTargetException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 }

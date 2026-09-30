@@ -7,6 +7,7 @@ import java.lang.reflect.AccessibleObject;
 
 import static endfield.android.AndroidConstant.accessFlags;
 import static endfield.android.AndroidConstant.override;
+import static endfield.util.GetKt.sneakyThrow;
 
 public class AndroidAccessibleHelper implements AccessibleHelper {
 	@Override
@@ -14,7 +15,7 @@ public class AndroidAccessibleHelper implements AccessibleHelper {
 		try {
 			override.setBoolean(object, true);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 

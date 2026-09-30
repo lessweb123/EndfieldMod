@@ -7,24 +7,24 @@ import kotlin.text.StringsKt;
 import org.objectweb.asm.Type;
 
 public class ClassName {
-	public static ClassName V = new ClassName("V");
-	public static ClassName Z = new ClassName("Z");
-	public static ClassName C = new ClassName("C");
-	public static ClassName B = new ClassName("B");
-	public static ClassName S = new ClassName("S");
-	public static ClassName I = new ClassName("I");
-	public static ClassName J = new ClassName("J");
-	public static ClassName F = new ClassName("F");
-	public static ClassName D = new ClassName("D");
+	public static final ClassName V = new ClassName("V");
+	public static final ClassName Z = new ClassName("Z");
+	public static final ClassName C = new ClassName("C");
+	public static final ClassName B = new ClassName("B");
+	public static final ClassName S = new ClassName("S");
+	public static final ClassName I = new ClassName("I");
+	public static final ClassName J = new ClassName("J");
+	public static final ClassName F = new ClassName("F");
+	public static final ClassName D = new ClassName("D");
 
-	public static ClassName jObject = byClass(Object.class);
-	public static ClassName jNothing = byClass(void.class);
-	public static ClassName jClass = byClass(Class.class);
-	public static ClassName jString = byClass(String.class);
-	public static ClassName jEnum = byClass(Enum.class);
-	public static ClassName jClassName = byClass(ClassName.class);
+	public static final ClassName jObject = byClass(Object.class);
+	public static final ClassName jNothing = byClass(void.class);
+	public static final ClassName jClass = byClass(Class.class);
+	public static final ClassName jString = byClass(String.class);
+	public static final ClassName jEnum = byClass(Enum.class);
+	public static final ClassName jClassName = byClass(ClassName.class);
 
-	String descriptor;
+	final String descriptor;
 
 	public ClassName(String des) {
 		descriptor = des;

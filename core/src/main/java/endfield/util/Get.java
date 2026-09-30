@@ -19,6 +19,7 @@ import arc.struct.IntSeq;
 import arc.struct.IntSet;
 import arc.struct.IntSet.IntSetIterator;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.pooling.Pool.Poolable;
@@ -58,6 +59,10 @@ import mindustry.world.draw.DrawRegion;
 import mindustry.world.meta.StatUnit;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Constructor;
+
+import static endfield.util.GetKt.sneakyThrow;
+
 /**
  * Input-output utilities, providing very specific functions that aren't really commonly used, but often
  * enough to require me to write a class for it.
@@ -75,8 +80,8 @@ public final class Get {
 
 	public static final Team[] baseTeams = {Team.derelict, Team.sharded, Team.crux, Team.green, Team.malis, Team.blue};
 
-	public static final FieldAccessor consumeBuilderAccessor;
-	public static final MethodAccessor iconsAccessor;
+	static final FieldAccessor consumeBuilderAccessor;
+	static final MethodAccessor iconsAccessor, initAccessor;
 
 	static final Seq<ItemStack> itemStacks = new Seq<>(ItemStack.class);
 	static final Seq<Item> items = new Seq<>(Item.class);
@@ -86,9 +91,10 @@ public final class Get {
 	static {
 		try {
 			consumeBuilderAccessor = Reflects.newFieldAccessor(Block.class.getDeclaredField("consumeBuilder"));
-			iconsAccessor = Reflects.newMethodAccessor(Block.class.getDeclaredMethod("icons", Constant.EMPTY_CLASS));
+			iconsAccessor = Reflects.newMethodAccessor(Block.class.getDeclaredMethod("icons"));
+			initAccessor = new SpecialMethodAccessor(Block.class.getMethod("init"));
 		} catch (NoSuchFieldException | NoSuchMethodException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -528,6 +534,41 @@ public final class Get {
 
 	public static TextureRegion[] icons(Block block) {
 		return iconsAccessor.invoke(block, Constant.EMPTY_OBJECT);
+	}
+
+	public static void init(Block block) {
+		initAccessor.invoke(block, Constant.EMPTY_OBJECT);
+	}
+
+	public static void initBuilding(Block block) {
+		try {
+			Class<?> current = block.getClass();
+
+			if (current.isAnonymousClass()) {
+				current = current.getSuperclass();
+			}
+
+			block.subclass = current;
+
+			while (block.buildType == null && Block.class.isAssignableFrom(current)) {
+				for (Class<?> type : current.getDeclaredClasses()) {
+					if (type.isInterface() || !Building.class.isAssignableFrom(type)) continue;
+
+					Constructor<?> constructor = type.getDeclaredConstructor(current);
+					ConstructorAccessor<?> accessor = Reflects.newConstructorAccessor(constructor);
+
+					block.buildType = () -> (Building) accessor.newInstance(block);
+				}
+
+				current = current.getSuperclass();
+			}
+		} catch (Throwable e) {
+			Log.err(e);
+		}
+
+		if (block.buildType == null) {
+			block.buildType = Building::create;
+		}
 	}
 
 	public static class Pos implements IPosition, Poolable {

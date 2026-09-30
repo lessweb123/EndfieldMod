@@ -6,6 +6,8 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Field;
 import java.util.function.Function;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 	protected static final CollectionObjectMap<Class<?>, CollectionObjectMap<String, Field>> fieldMap = new CollectionObjectMap<>(Class.class, CollectionObjectMap.class);
 	protected static final CollectionObjectMap<Class<?>, Field[]> fieldsMap = new CollectionObjectMap<>(Class.class, Field[].class);
@@ -37,7 +39,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 			}
 		}
 
-		throw new RuntimeException("field " + name + " was not found in class: " + clazz);
+		throw sneakyThrow(new NoSuchFieldException("field " + name + " was not found in class: " + clazz));
 	}
 
 	protected @Nullable Field findField(Class<?> clazz, String name) {
@@ -53,7 +55,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			getField(object.getClass(), name, false).setByte(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -62,7 +64,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			getField(clazz, name, true).setByte(null, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -71,7 +73,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return getField(object.getClass(), name, false).getByte(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -80,7 +82,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return getField(clazz, name, true).getByte(null);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -89,7 +91,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			getField(object.getClass(), name, false).setInt(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -98,7 +100,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			getField(clazz, name, true).setShort(null, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -107,7 +109,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return getField(object.getClass(), name, false).getShort(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -116,7 +118,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return getField(clazz, name, true).getShort(null);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -125,7 +127,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			getField(object.getClass(), name, false).setInt(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -134,7 +136,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			getField(clazz, name, true).setInt(null, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -143,7 +145,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return getField(object.getClass(), name, false).getInt(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -152,7 +154,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return getField(clazz, name, true).getInt(null);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -161,7 +163,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			getField(object.getClass(), name, false).setLong(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -170,7 +172,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			getField(clazz, name, true).setLong(null, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -179,7 +181,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return getField(object.getClass(), name, false).getLong(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -188,7 +190,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return getField(clazz, name, true).getLong(null);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -197,7 +199,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			getField(object.getClass(), name, false).setFloat(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -206,7 +208,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			getField(clazz, name, true).setFloat(null, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -215,7 +217,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return getField(object.getClass(), name, false).getFloat(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -224,7 +226,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return getField(clazz, name, true).getFloat(null);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -233,7 +235,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			getField(object.getClass(), name, false).setDouble(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -242,7 +244,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			getField(clazz, name, true).setDouble(null, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -251,7 +253,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return getField(object.getClass(), name, false).getDouble(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -260,7 +262,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return getField(clazz, name, true).getDouble(null);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -269,7 +271,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			getField(object.getClass(), name, false).setChar(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -278,7 +280,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			getField(clazz, name, true).setChar(null, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -287,7 +289,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return getField(object.getClass(), name, false).getChar(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -296,7 +298,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return getField(clazz, name, true).getChar(null);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -305,7 +307,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			getField(object.getClass(), name, false).setBoolean(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -314,7 +316,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			getField(clazz, name, true).setBoolean(null, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -323,7 +325,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return getField(object.getClass(), name, false).getBoolean(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -332,7 +334,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return getField(clazz, name, true).getBoolean(null);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -341,7 +343,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			getField(object.getClass(), name, false).set(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -350,7 +352,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			getField(clazz, name, true).set(null, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -360,7 +362,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return (T) getField(object.getClass(), name, false).get(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -370,7 +372,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return (T) getField(clazz, name, true).get(null);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -379,7 +381,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			getField(object.getClass(), name, false).set(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -388,7 +390,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			getField(clazz, name, true).set(null, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -398,7 +400,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return (T) getField(object.getClass(), name, false).get(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -408,7 +410,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return (T) getField(clazz, name, true).get(null);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -417,7 +419,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			field.setByte(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -426,7 +428,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			field.setByte(null, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -435,7 +437,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return field.getByte(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -444,7 +446,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return field.getByte(null);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -453,7 +455,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			field.setShort(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -462,7 +464,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			field.setShort(null, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -471,7 +473,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return field.getShort(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -480,7 +482,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return field.getShort(null);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -489,7 +491,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			field.setInt(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -498,7 +500,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			field.setInt(null, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -507,7 +509,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return field.getInt(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -516,7 +518,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return field.getInt(null);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -525,7 +527,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			field.setLong(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -534,7 +536,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			field.setLong(null, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -543,7 +545,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return field.getLong(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -552,7 +554,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return field.getLong(null);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -561,7 +563,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			field.setFloat(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -570,7 +572,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			field.setFloat(null, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -579,7 +581,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return field.getFloat(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -588,7 +590,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return field.getFloat(null);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -597,7 +599,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			field.setDouble(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -606,7 +608,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			field.setDouble(null, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -615,7 +617,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return field.getDouble(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -624,7 +626,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return field.getDouble(null);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -633,7 +635,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			field.setChar(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -642,7 +644,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			field.setChar(null, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -651,7 +653,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return field.getChar(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -660,7 +662,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return field.getChar(null);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -669,7 +671,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			field.setBoolean(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -678,7 +680,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			field.setBoolean(null, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -687,7 +689,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return field.getBoolean(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -696,7 +698,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return field.getBoolean(null);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -705,7 +707,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			field.set(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -714,7 +716,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			field.set(null, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -724,7 +726,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return (T) field.get(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -734,7 +736,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return (T) field.get(null);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -743,7 +745,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			field.set(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -752,7 +754,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			field.set(null, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -762,7 +764,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return (T) field.get(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -772,7 +774,7 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 		try {
 			return (T) field.get(null);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 }

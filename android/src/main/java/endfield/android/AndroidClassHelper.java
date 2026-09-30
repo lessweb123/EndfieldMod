@@ -8,6 +8,7 @@ import rhino.GeneratedClassLoader;
 import java.util.Objects;
 
 import static endfield.android.Unsafer.unsafe;
+import static endfield.util.GetKt.sneakyThrow;
 
 public class AndroidClassHelper implements ClassHelper {
 	@Override
@@ -25,7 +26,7 @@ public class AndroidClassHelper implements ClassHelper {
 		try {
 			return (T) unsafe.allocateInstance(clazz);
 		} catch (InstantiationException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 }

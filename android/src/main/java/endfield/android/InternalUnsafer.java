@@ -6,6 +6,8 @@ import jdk.internal.misc.Unsafe;
 
 import java.lang.reflect.Field;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 // Sdk_version>=33
 @TargetApi(VERSION_CODES.TIRAMISU)
 public final class InternalUnsafer {
@@ -26,7 +28,7 @@ public final class InternalUnsafer {
 			field.setAccessible(true);
 			internalUnsafe = (Unsafe) field.get(null);
 		} catch (NoSuchFieldException | IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 }

@@ -7,6 +7,7 @@ import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
 
 import static endfield.desktop.DesktopImpl.lookup;
+import static endfield.util.GetKt.sneakyThrow;
 
 public final class MethodHandleConstructorAccessor<T> extends AbstractConstructorAccessor<T> {
 	final MethodHandle spreadHandle;
@@ -21,7 +22,7 @@ public final class MethodHandleConstructorAccessor<T> extends AbstractConstructo
 			MethodHandle spread = target.asSpreader(Object[].class, paramCount);
 			spreadHandle = spread.asType(MethodType.methodType(Object.class, Object[].class));
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -30,10 +31,8 @@ public final class MethodHandleConstructorAccessor<T> extends AbstractConstructo
 	public T newInstance(Object... args) {
 		try {
 			return (T) spreadHandle.invokeExact(args);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 }

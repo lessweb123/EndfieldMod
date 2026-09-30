@@ -129,23 +129,23 @@ public final class ClassHandler {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T allocateInstance(Class<? extends T> clazz) {
-		Object result;
-
-		if (clazz.isArray()) result = Array.newInstance(clazz.getComponentType(), 0);
-		else if (clazz.isPrimitive()) {
-			if (clazz == boolean.class) result = false;
-			else if (clazz == int.class) result = 0;
-			else if (clazz == float.class) result = 0f;
-			else if (clazz == long.class) result = 0l;
-			else if (clazz == byte.class) result = (byte) 0;
-			else if (clazz == short.class) result = (short) 0;
-			else if (clazz == double.class) result = 0d;
-			else if (clazz == char.class) result = '\u0000';
+		if (clazz.isArray()) {
+			return (T) Array.newInstance(clazz.getComponentType(), 0);
+		} else if (clazz.isPrimitive()) {
+			if (clazz == boolean.class) return (T) Boolean.valueOf(false);
+			else if (clazz == int.class) return (T) Integer.valueOf(0);
+			else if (clazz == float.class) return (T) Float.valueOf(0f);
+			else if (clazz == long.class) return (T) Long.valueOf(0l);
+			else if (clazz == byte.class) return (T) Byte.valueOf((byte) 0);
+			else if (clazz == short.class) return (T) Short.valueOf((short) 0);
+			else if (clazz == double.class) return(T) Double.valueOf(0d);
+			else if (clazz == char.class) return (T) Character.valueOf('\u0000');
 			else throw new IllegalArgumentException("unsupported primitive types:" + clazz.getName());
-		} else if (clazz == String.class) result = "";
-		else result = classHelper.allocateInstance(clazz);
-
-		return (T) result;
+		} else if (clazz == String.class) {
+			return (T) "";
+		} else {
+			return classHelper.allocateInstance(clazz);
+		}
 	}
 
 	/**

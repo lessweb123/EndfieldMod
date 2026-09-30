@@ -3,6 +3,8 @@ package endfield.util;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 public class ReflectionConstructorAccessor<T> extends AbstractConstructorAccessor<T> {
 	public ReflectionConstructorAccessor(Constructor<T> cons) {
 		super(cons);
@@ -15,7 +17,7 @@ public class ReflectionConstructorAccessor<T> extends AbstractConstructorAccesso
 		try {
 			return constructor.newInstance(args);
 		} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 }

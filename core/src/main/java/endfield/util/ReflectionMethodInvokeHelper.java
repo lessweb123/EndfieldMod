@@ -8,6 +8,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.function.Function;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 	protected static final CollectionObjectMap<Class<?>, CollectionObjectMap<String, CollectionObjectMap<FunctionType, Method>>> methodPool = new CollectionObjectMap<>(Class.class, CollectionObjectMap.class);
 	protected static final CollectionObjectMap<Class<?>, CollectionObjectMap<FunctionType, Constructor<?>>> constructorPool = new CollectionObjectMap<>(Class.class, CollectionObjectMap.class);
@@ -66,7 +68,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 			curr = curr.getSuperclass();
 		}
 
-		throw new RuntimeException("no such method " + name + " in class: " + clazz + " with assignable parameter: " + types);
+		throw sneakyThrow(new NoSuchMethodException("no such method " + name + " in class: " + clazz + " with assignable parameter: " + types));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -104,7 +106,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 
 		if (res != null) return res;
 
-		throw new RuntimeException("no such constructor in class: " + clazz + " with assignable parameter: " + types);
+		throw sneakyThrow(new NoSuchMethodException("no such constructor in class: " + clazz + " with assignable parameter: " + types));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -114,7 +116,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 		try {
 			return (T) getMethod(object.getClass(), name, type).invoke(object, args);
 		} catch (IllegalAccessException | InvocationTargetException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		} finally {
 			type.recycle();
 		}
@@ -127,7 +129,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 		try {
 			return (T) getMethod(clazz, name, type).invoke(null, args);
 		} catch (IllegalAccessException | InvocationTargetException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		} finally {
 			type.recycle();
 		}
@@ -139,7 +141,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 		try {
 			return getConstructor(clazz, funcType).newInstance(args);
 		} catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		} finally {
 			funcType.recycle();
 		}
@@ -152,7 +154,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 		try {
 			return (T) getMethod(object.getClass(), name, type).invoke(object, args);
 		} catch (IllegalAccessException | InvocationTargetException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		} finally {
 			type.recycle();
 		}
@@ -165,7 +167,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 		try {
 			return (T) getMethod(clazz, name, type).invoke(null, args);
 		} catch (IllegalAccessException | InvocationTargetException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		} finally {
 			type.recycle();
 		}
@@ -177,7 +179,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 		try {
 			return getConstructor(clazz, funcType).newInstance(args);
 		} catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		} finally {
 			funcType.recycle();
 		}
@@ -189,7 +191,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 		try {
 			return (T) method.invoke(object, args);
 		} catch (IllegalAccessException | InvocationTargetException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -199,7 +201,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 		try {
 			return (T) method.invoke(null, args);
 		} catch (IllegalAccessException | InvocationTargetException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -208,7 +210,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 		try {
 			return constructor.newInstance(args);
 		} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 }

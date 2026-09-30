@@ -8,29 +8,30 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import static endfield.desktop.DesktopImpl.lookup;
+import static endfield.util.GetKt.sneakyThrow;
 
 public sealed class VarHandleFieldAccessor extends AbstractFieldAccessor {
 	final VarHandle handle;
 
-	VarHandleFieldAccessor(Field f) {
-		super(f);
+	VarHandleFieldAccessor(Field field) {
+		super(field);
 
 		try {
-			handle = lookup.unreflectVarHandle(f);
+			handle = lookup.unreflectVarHandle(field);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
 	// Setter final fields is not supported.
-	public static FieldAccessor getVarHandleFieldAccessor(Field f) {
-		int modifiers = f.getModifiers();
+	public static FieldAccessor getVarHandleFieldAccessor(Field field) {
+		int modifiers = field.getModifiers();
 
 		if ((modifiers & Modifier.STATIC) != 0)
-			if ((modifiers & Modifier.VOLATILE) != 0) return new VarHandleStaticQualifiedFieldAccessor(f);
-			else return new VarHandleStaticFieldAccessor(f);
-		else if ((modifiers & Modifier.VOLATILE) != 0) return new VarHandleQualifiedFieldAccessor(f);
-		else return new VarHandleFieldAccessor(f);
+			if ((modifiers & Modifier.VOLATILE) != 0) return new VarHandleStaticQualifiedFieldAccessor(field);
+			else return new VarHandleStaticFieldAccessor(field);
+		else if ((modifiers & Modifier.VOLATILE) != 0) return new VarHandleQualifiedFieldAccessor(field);
+		else return new VarHandleFieldAccessor(field);
 	}
 
 	@SuppressWarnings("unchecked")

@@ -11,6 +11,8 @@ import arc.graphics.gl.GLVersion;
 import endfield.util.MethodAccessor;
 import endfield.util.Reflects;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 /**
  * A {@link Graphics} mock-module used to logically pretend that the window's screen resolution is something else. This
  * is typically done to adjust rendering code to a {@linkplain arc.graphics.gl.FrameBuffer framebuffer}'s size that is different from
@@ -32,7 +34,7 @@ public class SizedGraphics extends Graphics {
 			setCursor = Reflects.newMethodAccessor(Graphics.class.getDeclaredMethod("setCursor", Cursor.class));
 			setSystemCursor = Reflects.newMethodAccessor(Graphics.class.getDeclaredMethod("setSystemCursor", SystemCursor.class));
 		} catch (NoSuchMethodException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 

@@ -1,5 +1,6 @@
 package endfield.util;
 
+import static endfield.util.GetKt.sneakyThrow;
 import static endfield.util.MockPlatformImpl.unsafe;
 
 @SuppressWarnings("removal")
@@ -10,7 +11,7 @@ public class MockClassHelper implements ClassHelper {
 		try {
 			return (T) unsafe.allocateInstance(clazz);
 		} catch (InstantiationException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 

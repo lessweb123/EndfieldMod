@@ -17,6 +17,7 @@ import java.util.function.Function;
 
 import static endfield.desktop.DesktopImpl.lookup;
 import static endfield.desktop.Unsafer.unsafe;
+import static endfield.util.GetKt.sneakyThrow;
 
 public class DesktopClassHelper implements ClassHelper {
 	static final MethodHandle getFields, getMethods, getConstructors;
@@ -40,34 +41,28 @@ public class DesktopClassHelper implements ClassHelper {
 			ctypes = lookup.findVarHandle(Constructor.class, "parameterTypes", Class[].class);
 			ptypes = lookup.findVarHandle(MethodType.class, "ptypes", Class[].class);
 		} catch (NoSuchMethodException | IllegalAccessException | NoSuchFieldException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 
 		function4 = clazz -> {
 			try {
 				return (Field[]) getFields.invokeExact(clazz, false);
-			} catch (RuntimeException | Error e) {
-				throw e;
 			} catch (Throwable e) {
-				throw new RuntimeException(e);
+				throw sneakyThrow(e);
 			}
 		};
 		function5 = clazz -> {
 			try {
 				return (Method[]) getMethods.invokeExact(clazz, false);
-			} catch (RuntimeException | Error e) {
-				throw e;
 			} catch (Throwable e) {
-				throw new RuntimeException(e);
+				throw sneakyThrow(e);
 			}
 		};
 		function6 = clazz -> {
 			try {
 				return (Constructor<?>[]) getConstructors.invokeExact(clazz, false);
-			} catch (RuntimeException | Error e) {
-				throw e;
 			} catch (Throwable e) {
-				throw new RuntimeException(e);
+				throw sneakyThrow(e);
 			}
 		};
 	}
@@ -107,7 +102,7 @@ public class DesktopClassHelper implements ClassHelper {
 			if (field.getName().equals(name)) return field;
 		}
 
-		throw new RuntimeException(name);
+		throw sneakyThrow(new NoSuchFieldException(name));
 	}
 
 	@Override
@@ -117,7 +112,7 @@ public class DesktopClassHelper implements ClassHelper {
 			if (method.getName().equals(name) && Arrays.equals((Class<?>[]) mtypes.get(method), parameterTypes)) return method;
 		}
 
-		throw new RuntimeException(Reflects.methodToString(clazz, name, parameterTypes));
+		throw sneakyThrow(new NoSuchMethodException(Reflects.methodToString(clazz, name, parameterTypes)));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -128,7 +123,7 @@ public class DesktopClassHelper implements ClassHelper {
 			if (Arrays.equals((Class<?>[]) ctypes.get(constructor), parameterTypes)) return constructor;
 		}
 
-		throw new RuntimeException(Reflects.methodToString(clazz, "<init>", parameterTypes));
+		throw sneakyThrow(new NoSuchMethodException(Reflects.methodToString(clazz, "<init>", parameterTypes)));
 	}
 
 	@Override
@@ -186,7 +181,7 @@ public class DesktopClassHelper implements ClassHelper {
 			}
 		}
 
-		throw new RuntimeException("Field not found");
+		throw sneakyThrow(new NoSuchFieldException("Field not found"));
 	}
 
 	@Override
@@ -196,7 +191,7 @@ public class DesktopClassHelper implements ClassHelper {
 			if (filler.get(method)) return method;
 		}
 
-		throw new RuntimeException("Method not found");
+		throw sneakyThrow(new NoSuchMethodException("Method not found"));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -207,7 +202,7 @@ public class DesktopClassHelper implements ClassHelper {
 			if (filler.get(constructor)) return constructor;
 		}
 
-		throw new RuntimeException("Constructor not found");
+		throw sneakyThrow(new NoSuchMethodException("Constructor not found"));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -218,7 +213,7 @@ public class DesktopClassHelper implements ClassHelper {
 		try {
 			return (T) unsafe.allocateInstance(clazz);
 		} catch (InstantiationException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 

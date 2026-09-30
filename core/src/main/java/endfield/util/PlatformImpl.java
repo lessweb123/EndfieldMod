@@ -8,6 +8,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 /**
  * Handling APIs for different implementations of Desktop and Android.
  *
@@ -47,7 +49,7 @@ public interface PlatformImpl {
 		try {
 			lookup.ensureInitialized(targetClass);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 		return targetClass;
 	}

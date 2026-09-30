@@ -9,6 +9,7 @@ import java.lang.reflect.Constructor;
 import java.util.Objects;
 
 import static endfield.desktop.DesktopImpl.lookup;
+import static endfield.util.GetKt.sneakyThrow;
 
 public class NativeConstructorAccessor<T> extends AbstractConstructorAccessor<T> {
 	static final MethodHandle newInstance;
@@ -21,7 +22,7 @@ public class NativeConstructorAccessor<T> extends AbstractConstructorAccessor<T>
 			);
 			newInstance = lookup.findStatic(dec, "newInstance0", MethodType.methodType(Object.class, Constructor.class, Object[].class));
 		} catch (NoSuchMethodException | IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -38,10 +39,8 @@ public class NativeConstructorAccessor<T> extends AbstractConstructorAccessor<T>
 	public T newInstance(Object... args) {
 		try {
 			return newInstance(constructor, args);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 }

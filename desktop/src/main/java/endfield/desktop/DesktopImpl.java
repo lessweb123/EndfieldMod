@@ -33,6 +33,7 @@ import static endfield.Vars2.classHelper;
 import static endfield.Vars2.fieldAccessHelper;
 import static endfield.Vars2.methodInvokeHelper;
 import static endfield.desktop.Unsafer.unsafe;
+import static endfield.util.GetKt.sneakyThrow;
 
 public class DesktopImpl implements PlatformImpl {
 	static Lookup lookup;
@@ -57,7 +58,7 @@ public class DesktopImpl implements PlatformImpl {
 		} catch (Throwable e) {
 			Log.err("It seems you platform is special. (But don't worry)", e);
 
-			lookup = Reflects.PUBLIC_LOOKUP;
+			lookup = Reflects.publicLookup;
 
 			classHelper = new MockClassHelper();
 			fieldAccessHelper = new ReflectionFieldAccessHelper();
@@ -97,7 +98,7 @@ public class DesktopImpl implements PlatformImpl {
 			ObjectHandler.copyField(object, result);
 			return result;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -159,7 +160,7 @@ public class DesktopImpl implements PlatformImpl {
 			try {
 				clone = lookup.findVirtual(Object.class, "clone", MethodType.methodType(Object.class));
 			} catch (NoSuchMethodException | IllegalAccessException e) {
-				throw new RuntimeException(e);
+				throw sneakyThrow(e);
 			}
 		}
 

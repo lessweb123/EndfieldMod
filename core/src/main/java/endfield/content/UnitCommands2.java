@@ -6,6 +6,8 @@ import endfield.util.Reflects;
 import mindustry.ai.UnitCommand;
 import mindustry.ai.types.CommandAI;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 public final class UnitCommands2 {
 	public static final FieldAccessor commandControllerAccessor;
 
@@ -15,7 +17,7 @@ public final class UnitCommands2 {
 		try {
 			commandControllerAccessor = Reflects.newFieldAccessor(CommandAI.class.getDeclaredField("commandController"));
 		} catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 

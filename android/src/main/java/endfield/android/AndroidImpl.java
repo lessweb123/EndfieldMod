@@ -20,6 +20,7 @@ import static endfield.Vars2.classHelper;
 import static endfield.Vars2.fieldAccessHelper;
 import static endfield.Vars2.methodInvokeHelper;
 import static endfield.android.Unsafer.unsafe;
+import static endfield.util.GetKt.sneakyThrow;
 
 @SuppressWarnings("removal")
 public class AndroidImpl implements PlatformImpl {
@@ -30,7 +31,7 @@ public class AndroidImpl implements PlatformImpl {
 		try {
 			return constructor.newInstance(clazz, 15);
 		} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	};
 	static Method clone;
@@ -72,7 +73,7 @@ public class AndroidImpl implements PlatformImpl {
 		try {
 			return (T) clone.invoke(object);
 		} catch (IllegalAccessException | InvocationTargetException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 

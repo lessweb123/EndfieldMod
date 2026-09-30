@@ -19,6 +19,7 @@ import static endfield.desktop.DesktopClassHelper.function6;
 import static endfield.desktop.DesktopClassHelper.mtypes;
 import static endfield.desktop.DesktopClassHelper.ptypes;
 import static endfield.desktop.DesktopImpl.lookup;
+import static endfield.util.GetKt.sneakyThrow;
 
 public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 	protected static final CollectionObjectMap<Class<?>, CollectionObjectMap<String, CollectionObjectMap<FunctionType, MethodHandle>>> methodPool = new CollectionObjectMap<>(Class.class, CollectionObjectMap.class);
@@ -72,7 +73,7 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 			curr = curr.getSuperclass();
 		}
 
-		throw new RuntimeException("no such method " + name + " in class: " + clazz + " with assignable parameter: " + types);
+		throw sneakyThrow(new NoSuchMethodException("no such method " + name + " in class: " + clazz + " with assignable parameter: " + types));
 	}
 
 	protected MethodHandle getConstructor(Class<?> clazz, FunctionType types) throws IllegalAccessException {
@@ -106,7 +107,7 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 
 		if (res != null) return res;
 
-		throw new RuntimeException("no such constructor in class: " + clazz + " with assignable parameter: " + types);
+		throw sneakyThrow(new NoSuchMethodException("no such constructor in class: " + clazz + " with assignable parameter: " + types));
 	}
 
 	protected @Nullable Method findMethod(Class<?> type, String name, Class<?>[] paramType) {
@@ -158,10 +159,8 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 		FunctionType type = FunctionType.inst(args);
 		try {
 			return (T) getMethod(object.getClass(), name, type).invokeExact(object, args);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		} finally {
 			type.recycle();
 		}
@@ -173,10 +172,8 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 		FunctionType type = FunctionType.inst(args);
 		try {
 			return (T) getMethod(clazz, name, type).invokeExact(args);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		} finally {
 			type.recycle();
 		}
@@ -188,10 +185,8 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 		FunctionType type = FunctionType.inst(args);
 		try {
 			return (T) getConstructor(clazz, type).invokeExact(args);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		} finally {
 			type.recycle();
 		}
@@ -203,10 +198,8 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 		FunctionType type = FunctionType.inst(parameterTypes);
 		try {
 			return (T) getMethod(object.getClass(), name, type).invokeExact(object, args);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		} finally {
 			type.recycle();
 		}
@@ -218,10 +211,8 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 		FunctionType type = FunctionType.inst(parameterTypes);
 		try {
 			return (T) getMethod(clazz, name, type).invokeExact(args);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		} finally {
 			type.recycle();
 		}
@@ -233,10 +224,8 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 		FunctionType type = FunctionType.inst(parameterTypes);
 		try {
 			return (T) getConstructor(clazz, type).invokeExact(args);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		} finally {
 			type.recycle();
 		}
@@ -284,10 +273,8 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 		FunctionType type = from(method);
 		try {
 			return (T) getMethod(method, type).invokeExact(object, args);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		} finally {
 			type.recycle();
 		}
@@ -299,10 +286,8 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 		FunctionType type = from(method);
 		try {
 			return (T) getMethod(method, type).invokeExact(args);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		} finally {
 			type.recycle();
 		}
@@ -314,10 +299,8 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 		FunctionType type = from(constructor);
 		try {
 			return (T) getConstructor(constructor, type).invokeExact(args);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		} finally {
 			type.recycle();
 		}

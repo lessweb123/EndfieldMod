@@ -6,6 +6,7 @@ import java.lang.invoke.VarHandle;
 import java.lang.reflect.AccessibleObject;
 
 import static endfield.desktop.DesktopImpl.lookup;
+import static endfield.util.GetKt.sneakyThrow;
 
 public class DesktopAccessibleHelper implements AccessibleHelper {
 	@Override
@@ -20,7 +21,7 @@ public class DesktopAccessibleHelper implements AccessibleHelper {
 			try {
 				override = lookup.findVarHandle(AccessibleObject.class, "override", boolean.class);
 			} catch (NoSuchFieldException | IllegalAccessException e) {
-				throw new RuntimeException(e);
+				throw sneakyThrow(e);
 			}
 		}
 

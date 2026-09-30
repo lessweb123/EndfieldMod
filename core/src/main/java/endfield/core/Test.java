@@ -1,6 +1,7 @@
 package endfield.core;
 
 import arc.util.Log;
+import endfield.util.SpecialMethodAccessor;
 import endfield.util.aspector.AspectExtends;
 import endfield.util.aspector.RuntimeAspector;
 import endfield.util.aspector.RuntimeAspector.AspectDelegate.DeclDelegate;
@@ -59,6 +60,36 @@ public class Test extends @Stub Random {
 			classDecl.annotatedSuperClass();
 		} catch (Throwable e) {
 			Log.err(e);
+		}
+	}
+
+	public static void test3() {
+		try {
+			SpecialMethodAccessor accessor = new SpecialMethodAccessor(A.class.getDeclaredMethod("print"));
+			accessor.invoke(new B());
+			accessor.invoke(new C());
+		} catch (Throwable e) {
+			Log.err(e);
+		}
+	}
+
+	public static class A {
+		void print() {
+			Log.info("a");
+		}
+	}
+
+	public static class B extends A {
+		@Override
+		void print() {
+			Log.info("b");
+		}
+	}
+
+	public static class C extends B {
+		@Override
+		void print() {
+			Log.info("c");
 		}
 	}
 

@@ -8,8 +8,8 @@ public abstract class AbstractMethodAccessor implements MethodAccessor {
 
 	protected int hash;
 
-	protected AbstractMethodAccessor(Method met) {
-		method = met;
+	protected AbstractMethodAccessor(Method m) {
+		method = m;
 	}
 
 	@Override

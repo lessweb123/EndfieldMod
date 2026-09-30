@@ -461,9 +461,7 @@ public final class TechTrees {
 		if (parent == null) throw new IllegalArgumentException(Strings.format("Unable to find node: @", parentContent));
 
 		// add this node to the parent
-		if (!parent.children.contains(node)) {
-			parent.children.add(node);
-		}
+		parent.children.addUnique(node);
 		// reparent the node
 		node.parent = parent;
 

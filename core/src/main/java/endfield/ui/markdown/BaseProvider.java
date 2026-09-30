@@ -82,6 +82,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static endfield.ui.markdown.elemdraw.DrawText2.drawTextWrap;
+import static endfield.util.GetKt.sneakyThrow;
 
 public class BaseProvider implements MarkdownProvider, CurtainProvider, InsProvider, StrikethroughProvider, TableProvider {
 	public static final FieldAccessor clickListenerAccessor;
@@ -90,7 +91,7 @@ public class BaseProvider implements MarkdownProvider, CurtainProvider, InsProvi
 		try {
 			clickListenerAccessor = Reflects.newFieldAccessor(Button.class.getDeclaredField("clickListener"));
 		} catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 

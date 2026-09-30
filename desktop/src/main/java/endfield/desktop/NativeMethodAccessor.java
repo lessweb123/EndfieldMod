@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.util.Objects;
 
 import static endfield.desktop.DesktopImpl.lookup;
+import static endfield.util.GetKt.sneakyThrow;
 
 public class NativeMethodAccessor extends AbstractMethodAccessor {
 	static final MethodHandle invoke;
@@ -21,12 +22,12 @@ public class NativeMethodAccessor extends AbstractMethodAccessor {
 			);
 			invoke = lookup.findStatic(dec, "invoke0", MethodType.methodType(Object.class, Method.class, Object.class, Object[].class));
 		} catch (NoSuchMethodException | IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
-	public NativeMethodAccessor(Method met) {
-		super(met);
+	public NativeMethodAccessor(Method method) {
+		super(method);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -38,10 +39,8 @@ public class NativeMethodAccessor extends AbstractMethodAccessor {
 	public <T> T invoke(Object object, Object... args) {
 		try {
 			return invoke(method, object, args);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 }

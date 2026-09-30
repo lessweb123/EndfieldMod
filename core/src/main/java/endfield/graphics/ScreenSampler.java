@@ -15,6 +15,8 @@ import mindustry.game.EventType.ResizeEvent;
 
 import java.util.Objects;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 public final class ScreenSampler {
 	private static final FieldAccessor currentBoundFramebuffer;
 
@@ -26,7 +28,7 @@ public final class ScreenSampler {
 		try {
 			currentBoundFramebuffer = Reflects.newFieldAccessor(GLFrameBuffer.class.getDeclaredField("currentBoundFramebuffer"));
 		} catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -131,6 +133,8 @@ import mindustry.graphics.Pixelator;
 
 import java.lang.reflect.Field;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 public final class ScreenSampler {
 	static final FieldAccessor lastBoundFramebufferField;
 	static final FieldAccessor bufferField;
@@ -147,7 +151,7 @@ public final class ScreenSampler {
 			lastBoundFramebufferField = Reflects.newFieldAccessor(GLFrameBuffer.class.getDeclaredField("lastBoundFramebuffer"));
 			bufferField = Reflects.newFieldAccessor(Pixelator.class.getDeclaredField("buffer"));
 		} catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -207,7 +211,7 @@ public final class ScreenSampler {
 				Events.run(Trigger.uiDrawBegin, () -> currBuffer = uiBuffer);
 				Events.run(Trigger.uiDrawEnd, () -> currBuffer = null);
 			} catch (Exception ex) {
-				throw new RuntimeException("Failed to setup buffers from reflection", ex);
+				throw sneakyThrow("Failed to setup buffers from reflection", ex);
 			}
 		}
 

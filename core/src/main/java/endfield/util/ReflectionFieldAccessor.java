@@ -2,11 +2,13 @@ package endfield.util;
 
 import java.lang.reflect.Field;
 
-public class ReflectionFieldAccessor extends AbstractFieldAccessor {
-	public ReflectionFieldAccessor(Field f) {
-		super(f);
+import static endfield.util.GetKt.sneakyThrow;
 
-		if (!Reflects.setAccessible(f)) throw new IllegalArgumentException("Unable to access field: " + f);
+public class ReflectionFieldAccessor extends AbstractFieldAccessor {
+	public ReflectionFieldAccessor(Field field) {
+		super(field);
+
+		if (!Reflects.setAccessible(field)) throw new IllegalArgumentException("Unable to access field: " + field);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -15,7 +17,7 @@ public class ReflectionFieldAccessor extends AbstractFieldAccessor {
 		try {
 			return (T) field.get(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -24,7 +26,7 @@ public class ReflectionFieldAccessor extends AbstractFieldAccessor {
 		try {
 			field.set(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -34,7 +36,7 @@ public class ReflectionFieldAccessor extends AbstractFieldAccessor {
 		try {
 			return (T) field.get(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -43,7 +45,7 @@ public class ReflectionFieldAccessor extends AbstractFieldAccessor {
 		try {
 			field.set(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -52,7 +54,7 @@ public class ReflectionFieldAccessor extends AbstractFieldAccessor {
 		try {
 			return field.getBoolean(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -61,7 +63,7 @@ public class ReflectionFieldAccessor extends AbstractFieldAccessor {
 		try {
 			field.setBoolean(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -70,7 +72,7 @@ public class ReflectionFieldAccessor extends AbstractFieldAccessor {
 		try {
 			return field.getByte(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -79,7 +81,7 @@ public class ReflectionFieldAccessor extends AbstractFieldAccessor {
 		try {
 			field.setByte(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -88,7 +90,7 @@ public class ReflectionFieldAccessor extends AbstractFieldAccessor {
 		try {
 			return field.getChar(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -97,7 +99,7 @@ public class ReflectionFieldAccessor extends AbstractFieldAccessor {
 		try {
 			field.setChar(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -106,7 +108,7 @@ public class ReflectionFieldAccessor extends AbstractFieldAccessor {
 		try {
 			return field.getShort(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -115,7 +117,7 @@ public class ReflectionFieldAccessor extends AbstractFieldAccessor {
 		try {
 			field.setShort(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -124,7 +126,7 @@ public class ReflectionFieldAccessor extends AbstractFieldAccessor {
 		try {
 			return field.getInt(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -133,7 +135,7 @@ public class ReflectionFieldAccessor extends AbstractFieldAccessor {
 		try {
 			field.setInt(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -142,7 +144,7 @@ public class ReflectionFieldAccessor extends AbstractFieldAccessor {
 		try {
 			return field.getLong(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -151,7 +153,7 @@ public class ReflectionFieldAccessor extends AbstractFieldAccessor {
 		try {
 			field.setLong(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -160,7 +162,7 @@ public class ReflectionFieldAccessor extends AbstractFieldAccessor {
 		try {
 			return field.getFloat(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -169,7 +171,7 @@ public class ReflectionFieldAccessor extends AbstractFieldAccessor {
 		try {
 			field.setFloat(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -178,7 +180,7 @@ public class ReflectionFieldAccessor extends AbstractFieldAccessor {
 		try {
 			return field.getDouble(object);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
@@ -187,7 +189,7 @@ public class ReflectionFieldAccessor extends AbstractFieldAccessor {
 		try {
 			field.setDouble(object, value);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 }

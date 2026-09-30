@@ -7,6 +7,8 @@ import sun.misc.Unsafe;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 @SuppressWarnings("removal")
 public final class Unsafer {
 	static final Unsafe unsafe;
@@ -17,7 +19,7 @@ public final class Unsafer {
 			field.setAccessible(true);
 			unsafe = (Unsafe) field.get(null);
 		} catch (NoSuchFieldException | IllegalAccessException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 

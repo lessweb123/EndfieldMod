@@ -15,66 +15,66 @@ import static endfield.android.Unsafer.unsafe;
 public class UnsafeFieldAccessor extends AbstractFieldAccessor {
 	protected final long offset;
 
-	protected UnsafeFieldAccessor(Field f) {
-		super(f);
-		offset = Fields.getOffset(f);
+	protected UnsafeFieldAccessor(Field field) {
+		super(field);
+		offset = Fields.getOffset(field);
 	}
 
-	public static FieldAccessor getUnsafeFieldAccessor(Field f) {
-		Class<?> type = f.getType();
-		int modifiers = f.getModifiers();
+	public static FieldAccessor getUnsafeFieldAccessor(Field field) {
+		Class<?> type = field.getType();
+		int modifiers = field.getModifiers();
 
 		if ((modifiers & Modifier.STATIC) != 0) {
 			if ((modifiers & Modifier.VOLATILE) != 0) {
 				if (type.isPrimitive()) {
-					if (type == boolean.class) return new UnsafeQualifiedStaticBooleanFieldAccessor(f);
-					else if (type == byte.class) return new UnsafeQualifiedStaticByteFieldAccessor(f);
-					else if (type == char.class) return new UnsafeQualifiedStaticCharFieldAccessor(f);
-					else if (type == short.class) return new UnsafeQualifiedStaticShortFieldAccessor(f);
-					else if (type == int.class) return new UnsafeQualifiedStaticIntFieldAccessor(f);
-					else if (type == long.class) return new UnsafeQualifiedStaticLongFieldAccessor(f);
-					else if (type == float.class) return new UnsafeQualifiedStaticFloatFieldAccessor(f);
-					else if (type == double.class) return new UnsafeQualifiedStaticDoubleFieldAccessor(f);
-					else throw new IllegalArgumentException("unknown type of field " + f);
-				} else return new UnsafeQualifiedStaticObjectFieldAccessor(f);
+					if (type == boolean.class) return new UnsafeQualifiedStaticBooleanFieldAccessor(field);
+					else if (type == byte.class) return new UnsafeQualifiedStaticByteFieldAccessor(field);
+					else if (type == char.class) return new UnsafeQualifiedStaticCharFieldAccessor(field);
+					else if (type == short.class) return new UnsafeQualifiedStaticShortFieldAccessor(field);
+					else if (type == int.class) return new UnsafeQualifiedStaticIntFieldAccessor(field);
+					else if (type == long.class) return new UnsafeQualifiedStaticLongFieldAccessor(field);
+					else if (type == float.class) return new UnsafeQualifiedStaticFloatFieldAccessor(field);
+					else if (type == double.class) return new UnsafeQualifiedStaticDoubleFieldAccessor(field);
+					else throw new IllegalArgumentException("unknown type of field " + field);
+				} else return new UnsafeQualifiedStaticObjectFieldAccessor(field);
 			} else {
 				if (type.isPrimitive()) {
-					if (type == boolean.class) return new UnsafeStaticBooleanFieldAccessor(f);
-					else if (type == byte.class) return new UnsafeStaticByteFieldAccessor(f);
-					else if (type == char.class) return new UnsafeStaticCharFieldAccessor(f);
-					else if (type == short.class) return new UnsafeStaticShortFieldAccessor(f);
-					else if (type == int.class) return new UnsafeStaticIntFieldAccessor(f);
-					else if (type == long.class) return new UnsafeStaticLongFieldAccessor(f);
-					else if (type == float.class) return new UnsafeStaticFloatFieldAccessor(f);
-					else if (type == double.class) return new UnsafeStaticDoubleFieldAccessor(f);
-					else throw new IllegalArgumentException("unknown type of field " + f);
-				} else return new UnsafeStaticObjectFieldAccessor(f);
+					if (type == boolean.class) return new UnsafeStaticBooleanFieldAccessor(field);
+					else if (type == byte.class) return new UnsafeStaticByteFieldAccessor(field);
+					else if (type == char.class) return new UnsafeStaticCharFieldAccessor(field);
+					else if (type == short.class) return new UnsafeStaticShortFieldAccessor(field);
+					else if (type == int.class) return new UnsafeStaticIntFieldAccessor(field);
+					else if (type == long.class) return new UnsafeStaticLongFieldAccessor(field);
+					else if (type == float.class) return new UnsafeStaticFloatFieldAccessor(field);
+					else if (type == double.class) return new UnsafeStaticDoubleFieldAccessor(field);
+					else throw new IllegalArgumentException("unknown type of field " + field);
+				} else return new UnsafeStaticObjectFieldAccessor(field);
 			}
 		} else {
 			if ((modifiers & Modifier.VOLATILE) != 0) {
 				if (type.isPrimitive()) {
-					if (type == boolean.class) return new UnsafeQualifiedBooleanFieldAccessor(f);
-					else if (type == byte.class) return new UnsafeQualifiedByteFieldAccessor(f);
-					else if (type == char.class) return new UnsafeQualifiedCharFieldAccessor(f);
-					else if (type == short.class) return new UnsafeQualifiedShortFieldAccessor(f);
-					else if (type == int.class) return new UnsafeQualifiedIntFieldAccessor(f);
-					else if (type == long.class) return new UnsafeQualifiedLongFieldAccessor(f);
-					else if (type == float.class) return new UnsafeQualifiedFloatFieldAccessor(f);
-					else if (type == double.class) return new UnsafeQualifiedDoubleFieldAccessor(f);
-					else throw new IllegalArgumentException("unknown type of field " + f);
-				} else return new UnsafeQualifiedObjectFieldAccessor(f);
+					if (type == boolean.class) return new UnsafeQualifiedBooleanFieldAccessor(field);
+					else if (type == byte.class) return new UnsafeQualifiedByteFieldAccessor(field);
+					else if (type == char.class) return new UnsafeQualifiedCharFieldAccessor(field);
+					else if (type == short.class) return new UnsafeQualifiedShortFieldAccessor(field);
+					else if (type == int.class) return new UnsafeQualifiedIntFieldAccessor(field);
+					else if (type == long.class) return new UnsafeQualifiedLongFieldAccessor(field);
+					else if (type == float.class) return new UnsafeQualifiedFloatFieldAccessor(field);
+					else if (type == double.class) return new UnsafeQualifiedDoubleFieldAccessor(field);
+					else throw new IllegalArgumentException("unknown type of field " + field);
+				} else return new UnsafeQualifiedObjectFieldAccessor(field);
 			} else {
 				if (type.isPrimitive()) {
-					if (type == boolean.class) return new UnsafeBooleanFieldAccessor(f);
-					else if (type == byte.class) return new UnsafeByteFieldAccessor(f);
-					else if (type == char.class) return new UnsafeCharFieldAccessor(f);
-					else if (type == short.class) return new UnsafeShortFieldAccessor(f);
-					else if (type == int.class) return new UnsafeIntFieldAccessor(f);
-					else if (type == long.class) return new UnsafeLongFieldAccessor(f);
-					else if (type == float.class) return new UnsafeFloatFieldAccessor(f);
-					else if (type == double.class) return new UnsafeDoubleFieldAccessor(f);
-					else throw new IllegalArgumentException("unknown type of field " + f);
-				} else return new UnsafeObjectFieldAccessor(f);
+					if (type == boolean.class) return new UnsafeBooleanFieldAccessor(field);
+					else if (type == byte.class) return new UnsafeByteFieldAccessor(field);
+					else if (type == char.class) return new UnsafeCharFieldAccessor(field);
+					else if (type == short.class) return new UnsafeShortFieldAccessor(field);
+					else if (type == int.class) return new UnsafeIntFieldAccessor(field);
+					else if (type == long.class) return new UnsafeLongFieldAccessor(field);
+					else if (type == float.class) return new UnsafeFloatFieldAccessor(field);
+					else if (type == double.class) return new UnsafeDoubleFieldAccessor(field);
+					else throw new IllegalArgumentException("unknown type of field " + field);
+				} else return new UnsafeObjectFieldAccessor(field);
 			}
 		}
 	}

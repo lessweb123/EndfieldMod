@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 public class ReflectClassAccessor implements ClassAccessor {
 	List<ClassLoader> attachedClassLoader = new ArrayList<>();
 	Map<ClassName, ClassDecl<?>> loadedDeclMap = new HashMap<>();
@@ -66,7 +68,7 @@ public class ReflectClassAccessor implements ClassAccessor {
 					}
 				}
 
-				throw new RuntimeException(className.name());
+				throw sneakyThrow(new ClassNotFoundException(className.name()));
 			}
 		};
 	}
@@ -85,7 +87,7 @@ public class ReflectClassAccessor implements ClassAccessor {
 				return stream.readAllBytes();
 			}
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 
 		byte[] bytes = ClassAccessor.sharedClassByte.get(className);

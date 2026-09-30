@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 public class BytecodeClassLoader extends ClassLoader implements BytecodeLoader {
 	final String protocol = "byteloader-" + getClass().getSimpleName() + hashCode();
 
@@ -37,7 +39,7 @@ public class BytecodeClassLoader extends ClassLoader implements BytecodeLoader {
 		try {
 			return super.loadClass(name);
 		} catch (ClassNotFoundException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 
