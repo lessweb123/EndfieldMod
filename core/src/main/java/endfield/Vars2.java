@@ -1,7 +1,9 @@
 package endfield;
 
+import arc.files.Fi;
 import arc.struct.Seq;
 import arc.util.Log;
+import arc.util.OS;
 import endfield.core.EndFieldListener;
 import endfield.core.EndFieldMod;
 import endfield.files.InternalFileTree;
@@ -16,8 +18,10 @@ import endfield.util.ClassHelper;
 import endfield.util.FieldAccessHelper;
 import endfield.util.MethodInvokeHelper;
 import endfield.util.PlatformImpl;
+import mindustry.Vars;
 import mindustry.content.TechTree.TechNode;
 import mindustry.type.Sector;
+import org.jetbrains.annotations.ApiStatus.Internal;
 
 /**
  * I didn't want my Mod main class to look too messy, so I created this class.
@@ -98,6 +102,16 @@ public final class Vars2 {
 		root.content.clearUnlock();
 		for (TechNode node : root.children) {
 			resetTree(node);
+		}
+	}
+
+	@Internal
+	public static void loadLibrary() {
+		if (OS.isWindows && OS.is64Bit) {
+			Fi lib = internalTree.child("natives").child("win64").child("endfield64.dll");
+			Fi out = Vars.tmpDirectory.child(lib.name());
+			lib.copyTo(out);
+			System.load(out.absolutePath());
 		}
 	}
 }

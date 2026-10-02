@@ -17,8 +17,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
@@ -62,6 +65,23 @@ public final class Files2 {
 	 */
 	public static boolean delete(Fi fi) {
 		return fi.exists() && (fi.isDirectory() ? fi.deleteDirectory() : fi.delete());
+	}
+
+	public static String getMD5(Fi file) {
+		MessageDigest md;
+		byte[] buffer = new byte[8192];
+		try {
+			md = MessageDigest.getInstance("MD5");
+			InputStream input = new FileInputStream(file.file());
+			int data;
+			while ((data = input.read(buffer)) != -1) {
+				md.update(buffer, 0, data);
+			}
+			input.close();
+			return new BigInteger(1, md.digest()).toString(16);
+		} catch (IOException | NoSuchAlgorithmException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**

@@ -2,7 +2,6 @@ package endfield.core;
 
 import arc.Core;
 import arc.Events;
-import arc.files.Fi;
 import arc.flabel.FLabel;
 import arc.math.Mathf;
 import arc.util.Align;
@@ -66,7 +65,6 @@ import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable;
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.Setting;
 
 import static endfield.Vars2.author;
-import static endfield.Vars2.internalTree;
 import static endfield.Vars2.linkGitHub;
 import static endfield.Vars2.modName;
 import static endfield.Vars2.platformImpl;
@@ -284,14 +282,5 @@ public final class EndFieldMod extends Mod {
 		}
 
 		AdaptiveCoreDatabase.init();
-	}
-
-	public static void loadLibrary() {
-		if (OS.isWindows && OS.is64Bit) {
-			Fi lib = internalTree.child("natives").child("win64").child("endfield64.dll");
-			Fi out = Vars.tmpDirectory.child(lib.name());
-			lib.copyTo(out);
-			System.load(out.absolutePath());
-		}
 	}
 }

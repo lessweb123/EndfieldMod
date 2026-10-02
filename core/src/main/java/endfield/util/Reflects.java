@@ -418,4 +418,33 @@ public final class Reflects {
 	public static Object invoke(Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
 		return method.invoke(args);
 	}
+
+	// ------------------ jni only ---------------------
+
+	static NoSuchFieldException getFieldException(Class<?> type, String name, String signature) {
+		return new NoSuchFieldException(buildMessage(type, name, signature, false));
+	}
+
+	static NoSuchMethodException getMethodException(Class<?> type, String name, String signature) {
+		return new NoSuchMethodException(buildMessage(type, name, signature, true));
+	}
+
+	static NoSuchMethodException getConstructorException(Class<?> type, String signature) {
+		return new NoSuchMethodException(buildMessage(type, "<init>", signature, true));
+	}
+
+	private static String buildMessage(Class<?> type, String name, String signature, boolean isMethod) {
+		String className = type.getName();
+
+		StringBuilder sb = new StringBuilder(className.length() + name.length() + 32);
+		sb.append(className).append('.').append(name);
+
+		if (signature != null && !signature.isEmpty()) {
+			if (!isMethod && signature.charAt(0) != '(') {
+				sb.append(' ');
+			}
+			sb.append(signature);
+		}
+		return sb.toString();
+	}
 }
