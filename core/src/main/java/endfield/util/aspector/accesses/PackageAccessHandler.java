@@ -8,7 +8,6 @@ import endfield.util.aspector.classes.ClassElement;
 import endfield.util.aspector.classes.ClassName;
 import endfield.util.aspector.classes.EConstructor;
 import endfield.util.aspector.classes.EMethod;
-import kotlin.collections.CollectionsKt;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;

@@ -98,9 +98,8 @@ public class JavelinAbility extends Ability {
 			float scl = Mathm.clamp(Mathf.map(unit.vel().len(), minSpeed, maxSpeed, 0f, 1f));
 
 			if (overlayRegion == null) overlayRegion = Core.atlas.find(name);
-			float
-					drawx = unit.x + x + Mathf.sin(Time.time + unit.id, sclX, magX),
-					drawy = unit.y + y + Mathf.sin(Time.time + sinOffset + unit.id, sclY, magY);
+			float drawx = unit.x + x + Mathf.sin(Time.time + unit.id, sclX, magX);
+			float drawy = unit.y + y + Mathf.sin(Time.time + sinOffset + unit.id, sclY, magY);
 			float z = Draw.z();
 			Draw.z(z - layerOffset);
 			Draw.color(color);

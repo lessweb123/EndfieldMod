@@ -107,11 +107,15 @@ public final class Vars2 {
 
 	@Internal
 	public static void loadLibrary() {
-		if (OS.isWindows && OS.is64Bit) {
-			Fi lib = internalTree.child("natives").child("win64").child("endfield64.dll");
-			Fi out = Vars.tmpDirectory.child(lib.name());
-			lib.copyTo(out);
-			System.load(out.absolutePath());
+		try {
+			if (OS.isWindows && OS.is64Bit) {
+				Fi lib = internalTree.child("natives").child("win64").child("endfield64.dll");
+				Fi out = Vars.tmpDirectory.child(lib.name());
+				lib.copyTo(out);
+				System.load(out.absolutePath());
+			}
+		} catch (Throwable e) {
+			Log.err(e);
 		}
 	}
 }

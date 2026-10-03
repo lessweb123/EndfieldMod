@@ -32,8 +32,7 @@ public class InternalFileTree implements FileHandleResolver {
 		classPath = classPath.substring(classPath.indexOf(":") + 2);
 		String jarPath = (OS.isLinux ? "/" : "") + classPath.substring(0, classPath.indexOf("!"));
 
-		file = new Fi(jarPath);
-		root = new ZipFi(file);
+		root = new ZipFi(file = new Fi(jarPath));
 	}
 
 	public Fi child(String name) {

@@ -1,7 +1,6 @@
 package endfield.desktop;
 
 import jdk.internal.misc.Unsafe;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -10,35 +9,6 @@ public final class Unsafer {
 	static final Unsafe unsafe = Unsafe.getUnsafe();
 
 	private Unsafer() {}
-
-	public static String getGetMessage(Field field, String type) {
-		return "Attempt to get " + field.getType().getName() + " field \"" +
-				field.getDeclaringClass().getName() + "." + field.getName() + "\" with illegal data type conversion to " + type;
-	}
-
-	public static String getSetMessage(Field field, @Nullable Object object) {
-		return getSetMessage(field, object == null ? "" : object.getClass().getName(), "");
-	}
-
-	public static String getSetMessage(Field field, String attemptedType, String attemptedValue) {
-		int modifiers = field.getModifiers();
-
-		StringBuilder err = new StringBuilder().append("Can not set");
-		if ((modifiers & Modifier.STATIC) != 0)
-			err.append(" static");
-		if ((modifiers & Modifier.FINAL) != 0)
-			err.append(" final");
-		err.append(" ").append(field.getType().getName()).append(" field ").append(field.getDeclaringClass().getName()).append(".").append(field.getName()).append(" to ");
-		if (!attemptedValue.isEmpty()) {
-			err.append("(").append(attemptedType).append(")").append(attemptedValue);
-		} else {
-			if (!attemptedType.isEmpty())
-				err.append(attemptedType);
-			else
-				err.append("null value");
-		}
-		return err.toString();
-	}
 
 	public static void setByte(Field field, Object object, byte value) {
 		long offset = unsafe.objectFieldOffset(field);

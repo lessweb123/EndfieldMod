@@ -1,26 +1,22 @@
-package endfield.desktop;
+package endfield.android;
 
+import endfield.android.util.Fields;
 import endfield.util.AbstractFieldAccessor;
 import endfield.util.FieldAccessor;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import static endfield.desktop.Unsafer.unsafe;
+import static endfield.android.InternalUnsafer.internalUnsafe;
 import static endfield.util.Reflects.getGetMessage;
 import static endfield.util.Reflects.getSetMessage;
 
-public sealed class UnsafeFieldAccessor extends AbstractFieldAccessor {
+public class InternalUnsafeFieldAccessor extends AbstractFieldAccessor {
 	protected final long offset;
 
-	protected UnsafeFieldAccessor(Field field) {
+	protected InternalUnsafeFieldAccessor(Field field) {
 		super(field);
-
-		if ((field.getModifiers() & Modifier.STATIC) != 0) {
-			offset = unsafe.staticFieldOffset(field);
-		} else {
-			offset = unsafe.objectFieldOffset(field);
-		}
+		offset = Fields.getOffset(field);
 	}
 
 	public static FieldAccessor getUnsafeFieldAccessor(Field field) {
@@ -30,54 +26,54 @@ public sealed class UnsafeFieldAccessor extends AbstractFieldAccessor {
 		if ((modifiers & Modifier.STATIC) != 0) {
 			if ((modifiers & Modifier.VOLATILE) != 0) {
 				if (type.isPrimitive()) {
-					if (type == boolean.class) return new UnsafeQualifiedStaticBooleanFieldAccessor(field);
-					else if (type == byte.class) return new UnsafeQualifiedStaticByteFieldAccessor(field);
-					else if (type == char.class) return new UnsafeQualifiedStaticCharFieldAccessor(field);
-					else if (type == short.class) return new UnsafeQualifiedStaticShortFieldAccessor(field);
-					else if (type == int.class) return new UnsafeQualifiedStaticIntFieldAccessor(field);
-					else if (type == long.class) return new UnsafeQualifiedStaticLongFieldAccessor(field);
-					else if (type == float.class) return new UnsafeQualifiedStaticFloatFieldAccessor(field);
-					else if (type == double.class) return new UnsafeQualifiedStaticDoubleFieldAccessor(field);
+					if (type == boolean.class) return new InternalUnsafeQualifiedStaticBooleanFieldAccessor(field);
+					else if (type == byte.class) return new InternalUnsafeQualifiedStaticByteFieldAccessor(field);
+					else if (type == char.class) return new InternalUnsafeQualifiedStaticCharFieldAccessor(field);
+					else if (type == short.class) return new InternalUnsafeQualifiedStaticShortFieldAccessor(field);
+					else if (type == int.class) return new InternalUnsafeQualifiedStaticIntFieldAccessor(field);
+					else if (type == long.class) return new InternalUnsafeQualifiedStaticLongFieldAccessor(field);
+					else if (type == float.class) return new InternalUnsafeQualifiedStaticFloatFieldAccessor(field);
+					else if (type == double.class) return new InternalUnsafeQualifiedStaticDoubleFieldAccessor(field);
 					else throw new IllegalArgumentException("unknown type of field " + field);
-				} else return new UnsafeQualifiedStaticObjectFieldAccessor(field);
+				} else return new InternalUnsafeQualifiedStaticObjectFieldAccessor(field);
 			} else {
 				if (type.isPrimitive()) {
-					if (type == boolean.class) return new UnsafeStaticBooleanFieldAccessor(field);
-					else if (type == byte.class) return new UnsafeStaticByteFieldAccessor(field);
-					else if (type == char.class) return new UnsafeStaticCharFieldAccessor(field);
-					else if (type == short.class) return new UnsafeStaticShortFieldAccessor(field);
-					else if (type == int.class) return new UnsafeStaticIntFieldAccessor(field);
-					else if (type == long.class) return new UnsafeStaticLongFieldAccessor(field);
-					else if (type == float.class) return new UnsafeStaticFloatFieldAccessor(field);
-					else if (type == double.class) return new UnsafeStaticDoubleFieldAccessor(field);
+					if (type == boolean.class) return new InternalUnsafeStaticBooleanFieldAccessor(field);
+					else if (type == byte.class) return new InternalUnsafeStaticByteFieldAccessor(field);
+					else if (type == char.class) return new InternalUnsafeStaticCharFieldAccessor(field);
+					else if (type == short.class) return new InternalUnsafeStaticShortFieldAccessor(field);
+					else if (type == int.class) return new InternalUnsafeStaticIntFieldAccessor(field);
+					else if (type == long.class) return new InternalUnsafeStaticLongFieldAccessor(field);
+					else if (type == float.class) return new InternalUnsafeStaticFloatFieldAccessor(field);
+					else if (type == double.class) return new InternalUnsafeStaticDoubleFieldAccessor(field);
 					else throw new IllegalArgumentException("unknown type of field " + field);
-				} else return new UnsafeStaticObjectFieldAccessor(field);
+				} else return new InternalUnsafeStaticObjectFieldAccessor(field);
 			}
 		} else {
 			if ((modifiers & Modifier.VOLATILE) != 0) {
 				if (type.isPrimitive()) {
-					if (type == boolean.class) return new UnsafeQualifiedBooleanFieldAccessor(field);
-					else if (type == byte.class) return new UnsafeQualifiedByteFieldAccessor(field);
-					else if (type == char.class) return new UnsafeQualifiedCharFieldAccessor(field);
-					else if (type == short.class) return new UnsafeQualifiedShortFieldAccessor(field);
-					else if (type == int.class) return new UnsafeQualifiedIntFieldAccessor(field);
-					else if (type == long.class) return new UnsafeQualifiedLongFieldAccessor(field);
-					else if (type == float.class) return new UnsafeQualifiedFloatFieldAccessor(field);
-					else if (type == double.class) return new UnsafeQualifiedDoubleFieldAccessor(field);
+					if (type == boolean.class) return new InternalUnsafeQualifiedBooleanFieldAccessor(field);
+					else if (type == byte.class) return new InternalUnsafeQualifiedByteFieldAccessor(field);
+					else if (type == char.class) return new InternalUnsafeQualifiedCharFieldAccessor(field);
+					else if (type == short.class) return new InternalUnsafeQualifiedShortFieldAccessor(field);
+					else if (type == int.class) return new InternalUnsafeQualifiedIntFieldAccessor(field);
+					else if (type == long.class) return new InternalUnsafeQualifiedLongFieldAccessor(field);
+					else if (type == float.class) return new InternalUnsafeQualifiedFloatFieldAccessor(field);
+					else if (type == double.class) return new InternalUnsafeQualifiedDoubleFieldAccessor(field);
 					else throw new IllegalArgumentException("unknown type of field " + field);
-				} else return new UnsafeQualifiedObjectFieldAccessor(field);
+				} else return new InternalUnsafeQualifiedObjectFieldAccessor(field);
 			} else {
 				if (type.isPrimitive()) {
-					if (type == boolean.class) return new UnsafeBooleanFieldAccessor(field);
-					else if (type == byte.class) return new UnsafeByteFieldAccessor(field);
-					else if (type == char.class) return new UnsafeCharFieldAccessor(field);
-					else if (type == short.class) return new UnsafeShortFieldAccessor(field);
-					else if (type == int.class) return new UnsafeIntFieldAccessor(field);
-					else if (type == long.class) return new UnsafeLongFieldAccessor(field);
-					else if (type == float.class) return new UnsafeFloatFieldAccessor(field);
-					else if (type == double.class) return new UnsafeDoubleFieldAccessor(field);
+					if (type == boolean.class) return new InternalUnsafeBooleanFieldAccessor(field);
+					else if (type == byte.class) return new InternalUnsafeByteFieldAccessor(field);
+					else if (type == char.class) return new InternalUnsafeCharFieldAccessor(field);
+					else if (type == short.class) return new InternalUnsafeShortFieldAccessor(field);
+					else if (type == int.class) return new InternalUnsafeIntFieldAccessor(field);
+					else if (type == long.class) return new InternalUnsafeLongFieldAccessor(field);
+					else if (type == float.class) return new InternalUnsafeFloatFieldAccessor(field);
+					else if (type == double.class) return new InternalUnsafeDoubleFieldAccessor(field);
 					else throw new IllegalArgumentException("unknown type of field " + field);
-				} else return new UnsafeObjectFieldAccessor(field);
+				} else return new InternalUnsafeObjectFieldAccessor(field);
 			}
 		}
 	}
@@ -193,8 +189,8 @@ public sealed class UnsafeFieldAccessor extends AbstractFieldAccessor {
 	}
 }
 
-sealed class UnsafeObjectFieldAccessor extends UnsafeFieldAccessor {
-	public UnsafeObjectFieldAccessor(Field f) {
+class InternalUnsafeObjectFieldAccessor extends InternalUnsafeFieldAccessor {
+	public InternalUnsafeObjectFieldAccessor(Field f) {
 		super(f);
 	}
 
@@ -212,19 +208,19 @@ sealed class UnsafeObjectFieldAccessor extends UnsafeFieldAccessor {
 	@Override
 	public <T> T getObject(Object object) {
 		ensureObject(object);
-		return (T) unsafe.getReference(object, offset);
+		return (T) internalUnsafe.getReference(object, offset);
 	}
 
 	@Override
 	public void setObject(Object object, Object value) {
 		ensureObject(object);
 		ensureValue(value);
-		unsafe.putReference(object, offset, value);
+		internalUnsafe.putReference(object, offset, value);
 	}
 }
 
-sealed class UnsafeBooleanFieldAccessor extends UnsafeFieldAccessor {
-	public UnsafeBooleanFieldAccessor(Field f) {
+class InternalUnsafeBooleanFieldAccessor extends InternalUnsafeFieldAccessor {
+	public InternalUnsafeBooleanFieldAccessor(Field f) {
 		super(f);
 	}
 
@@ -242,18 +238,18 @@ sealed class UnsafeBooleanFieldAccessor extends UnsafeFieldAccessor {
 	@Override
 	public boolean getBoolean(Object object) {
 		ensureObject(object);
-		return unsafe.getBoolean(object, offset);
+		return internalUnsafe.getBoolean(object, offset);
 	}
 
 	@Override
 	public void setBoolean(Object object, boolean value) {
 		ensureObject(object);
-		unsafe.putBoolean(object, offset, value);
+		internalUnsafe.putBoolean(object, offset, value);
 	}
 }
 
-sealed class UnsafeByteFieldAccessor extends UnsafeFieldAccessor {
-	public UnsafeByteFieldAccessor(Field f) {
+class InternalUnsafeByteFieldAccessor extends InternalUnsafeFieldAccessor {
+	public InternalUnsafeByteFieldAccessor(Field f) {
 		super(f);
 	}
 
@@ -271,13 +267,13 @@ sealed class UnsafeByteFieldAccessor extends UnsafeFieldAccessor {
 	@Override
 	public byte getByte(Object object) {
 		ensureObject(object);
-		return unsafe.getByte(object, offset);
+		return internalUnsafe.getByte(object, offset);
 	}
 
 	@Override
 	public void setByte(Object object, byte value) {
 		ensureObject(object);
-		unsafe.putByte(object, offset, value);
+		internalUnsafe.putByte(object, offset, value);
 	}
 
 	@Override
@@ -306,8 +302,8 @@ sealed class UnsafeByteFieldAccessor extends UnsafeFieldAccessor {
 	}
 }
 
-sealed class UnsafeCharFieldAccessor extends UnsafeFieldAccessor {
-	public UnsafeCharFieldAccessor(Field f) {
+class InternalUnsafeCharFieldAccessor extends InternalUnsafeFieldAccessor {
+	public InternalUnsafeCharFieldAccessor(Field f) {
 		super(f);
 	}
 
@@ -325,13 +321,13 @@ sealed class UnsafeCharFieldAccessor extends UnsafeFieldAccessor {
 	@Override
 	public char getChar(Object object) {
 		ensureObject(object);
-		return unsafe.getChar(object, offset);
+		return internalUnsafe.getChar(object, offset);
 	}
 
 	@Override
 	public void setChar(Object object, char value) {
 		ensureObject(object);
-		unsafe.putChar(object, offset, value);
+		internalUnsafe.putChar(object, offset, value);
 	}
 
 	@Override
@@ -355,8 +351,8 @@ sealed class UnsafeCharFieldAccessor extends UnsafeFieldAccessor {
 	}
 }
 
-sealed class UnsafeShortFieldAccessor extends UnsafeFieldAccessor {
-	public UnsafeShortFieldAccessor(Field f) {
+class InternalUnsafeShortFieldAccessor extends InternalUnsafeFieldAccessor {
+	public InternalUnsafeShortFieldAccessor(Field f) {
 		super(f);
 	}
 
@@ -379,13 +375,13 @@ sealed class UnsafeShortFieldAccessor extends UnsafeFieldAccessor {
 	@Override
 	public short getShort(Object object) {
 		ensureObject(object);
-		return unsafe.getShort(object, offset);
+		return internalUnsafe.getShort(object, offset);
 	}
 
 	@Override
 	public void setShort(Object object, short value) {
 		ensureObject(object);
-		unsafe.putShort(object, offset, value);
+		internalUnsafe.putShort(object, offset, value);
 	}
 
 	@Override
@@ -409,8 +405,8 @@ sealed class UnsafeShortFieldAccessor extends UnsafeFieldAccessor {
 	}
 }
 
-sealed class UnsafeIntFieldAccessor extends UnsafeFieldAccessor {
-	public UnsafeIntFieldAccessor(Field f) {
+class InternalUnsafeIntFieldAccessor extends InternalUnsafeFieldAccessor {
+	public InternalUnsafeIntFieldAccessor(Field f) {
 		super(f);
 	}
 
@@ -443,13 +439,13 @@ sealed class UnsafeIntFieldAccessor extends UnsafeFieldAccessor {
 	@Override
 	public int getInt(Object object) {
 		ensureObject(object);
-		return unsafe.getInt(object, offset);
+		return internalUnsafe.getInt(object, offset);
 	}
 
 	@Override
 	public void setInt(Object object, int value) {
 		ensureObject(object);
-		unsafe.putInt(object, offset, value);
+		internalUnsafe.putInt(object, offset, value);
 	}
 
 	@Override
@@ -468,8 +464,8 @@ sealed class UnsafeIntFieldAccessor extends UnsafeFieldAccessor {
 	}
 }
 
-sealed class UnsafeLongFieldAccessor extends UnsafeFieldAccessor {
-	public UnsafeLongFieldAccessor(Field f) {
+class InternalUnsafeLongFieldAccessor extends InternalUnsafeFieldAccessor {
+	public InternalUnsafeLongFieldAccessor(Field f) {
 		super(f);
 	}
 
@@ -507,13 +503,13 @@ sealed class UnsafeLongFieldAccessor extends UnsafeFieldAccessor {
 	@Override
 	public long getLong(Object object) {
 		ensureObject(object);
-		return unsafe.getLong(object, offset);
+		return internalUnsafe.getLong(object, offset);
 	}
 
 	@Override
 	public void setLong(Object object, long value) {
 		ensureObject(object);
-		unsafe.putLong(object, offset, value);
+		internalUnsafe.putLong(object, offset, value);
 	}
 
 	@Override
@@ -527,8 +523,8 @@ sealed class UnsafeLongFieldAccessor extends UnsafeFieldAccessor {
 	}
 }
 
-sealed class UnsafeFloatFieldAccessor extends UnsafeFieldAccessor {
-	public UnsafeFloatFieldAccessor(Field f) {
+class InternalUnsafeFloatFieldAccessor extends InternalUnsafeFieldAccessor {
+	public InternalUnsafeFloatFieldAccessor(Field f) {
 		super(f);
 	}
 
@@ -571,13 +567,13 @@ sealed class UnsafeFloatFieldAccessor extends UnsafeFieldAccessor {
 	@Override
 	public float getFloat(Object object) {
 		ensureObject(object);
-		return unsafe.getFloat(object, offset);
+		return internalUnsafe.getFloat(object, offset);
 	}
 
 	@Override
 	public void setFloat(Object object, float value) {
 		ensureObject(object);
-		unsafe.putFloat(object, offset, value);
+		internalUnsafe.putFloat(object, offset, value);
 	}
 
 	@Override
@@ -586,8 +582,8 @@ sealed class UnsafeFloatFieldAccessor extends UnsafeFieldAccessor {
 	}
 }
 
-sealed class UnsafeDoubleFieldAccessor extends UnsafeFieldAccessor {
-	public UnsafeDoubleFieldAccessor(Field f) {
+class InternalUnsafeDoubleFieldAccessor extends InternalUnsafeFieldAccessor {
+	public InternalUnsafeDoubleFieldAccessor(Field f) {
 		super(f);
 	}
 
@@ -635,18 +631,18 @@ sealed class UnsafeDoubleFieldAccessor extends UnsafeFieldAccessor {
 	@Override
 	public double getDouble(Object object) {
 		ensureObject(object);
-		return unsafe.getDouble(object, offset);
+		return internalUnsafe.getDouble(object, offset);
 	}
 
 	@Override
 	public void setDouble(Object object, double value) {
 		ensureObject(object);
-		unsafe.putDouble(object, offset, value);
+		internalUnsafe.putDouble(object, offset, value);
 	}
 }
 
-final class UnsafeQualifiedObjectFieldAccessor extends UnsafeObjectFieldAccessor {
-	public UnsafeQualifiedObjectFieldAccessor(Field f) {
+class InternalUnsafeQualifiedObjectFieldAccessor extends InternalUnsafeObjectFieldAccessor {
+	public InternalUnsafeQualifiedObjectFieldAccessor(Field f) {
 		super(f);
 	}
 
@@ -664,174 +660,174 @@ final class UnsafeQualifiedObjectFieldAccessor extends UnsafeObjectFieldAccessor
 	@Override
 	public <T> T getObject(Object object) {
 		ensureObject(object);
-		return (T) unsafe.getReferenceVolatile(object, offset);
+		return (T) internalUnsafe.getReferenceVolatile(object, offset);
 	}
 
 	@Override
 	public void setObject(Object object, Object value) {
 		ensureObject(object);
 		ensureValue(value);
-		unsafe.putReferenceVolatile(object, offset, value);
+		internalUnsafe.putReferenceVolatile(object, offset, value);
 	}
 }
 
-final class UnsafeQualifiedBooleanFieldAccessor extends UnsafeBooleanFieldAccessor {
-	public UnsafeQualifiedBooleanFieldAccessor(Field f) {
+class InternalUnsafeQualifiedBooleanFieldAccessor extends InternalUnsafeBooleanFieldAccessor {
+	public InternalUnsafeQualifiedBooleanFieldAccessor(Field f) {
 		super(f);
 	}
 
 	@Override
 	public boolean getBoolean(Object object) {
 		ensureObject(object);
-		return unsafe.getBooleanVolatile(object, offset);
+		return internalUnsafe.getBooleanVolatile(object, offset);
 	}
 
 	@Override
 	public void setBoolean(Object object, boolean value) {
 		ensureObject(object);
-		unsafe.putBooleanVolatile(object, offset, value);
+		internalUnsafe.putBooleanVolatile(object, offset, value);
 	}
 }
 
-final class UnsafeQualifiedByteFieldAccessor extends UnsafeByteFieldAccessor {
-	public UnsafeQualifiedByteFieldAccessor(Field f) {
+class InternalUnsafeQualifiedByteFieldAccessor extends InternalUnsafeByteFieldAccessor {
+	public InternalUnsafeQualifiedByteFieldAccessor(Field f) {
 		super(f);
 	}
 
 	@Override
 	public byte getByte(Object object) {
 		ensureObject(object);
-		return unsafe.getByteVolatile(object, offset);
+		return internalUnsafe.getByteVolatile(object, offset);
 	}
 
 	@Override
 	public void setByte(Object object, byte value) {
 		ensureObject(object);
-		unsafe.putByteVolatile(object, offset, value);
+		internalUnsafe.putByteVolatile(object, offset, value);
 	}
 }
 
-final class UnsafeQualifiedCharFieldAccessor extends UnsafeCharFieldAccessor {
-	public UnsafeQualifiedCharFieldAccessor(Field f) {
+class InternalUnsafeQualifiedCharFieldAccessor extends InternalUnsafeCharFieldAccessor {
+	public InternalUnsafeQualifiedCharFieldAccessor(Field f) {
 		super(f);
 	}
 
 	@Override
 	public char getChar(Object object) {
 		ensureObject(object);
-		return unsafe.getCharVolatile(object, offset);
+		return internalUnsafe.getCharVolatile(object, offset);
 	}
 
 	@Override
 	public void setChar(Object object, char value) {
 		ensureObject(object);
-		unsafe.putCharVolatile(object, offset, value);
+		internalUnsafe.putCharVolatile(object, offset, value);
 	}
 }
 
-final class UnsafeQualifiedShortFieldAccessor extends UnsafeShortFieldAccessor {
-	public UnsafeQualifiedShortFieldAccessor(Field f) {
+class InternalUnsafeQualifiedShortFieldAccessor extends InternalUnsafeShortFieldAccessor {
+	public InternalUnsafeQualifiedShortFieldAccessor(Field f) {
 		super(f);
 	}
 
 	@Override
 	public short getShort(Object object) {
 		ensureObject(object);
-		return unsafe.getShortVolatile(object, offset);
+		return internalUnsafe.getShortVolatile(object, offset);
 	}
 
 	@Override
 	public void setShort(Object object, short value) {
 		ensureObject(object);
-		unsafe.putShortVolatile(object, offset, value);
+		internalUnsafe.putShortVolatile(object, offset, value);
 	}
 }
 
-final class UnsafeQualifiedIntFieldAccessor extends UnsafeIntFieldAccessor {
-	public UnsafeQualifiedIntFieldAccessor(Field f) {
+class InternalUnsafeQualifiedIntFieldAccessor extends InternalUnsafeIntFieldAccessor {
+	public InternalUnsafeQualifiedIntFieldAccessor(Field f) {
 		super(f);
 	}
 
 	@Override
 	public int getInt(Object object) {
 		ensureObject(object);
-		return unsafe.getIntVolatile(object, offset);
+		return internalUnsafe.getIntVolatile(object, offset);
 	}
 
 	@Override
 	public void setInt(Object object, int value) {
 		ensureObject(object);
-		unsafe.putIntVolatile(object, offset, value);
+		internalUnsafe.putIntVolatile(object, offset, value);
 	}
 }
 
-final class UnsafeQualifiedLongFieldAccessor extends UnsafeLongFieldAccessor {
-	public UnsafeQualifiedLongFieldAccessor(Field f) {
+class InternalUnsafeQualifiedLongFieldAccessor extends InternalUnsafeLongFieldAccessor {
+	public InternalUnsafeQualifiedLongFieldAccessor(Field f) {
 		super(f);
 	}
 
 	@Override
 	public long getLong(Object object) {
 		ensureObject(object);
-		return unsafe.getLongVolatile(object, offset);
+		return internalUnsafe.getLongVolatile(object, offset);
 	}
 
 	@Override
 	public void setLong(Object object, long value) {
 		ensureObject(object);
-		unsafe.putLongVolatile(object, offset, value);
+		internalUnsafe.putLongVolatile(object, offset, value);
 	}
 }
 
-final class UnsafeQualifiedFloatFieldAccessor extends UnsafeFloatFieldAccessor {
-	public UnsafeQualifiedFloatFieldAccessor(Field f) {
+class InternalUnsafeQualifiedFloatFieldAccessor extends InternalUnsafeFloatFieldAccessor {
+	public InternalUnsafeQualifiedFloatFieldAccessor(Field f) {
 		super(f);
 	}
 
 	@Override
 	public float getFloat(Object object) {
 		ensureObject(object);
-		return unsafe.getFloatVolatile(object, offset);
+		return internalUnsafe.getFloatVolatile(object, offset);
 	}
 
 	@Override
 	public void setFloat(Object object, float value) {
 		ensureObject(object);
-		unsafe.putFloatVolatile(object, offset, value);
+		internalUnsafe.putFloatVolatile(object, offset, value);
 	}
 }
 
-final class UnsafeQualifiedDoubleFieldAccessor extends UnsafeDoubleFieldAccessor {
-	public UnsafeQualifiedDoubleFieldAccessor(Field f) {
+class InternalUnsafeQualifiedDoubleFieldAccessor extends InternalUnsafeDoubleFieldAccessor {
+	public InternalUnsafeQualifiedDoubleFieldAccessor(Field f) {
 		super(f);
 	}
 
 	@Override
 	public double getDouble(Object object) {
 		ensureObject(object);
-		return unsafe.getDoubleVolatile(object, offset);
+		return internalUnsafe.getDoubleVolatile(object, offset);
 	}
 
 	@Override
 	public void setDouble(Object object, double value) {
 		ensureObject(object);
-		unsafe.putDoubleVolatile(object, offset, value);
+		internalUnsafe.putDoubleVolatile(object, offset, value);
 	}
 }
 
-abstract sealed class UnsafeStaticFieldAccessor extends UnsafeFieldAccessor {
+abstract class InternalUnsafeStaticFieldAccessor extends InternalUnsafeFieldAccessor {
 	protected final Object base;
 
-	protected UnsafeStaticFieldAccessor(Field f) {
+	protected InternalUnsafeStaticFieldAccessor(Field f) {
 		super(f);
 
-		if ((f.getModifiers() & Modifier.STATIC) != 0) base = unsafe.staticFieldBase(f);
+		if ((f.getModifiers() & Modifier.STATIC) != 0) base = f.getDeclaringClass();
 		else throw new IllegalArgumentException("This field is not a static field: " + f);
 	}
 }
 
-sealed class UnsafeStaticObjectFieldAccessor extends UnsafeStaticFieldAccessor {
-	public UnsafeStaticObjectFieldAccessor(Field f) {
+class InternalUnsafeStaticObjectFieldAccessor extends InternalUnsafeStaticFieldAccessor {
+	public InternalUnsafeStaticObjectFieldAccessor(Field f) {
 		super(f);
 	}
 
@@ -848,18 +844,18 @@ sealed class UnsafeStaticObjectFieldAccessor extends UnsafeStaticFieldAccessor {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getObject(Object object) {
-		return (T) unsafe.getReference(base, offset);
+		return (T) internalUnsafe.getReference(base, offset);
 	}
 
 	@Override
 	public void setObject(Object object, Object value) {
 		ensureValue(value);
-		unsafe.putReference(base, offset, value);
+		internalUnsafe.putReference(base, offset, value);
 	}
 }
 
-sealed class UnsafeStaticBooleanFieldAccessor extends UnsafeStaticFieldAccessor {
-	public UnsafeStaticBooleanFieldAccessor(Field f) {
+class InternalUnsafeStaticBooleanFieldAccessor extends InternalUnsafeStaticFieldAccessor {
+	public InternalUnsafeStaticBooleanFieldAccessor(Field f) {
 		super(f);
 	}
 
@@ -876,17 +872,17 @@ sealed class UnsafeStaticBooleanFieldAccessor extends UnsafeStaticFieldAccessor 
 
 	@Override
 	public boolean getBoolean(Object object) {
-		return unsafe.getBoolean(base, offset);
+		return internalUnsafe.getBoolean(base, offset);
 	}
 
 	@Override
 	public void setBoolean(Object object, boolean value) {
-		unsafe.putBoolean(base, offset, value);
+		internalUnsafe.putBoolean(base, offset, value);
 	}
 }
 
-sealed class UnsafeStaticByteFieldAccessor extends UnsafeStaticFieldAccessor {
-	public UnsafeStaticByteFieldAccessor(Field f) {
+class InternalUnsafeStaticByteFieldAccessor extends InternalUnsafeStaticFieldAccessor {
+	public InternalUnsafeStaticByteFieldAccessor(Field f) {
 		super(f);
 	}
 
@@ -903,12 +899,12 @@ sealed class UnsafeStaticByteFieldAccessor extends UnsafeStaticFieldAccessor {
 
 	@Override
 	public byte getByte(Object object) {
-		return unsafe.getByte(base, offset);
+		return internalUnsafe.getByte(base, offset);
 	}
 
 	@Override
 	public void setByte(Object object, byte value) {
-		unsafe.putByte(base, offset, value);
+		internalUnsafe.putByte(base, offset, value);
 	}
 
 	@Override
@@ -937,8 +933,8 @@ sealed class UnsafeStaticByteFieldAccessor extends UnsafeStaticFieldAccessor {
 	}
 }
 
-sealed class UnsafeStaticCharFieldAccessor extends UnsafeStaticFieldAccessor {
-	public UnsafeStaticCharFieldAccessor(Field f) {
+class InternalUnsafeStaticCharFieldAccessor extends InternalUnsafeStaticFieldAccessor {
+	public InternalUnsafeStaticCharFieldAccessor(Field f) {
 		super(f);
 	}
 
@@ -955,12 +951,12 @@ sealed class UnsafeStaticCharFieldAccessor extends UnsafeStaticFieldAccessor {
 
 	@Override
 	public char getChar(Object object) {
-		return unsafe.getChar(base, offset);
+		return internalUnsafe.getChar(base, offset);
 	}
 
 	@Override
 	public void setChar(Object object, char value) {
-		unsafe.putChar(base, offset, value);
+		internalUnsafe.putChar(base, offset, value);
 	}
 
 	@Override
@@ -984,8 +980,8 @@ sealed class UnsafeStaticCharFieldAccessor extends UnsafeStaticFieldAccessor {
 	}
 }
 
-sealed class UnsafeStaticShortFieldAccessor extends UnsafeStaticFieldAccessor {
-	public UnsafeStaticShortFieldAccessor(Field f) {
+class InternalUnsafeStaticShortFieldAccessor extends InternalUnsafeStaticFieldAccessor {
+	public InternalUnsafeStaticShortFieldAccessor(Field f) {
 		super(f);
 	}
 
@@ -1007,12 +1003,12 @@ sealed class UnsafeStaticShortFieldAccessor extends UnsafeStaticFieldAccessor {
 
 	@Override
 	public short getShort(Object object) {
-		return unsafe.getShort(base, offset);
+		return internalUnsafe.getShort(base, offset);
 	}
 
 	@Override
 	public void setShort(Object object, short value) {
-		unsafe.putShort(base, offset, value);
+		internalUnsafe.putShort(base, offset, value);
 	}
 
 	@Override
@@ -1036,8 +1032,8 @@ sealed class UnsafeStaticShortFieldAccessor extends UnsafeStaticFieldAccessor {
 	}
 }
 
-sealed class UnsafeStaticIntFieldAccessor extends UnsafeStaticFieldAccessor {
-	public UnsafeStaticIntFieldAccessor(Field f) {
+class InternalUnsafeStaticIntFieldAccessor extends InternalUnsafeStaticFieldAccessor {
+	public InternalUnsafeStaticIntFieldAccessor(Field f) {
 		super(f);
 	}
 
@@ -1069,12 +1065,12 @@ sealed class UnsafeStaticIntFieldAccessor extends UnsafeStaticFieldAccessor {
 
 	@Override
 	public int getInt(Object object) {
-		return unsafe.getInt(base, offset);
+		return internalUnsafe.getInt(base, offset);
 	}
 
 	@Override
 	public void setInt(Object object, int value) {
-		unsafe.putInt(base, offset, value);
+		internalUnsafe.putInt(base, offset, value);
 	}
 
 	@Override
@@ -1093,8 +1089,8 @@ sealed class UnsafeStaticIntFieldAccessor extends UnsafeStaticFieldAccessor {
 	}
 }
 
-sealed class UnsafeStaticLongFieldAccessor extends UnsafeStaticFieldAccessor {
-	public UnsafeStaticLongFieldAccessor(Field f) {
+class InternalUnsafeStaticLongFieldAccessor extends InternalUnsafeStaticFieldAccessor {
+	public InternalUnsafeStaticLongFieldAccessor(Field f) {
 		super(f);
 	}
 
@@ -1131,12 +1127,12 @@ sealed class UnsafeStaticLongFieldAccessor extends UnsafeStaticFieldAccessor {
 
 	@Override
 	public long getLong(Object object) {
-		return unsafe.getLong(base, offset);
+		return internalUnsafe.getLong(base, offset);
 	}
 
 	@Override
 	public void setLong(Object object, long value) {
-		unsafe.putLong(base, offset, value);
+		internalUnsafe.putLong(base, offset, value);
 	}
 
 	@Override
@@ -1150,8 +1146,8 @@ sealed class UnsafeStaticLongFieldAccessor extends UnsafeStaticFieldAccessor {
 	}
 }
 
-sealed class UnsafeStaticFloatFieldAccessor extends UnsafeStaticFieldAccessor {
-	public UnsafeStaticFloatFieldAccessor(Field f) {
+class InternalUnsafeStaticFloatFieldAccessor extends InternalUnsafeStaticFieldAccessor {
+	public InternalUnsafeStaticFloatFieldAccessor(Field f) {
 		super(f);
 	}
 
@@ -1193,12 +1189,12 @@ sealed class UnsafeStaticFloatFieldAccessor extends UnsafeStaticFieldAccessor {
 
 	@Override
 	public float getFloat(Object object) {
-		return unsafe.getFloat(base, offset);
+		return internalUnsafe.getFloat(base, offset);
 	}
 
 	@Override
 	public void setFloat(Object object, float value) {
-		unsafe.putFloat(base, offset, value);
+		internalUnsafe.putFloat(base, offset, value);
 	}
 
 	@Override
@@ -1207,8 +1203,8 @@ sealed class UnsafeStaticFloatFieldAccessor extends UnsafeStaticFieldAccessor {
 	}
 }
 
-sealed class UnsafeStaticDoubleFieldAccessor extends UnsafeStaticFieldAccessor {
-	public UnsafeStaticDoubleFieldAccessor(Field f) {
+class InternalUnsafeStaticDoubleFieldAccessor extends InternalUnsafeStaticFieldAccessor {
+	public InternalUnsafeStaticDoubleFieldAccessor(Field f) {
 		super(f);
 	}
 
@@ -1225,7 +1221,7 @@ sealed class UnsafeStaticDoubleFieldAccessor extends UnsafeStaticFieldAccessor {
 
 	@Override
 	public void setByte(Object object, byte value) {
-		setDouble(value, value);
+		setDouble(object, value);
 	}
 
 	@Override
@@ -1255,157 +1251,157 @@ sealed class UnsafeStaticDoubleFieldAccessor extends UnsafeStaticFieldAccessor {
 
 	@Override
 	public double getDouble(Object object) {
-		return unsafe.getDouble(base, offset);
+		return internalUnsafe.getDouble(base, offset);
 	}
 
 	@Override
 	public void setDouble(Object object, double value) {
-		unsafe.putDouble(base, offset, value);
+		internalUnsafe.putDouble(base, offset, value);
 	}
 }
 
-final class UnsafeQualifiedStaticObjectFieldAccessor extends UnsafeStaticObjectFieldAccessor {
-	public UnsafeQualifiedStaticObjectFieldAccessor(Field f) {
+class InternalUnsafeQualifiedStaticObjectFieldAccessor extends InternalUnsafeStaticObjectFieldAccessor {
+	public InternalUnsafeQualifiedStaticObjectFieldAccessor(Field f) {
 		super(f);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getObject(Object object) {
-		return (T) unsafe.getReferenceVolatile(base, offset);
+		return (T) internalUnsafe.getReferenceVolatile(base, offset);
 	}
 
 	@Override
 	public void setObject(Object object, Object value) {
 		ensureValue(value);
-		unsafe.putReferenceVolatile(base, offset, value);
+		internalUnsafe.putReferenceVolatile(base, offset, value);
 	}
 }
 
-final class UnsafeQualifiedStaticBooleanFieldAccessor extends UnsafeStaticBooleanFieldAccessor {
-	public UnsafeQualifiedStaticBooleanFieldAccessor(Field f) {
+class InternalUnsafeQualifiedStaticBooleanFieldAccessor extends InternalUnsafeStaticBooleanFieldAccessor {
+	public InternalUnsafeQualifiedStaticBooleanFieldAccessor(Field f) {
 		super(f);
 	}
 
 	@Override
 	public boolean getBoolean(Object object) {
-		return unsafe.getBooleanVolatile(base, offset);
+		return internalUnsafe.getBooleanVolatile(base, offset);
 	}
 
 	@Override
 	public void setBoolean(Object object, boolean value) {
-		unsafe.putBooleanVolatile(base, offset, value);
+		internalUnsafe.putBooleanVolatile(base, offset, value);
 	}
 }
 
-final class UnsafeQualifiedStaticByteFieldAccessor extends UnsafeStaticByteFieldAccessor {
-	public UnsafeQualifiedStaticByteFieldAccessor(Field f) {
+class InternalUnsafeQualifiedStaticByteFieldAccessor extends InternalUnsafeStaticByteFieldAccessor {
+	public InternalUnsafeQualifiedStaticByteFieldAccessor(Field f) {
 		super(f);
 	}
 
 	@Override
 	public byte getByte(Object object) {
-		return unsafe.getByteVolatile(base, offset);
+		return internalUnsafe.getByteVolatile(base, offset);
 	}
 
 	@Override
 	public void setByte(Object object, byte value) {
-		unsafe.putByteVolatile(base, offset, value);
+		internalUnsafe.putByteVolatile(base, offset, value);
 	}
 }
 
-final class UnsafeQualifiedStaticCharFieldAccessor extends UnsafeStaticCharFieldAccessor {
-	public UnsafeQualifiedStaticCharFieldAccessor(Field f) {
+class InternalUnsafeQualifiedStaticCharFieldAccessor extends InternalUnsafeStaticCharFieldAccessor {
+	public InternalUnsafeQualifiedStaticCharFieldAccessor(Field f) {
 		super(f);
 	}
 
 	@Override
 	public short getShort(Object object) {
-		return unsafe.getShortVolatile(base, offset);
+		return internalUnsafe.getShortVolatile(base, offset);
 	}
 
 	@Override
 	public void setShort(Object object, short value) {
-		unsafe.putShortVolatile(base, offset, value);
+		internalUnsafe.putShortVolatile(base, offset, value);
 	}
 }
 
-final class UnsafeQualifiedStaticShortFieldAccessor extends UnsafeStaticShortFieldAccessor {
-	public UnsafeQualifiedStaticShortFieldAccessor(Field f) {
+class InternalUnsafeQualifiedStaticShortFieldAccessor extends InternalUnsafeStaticShortFieldAccessor {
+	public InternalUnsafeQualifiedStaticShortFieldAccessor(Field f) {
 		super(f);
 	}
 
 	@Override
 	public short getShort(Object object) {
-		return unsafe.getShortVolatile(base, offset);
+		return internalUnsafe.getShortVolatile(base, offset);
 	}
 
 	@Override
 	public void setShort(Object object, short value) {
-		unsafe.putShortVolatile(base, offset, value);
+		internalUnsafe.putShortVolatile(base, offset, value);
 	}
 }
 
-final class UnsafeQualifiedStaticIntFieldAccessor extends UnsafeStaticIntFieldAccessor {
-	public UnsafeQualifiedStaticIntFieldAccessor(Field f) {
+class InternalUnsafeQualifiedStaticIntFieldAccessor extends InternalUnsafeStaticShortFieldAccessor {
+	public InternalUnsafeQualifiedStaticIntFieldAccessor(Field f) {
 		super(f);
 	}
 
 	@Override
 	public int getInt(Object object) {
-		return unsafe.getIntVolatile(base, offset);
+		return internalUnsafe.getIntVolatile(base, offset);
 	}
 
 	@Override
 	public void setInt(Object object, int value) {
-		unsafe.putIntVolatile(base, offset, value);
+		internalUnsafe.putIntVolatile(base, offset, value);
 	}
 }
 
-final class UnsafeQualifiedStaticLongFieldAccessor extends UnsafeStaticLongFieldAccessor {
-	public UnsafeQualifiedStaticLongFieldAccessor(Field f) {
+class InternalUnsafeQualifiedStaticLongFieldAccessor extends InternalUnsafeStaticLongFieldAccessor {
+	public InternalUnsafeQualifiedStaticLongFieldAccessor(Field f) {
 		super(f);
 	}
 
 	@Override
 	public long getLong(Object object) {
-		return unsafe.getLongVolatile(base, offset);
+		return internalUnsafe.getLongVolatile(base, offset);
 	}
 
 	@Override
 	public void setLong(Object object, long value) {
-		unsafe.putLongVolatile(base, offset, value);
+		internalUnsafe.putLongVolatile(base, offset, value);
 	}
 }
 
-final class UnsafeQualifiedStaticFloatFieldAccessor extends UnsafeStaticFloatFieldAccessor {
-	public UnsafeQualifiedStaticFloatFieldAccessor(Field f) {
+class InternalUnsafeQualifiedStaticFloatFieldAccessor extends InternalUnsafeStaticFloatFieldAccessor {
+	public InternalUnsafeQualifiedStaticFloatFieldAccessor(Field f) {
 		super(f);
 	}
 
 	@Override
 	public float getFloat(Object object) {
-		return unsafe.getFloatVolatile(base, offset);
+		return internalUnsafe.getFloatVolatile(base, offset);
 	}
 
 	@Override
 	public void setFloat(Object object, float value) {
-		unsafe.putFloatVolatile(base, offset, value);
+		internalUnsafe.putFloatVolatile(base, offset, value);
 	}
 }
 
-final class UnsafeQualifiedStaticDoubleFieldAccessor extends UnsafeStaticDoubleFieldAccessor {
-	public UnsafeQualifiedStaticDoubleFieldAccessor(Field f) {
+class InternalUnsafeQualifiedStaticDoubleFieldAccessor extends InternalUnsafeStaticDoubleFieldAccessor {
+	public InternalUnsafeQualifiedStaticDoubleFieldAccessor(Field f) {
 		super(f);
 	}
 
 	@Override
 	public double getDouble(Object object) {
-		return unsafe.getDoubleVolatile(base, offset);
+		return internalUnsafe.getDoubleVolatile(base, offset);
 	}
 
 	@Override
 	public void setDouble(Object object, double value) {
-		unsafe.putDoubleVolatile(base, offset, value);
+		internalUnsafe.putDoubleVolatile(base, offset, value);
 	}
 }

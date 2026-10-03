@@ -9,9 +9,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import static endfield.desktop.DesktopImpl.lookup;
-import static endfield.desktop.Unsafer.getGetMessage;
-import static endfield.desktop.Unsafer.getSetMessage;
 import static endfield.util.GetKt.sneakyThrow;
+import static endfield.util.Reflects.getGetMessage;
+import static endfield.util.Reflects.getSetMessage;
 
 public sealed class MethodHandleFieldAccessor extends AbstractFieldAccessor {
 	protected final MethodHandle getter, setter;

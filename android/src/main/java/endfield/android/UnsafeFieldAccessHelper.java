@@ -4,8 +4,8 @@ import endfield.util.ReflectionFieldAccessHelper;
 
 import java.lang.reflect.Field;
 
-import static endfield.android.Unsafer.getGetMessage;
-import static endfield.android.Unsafer.getSetMessage;
+import static endfield.util.Reflects.getGetMessage;
+import static endfield.util.Reflects.getSetMessage;
 
 public class UnsafeFieldAccessHelper extends ReflectionFieldAccessHelper {
 	@Override

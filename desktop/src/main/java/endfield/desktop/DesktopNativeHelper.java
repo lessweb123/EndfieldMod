@@ -37,6 +37,7 @@ public final class DesktopNativeHelper {
 
 	/**
 	 * Search for methods in the class based on their name and JVM signature.
+	 * <p>Not supporting obtaining the {@code <init>} method.
 	 * <pre>{@code
 	 * //java.lang.Module.addExports0
 	 * getMethod(Module.class, "addExports0", "(Ljava/lang/Module;Ljava/lang/String;Ljava/lang/Module;)V", true);

@@ -7,6 +7,7 @@ import arc.struct.Seq;
 import arc.util.Structs;
 import endfield.util.handler.ClassHandler;
 import mindustry.Vars;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
 import java.lang.invoke.MethodHandle;
@@ -411,6 +412,8 @@ public final class Reflects {
 		return ReflectsKt.findSpecial(refc, name, MethodType.methodType(rtype, ptypes));
 	}
 
+	// --------------------- kotlin only -------------------------
+
 	public static <T> T newInstance(Constructor<T> constructor, Object[] args) throws InvocationTargetException, InstantiationException, IllegalAccessException {
 		return constructor.newInstance(args);
 	}
@@ -419,21 +422,52 @@ public final class Reflects {
 		return method.invoke(args);
 	}
 
+	// -------------------- reflection utils only ------------------------
+
+	public static String getGetMessage(Field field, String type) {
+		return "Attempt to get " + field.getType().getName() + " field \"" +
+				field.getDeclaringClass().getName() + "." + field.getName() + "\" with illegal data type conversion to " + type;
+	}
+
+	public static String getSetMessage(Field field, @Nullable Object object) {
+		return getSetMessage(field, object == null ? "" : object.getClass().getName(), "");
+	}
+
+	public static String getSetMessage(Field field, String attemptedType, String attemptedValue) {
+		int modifiers = field.getModifiers();
+
+		StringBuilder err = new StringBuilder().append("Can not set");
+		if ((modifiers & Modifier.STATIC) != 0)
+			err.append(" static");
+		if ((modifiers & Modifier.FINAL) != 0)
+			err.append(" final");
+		err.append(" ").append(field.getType().getName()).append(" field ").append(field.getDeclaringClass().getName()).append(".").append(field.getName()).append(" to ");
+		if (!attemptedValue.isEmpty()) {
+			err.append("(").append(attemptedType).append(")").append(attemptedValue);
+		} else {
+			if (!attemptedType.isEmpty())
+				err.append(attemptedType);
+			else
+				err.append("null value");
+		}
+		return err.toString();
+	}
+
 	// ------------------ jni only ---------------------
 
-	static NoSuchFieldException getFieldException(Class<?> type, String name, String signature) {
-		return new NoSuchFieldException(buildMessage(type, name, signature, false));
+	public static NoSuchFieldException getFieldException(Class<?> type, String name, String signature) {
+		return new NoSuchFieldException(getMessage(type, name, signature, false));
 	}
 
-	static NoSuchMethodException getMethodException(Class<?> type, String name, String signature) {
-		return new NoSuchMethodException(buildMessage(type, name, signature, true));
+	public static NoSuchMethodException getMethodException(Class<?> type, String name, String signature) {
+		return new NoSuchMethodException(getMessage(type, name, signature, true));
 	}
 
-	static NoSuchMethodException getConstructorException(Class<?> type, String signature) {
-		return new NoSuchMethodException(buildMessage(type, "<init>", signature, true));
+	public static NoSuchMethodException getConstructorException(Class<?> type, String signature) {
+		return new NoSuchMethodException(getMessage(type, "<init>", signature, true));
 	}
 
-	private static String buildMessage(Class<?> type, String name, String signature, boolean isMethod) {
+	static String getMessage(Class<?> type, String name, String signature, boolean isMethod) {
 		String className = type.getName();
 
 		StringBuilder sb = new StringBuilder(className.length() + name.length() + 32);

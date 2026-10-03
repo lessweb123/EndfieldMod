@@ -1,7 +1,6 @@
 package endfield.android;
 
 import endfield.android.util.Fields;
-import org.jetbrains.annotations.Nullable;
 import sun.misc.Unsafe;
 
 import java.lang.reflect.Field;
@@ -24,35 +23,6 @@ public final class Unsafer {
 	}
 
 	private Unsafer() {}
-
-	public static String getGetMessage(Field field, String type) {
-		return "Attempt to get " + field.getType().getName() + " field \"" +
-				field.getDeclaringClass().getName() + "." + field.getName() + "\" with illegal data type conversion to " + type;
-	}
-
-	public static String getSetMessage(Field field, @Nullable Object object) {
-		return getSetMessage(field, object == null ? "" : object.getClass().getName(), "");
-	}
-
-	public static String getSetMessage(Field field, String attemptedType, String attemptedValue) {
-		int modifiers = field.getModifiers();
-
-		StringBuilder err = new StringBuilder().append("Can not set");
-		if ((modifiers & Modifier.STATIC) != 0)
-			err.append(" static");
-		if ((modifiers & Modifier.FINAL) != 0)
-			err.append(" final");
-		err.append(" ").append(field.getType().getName()).append(" field ").append(field.getDeclaringClass().getName()).append(".").append(field.getName()).append(" to ");
-		if (!attemptedValue.isEmpty()) {
-			err.append("(").append(attemptedType).append(")").append(attemptedValue);
-		} else {
-			if (!attemptedType.isEmpty())
-				err.append(attemptedType);
-			else
-				err.append("null value");
-		}
-		return err.toString();
-	}
 
 	public static void setByte(Field field, Object object, byte value) {
 		int offset = Fields.getOffset(field);
@@ -204,7 +174,8 @@ public final class Unsafer {
 
 		if ((field.getModifiers() & Modifier.VOLATILE) != 0) {
 			unsafe.putFloatVolatile(field.getDeclaringClass(), offset, value);
-		} else unsafe.putFloat(field.getDeclaringClass(), offset, value);
+		} else
+			unsafe.putFloat(field.getDeclaringClass(), offset, value);
 	}
 
 	public static float getFloat(Field field, Object object) {
