@@ -481,4 +481,17 @@ public final class Reflects {
 		}
 		return sb.toString();
 	}
+
+	public static RuntimeException checkAllocType(Class<?> type) {
+		if (type == null) return new NullPointerException("type is null");
+
+		if (type.isPrimitive()) return new IllegalArgumentException("Cannot instantiate primitive type");
+		if (type.isArray()) return new IllegalArgumentException("Cannot instantiate array type (use Array.newInstance instead)");
+
+		int modifiers = type.getModifiers();
+
+		if ((modifiers & (Modifier.ABSTRACT | Modifier.INTERFACE)) != 0) return new IllegalArgumentException("Cannot instantiate abstract class or interface");
+
+		return null;
+	}
 }

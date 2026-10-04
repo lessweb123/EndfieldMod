@@ -2,6 +2,8 @@
 #include <jni.h>
 #include <endfield_desktop_DesktopNativeHelper.h>
 
+static jclass string_class;
+
 static jclass npe_class;
 static jclass iae_class;
 
@@ -15,6 +17,7 @@ static jclass reflects_class;
 static jmethodID get_field_exception_method;
 static jmethodID get_method_exception_method;
 static jmethodID get_constructor_exception_method;
+static jmethodID check_alloc_type_method;
 
 static bool initGlobalClassRef(JNIEnv* env, const char* name, jclass* out) {
     jclass local_ref = env->FindClass(name);
@@ -52,7 +55,9 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void*)
         return JNI_ERR;
     }
 
-    bool ok = initGlobalClassRef(env, "java/lang/NullPointerException", &npe_class)
+    bool ok = initGlobalClassRef(env, "java/lang/String", &string_class)
+
+        && initGlobalClassRef(env, "java/lang/NullPointerException", &npe_class)
         && initGlobalClassRef(env, "java/lang/IllegalArgumentException", &iae_class)
 
         && initGlobalClassRef(env, "java/lang/reflect/AccessibleObject", &accessible_object_class)
@@ -64,7 +69,8 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void*)
         && initGlobalClassRef(env, "endfield/util/Reflects", &reflects_class)
         && initStaticMethodID(env, reflects_class, "getFieldException","(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/NoSuchFieldException;",&get_field_exception_method)
         && initStaticMethodID(env, reflects_class, "getMethodException","(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/NoSuchMethodException;",&get_method_exception_method)
-        && initStaticMethodID(env, reflects_class, "getConstructorException","(Ljava/lang/Class;Ljava/lang/String;)Ljava/lang/NoSuchMethodException;",&get_constructor_exception_method);
+        && initStaticMethodID(env, reflects_class, "getConstructorException","(Ljava/lang/Class;Ljava/lang/String;)Ljava/lang/NoSuchMethodException;",&get_constructor_exception_method)
+        && initStaticMethodID(env, reflects_class, "checkAllocType", "(Ljava/lang/Class;)Ljava/lang/RuntimeException;", &check_alloc_type_method);
 
     if (!ok)
     {
@@ -92,6 +98,8 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void*)
     env->DeleteGlobalRef(lookup_class);
     env->DeleteGlobalRef(reflects_class);
 
+    string_class = nullptr;
+
     npe_class = nullptr;
     iae_class = nullptr;
     accessible_object_class = nullptr;
@@ -104,11 +112,29 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void*)
     get_field_exception_method = nullptr;
     get_method_exception_method = nullptr;
     get_constructor_exception_method = nullptr;
+    check_alloc_type_method = nullptr;
 }
 
 JNIEXPORT jobject JNICALL Java_endfield_desktop_DesktopNativeHelper_getLookup(JNIEnv* env, jclass)
 {
     return env->GetStaticObjectField(lookup_class, impl_lookup_field);
+}
+
+JNIEXPORT jobject JNICALL Java_endfield_desktop_DesktopNativeHelper_allocObject(JNIEnv* env, jclass, jclass type)
+{
+    jobject throwable = env->CallStaticObjectMethod(reflects_class, check_alloc_type_method, type);
+    if (throwable != nullptr)
+    {
+        env->Throw((jthrowable)throwable);
+        return nullptr;
+    }
+
+    if (env->IsSameObject(type, string_class))
+    {
+        return env->NewStringUTF("");
+    }
+
+    return env->AllocObject(type);
 }
 
 JNIEXPORT void JNICALL Java_endfield_desktop_DesktopNativeHelper_setAccessible(JNIEnv* env, jclass, jobject object, jboolean flag)
@@ -144,7 +170,7 @@ JNIEXPORT jobject JNICALL Java_endfield_desktop_DesktopNativeHelper_getField(JNI
         return nullptr;
     }
 
-    jfieldID jfield_id = isStatic? env->GetStaticFieldID(clazz, cname, csignature): env->GetFieldID(clazz, cname, csignature);
+    jfieldID jfield_id = isStatic ? env->GetStaticFieldID(clazz, cname, csignature) : env->GetFieldID(clazz, cname, csignature);
 
     env->ReleaseStringUTFChars(name, cname);
     env->ReleaseStringUTFChars(signature, csignature);
@@ -198,7 +224,7 @@ JNIEXPORT jobject JNICALL Java_endfield_desktop_DesktopNativeHelper_getMethod(JN
         return nullptr;
     }
 
-    jmethodID jmethod_id = isStatic ? env->GetStaticMethodID(clazz, cname, csignature): env->GetMethodID(clazz, cname, csignature);
+    jmethodID jmethod_id = isStatic ? env->GetStaticMethodID(clazz, cname, csignature) : env->GetMethodID(clazz, cname, csignature);
 
     env->ReleaseStringUTFChars(name, cname);
     env->ReleaseStringUTFChars(signature, csignature);

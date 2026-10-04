@@ -19,6 +19,8 @@ public final class DesktopNativeHelper {
 	 */
 	public static native Lookup getLookup();
 
+	public static native <T> T allocObject(Class<? extends T> clazz);
+
 	public static native void setAccessible(AccessibleObject object, boolean flag);
 
 	/**
