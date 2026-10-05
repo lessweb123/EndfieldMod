@@ -7,7 +7,7 @@ import java.lang.reflect.Field;
 import static endfield.util.Reflects.getGetMessage;
 import static endfield.util.Reflects.getSetMessage;
 
-public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper {
+public class UnsafeFieldAccessHelper2 extends ReflectionFieldAccessHelper {
 	@Override
 	public void setByte(Object object, String name, byte value) {
 		Field field = getField(object.getClass(), name, false);
@@ -15,7 +15,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != byte.class) throw new IllegalArgumentException(getSetMessage(field, "byte", String.valueOf(value)));
 
-		InternalUnsafer.setByte(field, object, value);
+		Unsafer2.setByte(field, object, value);
 	}
 
 	@Override
@@ -24,7 +24,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 
 		if (field.getType() != byte.class) throw new IllegalArgumentException(getSetMessage(field, "byte", String.valueOf(value)));
 
-		InternalUnsafer.setByteStatic(field, value);
+		Unsafer2.setByteStatic(field, value);
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != byte.class) throw new IllegalArgumentException(getGetMessage(field, "byte"));
 
-		return InternalUnsafer.getByte(field, object);
+		return Unsafer2.getByte(field, object);
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 
 		if (field.getType() != byte.class) throw new IllegalArgumentException(getGetMessage(field, "byte"));
 
-		return InternalUnsafer.getByteStatic(field);
+		return Unsafer2.getByteStatic(field);
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != short.class) throw new IllegalArgumentException(getSetMessage(field, "short", String.valueOf(value)));
 
-		InternalUnsafer.setShort(field, object, value);
+		Unsafer2.setShort(field, object, value);
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 
 		if (field.getType() != short.class) throw new IllegalArgumentException(getSetMessage(field, "short", String.valueOf(value)));
 
-		InternalUnsafer.setShortStatic(field, value);
+		Unsafer2.setShortStatic(field, value);
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != short.class) throw new IllegalArgumentException(getGetMessage(field, "short"));
 
-		return InternalUnsafer.getShort(field, object);
+		return Unsafer2.getShort(field, object);
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 
 		if (field.getType() != short.class) throw new IllegalArgumentException(getGetMessage(field, "short"));
 
-		return InternalUnsafer.getShortStatic(field);
+		return Unsafer2.getShortStatic(field);
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != int.class) throw new IllegalArgumentException(getSetMessage(field, "int", String.valueOf(value)));
 
-		InternalUnsafer.setInt(field, object, value);
+		Unsafer2.setInt(field, object, value);
 	}
 
 	@Override
@@ -100,7 +100,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 
 		if (field.getType() != int.class) throw new IllegalArgumentException(getSetMessage(field, "int", String.valueOf(value)));
 
-		InternalUnsafer.setIntStatic(field, value);
+		Unsafer2.setIntStatic(field, value);
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != int.class) throw new IllegalArgumentException(getGetMessage(field, "int"));
 
-		return InternalUnsafer.getInt(field, object);
+		return Unsafer2.getInt(field, object);
 	}
 
 	@Override
@@ -119,7 +119,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 
 		if (field.getType() != int.class) throw new IllegalArgumentException(getGetMessage(field, "int"));
 
-		return InternalUnsafer.getIntStatic(field);
+		return Unsafer2.getIntStatic(field);
 	}
 
 	@Override
@@ -129,7 +129,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != long.class) throw new IllegalArgumentException(getSetMessage(field, "long", String.valueOf(value)));
 
-		InternalUnsafer.setLong(field, object, value);
+		Unsafer2.setLong(field, object, value);
 	}
 
 	@Override
@@ -138,7 +138,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 
 		if (field.getType() != long.class) throw new IllegalArgumentException(getSetMessage(field, "long", String.valueOf(value)));
 
-		InternalUnsafer.setLongStatic(field, value);
+		Unsafer2.setLongStatic(field, value);
 	}
 
 	@Override
@@ -148,7 +148,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != long.class) throw new IllegalArgumentException(getGetMessage(field, "long"));
 
-		return InternalUnsafer.getLong(field, object);
+		return Unsafer2.getLong(field, object);
 	}
 
 	@Override
@@ -157,7 +157,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 
 		if (field.getType() != long.class) throw new IllegalArgumentException(getGetMessage(field, "long"));
 
-		return InternalUnsafer.getLongStatic(field);
+		return Unsafer2.getLongStatic(field);
 	}
 
 	@Override
@@ -167,7 +167,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != float.class) throw new IllegalArgumentException(getSetMessage(field, "float", String.valueOf(value)));
 
-		InternalUnsafer.setFloat(field, object, value);
+		Unsafer2.setFloat(field, object, value);
 	}
 
 	@Override
@@ -176,7 +176,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 
 		if (field.getType() != float.class) throw new IllegalArgumentException(getSetMessage(field, "float", String.valueOf(value)));
 
-		InternalUnsafer.setFloatStatic(field, value);
+		Unsafer2.setFloatStatic(field, value);
 	}
 
 	@Override
@@ -186,7 +186,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != float.class) throw new IllegalArgumentException(getGetMessage(field, "float"));
 
-		return InternalUnsafer.getFloat(field, object);
+		return Unsafer2.getFloat(field, object);
 	}
 
 	@Override
@@ -195,7 +195,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 
 		if (field.getType() != float.class) throw new IllegalArgumentException(getGetMessage(field, "float"));
 
-		return InternalUnsafer.getFloatStatic(field);
+		return Unsafer2.getFloatStatic(field);
 	}
 
 	@Override
@@ -205,7 +205,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != double.class) throw new IllegalArgumentException(getSetMessage(field, "double", String.valueOf(value)));
 
-		InternalUnsafer.setDouble(field, object, value);
+		Unsafer2.setDouble(field, object, value);
 	}
 
 	@Override
@@ -214,7 +214,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 
 		if (field.getType() != double.class) throw new IllegalArgumentException(getSetMessage(field, "double", String.valueOf(value)));
 
-		InternalUnsafer.setDoubleStatic(field, value);
+		Unsafer2.setDoubleStatic(field, value);
 	}
 
 	@Override
@@ -224,7 +224,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != double.class) throw new IllegalArgumentException(getGetMessage(field, "double"));
 
-		return InternalUnsafer.getDouble(field, object);
+		return Unsafer2.getDouble(field, object);
 	}
 
 	@Override
@@ -233,7 +233,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 
 		if (field.getType() != double.class) throw new IllegalArgumentException(getGetMessage(field, "double"));
 
-		return InternalUnsafer.getDoubleStatic(field);
+		return Unsafer2.getDoubleStatic(field);
 	}
 
 	@Override
@@ -243,7 +243,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != char.class) throw new IllegalArgumentException(getSetMessage(field, "char", String.valueOf(value)));
 
-		InternalUnsafer.setChar(field, object, value);
+		Unsafer2.setChar(field, object, value);
 	}
 
 	@Override
@@ -252,7 +252,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 
 		if (field.getType() != char.class) throw new IllegalArgumentException(getSetMessage(field, "char", String.valueOf(value)));
 
-		InternalUnsafer.setCharStatic(field, value);
+		Unsafer2.setCharStatic(field, value);
 	}
 
 	@Override
@@ -262,7 +262,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != char.class) throw new IllegalArgumentException(getGetMessage(field, "char"));
 
-		return InternalUnsafer.getChar(field, object);
+		return Unsafer2.getChar(field, object);
 	}
 
 	@Override
@@ -271,7 +271,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 
 		if (field.getType() != char.class) throw new IllegalArgumentException(getGetMessage(field, "char"));
 
-		return InternalUnsafer.getCharStatic(field);
+		return Unsafer2.getCharStatic(field);
 	}
 
 	@Override
@@ -281,7 +281,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != boolean.class) throw new IllegalArgumentException(getSetMessage(field, "boolean", String.valueOf(value)));
 
-		InternalUnsafer.setBoolean(field, object, value);
+		Unsafer2.setBoolean(field, object, value);
 	}
 
 	@Override
@@ -290,7 +290,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 
 		if (field.getType() != boolean.class) throw new IllegalArgumentException(getSetMessage(field, "boolean", String.valueOf(value)));
 
-		InternalUnsafer.setBooleanStatic(field, value);
+		Unsafer2.setBooleanStatic(field, value);
 	}
 
 	@Override
@@ -300,7 +300,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != boolean.class) throw new IllegalArgumentException(getGetMessage(field, "boolean"));
 
-		return InternalUnsafer.getBoolean(field, object);
+		return Unsafer2.getBoolean(field, object);
 	}
 
 	@Override
@@ -309,7 +309,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 
 		if (field.getType() != boolean.class) throw new IllegalArgumentException(getGetMessage(field, "boolean"));
 
-		return InternalUnsafer.getBooleanStatic(field);
+		return Unsafer2.getBooleanStatic(field);
 	}
 
 	@Override
@@ -319,7 +319,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType().isPrimitive() || value != null && !field.getType().isInstance(value)) throw new IllegalArgumentException(getSetMessage(field, value));
 
-		InternalUnsafer.setObject(field, object, value);
+		Unsafer2.setObject(field, object, value);
 	}
 
 	@Override
@@ -328,7 +328,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 
 		if (field.getType().isPrimitive() || value != null && !field.getType().isInstance(value)) throw new IllegalArgumentException(getSetMessage(field, value));
 
-		InternalUnsafer.setObjectStatic(field, value);
+		Unsafer2.setObjectStatic(field, value);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -339,7 +339,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType().isPrimitive()) throw new IllegalArgumentException(getGetMessage(field, Object.class.getName()));
 
-		return (T) InternalUnsafer.getObject(field, object);
+		return (T) Unsafer2.getObject(field, object);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -349,7 +349,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 
 		if (field.getType().isPrimitive()) throw new IllegalArgumentException(getGetMessage(field, Object.class.getName()));
 
-		return (T) InternalUnsafer.getObjectStatic(field);
+		return (T) Unsafer2.getObjectStatic(field);
 	}
 
 	@Override
@@ -362,7 +362,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 				value == null :
 				value != null && !field.getType().isInstance(value)) throw new IllegalArgumentException(getSetMessage(field, value));
 
-		InternalUnsafer.set(field, object, value);
+		Unsafer2.set(field, object, value);
 	}
 
 	@Override
@@ -373,7 +373,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 				value == null :
 				value != null && !field.getType().isInstance(value)) throw new IllegalArgumentException(getSetMessage(field, value));
 
-		InternalUnsafer.setStatic(field, value);
+		Unsafer2.setStatic(field, value);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -383,7 +383,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 
-		return (T) InternalUnsafer.get(field, object);
+		return (T) Unsafer2.get(field, object);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -391,7 +391,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 	public <T> T getStatic(Class<?> clazz, String name) {
 		Field field = getField(clazz, name, true);
 
-		return (T) InternalUnsafer.getStatic(field);
+		return (T) Unsafer2.getStatic(field);
 	}
 
 	@Override
@@ -399,14 +399,14 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != byte.class) throw new IllegalArgumentException(getSetMessage(field, "byte", String.valueOf(value)));
 
-		InternalUnsafer.setByte(field, object, value);
+		Unsafer2.setByte(field, object, value);
 	}
 
 	@Override
 	public void setByteStatic(Field field, byte value) {
 		if (field.getType() != byte.class) throw new IllegalArgumentException(getSetMessage(field, "byte", String.valueOf(value)));
 
-		InternalUnsafer.setByteStatic(field, value);
+		Unsafer2.setByteStatic(field, value);
 	}
 
 	@Override
@@ -414,14 +414,14 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != byte.class) throw new IllegalArgumentException(getGetMessage(field, "byte"));
 
-		return InternalUnsafer.getByte(field, object);
+		return Unsafer2.getByte(field, object);
 	}
 
 	@Override
 	public byte getByteStatic(Field field) {
 		if (field.getType() != byte.class) throw new IllegalArgumentException(getGetMessage(field, "byte"));
 
-		return InternalUnsafer.getByteStatic(field);
+		return Unsafer2.getByteStatic(field);
 	}
 
 	@Override
@@ -429,14 +429,14 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != short.class) throw new IllegalArgumentException(getSetMessage(field, "short", String.valueOf(value)));
 
-		InternalUnsafer.setShort(field, object, value);
+		Unsafer2.setShort(field, object, value);
 	}
 
 	@Override
 	public void setShortStatic(Field field, short value) {
 		if (field.getType() != short.class) throw new IllegalArgumentException(getSetMessage(field, "short", String.valueOf(value)));
 
-		InternalUnsafer.setShortStatic(field, value);
+		Unsafer2.setShortStatic(field, value);
 	}
 
 	@Override
@@ -444,14 +444,14 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != short.class) throw new IllegalArgumentException(getGetMessage(field, "short"));
 
-		return InternalUnsafer.getShort(field, object);
+		return Unsafer2.getShort(field, object);
 	}
 
 	@Override
 	public short getShortStatic(Field field) {
 		if (field.getType() != short.class) throw new IllegalArgumentException(getGetMessage(field, "short"));
 
-		return InternalUnsafer.getShortStatic(field);
+		return Unsafer2.getShortStatic(field);
 	}
 
 	@Override
@@ -459,14 +459,14 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != int.class) throw new IllegalArgumentException(getSetMessage(field, "int", String.valueOf(value)));
 
-		InternalUnsafer.setInt(field, object, value);
+		Unsafer2.setInt(field, object, value);
 	}
 
 	@Override
 	public void setIntStatic(Field field, int value) {
 		if (field.getType() != int.class) throw new IllegalArgumentException(getSetMessage(field, "int", String.valueOf(value)));
 
-		InternalUnsafer.setIntStatic(field, value);
+		Unsafer2.setIntStatic(field, value);
 	}
 
 	@Override
@@ -474,14 +474,14 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != int.class) throw new IllegalArgumentException(getGetMessage(field, "int"));
 
-		return InternalUnsafer.getInt(field, object);
+		return Unsafer2.getInt(field, object);
 	}
 
 	@Override
 	public int getIntStatic(Field field) {
 		if (field.getType() != int.class) throw new IllegalArgumentException(getGetMessage(field, "int"));
 
-		return InternalUnsafer.getIntStatic(field);
+		return Unsafer2.getIntStatic(field);
 	}
 
 	@Override
@@ -489,14 +489,14 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != long.class) throw new IllegalArgumentException(getSetMessage(field, "long", String.valueOf(value)));
 
-		InternalUnsafer.setLong(field, object, value);
+		Unsafer2.setLong(field, object, value);
 	}
 
 	@Override
 	public void setLongStatic(Field field, long value) {
 		if (field.getType() != long.class) throw new IllegalArgumentException(getSetMessage(field, "long", String.valueOf(value)));
 
-		InternalUnsafer.setLongStatic(field, value);
+		Unsafer2.setLongStatic(field, value);
 	}
 
 	@Override
@@ -504,14 +504,14 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != long.class) throw new IllegalArgumentException(getGetMessage(field, "long"));
 
-		return InternalUnsafer.getLong(field, object);
+		return Unsafer2.getLong(field, object);
 	}
 
 	@Override
 	public long getLongStatic(Field field) {
 		if (field.getType() != long.class) throw new IllegalArgumentException(getGetMessage(field, "long"));
 
-		return InternalUnsafer.getLongStatic(field);
+		return Unsafer2.getLongStatic(field);
 	}
 
 	@Override
@@ -519,14 +519,14 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != float.class) throw new IllegalArgumentException(getSetMessage(field, "float", String.valueOf(value)));
 
-		InternalUnsafer.setFloat(field, object, value);
+		Unsafer2.setFloat(field, object, value);
 	}
 
 	@Override
 	public void setFloatStatic(Field field, float value) {
 		if (field.getType() != float.class) throw new IllegalArgumentException(getSetMessage(field, "float", String.valueOf(value)));
 
-		InternalUnsafer.setFloatStatic(field, value);
+		Unsafer2.setFloatStatic(field, value);
 	}
 
 	@Override
@@ -534,14 +534,14 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != float.class) throw new IllegalArgumentException(getGetMessage(field, "float"));
 
-		return InternalUnsafer.getFloat(field, object);
+		return Unsafer2.getFloat(field, object);
 	}
 
 	@Override
 	public float getFloatStatic(Field field) {
 		if (field.getType() != float.class) throw new IllegalArgumentException(getGetMessage(field, "float"));
 
-		return InternalUnsafer.getFloatStatic(field);
+		return Unsafer2.getFloatStatic(field);
 	}
 
 	@Override
@@ -549,14 +549,14 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != double.class) throw new IllegalArgumentException(getSetMessage(field, "double", String.valueOf(value)));
 
-		InternalUnsafer.setDouble(field, object, value);
+		Unsafer2.setDouble(field, object, value);
 	}
 
 	@Override
 	public void setDoubleStatic(Field field, double value) {
 		if (field.getType() != double.class) throw new IllegalArgumentException(getSetMessage(field, "double", String.valueOf(value)));
 
-		InternalUnsafer.setDoubleStatic(field, value);
+		Unsafer2.setDoubleStatic(field, value);
 	}
 
 	@Override
@@ -564,14 +564,14 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != double.class) throw new IllegalArgumentException(getGetMessage(field, "double"));
 
-		return InternalUnsafer.getDouble(field, object);
+		return Unsafer2.getDouble(field, object);
 	}
 
 	@Override
 	public double getDoubleStatic(Field field) {
 		if (field.getType() != double.class) throw new IllegalArgumentException(getGetMessage(field, "double"));
 
-		return InternalUnsafer.getDoubleStatic(field);
+		return Unsafer2.getDoubleStatic(field);
 	}
 
 	@Override
@@ -579,14 +579,14 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != char.class) throw new IllegalArgumentException(getSetMessage(field, "char", String.valueOf(value)));
 
-		InternalUnsafer.setChar(field, object, value);
+		Unsafer2.setChar(field, object, value);
 	}
 
 	@Override
 	public void setCharStatic(Field field, char value) {
 		if (field.getType() != char.class) throw new IllegalArgumentException(getSetMessage(field, "char", String.valueOf(value)));
 
-		InternalUnsafer.setCharStatic(field, value);
+		Unsafer2.setCharStatic(field, value);
 	}
 
 	@Override
@@ -594,14 +594,14 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != char.class) throw new IllegalArgumentException(getGetMessage(field, "char"));
 
-		return InternalUnsafer.getChar(field, object);
+		return Unsafer2.getChar(field, object);
 	}
 
 	@Override
 	public char getCharStatic(Field field) {
 		if (field.getType() != char.class) throw new IllegalArgumentException(getGetMessage(field, "char"));
 
-		return InternalUnsafer.getCharStatic(field);
+		return Unsafer2.getCharStatic(field);
 	}
 
 	@Override
@@ -609,14 +609,14 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != boolean.class) throw new IllegalArgumentException(getSetMessage(field, "boolean", String.valueOf(value)));
 
-		InternalUnsafer.setBoolean(field, object, value);
+		Unsafer2.setBoolean(field, object, value);
 	}
 
 	@Override
 	public void setBooleanStatic(Field field, boolean value) {
 		if (field.getType() != boolean.class) throw new IllegalArgumentException(getSetMessage(field, "boolean", String.valueOf(value)));
 
-		InternalUnsafer.setBooleanStatic(field, value);
+		Unsafer2.setBooleanStatic(field, value);
 	}
 
 	@Override
@@ -624,14 +624,14 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType() != boolean.class) throw new IllegalArgumentException(getGetMessage(field, "boolean"));
 
-		return InternalUnsafer.getBoolean(field, object);
+		return Unsafer2.getBoolean(field, object);
 	}
 
 	@Override
 	public boolean getBooleanStatic(Field field) {
 		if (field.getType() != boolean.class) throw new IllegalArgumentException(getGetMessage(field, "boolean"));
 
-		return InternalUnsafer.getBooleanStatic(field);
+		return Unsafer2.getBooleanStatic(field);
 	}
 
 	@Override
@@ -639,14 +639,14 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType().isPrimitive() || value != null && !field.getType().isInstance(value)) throw new IllegalArgumentException(getSetMessage(field, value));
 
-		InternalUnsafer.setObject(field, object, value);
+		Unsafer2.setObject(field, object, value);
 	}
 
 	@Override
 	public void setObjectStatic(Field field, Object value) {
 		if (field.getType().isPrimitive() || value != null && !field.getType().isInstance(value)) throw new IllegalArgumentException(getSetMessage(field, value));
 
-		InternalUnsafer.setObjectStatic(field, value);
+		Unsafer2.setObjectStatic(field, value);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -655,7 +655,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 		if (field.getType().isPrimitive()) throw new IllegalArgumentException(getGetMessage(field, Object.class.getName()));
 
-		return (T) InternalUnsafer.getObject(field, object);
+		return (T) Unsafer2.getObject(field, object);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -663,7 +663,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 	public <T> T getObjectStatic(Field field) {
 		if (field.getType().isPrimitive()) throw new IllegalArgumentException(getGetMessage(field, Object.class.getName()));
 
-		return (T) InternalUnsafer.getObjectStatic(field);
+		return (T) Unsafer2.getObjectStatic(field);
 	}
 
 	@Override
@@ -674,7 +674,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 				value == null :
 				value != null && !field.getType().isInstance(value)) throw new IllegalArgumentException(getSetMessage(field, value));
 
-		InternalUnsafer.set(field, object, value);
+		Unsafer2.set(field, object, value);
 	}
 
 	@Override
@@ -683,7 +683,7 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 				value == null :
 				value != null && !field.getType().isInstance(value)) throw new IllegalArgumentException(getSetMessage(field, value));
 
-		InternalUnsafer.setStatic(field, value);
+		Unsafer2.setStatic(field, value);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -691,12 +691,12 @@ public class InternalUnsafeFieldAccessHelper extends ReflectionFieldAccessHelper
 	public <T> T get(Object object, Field field) {
 		if (!field.getDeclaringClass().isInstance(object)) throw new IllegalArgumentException(getSetMessage(field, object));
 
-		return (T) InternalUnsafer.get(field, object);
+		return (T) Unsafer2.get(field, object);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getStatic(Field field) {
-		return (T) InternalUnsafer.getStatic(field);
+		return (T) Unsafer2.getStatic(field);
 	}
 }

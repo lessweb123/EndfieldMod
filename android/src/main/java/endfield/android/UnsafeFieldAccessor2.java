@@ -7,14 +7,14 @@ import endfield.util.FieldAccessor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import static endfield.android.InternalUnsafer.internalUnsafe;
+import static endfield.android.Unsafer2.internalUnsafe;
 import static endfield.util.Reflects.getGetMessage;
 import static endfield.util.Reflects.getSetMessage;
 
-public class InternalUnsafeFieldAccessor extends AbstractFieldAccessor {
+public class UnsafeFieldAccessor2 extends AbstractFieldAccessor {
 	protected final long offset;
 
-	protected InternalUnsafeFieldAccessor(Field field) {
+	protected UnsafeFieldAccessor2(Field field) {
 		super(field);
 		offset = Fields.getOffset(field);
 	}
@@ -26,54 +26,54 @@ public class InternalUnsafeFieldAccessor extends AbstractFieldAccessor {
 		if ((modifiers & Modifier.STATIC) != 0) {
 			if ((modifiers & Modifier.VOLATILE) != 0) {
 				if (type.isPrimitive()) {
-					if (type == boolean.class) return new InternalUnsafeQualifiedStaticBooleanFieldAccessor(field);
-					else if (type == byte.class) return new InternalUnsafeQualifiedStaticByteFieldAccessor(field);
-					else if (type == char.class) return new InternalUnsafeQualifiedStaticCharFieldAccessor(field);
-					else if (type == short.class) return new InternalUnsafeQualifiedStaticShortFieldAccessor(field);
-					else if (type == int.class) return new InternalUnsafeQualifiedStaticIntFieldAccessor(field);
-					else if (type == long.class) return new InternalUnsafeQualifiedStaticLongFieldAccessor(field);
-					else if (type == float.class) return new InternalUnsafeQualifiedStaticFloatFieldAccessor(field);
-					else if (type == double.class) return new InternalUnsafeQualifiedStaticDoubleFieldAccessor(field);
+					if (type == boolean.class) return new UnsafeQualifiedStaticBooleanFieldAccessor2(field);
+					else if (type == byte.class) return new UnsafeQualifiedStaticByteFieldAccessor2(field);
+					else if (type == char.class) return new UnsafeQualifiedStaticCharFieldAccessor2(field);
+					else if (type == short.class) return new UnsafeQualifiedStaticShortFieldAccessor2(field);
+					else if (type == int.class) return new UnsafeQualifiedStaticIntFieldAccessor2(field);
+					else if (type == long.class) return new UnsafeQualifiedStaticLongFieldAccessor2(field);
+					else if (type == float.class) return new UnsafeQualifiedStaticFloatFieldAccessor2(field);
+					else if (type == double.class) return new UnsafeQualifiedStaticDoubleFieldAccessor2(field);
 					else throw new IllegalArgumentException("unknown type of field " + field);
-				} else return new InternalUnsafeQualifiedStaticObjectFieldAccessor(field);
+				} else return new UnsafeQualifiedStaticObjectFieldAccessor2(field);
 			} else {
 				if (type.isPrimitive()) {
-					if (type == boolean.class) return new InternalUnsafeStaticBooleanFieldAccessor(field);
-					else if (type == byte.class) return new InternalUnsafeStaticByteFieldAccessor(field);
-					else if (type == char.class) return new InternalUnsafeStaticCharFieldAccessor(field);
-					else if (type == short.class) return new InternalUnsafeStaticShortFieldAccessor(field);
-					else if (type == int.class) return new InternalUnsafeStaticIntFieldAccessor(field);
-					else if (type == long.class) return new InternalUnsafeStaticLongFieldAccessor(field);
-					else if (type == float.class) return new InternalUnsafeStaticFloatFieldAccessor(field);
-					else if (type == double.class) return new InternalUnsafeStaticDoubleFieldAccessor(field);
+					if (type == boolean.class) return new UnsafeStaticBooleanFieldAccessor2(field);
+					else if (type == byte.class) return new UnsafeStaticByteFieldAccessor2(field);
+					else if (type == char.class) return new UnsafeStaticCharFieldAccessor2(field);
+					else if (type == short.class) return new UnsafeStaticShortFieldAccessor2(field);
+					else if (type == int.class) return new UnsafeStaticIntFieldAccessor2(field);
+					else if (type == long.class) return new UnsafeStaticLongFieldAccessor2(field);
+					else if (type == float.class) return new UnsafeStaticFloatFieldAccessor2(field);
+					else if (type == double.class) return new UnsafeStaticDoubleFieldAccessor2(field);
 					else throw new IllegalArgumentException("unknown type of field " + field);
-				} else return new InternalUnsafeStaticObjectFieldAccessor(field);
+				} else return new UnsafeStaticObjectFieldAccessor2(field);
 			}
 		} else {
 			if ((modifiers & Modifier.VOLATILE) != 0) {
 				if (type.isPrimitive()) {
-					if (type == boolean.class) return new InternalUnsafeQualifiedBooleanFieldAccessor(field);
-					else if (type == byte.class) return new InternalUnsafeQualifiedByteFieldAccessor(field);
-					else if (type == char.class) return new InternalUnsafeQualifiedCharFieldAccessor(field);
-					else if (type == short.class) return new InternalUnsafeQualifiedShortFieldAccessor(field);
-					else if (type == int.class) return new InternalUnsafeQualifiedIntFieldAccessor(field);
-					else if (type == long.class) return new InternalUnsafeQualifiedLongFieldAccessor(field);
-					else if (type == float.class) return new InternalUnsafeQualifiedFloatFieldAccessor(field);
-					else if (type == double.class) return new InternalUnsafeQualifiedDoubleFieldAccessor(field);
+					if (type == boolean.class) return new UnsafeQualifiedBooleanFieldAccessor2(field);
+					else if (type == byte.class) return new UnsafeQualifiedByteFieldAccessor2(field);
+					else if (type == char.class) return new UnsafeQualifiedCharFieldAccessor2(field);
+					else if (type == short.class) return new UnsafeQualifiedShortFieldAccessor2(field);
+					else if (type == int.class) return new UnsafeQualifiedIntFieldAccessor2(field);
+					else if (type == long.class) return new UnsafeQualifiedLongFieldAccessor2(field);
+					else if (type == float.class) return new UnsafeQualifiedFloatFieldAccessor2(field);
+					else if (type == double.class) return new UnsafeQualifiedDoubleFieldAccessor2(field);
 					else throw new IllegalArgumentException("unknown type of field " + field);
-				} else return new InternalUnsafeQualifiedObjectFieldAccessor(field);
+				} else return new UnsafeQualifiedObjectFieldAccessor2(field);
 			} else {
 				if (type.isPrimitive()) {
-					if (type == boolean.class) return new InternalUnsafeBooleanFieldAccessor(field);
-					else if (type == byte.class) return new InternalUnsafeByteFieldAccessor(field);
-					else if (type == char.class) return new InternalUnsafeCharFieldAccessor(field);
-					else if (type == short.class) return new InternalUnsafeShortFieldAccessor(field);
-					else if (type == int.class) return new InternalUnsafeIntFieldAccessor(field);
-					else if (type == long.class) return new InternalUnsafeLongFieldAccessor(field);
-					else if (type == float.class) return new InternalUnsafeFloatFieldAccessor(field);
-					else if (type == double.class) return new InternalUnsafeDoubleFieldAccessor(field);
+					if (type == boolean.class) return new UnsafeBooleanFieldAccessor2(field);
+					else if (type == byte.class) return new UnsafeByteFieldAccessor2(field);
+					else if (type == char.class) return new UnsafeCharFieldAccessor2(field);
+					else if (type == short.class) return new UnsafeShortFieldAccessor2(field);
+					else if (type == int.class) return new UnsafeIntFieldAccessor2(field);
+					else if (type == long.class) return new UnsafeLongFieldAccessor2(field);
+					else if (type == float.class) return new UnsafeFloatFieldAccessor2(field);
+					else if (type == double.class) return new UnsafeDoubleFieldAccessor2(field);
 					else throw new IllegalArgumentException("unknown type of field " + field);
-				} else return new InternalUnsafeObjectFieldAccessor(field);
+				} else return new UnsafeObjectFieldAccessor2(field);
 			}
 		}
 	}
@@ -189,8 +189,8 @@ public class InternalUnsafeFieldAccessor extends AbstractFieldAccessor {
 	}
 }
 
-class InternalUnsafeObjectFieldAccessor extends InternalUnsafeFieldAccessor {
-	public InternalUnsafeObjectFieldAccessor(Field f) {
+class UnsafeObjectFieldAccessor2 extends UnsafeFieldAccessor2 {
+	public UnsafeObjectFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -219,8 +219,8 @@ class InternalUnsafeObjectFieldAccessor extends InternalUnsafeFieldAccessor {
 	}
 }
 
-class InternalUnsafeBooleanFieldAccessor extends InternalUnsafeFieldAccessor {
-	public InternalUnsafeBooleanFieldAccessor(Field f) {
+class UnsafeBooleanFieldAccessor2 extends UnsafeFieldAccessor2 {
+	public UnsafeBooleanFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -248,8 +248,8 @@ class InternalUnsafeBooleanFieldAccessor extends InternalUnsafeFieldAccessor {
 	}
 }
 
-class InternalUnsafeByteFieldAccessor extends InternalUnsafeFieldAccessor {
-	public InternalUnsafeByteFieldAccessor(Field f) {
+class UnsafeByteFieldAccessor2 extends UnsafeFieldAccessor2 {
+	public UnsafeByteFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -302,8 +302,8 @@ class InternalUnsafeByteFieldAccessor extends InternalUnsafeFieldAccessor {
 	}
 }
 
-class InternalUnsafeCharFieldAccessor extends InternalUnsafeFieldAccessor {
-	public InternalUnsafeCharFieldAccessor(Field f) {
+class UnsafeCharFieldAccessor2 extends UnsafeFieldAccessor2 {
+	public UnsafeCharFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -351,8 +351,8 @@ class InternalUnsafeCharFieldAccessor extends InternalUnsafeFieldAccessor {
 	}
 }
 
-class InternalUnsafeShortFieldAccessor extends InternalUnsafeFieldAccessor {
-	public InternalUnsafeShortFieldAccessor(Field f) {
+class UnsafeShortFieldAccessor2 extends UnsafeFieldAccessor2 {
+	public UnsafeShortFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -405,8 +405,8 @@ class InternalUnsafeShortFieldAccessor extends InternalUnsafeFieldAccessor {
 	}
 }
 
-class InternalUnsafeIntFieldAccessor extends InternalUnsafeFieldAccessor {
-	public InternalUnsafeIntFieldAccessor(Field f) {
+class UnsafeIntFieldAccessor2 extends UnsafeFieldAccessor2 {
+	public UnsafeIntFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -464,8 +464,8 @@ class InternalUnsafeIntFieldAccessor extends InternalUnsafeFieldAccessor {
 	}
 }
 
-class InternalUnsafeLongFieldAccessor extends InternalUnsafeFieldAccessor {
-	public InternalUnsafeLongFieldAccessor(Field f) {
+class UnsafeLongFieldAccessor2 extends UnsafeFieldAccessor2 {
+	public UnsafeLongFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -523,8 +523,8 @@ class InternalUnsafeLongFieldAccessor extends InternalUnsafeFieldAccessor {
 	}
 }
 
-class InternalUnsafeFloatFieldAccessor extends InternalUnsafeFieldAccessor {
-	public InternalUnsafeFloatFieldAccessor(Field f) {
+class UnsafeFloatFieldAccessor2 extends UnsafeFieldAccessor2 {
+	public UnsafeFloatFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -582,8 +582,8 @@ class InternalUnsafeFloatFieldAccessor extends InternalUnsafeFieldAccessor {
 	}
 }
 
-class InternalUnsafeDoubleFieldAccessor extends InternalUnsafeFieldAccessor {
-	public InternalUnsafeDoubleFieldAccessor(Field f) {
+class UnsafeDoubleFieldAccessor2 extends UnsafeFieldAccessor2 {
+	public UnsafeDoubleFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -641,8 +641,8 @@ class InternalUnsafeDoubleFieldAccessor extends InternalUnsafeFieldAccessor {
 	}
 }
 
-class InternalUnsafeQualifiedObjectFieldAccessor extends InternalUnsafeObjectFieldAccessor {
-	public InternalUnsafeQualifiedObjectFieldAccessor(Field f) {
+class UnsafeQualifiedObjectFieldAccessor2 extends UnsafeObjectFieldAccessor2 {
+	public UnsafeQualifiedObjectFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -671,8 +671,8 @@ class InternalUnsafeQualifiedObjectFieldAccessor extends InternalUnsafeObjectFie
 	}
 }
 
-class InternalUnsafeQualifiedBooleanFieldAccessor extends InternalUnsafeBooleanFieldAccessor {
-	public InternalUnsafeQualifiedBooleanFieldAccessor(Field f) {
+class UnsafeQualifiedBooleanFieldAccessor2 extends UnsafeBooleanFieldAccessor2 {
+	public UnsafeQualifiedBooleanFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -689,8 +689,8 @@ class InternalUnsafeQualifiedBooleanFieldAccessor extends InternalUnsafeBooleanF
 	}
 }
 
-class InternalUnsafeQualifiedByteFieldAccessor extends InternalUnsafeByteFieldAccessor {
-	public InternalUnsafeQualifiedByteFieldAccessor(Field f) {
+class UnsafeQualifiedByteFieldAccessor2 extends UnsafeByteFieldAccessor2 {
+	public UnsafeQualifiedByteFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -707,8 +707,8 @@ class InternalUnsafeQualifiedByteFieldAccessor extends InternalUnsafeByteFieldAc
 	}
 }
 
-class InternalUnsafeQualifiedCharFieldAccessor extends InternalUnsafeCharFieldAccessor {
-	public InternalUnsafeQualifiedCharFieldAccessor(Field f) {
+class UnsafeQualifiedCharFieldAccessor2 extends UnsafeCharFieldAccessor2 {
+	public UnsafeQualifiedCharFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -725,8 +725,8 @@ class InternalUnsafeQualifiedCharFieldAccessor extends InternalUnsafeCharFieldAc
 	}
 }
 
-class InternalUnsafeQualifiedShortFieldAccessor extends InternalUnsafeShortFieldAccessor {
-	public InternalUnsafeQualifiedShortFieldAccessor(Field f) {
+class UnsafeQualifiedShortFieldAccessor2 extends UnsafeShortFieldAccessor2 {
+	public UnsafeQualifiedShortFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -743,8 +743,8 @@ class InternalUnsafeQualifiedShortFieldAccessor extends InternalUnsafeShortField
 	}
 }
 
-class InternalUnsafeQualifiedIntFieldAccessor extends InternalUnsafeIntFieldAccessor {
-	public InternalUnsafeQualifiedIntFieldAccessor(Field f) {
+class UnsafeQualifiedIntFieldAccessor2 extends UnsafeIntFieldAccessor2 {
+	public UnsafeQualifiedIntFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -761,8 +761,8 @@ class InternalUnsafeQualifiedIntFieldAccessor extends InternalUnsafeIntFieldAcce
 	}
 }
 
-class InternalUnsafeQualifiedLongFieldAccessor extends InternalUnsafeLongFieldAccessor {
-	public InternalUnsafeQualifiedLongFieldAccessor(Field f) {
+class UnsafeQualifiedLongFieldAccessor2 extends UnsafeLongFieldAccessor2 {
+	public UnsafeQualifiedLongFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -779,8 +779,8 @@ class InternalUnsafeQualifiedLongFieldAccessor extends InternalUnsafeLongFieldAc
 	}
 }
 
-class InternalUnsafeQualifiedFloatFieldAccessor extends InternalUnsafeFloatFieldAccessor {
-	public InternalUnsafeQualifiedFloatFieldAccessor(Field f) {
+class UnsafeQualifiedFloatFieldAccessor2 extends UnsafeFloatFieldAccessor2 {
+	public UnsafeQualifiedFloatFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -797,8 +797,8 @@ class InternalUnsafeQualifiedFloatFieldAccessor extends InternalUnsafeFloatField
 	}
 }
 
-class InternalUnsafeQualifiedDoubleFieldAccessor extends InternalUnsafeDoubleFieldAccessor {
-	public InternalUnsafeQualifiedDoubleFieldAccessor(Field f) {
+class UnsafeQualifiedDoubleFieldAccessor2 extends UnsafeDoubleFieldAccessor2 {
+	public UnsafeQualifiedDoubleFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -815,10 +815,10 @@ class InternalUnsafeQualifiedDoubleFieldAccessor extends InternalUnsafeDoubleFie
 	}
 }
 
-abstract class InternalUnsafeStaticFieldAccessor extends InternalUnsafeFieldAccessor {
+abstract class UnsafeStaticFieldAccessor2 extends UnsafeFieldAccessor2 {
 	protected final Object base;
 
-	protected InternalUnsafeStaticFieldAccessor(Field f) {
+	protected UnsafeStaticFieldAccessor2(Field f) {
 		super(f);
 
 		if ((f.getModifiers() & Modifier.STATIC) != 0) base = f.getDeclaringClass();
@@ -826,8 +826,8 @@ abstract class InternalUnsafeStaticFieldAccessor extends InternalUnsafeFieldAcce
 	}
 }
 
-class InternalUnsafeStaticObjectFieldAccessor extends InternalUnsafeStaticFieldAccessor {
-	public InternalUnsafeStaticObjectFieldAccessor(Field f) {
+class UnsafeStaticObjectFieldAccessor2 extends UnsafeStaticFieldAccessor2 {
+	public UnsafeStaticObjectFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -854,8 +854,8 @@ class InternalUnsafeStaticObjectFieldAccessor extends InternalUnsafeStaticFieldA
 	}
 }
 
-class InternalUnsafeStaticBooleanFieldAccessor extends InternalUnsafeStaticFieldAccessor {
-	public InternalUnsafeStaticBooleanFieldAccessor(Field f) {
+class UnsafeStaticBooleanFieldAccessor2 extends UnsafeStaticFieldAccessor2 {
+	public UnsafeStaticBooleanFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -881,8 +881,8 @@ class InternalUnsafeStaticBooleanFieldAccessor extends InternalUnsafeStaticField
 	}
 }
 
-class InternalUnsafeStaticByteFieldAccessor extends InternalUnsafeStaticFieldAccessor {
-	public InternalUnsafeStaticByteFieldAccessor(Field f) {
+class UnsafeStaticByteFieldAccessor2 extends UnsafeStaticFieldAccessor2 {
+	public UnsafeStaticByteFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -933,8 +933,8 @@ class InternalUnsafeStaticByteFieldAccessor extends InternalUnsafeStaticFieldAcc
 	}
 }
 
-class InternalUnsafeStaticCharFieldAccessor extends InternalUnsafeStaticFieldAccessor {
-	public InternalUnsafeStaticCharFieldAccessor(Field f) {
+class UnsafeStaticCharFieldAccessor2 extends UnsafeStaticFieldAccessor2 {
+	public UnsafeStaticCharFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -980,8 +980,8 @@ class InternalUnsafeStaticCharFieldAccessor extends InternalUnsafeStaticFieldAcc
 	}
 }
 
-class InternalUnsafeStaticShortFieldAccessor extends InternalUnsafeStaticFieldAccessor {
-	public InternalUnsafeStaticShortFieldAccessor(Field f) {
+class UnsafeStaticShortFieldAccessor2 extends UnsafeStaticFieldAccessor2 {
+	public UnsafeStaticShortFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -1032,8 +1032,8 @@ class InternalUnsafeStaticShortFieldAccessor extends InternalUnsafeStaticFieldAc
 	}
 }
 
-class InternalUnsafeStaticIntFieldAccessor extends InternalUnsafeStaticFieldAccessor {
-	public InternalUnsafeStaticIntFieldAccessor(Field f) {
+class UnsafeStaticIntFieldAccessor2 extends UnsafeStaticFieldAccessor2 {
+	public UnsafeStaticIntFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -1089,8 +1089,8 @@ class InternalUnsafeStaticIntFieldAccessor extends InternalUnsafeStaticFieldAcce
 	}
 }
 
-class InternalUnsafeStaticLongFieldAccessor extends InternalUnsafeStaticFieldAccessor {
-	public InternalUnsafeStaticLongFieldAccessor(Field f) {
+class UnsafeStaticLongFieldAccessor2 extends UnsafeStaticFieldAccessor2 {
+	public UnsafeStaticLongFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -1146,8 +1146,8 @@ class InternalUnsafeStaticLongFieldAccessor extends InternalUnsafeStaticFieldAcc
 	}
 }
 
-class InternalUnsafeStaticFloatFieldAccessor extends InternalUnsafeStaticFieldAccessor {
-	public InternalUnsafeStaticFloatFieldAccessor(Field f) {
+class UnsafeStaticFloatFieldAccessor2 extends UnsafeStaticFieldAccessor2 {
+	public UnsafeStaticFloatFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -1203,8 +1203,8 @@ class InternalUnsafeStaticFloatFieldAccessor extends InternalUnsafeStaticFieldAc
 	}
 }
 
-class InternalUnsafeStaticDoubleFieldAccessor extends InternalUnsafeStaticFieldAccessor {
-	public InternalUnsafeStaticDoubleFieldAccessor(Field f) {
+class UnsafeStaticDoubleFieldAccessor2 extends UnsafeStaticFieldAccessor2 {
+	public UnsafeStaticDoubleFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -1260,8 +1260,8 @@ class InternalUnsafeStaticDoubleFieldAccessor extends InternalUnsafeStaticFieldA
 	}
 }
 
-class InternalUnsafeQualifiedStaticObjectFieldAccessor extends InternalUnsafeStaticObjectFieldAccessor {
-	public InternalUnsafeQualifiedStaticObjectFieldAccessor(Field f) {
+class UnsafeQualifiedStaticObjectFieldAccessor2 extends UnsafeStaticObjectFieldAccessor2 {
+	public UnsafeQualifiedStaticObjectFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -1278,8 +1278,8 @@ class InternalUnsafeQualifiedStaticObjectFieldAccessor extends InternalUnsafeSta
 	}
 }
 
-class InternalUnsafeQualifiedStaticBooleanFieldAccessor extends InternalUnsafeStaticBooleanFieldAccessor {
-	public InternalUnsafeQualifiedStaticBooleanFieldAccessor(Field f) {
+class UnsafeQualifiedStaticBooleanFieldAccessor2 extends UnsafeStaticBooleanFieldAccessor2 {
+	public UnsafeQualifiedStaticBooleanFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -1294,8 +1294,8 @@ class InternalUnsafeQualifiedStaticBooleanFieldAccessor extends InternalUnsafeSt
 	}
 }
 
-class InternalUnsafeQualifiedStaticByteFieldAccessor extends InternalUnsafeStaticByteFieldAccessor {
-	public InternalUnsafeQualifiedStaticByteFieldAccessor(Field f) {
+class UnsafeQualifiedStaticByteFieldAccessor2 extends UnsafeStaticByteFieldAccessor2 {
+	public UnsafeQualifiedStaticByteFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -1310,8 +1310,8 @@ class InternalUnsafeQualifiedStaticByteFieldAccessor extends InternalUnsafeStati
 	}
 }
 
-class InternalUnsafeQualifiedStaticCharFieldAccessor extends InternalUnsafeStaticCharFieldAccessor {
-	public InternalUnsafeQualifiedStaticCharFieldAccessor(Field f) {
+class UnsafeQualifiedStaticCharFieldAccessor2 extends UnsafeStaticCharFieldAccessor2 {
+	public UnsafeQualifiedStaticCharFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -1326,8 +1326,8 @@ class InternalUnsafeQualifiedStaticCharFieldAccessor extends InternalUnsafeStati
 	}
 }
 
-class InternalUnsafeQualifiedStaticShortFieldAccessor extends InternalUnsafeStaticShortFieldAccessor {
-	public InternalUnsafeQualifiedStaticShortFieldAccessor(Field f) {
+class UnsafeQualifiedStaticShortFieldAccessor2 extends UnsafeStaticShortFieldAccessor2 {
+	public UnsafeQualifiedStaticShortFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -1342,8 +1342,8 @@ class InternalUnsafeQualifiedStaticShortFieldAccessor extends InternalUnsafeStat
 	}
 }
 
-class InternalUnsafeQualifiedStaticIntFieldAccessor extends InternalUnsafeStaticShortFieldAccessor {
-	public InternalUnsafeQualifiedStaticIntFieldAccessor(Field f) {
+class UnsafeQualifiedStaticIntFieldAccessor2 extends UnsafeStaticShortFieldAccessor2 {
+	public UnsafeQualifiedStaticIntFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -1358,8 +1358,8 @@ class InternalUnsafeQualifiedStaticIntFieldAccessor extends InternalUnsafeStatic
 	}
 }
 
-class InternalUnsafeQualifiedStaticLongFieldAccessor extends InternalUnsafeStaticLongFieldAccessor {
-	public InternalUnsafeQualifiedStaticLongFieldAccessor(Field f) {
+class UnsafeQualifiedStaticLongFieldAccessor2 extends UnsafeStaticLongFieldAccessor2 {
+	public UnsafeQualifiedStaticLongFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -1374,8 +1374,8 @@ class InternalUnsafeQualifiedStaticLongFieldAccessor extends InternalUnsafeStati
 	}
 }
 
-class InternalUnsafeQualifiedStaticFloatFieldAccessor extends InternalUnsafeStaticFloatFieldAccessor {
-	public InternalUnsafeQualifiedStaticFloatFieldAccessor(Field f) {
+class UnsafeQualifiedStaticFloatFieldAccessor2 extends UnsafeStaticFloatFieldAccessor2 {
+	public UnsafeQualifiedStaticFloatFieldAccessor2(Field f) {
 		super(f);
 	}
 
@@ -1390,8 +1390,8 @@ class InternalUnsafeQualifiedStaticFloatFieldAccessor extends InternalUnsafeStat
 	}
 }
 
-class InternalUnsafeQualifiedStaticDoubleFieldAccessor extends InternalUnsafeStaticDoubleFieldAccessor {
-	public InternalUnsafeQualifiedStaticDoubleFieldAccessor(Field f) {
+class UnsafeQualifiedStaticDoubleFieldAccessor2 extends UnsafeStaticDoubleFieldAccessor2 {
+	public UnsafeQualifiedStaticDoubleFieldAccessor2(Field f) {
 		super(f);
 	}
 

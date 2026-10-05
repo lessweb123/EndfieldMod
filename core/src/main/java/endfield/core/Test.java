@@ -14,6 +14,7 @@ import endfield.util.aspector.classes.BytecodeClassLoader;
 import endfield.util.aspector.classes.ClassDecl;
 import endfield.util.aspector.classes.ClassName;
 import endfield.util.aspector.generate.ProxyAspectFactory;
+import endfield.util.handler.EnumHandler;
 import kotlin.NotImplementedError;
 import org.jetbrains.annotations.TestOnly;
 
@@ -21,6 +22,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Arrays;
 import java.util.Random;
 
 @TestOnly
@@ -73,6 +75,17 @@ public class Test extends @Stub Random {
 		}
 	}
 
+	public static void test4() {
+		try {
+			EnumHandler<TestEnum> handler = new EnumHandler<>(TestEnum.class);
+			Class.forName(TestEnum.class.getName(), true, TestEnum.class.getClassLoader());
+			handler.addEnumItemTail("D");
+			Log.info(Arrays.toString(TestEnum.values()));
+		} catch (Throwable e) {
+			Log.err(e);
+		}
+	}
+
 	public static class A {
 		void print() {
 			Log.info("a");
@@ -91,6 +104,10 @@ public class Test extends @Stub Random {
 		void print() {
 			Log.info("c");
 		}
+	}
+
+	public enum TestEnum {
+		A, B, C
 	}
 
 	@Target(ElementType.TYPE_USE)

@@ -45,12 +45,11 @@ public interface PlatformImpl {
 	int arrayIndexScale(Class<?> arrayClass);
 
 	default <T> Class<T> ensureInitialized(Class<T> targetClass) {
-		Lookup lookup = lookup(targetClass);
 		try {
-			lookup.ensureInitialized(targetClass);
-		} catch (IllegalAccessException e) {
+			Class.forName(targetClass.getName(), true, targetClass.getClassLoader());
+			return targetClass;
+		} catch (ClassNotFoundException e) {
 			throw sneakyThrow(e);
 		}
-		return targetClass;
 	}
 }

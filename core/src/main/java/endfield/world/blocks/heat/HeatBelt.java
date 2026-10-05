@@ -84,8 +84,7 @@ public class HeatBelt extends HeatConductor implements AutoTiler {
 	public void setBars() {
 		super.setBars();
 
-		addBar("heat", (
-				HeatBeltBuilding entity) -> new Bar(() -> Core.bundle.format("bar.heatamount", (int) (entity.heat + 0.001f)), () -> Pal.lightOrange, () -> entity.heat / visualMaxHeat));
+		addBar("heat", (HeatBeltBuilding tile) -> new Bar(() -> Core.bundle.format("bar.heatamount", (int) (tile.heat + 0.001f)), () -> Pal.lightOrange, () -> tile.heat / visualMaxHeat));
 	}
 
 	@Override

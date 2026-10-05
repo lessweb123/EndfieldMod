@@ -132,13 +132,13 @@ public final class ClassHandler {
 		if (clazz.isArray()) {
 			return (T) Array.newInstance(clazz.getComponentType(), 0);
 		} else if (clazz.isPrimitive()) {
-			if (clazz == boolean.class) return (T) Boolean.valueOf(false);
+			if (clazz == boolean.class) return (T) Boolean.FALSE;
 			else if (clazz == int.class) return (T) Integer.valueOf(0);
 			else if (clazz == float.class) return (T) Float.valueOf(0f);
 			else if (clazz == long.class) return (T) Long.valueOf(0l);
 			else if (clazz == byte.class) return (T) Byte.valueOf((byte) 0);
 			else if (clazz == short.class) return (T) Short.valueOf((short) 0);
-			else if (clazz == double.class) return(T) Double.valueOf(0d);
+			else if (clazz == double.class) return (T) Double.valueOf(0d);
 			else if (clazz == char.class) return (T) Character.valueOf('\u0000');
 			else throw new IllegalArgumentException("unsupported primitive types:" + clazz.getName());
 		} else if (clazz == String.class) {

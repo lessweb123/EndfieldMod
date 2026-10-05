@@ -121,66 +121,66 @@ function getClass(name) {
 
 // ------------- to java number -------------
 
-function toByte(value) {
+function byteOf(value) {
 	return Byte.valueOf(value);
 }
 
-function toShort(value) {
+function shortOf(value) {
 	return Short.valueOf(value);
 }
 
-function toInt(value) {
+function intOf(value) {
 	return Integer.valueOf(value);
 }
 
-function toLong(value) {
+function longOf(value) {
 	return Long.valueOf(value);
 }
 
-function toFloat(value) {
+function floatOf(value) {
 	return Float.valueOf(value);
 }
 
-function toDouble(value) {
+function doubleOf(value) {
 	return Double.valueOf(value);
 }
 
-function toChar(value) {
+function charOf(value) {
 	return Character.valueOf(value);
 }
 
-function toObjectArray(type, value) {
+function objectArrayOf(type, value) {
 	return Arrays2.copyOf(type, value);
 }
 
-function toBooleanArray(value) {
+function boolArrayOf(value) {
 	return Arrays2.boolOf(value);
 }
 
-function toByteArray(value) {
+function byteArrayOf(value) {
 	return Arrays2.byteOf(value);
 }
 
-function toShortArray(value) {
+function shortArrayOf(value) {
 	return Arrays2.shortOf(value);
 }
 
-function toIntArray(value) {
+function intArrayOf(value) {
 	return Arrays2.intOf(value);
 }
 
-function toLongArray(value) {
+function longArrayOf(value) {
 	return Arrays2.longOf(value);
 }
 
-function toFloatArray(value) {
+function floatArrayOf(value) {
 	return Arrays2.floatOf(value);
 }
 
-function toDoubleArray(value) {
+function doubleArrayOf(value) {
 	return Arrays2.doubleOf(value);
 }
 
-function toCharArray(value) {
+function charArrayOf(value) {
 	return Arrays2.charOf(value);
 }

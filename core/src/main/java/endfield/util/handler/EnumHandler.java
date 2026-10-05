@@ -21,7 +21,7 @@ import endfield.util.Reflects;
  * @since 1.0.9
  */
 public class EnumHandler<T extends Enum<T>> {
-	public static final Class<?>[] enumParameterTypes = {String.class, int.class};
+	public static final Class<?>[] enumBaseParameterTypes = {String.class, int.class};
 	public static final FieldAccessor ordinalAccessor, nameAccessor;
 
 	final FieldAccessor valuesAccessor;

@@ -12,7 +12,7 @@ import static endfield.util.GetKt.sneakyThrow;
 
 // Sdk_version>=33
 @TargetApi(VERSION_CODES.TIRAMISU)
-public final class InternalUnsafer {
+public final class Unsafer2 {
 	static final Unsafe internalUnsafe;
 
 	static {

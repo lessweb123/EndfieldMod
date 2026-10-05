@@ -163,11 +163,11 @@ public interface AutoTiler extends Autotiler {
 	}
 
 	class AutoTilerHolder {
-		static final int[] blendResult = new int[5];
-		static final BuildPlan[] directionals = new BuildPlan[4];
+		public static final int[] blendResult = new int[5];
+		public static final BuildPlan[] directionals = new BuildPlan[4];
 
-		static BuildPlan plan;
-		static final Boolf<BuildPlan> blendFinder = other -> {
+		public static BuildPlan plan;
+		public static final Boolf<BuildPlan> blendFinder = other -> {
 			if (other.breaking || other == plan) return false;
 
 			int i = 0;

@@ -28,7 +28,7 @@ public final class HiddenApi {
 
 	private HiddenApi() {}
 
-	static void setup() throws Throwable {
+	static void setup() throws Exception {
 		if (AndroidProperties.setup()) return;
 
 		oneArray = (Object[]) runtime.newNonMovableArray(Object.class, 1);
