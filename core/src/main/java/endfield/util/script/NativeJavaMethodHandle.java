@@ -14,44 +14,44 @@ import static endfield.util.script.Scripts2.convertArgs;
  * @see rhino.NativeJavaMethod
  */
 public class NativeJavaMethodHandle extends BaseFunction {
-	protected final MethodHandle handle, spreadHandle;
+	protected final MethodHandle target, spread;
 
 	protected final int paramCount;
 	protected final Class<?> returnType;
 	protected final Class<?>[] parameterArray;
 
-	public NativeJavaMethodHandle(Scriptable scope, MethodHandle method) {
+	public NativeJavaMethodHandle(Scriptable scope, MethodHandle handle) {
 		super(scope, null);
 
-		method = method.asFixedArity();
+		if (handle.isVarargsCollector()) handle = handle.asFixedArity();
 
-		handle = method;
+		target = handle;
 
-		MethodType type = method.type();
+		MethodType type = handle.type();
 
 		paramCount = type.parameterCount();
 		returnType = type.returnType();
 		parameterArray = type.parameterArray();
 
-		spreadHandle = method.asSpreader(Object[].class, paramCount)
+		spread = handle.asSpreader(Object[].class, paramCount)
 				.asType(MethodType.methodType(Object.class, Object[].class));
 	}
 
 	@Override
 	public String toString() {
-		return handle.toString();
+		return target.toString();
 	}
 
 	@Override
 	public Object get(Object key) {
-		if ("__javaObject__".equals(key)) return handle;
+		if ("__javaObject__".equals(key)) return target;
 		return super.get(key);
 	}
 
 	@Override
 	public Object call(Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
 		try {
-			return cx.getWrapFactory().wrap(cx, scope, spreadHandle.invokeExact(convertArgs(args, parameterArray)), returnType);
+			return cx.getWrapFactory().wrap(cx, scope, spread.invokeExact(convertArgs(args, parameterArray)), returnType);
 		} catch (Throwable e) {
 			throw sneakyThrow(e);
 		}

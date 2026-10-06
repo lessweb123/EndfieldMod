@@ -49,6 +49,8 @@ public class Test extends @Stub Random {
 				Aspect instance = (Aspect) aspectDecl.instance();
 				return instance.definePackage(Object.class);
 			});
+
+			Log.info(pack);
 		} catch (Throwable e) {
 			Log.err(e);
 		}
@@ -78,7 +80,10 @@ public class Test extends @Stub Random {
 	public static void test4() {
 		try {
 			EnumHandler<TestEnum> handler = new EnumHandler<>(TestEnum.class);
+
+			// Before using Unsafe to read and write fields, it is necessary to ensure that the class is initialized.
 			Class.forName(TestEnum.class.getName(), true, TestEnum.class.getClassLoader());
+
 			handler.addEnumItemTail("D");
 			Log.info(Arrays.toString(TestEnum.values()));
 		} catch (Throwable e) {

@@ -64,10 +64,9 @@ public final class Scripts2 {
 	}
 
 	public static Object[] convertArgs(Object[] arr, Class<?>[] types) {
-		Object[] res = new Object[arr.length];
 		for (int i = 0; i < arr.length; i++) {
-			res[i] = JavaAdapter.convertResult(arr[i], types[i]);
+			arr[i] = JavaAdapter.convertResult(arr[i], types[i]);
 		}
-		return res;
+		return arr;
 	}
 }

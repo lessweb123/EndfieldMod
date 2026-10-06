@@ -1,7 +1,5 @@
 package endfield.util;
 
-import java.nio.Buffer;
-
 import static endfield.Vars2.platformImpl;
 
 /**
@@ -72,16 +70,6 @@ public final class Memories {
 
 	/** Don't let anyone instantiate this class. */
 	private Memories() {}
-
-	/**
-	 * @return The memory address of DirectBuffer
-	 * @throws IllegalArgumentException If {@code buffer} is not a DirectBuffer
-	 */
-	public static long addressOf(Buffer buffer) {
-		if (!buffer.isDirect()) throw new IllegalArgumentException("buffer is non-direct");
-
-		return ((sun.nio.ch.DirectBuffer) buffer).address();
-	}
 
 	/**
 	 * @param <T>       Ensure type safety

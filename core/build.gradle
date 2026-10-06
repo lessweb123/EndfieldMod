@@ -51,6 +51,7 @@ tasks.withType(JavaCompile).configureEach {
 
 	options.compilerArgs.addAll([
 			"-Xlint:deprecation",
+			"--add-exports", "java.base/sun.nio=ALL-UNNAMED",
 			"--add-exports", "java.base/sun.nio.ch=ALL-UNNAMED"
 	])
 }

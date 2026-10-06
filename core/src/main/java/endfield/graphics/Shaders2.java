@@ -662,7 +662,37 @@ public final class Shaders2 {
 		public void apply() {
 			setUniformf("u_campos", Core.camera.position.x - Core.camera.width / 2, Core.camera.position.y - Core.camera.height / 2);
 			setUniformf("u_resolution", Core.camera.width, Core.camera.height);
+		}
+	}
 
+	/**
+	 * Se encarga de gestionar el manejo de GLSL .frag .vert shadow shader.
+	 *
+	 * @author @Arktcode Arksource
+	 * @version 1.26
+	 * @since 2026-10-05
+	 */
+	public static class ShadowShader extends Shader {
+		public float radius = 3.5f, blurDirX = 1f, blurDirY = 0f, edgeNoise = 0.38f;
+		public float shadowTint = 0.60f, contactShadow = 0.45f, sunElevation = 0.5f;
+		public float camW = 1f, camH = 1f;
+
+		public ShadowShader() {
+			super(shadersDir.child("shadow.vert"), shadersDir.child("shadow.frag"));
+		}
+
+		@Override
+		public void apply() {
+			setUniformf("u_radius", radius);
+			setUniformf("u_blurDir", blurDirX, blurDirY);
+			setUniformf("u_edgeNoise", edgeNoise);
+			setUniformf("u_shadowTint", shadowTint);
+			setUniformf("u_contactShadow", contactShadow);
+			setUniformf("u_sunElevation", sunElevation);
+			setUniformf("u_time", arc.util.Time.time * 0.05f);
+			setUniformf("u_resolution", Core.graphics.getWidth(), Core.graphics.getHeight());
+			setUniformf("u_cameraPos", Core.camera.position.x, Core.camera.position.y);
+			setUniformf("u_camSize", camW, camH);
 		}
 	}
 

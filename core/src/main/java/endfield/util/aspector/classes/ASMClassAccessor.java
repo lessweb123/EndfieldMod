@@ -1,11 +1,13 @@
 package endfield.util.aspector.classes;
 
+import arc.func.Prov;
 import arc.struct.IntMap;
 import endfield.util.Collections2;
 import endfield.util.Constant;
 import kotlin.Metadata;
 import kotlin.collections.CollectionsKt;
 import kotlin.io.FilesKt;
+import kotlin.jvm.functions.Function1;
 import kotlin.metadata.KmAnnotation;
 import kotlin.metadata.KmAnnotationArgument;
 import kotlin.metadata.KmClass;
@@ -186,7 +188,10 @@ public class ASMClassAccessor implements ClassAccessor {
 	}
 
 	static class BytecodeClassDecl<T> extends ClassDecl<T> {
-		static ClassName metadataT = ClassName.byClass(Metadata.class);
+		static final ClassName metadataT = ClassName.byClass(Metadata.class);
+
+		static final Prov<List<EAnnotation>> prov1 = ArrayList::new;
+		static final Function1<KmAnnotation, EAnnotation> function1 = BytecodeClassDecl::handleKmAnnotation;
 
 		ClassAccessor accessor;
 		byte[] bytecode;
@@ -350,7 +355,7 @@ public class ASMClassAccessor implements ClassAccessor {
 
 					for (KmAnnotation kmAnnotation : JvmExtensionsKt.getAnnotations(kmType)) {
 						EAnnotation annotation = handleKmAnnotation(kmAnnotation);
-						typeRefAnnoMap.get(TypeReference.newSuperTypeReference(index).getValue(), () -> new ArrayList<>()).add(annotation);
+						typeRefAnnoMap.get(TypeReference.newSuperTypeReference(index).getValue(), prov1).add(annotation);
 					}
 				}
 			}
@@ -359,7 +364,7 @@ public class ASMClassAccessor implements ClassAccessor {
 			superClass = classRoot.superName == null ? accessor.getClassDecl(ClassName.jObject) : accessor.getClassDecl(ClassName.byInternalName(classRoot.superName));
 			annotatedSuperClass = new EAnnotatedType<>(
 					superClass,
-					typeRefAnnoMap.get(TypeReference.newSuperTypeReference(-1).getValue(), () -> new ArrayList<>())
+					typeRefAnnoMap.get(TypeReference.newSuperTypeReference(-1).getValue(), prov1)
 			);
 
 			interfaces = new ArrayList<>(classRoot.interfaces.size());
@@ -371,7 +376,7 @@ public class ASMClassAccessor implements ClassAccessor {
 			annotatedInterfaces = new ArrayList<>(interfaces.size());
 
 			for (int i = 0; i < interfaces.size(); i++) {
-				annotatedInterfaces.add(new EAnnotatedType<>(interfaces.get(i), typeRefAnnoMap.get(TypeReference.newSuperTypeReference(i).getValue(), () -> new ArrayList<>())));
+				annotatedInterfaces.add(new EAnnotatedType<>(interfaces.get(i), typeRefAnnoMap.get(TypeReference.newSuperTypeReference(i).getValue(), prov1)));
 			}
 
 			Map<String, IntMap<List<EAnnotation>>> kmFieldAnnoRef = new HashMap<>();
@@ -383,22 +388,22 @@ public class ASMClassAccessor implements ClassAccessor {
 						String name = fieldSignature.getName();
 						KmType type = property.returnType;
 						kmFieldAnnoRef.computeIfAbsent(name, s -> new IntMap<>())
-								.get(TypeReference.newTypeReference(TypeReference.FIELD).getValue(), () -> new ArrayList<>())
-								.addAll(CollectionsKt.map(JvmExtensionsKt.getAnnotations(type), it -> handleKmAnnotation(it)));
+								.get(TypeReference.newTypeReference(TypeReference.FIELD).getValue(), prov1)
+								.addAll(CollectionsKt.map(JvmExtensionsKt.getAnnotations(type), function1));
 					}
 					JvmMethodSignature getterSignature = JvmExtensionsKt.getGetterSignature(property);
 					if (getterSignature != null) {
 						MethodSignature signature = MethodSignature.parse(getterSignature.getName(), getterSignature.getDescriptor());
 						kmMethodAnnoRef.computeIfAbsent(signature, s -> new IntMap<>())
-								.get(TypeReference.newTypeReference(TypeReference.METHOD_RETURN).getValue(), () -> new ArrayList<>())
-								.addAll(CollectionsKt.map(JvmExtensionsKt.getAnnotations(property.returnType), it -> handleKmAnnotation(it)));
+								.get(TypeReference.newTypeReference(TypeReference.METHOD_RETURN).getValue(), prov1)
+								.addAll(CollectionsKt.map(JvmExtensionsKt.getAnnotations(property.returnType), function1));
 					}
 					JvmMethodSignature setterSignature = JvmExtensionsKt.getSetterSignature(property);
 					if (setterSignature != null) {
 						MethodSignature signature = MethodSignature.parse(setterSignature.getName(), setterSignature.getDescriptor());
 						kmMethodAnnoRef.computeIfAbsent(signature, s -> new IntMap<>())
-								.get(TypeReference.newFormalParameterReference(0).getValue(), () -> new ArrayList<>())
-								.addAll(CollectionsKt.map(JvmExtensionsKt.getAnnotations(property.returnType), it -> handleKmAnnotation(it)));
+								.get(TypeReference.newFormalParameterReference(0).getValue(), prov1)
+								.addAll(CollectionsKt.map(JvmExtensionsKt.getAnnotations(property.returnType), function1));
 					}
 				}
 			}
@@ -409,7 +414,7 @@ public class ASMClassAccessor implements ClassAccessor {
 
 				if (refs != null) {
 					for (var entry : refs) {
-						typeRefAnnoMap2.get(entry.key, () -> new ArrayList<>()).addAll(entry.value);
+						typeRefAnnoMap2.get(entry.key, prov1).addAll(entry.value);
 					}
 				}
 
@@ -418,7 +423,7 @@ public class ASMClassAccessor implements ClassAccessor {
 						field.name,
 						new EAnnotatedType<>(
 								accessor.getClassDecl(ClassName.byDescriptor(field.desc)),
-								typeRefAnnoMap2.get(TypeReference.newTypeReference(TypeReference.FIELD).getValue(), () -> new ArrayList<>())
+								typeRefAnnoMap2.get(TypeReference.newTypeReference(TypeReference.FIELD).getValue(), prov1)
 						),
 						field.access,
 						field.value,
@@ -437,7 +442,7 @@ public class ASMClassAccessor implements ClassAccessor {
 
 					for (KmAnnotation kmAnnotation : JvmExtensionsKt.getAnnotations(function.returnType)) {
 						EAnnotation annotation = handleKmAnnotation(kmAnnotation);
-						map.get(TypeReference.newTypeReference(TypeReference.METHOD_RETURN).getValue(), () -> new ArrayList<>()).add(annotation);
+						map.get(TypeReference.newTypeReference(TypeReference.METHOD_RETURN).getValue(), prov1).add(annotation);
 					}
 					List<KmType> types = new ArrayList<>();
 
@@ -452,7 +457,7 @@ public class ASMClassAccessor implements ClassAccessor {
 					for (int i = 0; i < types.size(); i++) {
 						KmType type = types.get(i);
 						List<KmAnnotation> annotations = JvmExtensionsKt.getAnnotations(type);
-						map.get(TypeReference.newFormalParameterReference(i).getValue(), () -> new ArrayList<>()).addAll(CollectionsKt.map(annotations, it -> handleKmAnnotation(it)));
+						map.get(TypeReference.newFormalParameterReference(i).getValue(), prov1).addAll(CollectionsKt.map(annotations, function1));
 					}
 				}
 			}
@@ -481,7 +486,7 @@ public class ASMClassAccessor implements ClassAccessor {
 				IntMap<List<EAnnotation>> refs = kmMethodAnnoRef.get(signature);
 				if (refs != null) {
 					for (var entry : refs) {
-						typeRefAnnoMap2.get(entry.key, () -> new ArrayList<>()).addAll(entry.value);
+						typeRefAnnoMap2.get(entry.key, prov1).addAll(entry.value);
 					}
 				}
 
@@ -493,7 +498,7 @@ public class ASMClassAccessor implements ClassAccessor {
 							paramName == null ? "arg" + i : paramName,
 							new EAnnotatedType<>(
 									accessor.getClassDecl(signature.paramTypes.get(i)),
-									typeRefAnnoMap2.get(TypeReference.newFormalParameterReference(i).getValue(), () -> new ArrayList<>())
+									typeRefAnnoMap2.get(TypeReference.newFormalParameterReference(i).getValue(), prov1)
 							),
 							CollectionsKt.toList(paramAnnotations[i])
 					));
@@ -506,7 +511,7 @@ public class ASMClassAccessor implements ClassAccessor {
 							params,
 							new EAnnotatedType<>(
 									accessor.getClassDecl(signature.returnType),
-									typeRefAnnoMap2.get(TypeReference.newTypeReference(TypeReference.METHOD_RETURN).getValue(), () -> new ArrayList<>())
+									typeRefAnnoMap2.get(TypeReference.newTypeReference(TypeReference.METHOD_RETURN).getValue(), prov1)
 							),
 							method.access,
 							handleAnnotations(Collections2.plus(method.visibleAnnotations, method.invisibleAnnotations))
@@ -528,7 +533,7 @@ public class ASMClassAccessor implements ClassAccessor {
 			IntMap<List<EAnnotation>> typeRefAnnoMap = new IntMap<>();
 			for (TypeAnnotationNode annotation : nodes) {
 				int ref = annotation.typeRef;
-				typeRefAnnoMap.get(ref, () -> new ArrayList<>()).add(handleAnnotation(annotation));
+				typeRefAnnoMap.get(ref, prov1).add(handleAnnotation(annotation));
 			}
 
 			return typeRefAnnoMap;

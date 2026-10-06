@@ -365,7 +365,6 @@ public final class Overrides {
 		Blocks.diffuse.armor = 3f;
 		Blocks.sublimate.armor = 4f;
 		if (Blocks.sublimate instanceof ContinuousLiquidTurret turret) {
-			turret.ammoTypes.remove(Liquids.ozone);
 			turret.ammoTypes.put(Liquids2.gas, new ContinuousFlameBulletType(90f) {{
 				rangeChange = 30f;
 				length = 160f;

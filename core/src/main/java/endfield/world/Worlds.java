@@ -6,6 +6,7 @@ import arc.files.Fi;
 import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Strings;
+import arc.util.Structs;
 import endfield.entities.Entitys2;
 import endfield.files.Files2;
 import endfield.game.TeamPayloadData;
@@ -86,7 +87,7 @@ public final class Worlds {
 			}
 		}
 
-		blocks.sort((c1, c2) -> Integer.compare(c1.getSecond().id, c2.getSecond().id));
+		blocks.sort(Structs.comparingInt(c -> c.getSecond().id));
 
 		for (Pair<String, Block> pair : blocks) {
 			String name = pair.getFirst();
@@ -100,16 +101,6 @@ public final class Worlds {
 					.append(block.mapColor.rgba() >>> 8).append('\n');
 		}
 
-		/*Vars.platform.showFileChooser(false, Core.bundle.get("text.export-data"), "dat", file -> {
-			try {
-				file.writeBytes(data.toString().getBytes(Strings.utf8), false);
-				Core.app.post(() -> Vars.ui.showInfo(Core.bundle.format("text.export-data-format", file.name())));
-			} catch (Throwable e) {
-				Log.err(e);
-
-				Vars.ui.showException(e);
-			}
-		});*/
 		try {
 			FileChooser.save("dat").title(Core.bundle.get("text.export-data")).submit(file -> {
 				try {
