@@ -62,7 +62,10 @@ public final class TechTrees {
 			nodeProduce(Items2.crystallineCircuit, () -> nodeProduce(Liquids2.coldPlasma, () -> nodeProduce(Liquids2.hotPlasma)));
 			nodeProduce(Items2.siliconNitride, () -> nodeProduce(Items2.galliumNitride));
 		});
-		vanillaNode(Items.thorium, () -> nodeProduce(Items2.uranium, () -> nodeProduce(Items2.chromium)));
+		vanillaNode(Items.thorium, () -> {
+			nodeProduce(Items2.titaniumAlloy);
+			nodeProduce(Items2.uranium, () -> nodeProduce(Items2.chromium));
+		});
 		vanillaNode(Items.surgeAlloy, () -> nodeProduce(Items2.heavyAlloy));
 		//items,liquids-erekir
 		vanillaNode(Items.beryllium, () -> nodeProduce(Items2.crystal));

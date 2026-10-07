@@ -271,6 +271,7 @@ public final class Overrides {
 			length = 100f;
 			damage = 135f;
 			ammoMultiplier = 6f;
+			armorMultiplier = 0.2f;
 			toColor = new Color(0xa5b2c2ff);
 			shootEffect = smokeEffect = Fx2.shoot(Pal2.uraniumAmmoBack);
 		}});

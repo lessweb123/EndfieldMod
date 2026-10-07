@@ -23,7 +23,6 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import endfield.graphics.Drawn;
 import endfield.math.Mathm;
-import endfield.world.blocks.MultiBlock;
 import endfield.world.consumers.ConsumePowerMultiplier;
 import endfield.world.meta.Attributes2;
 import mindustry.content.Fx;
@@ -63,7 +62,7 @@ import static mindustry.Vars.world;
  * @author LaoHuaJi
  * @author LessWeb
  */
-public class OreCollector extends MultiBlock {
+public class OreCollector extends Block {
 	public static Seq<Tile> tmpClusters = new Seq<>(Tile.class);
 	public static ObjectFloatMap<Item> returnCount = new ObjectFloatMap<>();
 
@@ -303,7 +302,7 @@ public class OreCollector extends MultiBlock {
 		Draw.rect(outerRegions[(rotation + 1) % 4], x + Tmp.v2.x, y + Tmp.v2.y);
 	}
 
-	public class OreCollectorBuild extends MultiBuild {
+	public class OreCollectorBuild extends Building {
 		public Seq<Tile> oreClusters = new Seq<>(Tile.class);
 		public float progress;
 		public float warmup;
@@ -537,7 +536,6 @@ public class OreCollector extends MultiBlock {
 			if (getMaximumAccepted(item) > items.get(item) && Mathf.chance(chance)) offload(item);
 		}
 
-		@Override
 		public float efficiency() {
 			return warmup * efficiency * Mathf.lerp(1f, optionalBoostIntensity, optionalEfficiency);
 		}

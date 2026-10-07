@@ -199,6 +199,7 @@ public final class MathRenderer {
 					""";
 
 		public final Object[] argsArr;
+		public final String[] argsStrArr;
 		public final String function;
 
 		public MathShader(String function, String gradMod, String... argTypes) {
@@ -214,6 +215,11 @@ public final class MathRenderer {
 
 			function = func;
 			argsArr = new Object[argTypes.length];
+			argsStrArr = new String[argTypes.length];
+
+			for (int i = 0; i < argTypes.length; i++) {
+				argsStrArr[i] = "arg" + i;
+			}
 		}
 
 		public static String genFrag(String perVar, float widthScl, float heightScl, String function, String gradMod, String... argTypes) {
@@ -263,15 +269,15 @@ public final class MathRenderer {
 			for (int i = 0; i < argsArr.length; i++) {
 				Object o = argsArr[i];
 				if (o instanceof Float f) {
-					setUniformf("arg" + i, f);
+					setUniformf(argsStrArr[i], f);
 				} else if (o instanceof Integer in) {
-					setUniformi("arg" + i, in);
+					setUniformi(argsStrArr[i], in);
 				} else if (o instanceof Vec2 v) {
-					setUniformf("arg" + i, v);
+					setUniformf(argsStrArr[i], v);
 				} else if (o instanceof Vec3 v) {
-					setUniformf("arg" + i, v);
+					setUniformf(argsStrArr[i], v);
 				} else if (o instanceof Mat m) {
-					setUniformMatrix("arg" + i, m);
+					setUniformMatrix(argsStrArr[i], m);
 				} else {
 					arc.util.Log.err(new IllegalArgumentException("invalid type: " + o.getClass()));
 				}

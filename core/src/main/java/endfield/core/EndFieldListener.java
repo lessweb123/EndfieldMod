@@ -2,8 +2,10 @@ package endfield.core;
 
 import arc.ApplicationCore;
 import arc.math.Mathf;
+import arc.struct.ObjectSet;
 import arc.struct.Seq;
 import endfield.entities.Entitys2;
+import endfield.mod.Mods2;
 import mindustry.Vars;
 import mindustry.entities.bullet.BulletType;
 import mindustry.entities.pattern.ShootPattern;
@@ -14,7 +16,7 @@ import static endfield.Vars2.modName;
 
 public final class EndFieldListener implements IListener {
 	float[] bulletDps, unitDps;
-	boolean[] powerful;
+	ObjectSet<String> powerful;
 
 	EndFieldListener() {
 		if (Vars.platform instanceof ApplicationCore core) {
@@ -43,8 +45,7 @@ public final class EndFieldListener implements IListener {
 	}
 
 	public boolean getPowerful(UnitType unit) {
-		if (unit.id >= powerful.length) return false;
-		return powerful[unit.id];
+		return powerful.contains(unit.name);
 	}
 
 	void updateInit() {
@@ -54,7 +55,7 @@ public final class EndFieldListener implements IListener {
 		bulletDps = new float[bullets.size];
 		unitDps = new float[units.size];
 
-		powerful = new boolean[units.size];
+		powerful = ObjectSet.with("extra-utilities-regency", "new-horizon-guardian", "new-horizon-pester", "new-horizon-nucleoid");
 
 		for (BulletType b : bullets) {
 			updateBullet(b);
@@ -110,9 +111,8 @@ public final class EndFieldListener implements IListener {
 	}
 
 	void updatePowerful(UnitType type) {
-		switch (type.name) {
-			case "extra-utilities-regency", "new-horizon-guardian", "new-horizon-pester", "new-horizon-nucleoid" -> powerful[type.id] = true;
-			default -> powerful[type.id] = false;
+		if (!Mods2.isEndField(type) && (type.health > 100000f || type.armor > 100f || type.estimateDps() > 3000f)) {
+			powerful.add(type.name);
 		}
 	}
 }

@@ -538,7 +538,7 @@ public class SpaceUnloader extends StorageBlock {
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
 			short id = read.s();
-			itemType = id == -1 ? null : Vars.content.items().get(id);
+			itemType = id == -1 ? null : Vars.content.item(id);
 			links = new IntSeq();
 			short linkSize = read.s();
 			for (int i = 0; i < linkSize; i++) {

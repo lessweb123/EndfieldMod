@@ -97,9 +97,9 @@ public final class Sprites {
 	 * <p>The element returned by this method cannot be used in situations where it will be
 	 * forcibly cast to {@link AtlasRegion}.
 	 *
-	 * @param name       sprite name
-	 * @param size       split size, pixels per grid
-	 * @param width Total number of segmentation layers
+	 * @param name   sprite name
+	 * @param size   split size, pixels per grid
+	 * @param width  Total number of segmentation layers
 	 * @param height Total
 	 * @throws NullPointerException       If the {@code name} is {@code null}.
 	 * @throws NegativeArraySizeException If {@code size} or {@code layerCount} is negative.

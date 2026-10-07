@@ -1854,7 +1854,6 @@ public final class Blocks2 {
 			requirements(Category.production, ItemStack.with(Items.lead, 100, Items.graphite, 110, Items.silicon, 120, Items.plastanium, 80));
 			size = 3;
 			hasPower = true;
-			addLink(0, 2, 2, 0, -3, 2);
 			itemCapacity = 200;
 			consumePower(15f);
 			consumeLiquid(Liquids.water, 5f / 60f).boost();
@@ -6356,6 +6355,7 @@ public final class Blocks2 {
 				}};
 			}});
 			consumePower(1f);
+			squareSprite = false;
 		}};
 		rift = new ItemTurret("rift") {{
 			requirements(Category.turret, ItemStack.with(Items.graphite, 920, Items.silicon, 500, Items.surgeAlloy, 800, Items.tungsten, 1200, Items.carbide, 480));

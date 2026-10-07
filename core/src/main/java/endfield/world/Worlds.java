@@ -60,6 +60,7 @@ public final class Worlds {
 			properties.load(reader);
 		} catch (IOException e) {
 			Log.err(e);
+			return;
 		}
 
 		var fallback = SaveFileReader.fallback;

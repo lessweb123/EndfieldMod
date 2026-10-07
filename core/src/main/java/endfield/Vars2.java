@@ -21,7 +21,6 @@ import endfield.util.PlatformImpl;
 import mindustry.Vars;
 import mindustry.content.TechTree.TechNode;
 import mindustry.type.Sector;
-import org.jetbrains.annotations.ApiStatus.Internal;
 
 /**
  * I didn't want my Mod main class to look too messy, so I created this class.
@@ -105,7 +104,6 @@ public final class Vars2 {
 		}
 	}
 
-	@Internal
 	public static void loadLibrary() {
 		try {
 			if (OS.isWindows && OS.is64Bit) {

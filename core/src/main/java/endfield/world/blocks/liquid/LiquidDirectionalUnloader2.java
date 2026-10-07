@@ -27,7 +27,7 @@ import mindustry.world.meta.StatUnit;
 import org.jetbrains.annotations.Nullable;
 
 public class LiquidDirectionalUnloader2 extends Block {
-	public TextureRegion[] topRegions = new TextureRegion[4];
+	public TextureRegion[] topRegions;
 	public TextureRegion baseRegion, liquidRegion;
 
 	public float speed = 5f;
@@ -74,6 +74,8 @@ public class LiquidDirectionalUnloader2 extends Block {
 	@Override
 	public void load() {
 		super.load();
+
+		topRegions = new TextureRegion[4];
 		for (int i = 0; i < topRegions.length; i++) {
 			topRegions[i] = Core.atlas.find(name + "-top-" + i);
 		}
@@ -95,7 +97,7 @@ public class LiquidDirectionalUnloader2 extends Block {
 
 	public class LiquidDirectionalUnloaderBuild2 extends Building {
 		public float unloadTimer = 0f;
-		public @Nullable Liquid unloadLiquid = null;
+		public @Nullable Liquid unloadLiquid;
 		public int offset = 0;
 
 		@Override
@@ -145,7 +147,7 @@ public class LiquidDirectionalUnloader2 extends Block {
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
 			int id = read.s();
-			unloadLiquid = id == -1 ? null : Vars.content.liquids().get(id);
+			unloadLiquid = id == -1 ? null : Vars.content.liquid(id);
 			offset = read.s();
 		}
 

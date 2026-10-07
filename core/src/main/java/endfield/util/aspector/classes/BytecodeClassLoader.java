@@ -1,5 +1,8 @@
 package endfield.util.aspector.classes;
 
+import arc.util.OS;
+import endfield.util.handler.ClassHandler;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -119,7 +122,8 @@ public class BytecodeClassLoader extends ClassLoader implements BytecodeLoader {
 				byte[] bytecode = bytecodesMap.get(name);
 				if (bytecode == null) throw new ClassNotFoundException(name);
 
-				r = super.defineClass(name, bytecode, 0, bytecode.length);
+				if (OS.isAndroid) r = ClassHandler.defineClass(name, bytecode, this);
+				else r = super.defineClass(name, bytecode, 0, bytecode.length);
 
 				if (resolve) resolveClass(r);
 			}
