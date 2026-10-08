@@ -14,7 +14,7 @@ import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
 import endfield.content.Fx2;
-import endfield.entities.Damage2;
+import endfield.entities.Damages;
 import endfield.graphics.Drawn;
 import endfield.graphics.Pal2;
 import endfield.math.Mathm;
@@ -155,7 +155,7 @@ public class EndCreepLaserBulletType extends ContinuousBulletType implements Las
 		float fly = getFlyingScl(b);
 		//float rot = b.rotation();
 
-		Damage2.hitLaser(b.team, 4f, b.x, b.y, v.x, v.y, null, Constant.BOOLF_HEALTHC_FALSE, (h, x, y) -> {
+		Damages.hitLaser(b.team, 4f, b.x, b.y, v.x, v.y, null, Constant.BOOLF_HEALTHC_FALSE, (h, x, y) -> {
 			//hit(b, x, y);
 
 			boolean near = (data.hitTime <= 0f) && Mathf.within(x, y, vx, vy, 140f + (len - b.fdata));

@@ -8,7 +8,7 @@ import arc.struct.IntSeq;
 import arc.struct.Seq;
 import arc.util.Tmp;
 import endfield.content.Fx2;
-import endfield.entities.Damage2;
+import endfield.entities.Damages;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.core.World;
@@ -78,7 +78,7 @@ public class ChainLightningBulletType extends BulletType {
 		Position aimPos = b.aimTile == null ? b : b.aimTile;
 
 		Seq<Unit> units = Groups.unit.intersect(b.x - range, b.y - range, range * 2, range * 2);
-		Damage2.list.clear();
+		Damages.list.clear();
 		charges = chainLightning;
 
 		units.sort(u -> u.dst2(aimPos));
@@ -90,12 +90,12 @@ public class ChainLightningBulletType extends BulletType {
 			if (dst > range) break;
 			float dst2 = unit.dst(aimPos);
 			if (dst2 > targetRange) break;
-			Damage2.list.add(unit);
+			Damages.list.add(unit);
 			charges--;
 		}
 
-		for (Unit u : Damage2.list) {
-			Damage2.chain(new Vec2(b.x, b.y), u, new IntSeq(), hitSound, hitEffect, b.damage, b.damage, width, distanceDamageFalloff, jumpDamageFactor, branches, segmentLength, arc, lightningColor);
+		for (Unit u : Damages.list) {
+			Damages.chain(new Vec2(b.x, b.y), u, new IntSeq(), hitSound, hitEffect, b.damage, b.damage, width, distanceDamageFalloff, jumpDamageFactor, branches, segmentLength, arc, lightningColor);
 		}
 
 		if (charges <= 0) return;

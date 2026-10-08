@@ -21,7 +21,7 @@ public class Unit2 extends UnitEntity implements Unitc2, ExtraVariable {
 
 	@Override
 	public int classId() {
-		return Entitys.getId(getClass());
+		return EntityRegister.getId(getClass());
 	}
 
 	@Override

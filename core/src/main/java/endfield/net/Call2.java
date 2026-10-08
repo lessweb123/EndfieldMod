@@ -1,6 +1,6 @@
 package endfield.net;
 
-import endfield.entities.Entitys2;
+import endfield.entities.Entities;
 import endfield.world.blocks.units.UnitAssembler2;
 import mindustry.Vars;
 import mindustry.gen.Building;
@@ -78,7 +78,7 @@ public final class Call2 {
 
 	public static void annihilateUnit(int uid) {
 		if (Vars.net.server() || !Vars.net.active()) {
-			Entitys2.unitAnnihilate(uid);
+			Entities.unitAnnihilate(uid);
 		}
 
 		if (Vars.net.server()) {

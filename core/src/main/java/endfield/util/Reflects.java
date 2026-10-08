@@ -217,15 +217,15 @@ public final class Reflects {
 		return false;
 	}
 
-		public static ObjectSet<Class<?>> getClassSubclassHierarchy(Class<?> clazz) {
-		Class<?> curr = clazz.getSuperclass();
-			ObjectSet<Class<?>> hierarchy = new ObjectSet<>();
-		while (curr != null) {
-			hierarchy.add(curr);
-			Class<?>[] interfaces = curr.getInterfaces();
+	public static ObjectSet<Class<?>> getClassSubclassHierarchy(Class<?> clazz) {
+		Class<?> current = clazz.getSuperclass();
+		ObjectSet<Class<?>> hierarchy = new ObjectSet<>();
+		while (current != null) {
+			hierarchy.add(current);
+			Class<?>[] interfaces = current.getInterfaces();
 			hierarchy.addAll(interfaces);
 
-			curr = curr.getSuperclass();
+			current = current.getSuperclass();
 		}
 		return hierarchy;
 	}
@@ -487,6 +487,11 @@ public final class Reflects {
 
 		if (type.isPrimitive()) return new IllegalArgumentException("Cannot instantiate primitive type");
 		if (type.isArray()) return new IllegalArgumentException("Cannot instantiate array type (use Array.newInstance instead)");
+
+		if (type == Class.class) return new IllegalArgumentException("Cannot instantiate class type");
+		if (type == Field.class) return new IllegalArgumentException("Cannot instantiate field type");
+		if (type == Method.class) return new IllegalArgumentException("Cannot instantiate method type");
+		if (type == Constructor.class) return new IllegalArgumentException("Cannot instantiate constructor type");
 
 		int modifiers = type.getModifiers();
 

@@ -24,43 +24,23 @@ import static endfield.util.GetKt.sneakyThrow;
 
 @SuppressWarnings("removal")
 public class AndroidImpl implements PlatformImpl {
-	static Constructor<Lookup> constructor;
-
-	static final CollectionObjectMap<Class<?>, Lookup> lookupMap = new CollectionObjectMap<>(Class.class, Lookup.class);
-	static final Function<Class<?>, Lookup> lookupBuilder = clazz -> {
-		try {
-			return constructor.newInstance(clazz, 15);
-		} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-			throw sneakyThrow(e);
-		}
-	};
-	static Method clone;
-
 	static {
 		try {
 			HiddenApi.setup();
 		} catch (Throwable e) {
 			Log.err("It seems you platform is special. (But don't worry)", e);
 		}
+	}
 
+	public AndroidImpl() {
+		init();
+	}
+
+	void init() {
 		accessibleHelper = new AndroidAccessibleHelper();
 		classHelper = new AndroidClassHelper();
 		fieldAccessHelper = new UnsafeFieldAccessHelper();
 		methodInvokeHelper = new ReflectionMethodInvokeHelper();
-
-		try {
-			constructor = Lookup.class.getDeclaredConstructor(Class.class, int.class);
-			constructor.setAccessible(true);
-		} catch (Throwable e) {
-			Log.err(e);
-		}
-
-		try {
-			clone = Object.class.getDeclaredMethod("internalClone");
-			clone.setAccessible(true);
-		} catch (Throwable e) {
-			Log.err(e);
-		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -71,7 +51,7 @@ public class AndroidImpl implements PlatformImpl {
 		if (type == Class.class || type == Field.class || type == Method.class || type == Constructor.class) return object;
 
 		try {
-			return (T) clone.invoke(object);
+			return (T) CloneHelper.clone.invoke(object);
 		} catch (IllegalAccessException | InvocationTargetException e) {
 			throw sneakyThrow(e);
 		}
@@ -80,7 +60,7 @@ public class AndroidImpl implements PlatformImpl {
 	// Due to the lack of TRUSTED lookup in Android, each class needs to create an ALL_MODES lookup.
 	@Override
 	public Lookup lookup(Class<?> clazz) {
-		return lookupMap.computeIfAbsent(clazz, lookupBuilder);
+		return LookupHelper.lookupMap.computeIfAbsent(clazz, LookupHelper.lookupBuilder);
 	}
 
 	@Override
@@ -109,5 +89,45 @@ public class AndroidImpl implements PlatformImpl {
 	@Override
 	public int arrayIndexScale(Class<?> arrayClass) {
 		return unsafe.arrayIndexScale(arrayClass);
+	}
+
+	static final class LookupHelper {
+		static final Constructor<Lookup> constructor;
+		static final CollectionObjectMap<Class<?>, Lookup> lookupMap = new CollectionObjectMap<>(Class.class, Lookup.class);
+		static final Function<Class<?>, Lookup> lookupBuilder;
+
+		private LookupHelper() {}
+
+		static {
+			try {
+				constructor = Lookup.class.getDeclaredConstructor(Class.class, int.class);
+				constructor.setAccessible(true);
+
+				lookupBuilder = clazz -> {
+					try {
+						return constructor.newInstance(clazz, 15);
+					} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+						throw sneakyThrow(e);
+					}
+				};
+			} catch (Throwable e) {
+				throw sneakyThrow(e);
+			}
+		}
+	}
+
+	static final class CloneHelper {
+		static final Method clone;
+
+		private CloneHelper() {}
+
+		static {
+			try {
+				clone = Object.class.getDeclaredMethod("internalClone");
+				clone.setAccessible(true);
+			} catch (Throwable e) {
+				throw sneakyThrow(e);
+			}
+		}
 	}
 }

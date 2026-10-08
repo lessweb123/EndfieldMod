@@ -2,7 +2,7 @@ package endfield.net;
 
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import endfield.entities.Entitys2;
+import endfield.entities.Entities;
 import mindustry.net.Packet;
 
 public class UnitAnnihilateCallPacket extends Packet {
@@ -32,6 +32,6 @@ public class UnitAnnihilateCallPacket extends Packet {
 
 	@Override
 	public void handleClient() {
-		Entitys2.unitAnnihilate(uid);
+		Entities.unitAnnihilate(uid);
 	}
 }

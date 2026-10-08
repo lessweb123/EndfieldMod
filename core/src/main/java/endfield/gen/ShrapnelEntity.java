@@ -10,7 +10,7 @@ import arc.struct.IntSet;
 import arc.util.Time;
 import arc.util.pooling.Pool.Poolable;
 import arc.util.pooling.Pools;
-import endfield.entities.Entitys2;
+import endfield.entities.Entities;
 import endfield.graphics.Drawn;
 import endfield.math.Mathm;
 import endfield.util.Get;
@@ -84,7 +84,7 @@ public class ShrapnelEntity extends BaseEntity implements Poolable {
 
 		//Teamc teamc = Units.closestTarget(team, x, y, 8f, Flyingc::isGrounded);
 		if (damage > 0) {
-			Entitys2.scanEnemies(team, x, y, hitSize / 1.5f, true, true, t -> {
+			Entities.scanEnemies(team, x, y, hitSize / 1.5f, true, true, t -> {
 				if (collided.add(t.id())) {
 					Healthc h = (Healthc) t;
 					Sized size = (Sized) t;

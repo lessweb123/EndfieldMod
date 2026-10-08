@@ -16,7 +16,7 @@ import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import endfield.entities.Damage2;
+import endfield.entities.Damages;
 import endfield.graphics.Outliner;
 import endfield.graphics.PositionLightning;
 import endfield.world.meta.StatValues2;
@@ -304,7 +304,7 @@ public class TeslaTurret extends Block {
 
 			if (canConsume()) {
 				if (timer(timerCheck, checkInterval)) {
-					nearby = Damage2.checkForTargets(team, x, y, range);
+					nearby = Damages.checkForTargets(team, x, y, range);
 				}
 			} else {
 				nearby = false;
@@ -315,7 +315,7 @@ public class TeslaTurret extends Block {
 
 				if ((reloadCounter += edelta()) >= reload) {
 					targets.clear();
-					Damage2.allNearbyEnemies(team, x, y, range, targets::add);
+					Damages.allNearbyEnemies(team, x, y, range, targets::add);
 
 					if (targets.size > 0) {
 						targets.shuffle();

@@ -31,10 +31,11 @@ import arc.util.pooling.Pool;
 import arc.util.pooling.Pool.Poolable;
 import arc.util.pooling.Pools;
 import endfield.content.Fx2;
-import endfield.entities.Entitys2.LineHitHandler;
+import endfield.entities.Entities.LineHitHandler;
 import endfield.math.Mathm;
 import endfield.util.BoolGrid;
 import endfield.util.ValueMap;
+import endfield.util.pooling.PoolImpl;
 import mindustry.Vars;
 import mindustry.ai.types.MissileAI;
 import mindustry.core.World;
@@ -60,7 +61,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public final class Damage2 {
+public final class Damages {
 	public static final Seq<Unit> list = new Seq<>(Unit.class);
 
 	static final UnitDamageEvent bulletDamageEvent = new UnitDamageEvent();
@@ -87,10 +88,10 @@ public final class Damage2 {
 	static int idx;
 	static boolean hit, hit2;
 	static final Seq<Hit> hseq = new Seq<>(Hit.class);
-	static final BasicPool<Hit> hPool = new BasicPool<>(Hit::new);
+	static final PoolImpl<Hit> hPool = new PoolImpl<>(Hit::new);
 
 	/** Don't let anyone instantiate this class. */
-	private Damage2() {}
+	private Damages() {}
 
 	public static void chain(Position origin, @Nullable Position targetPos, Team team, Unit current, IntSeq collided, Sound hitSound, Effect hitEffect, float power, float initialPower, float width, float distanceDamageFalloff, float pierceDamageFactor, int branches, float segmentLength, float arc, Color color) {
 		current.damage(power);
@@ -1111,7 +1112,7 @@ public final class Damage2 {
 		for (TeamData data : Vars.state.teams.present) {
 			if (data.team != team) {
 				if (data.unitTree != null) {
-					Entitys2.intersectLine(data.unitTree, width, x1, y1, x2, y2, (t, x, y) -> {
+					Entities.intersectLine(data.unitTree, width, x1, y1, x2, y2, (t, x, y) -> {
 						if (within != null && !within.get(t)) return;
 						Hit h = hPool.obtain();
 						h.entity = t;
@@ -1121,7 +1122,7 @@ public final class Damage2 {
 					});
 				}
 				if (data.buildingTree != null) {
-					Entitys2.intersectLine(data.buildingTree, width, x1, y1, x2, y2, (t, x, y) -> {
+					Entities.intersectLine(data.buildingTree, width, x1, y1, x2, y2, (t, x, y) -> {
 						if (within != null && !within.get(t)) return;
 						Hit h = hPool.obtain();
 						h.entity = t;
@@ -1193,19 +1194,6 @@ public final class Damage2 {
 		public void reset() {
 			entity = null;
 			x = y = 0f;
-		}
-	}
-
-	public static class BasicPool<T> extends Pool<T> {
-		public final Prov<T> prov;
-
-		public BasicPool(Prov<T> f) {
-			prov = f;
-		}
-
-		@Override
-		protected T newObject() {
-			return prov.get();
 		}
 	}
 }

@@ -41,10 +41,10 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 			if (entry.key.match(types)) return entry.value;
 		}
 
-		Class<?> curr = clazz;
+		Class<?> current = clazz;
 
-		while (curr != null) {
-			Method method = findMethod(curr, name, types.paramType());
+		while (current != null) {
+			Method method = findMethod(current, name, types.paramType());
 
 			if (method != null) {
 				res = asSpreader(method);
@@ -52,13 +52,13 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 				return res;
 			}
 
-			curr = curr.getSuperclass();
+			current = current.getSuperclass();
 		}
 
-		curr = clazz;
+		current = clazz;
 
-		while (curr != null) {
-			for (Method method : methodsMap.computeIfAbsent(curr, function5)) {
+		while (current != null) {
+			for (Method method : methodsMap.computeIfAbsent(current, function5)) {
 				if (!method.getName().equals(name)) continue;
 
 				FunctionType t;
@@ -70,7 +70,7 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 				t.recycle();
 			}
 
-			curr = curr.getSuperclass();
+			current = current.getSuperclass();
 		}
 
 		throw sneakyThrow(new NoSuchMethodException("no such method " + name + " in class: " + clazz + " with assignable parameter: " + types));

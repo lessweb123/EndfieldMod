@@ -8,7 +8,7 @@ import arc.util.Tmp;
 import endfield.Vars2;
 import endfield.audio.Sounds2;
 import endfield.content.Fx2;
-import endfield.entities.Entitys2;
+import endfield.entities.Entities;
 import endfield.graphics.Pal2;
 import endfield.math.Mathm;
 import mindustry.Vars;
@@ -84,7 +84,7 @@ public class EndNukeBulletType extends BasicBulletType {
 		Core.audio.protect(sid2, true);
 
 		float[] arr = new float[360 * 3];
-		Entitys2.rayCastCircle(b.x, b.y, 480f, t -> t.build != null && t.build.team != team && !Mathf.within(b.x, b.y, t.worldx(), t.worldy(), 150f), t -> {
+		Entities.rayCastCircle(b.x, b.y, 480f, t -> t.build != null && t.build.team != team && !Mathf.within(b.x, b.y, t.worldx(), t.worldy(), 150f), t -> {
 			float dst = 1f - Mathm.clamp(Mathf.dst(bx, by, t.x * Vars.tilesize, t.y * Vars.tilesize) / 480f);
 			if (Mathf.chance(Mathf.pow(dst, 2f) * 0.75f)) Fires.create(t);
 		}, tile -> {
@@ -102,11 +102,11 @@ public class EndNukeBulletType extends BasicBulletType {
 
 		lastMax = Vars.headless ? -1 : Core.settings.getInt("vaporize-batch", 100);
 
-		Entitys2.scanEnemies(b.team, b.x, b.y, 480f, true, true, t -> {
+		Entities.scanEnemies(b.team, b.x, b.y, 480f, true, true, t -> {
 			if (t instanceof Unit unit && unit.hittable()) {
 				//float damageScl = 1f;
 				//if (unit.isGrounded()) damageScl = Entitys2.inRayCastCircle(bx, by, arr, unit);
-				float damageScl = Entitys2.inRayCastCircle(bx, by, arr, unit);
+				float damageScl = Entities.inRayCastCircle(bx, by, arr, unit);
 
 				if (damageScl > 0f) {
 					Tmp.v2.trns(Angles.angle(bx, by, unit.x, unit.y), (16f + 5f / unit.mass()) * damageScl);
@@ -121,7 +121,7 @@ public class EndNukeBulletType extends BasicBulletType {
 					if (lastUnit < lastMax && unit.health <= 0f) {
 						Vars2.vaporBatch.discon = null;
 						Vars2.vaporBatch.switchBatch(unit::draw, null, (d, w) -> {
-							float with = Entitys2.inRayCastCircle(bx, by, arr, d);
+							float with = Entities.inRayCastCircle(bx, by, arr, d);
 							if (with > 0.5f) {
 								d.disintegrating = true;
 								float dx = d.x - bx, dy = d.y - by;
@@ -146,7 +146,7 @@ public class EndNukeBulletType extends BasicBulletType {
 					}
 				}
 			} else if (t instanceof Building build && !build.block.privileged) {
-				float damageScl = Entitys2.inRayCastCircle(bx, by, arr, build);
+				float damageScl = Entities.inRayCastCircle(bx, by, arr, build);
 				if (damageScl > 0) {
 					build.health -= (build.maxHealth / 10f + splashDamage) * damageScl;
 					if (build.health <= 0f) {

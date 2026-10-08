@@ -10,12 +10,12 @@ public class PoolImpl<T> extends Pool<T> {
 		provider = prov;
 	}
 
-	public PoolImpl(int initialCapacity, Prov<T> prov) {
+	public PoolImpl(Prov<T> prov, int initialCapacity) {
 		super(initialCapacity);
 		provider = prov;
 	}
 
-	public PoolImpl(int initialCapacity, int max, Prov<T> prov) {
+	public PoolImpl(Prov<T> prov, int initialCapacity, int max) {
 		super(initialCapacity, max);
 		provider = prov;
 	}

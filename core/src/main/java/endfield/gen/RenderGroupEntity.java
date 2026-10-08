@@ -12,7 +12,7 @@ import arc.util.Tmp;
 import arc.util.pooling.Pool;
 import arc.util.pooling.Pool.Poolable;
 import arc.util.pooling.Pools;
-import endfield.entities.Damage2.BasicPool;
+import endfield.util.pooling.PoolImpl;
 import mindustry.gen.Groups;
 
 public class RenderGroupEntity extends BaseEntity implements Poolable {
@@ -22,7 +22,7 @@ public class RenderGroupEntity extends BaseEntity implements Poolable {
 	public static RenderGroupEntity active;
 	public static float minX, minY, maxX, maxY;
 	public static float[] tmpVert = new float[4 * 6];
-	public static Pool<DrawnRegion> regionPool = new BasicPool<>(DrawnRegion::new);
+	public static Pool<DrawnRegion> regionPool = new PoolImpl<>(DrawnRegion::new);
 
 	public static void capture() {
 		if (active != null) return;

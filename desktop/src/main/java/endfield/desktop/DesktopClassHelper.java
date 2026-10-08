@@ -69,7 +69,7 @@ public class DesktopClassHelper implements ClassHelper {
 
 	@Override
 	public @Nullable Field findField(Class<?> clazz, String name) {
-		Field[] fields = function4.apply(clazz);
+		Field[] fields = getFields(clazz);
 		for (Field field : fields) {
 			if (field.getName().equals(name)) return field;
 		}
@@ -78,17 +78,16 @@ public class DesktopClassHelper implements ClassHelper {
 
 	@Override
 	public @Nullable Method findMethod(Class<?> clazz, String name, Class<?>... parameterTypes) {
-		Method[] methods = function5.apply(clazz);
+		Method[] methods = getMethods(clazz);
 		for (Method method : methods) {
 			if (method.getName().equals(name) && Arrays.equals((Class<?>[]) mtypes.get(method), parameterTypes)) return method;
 		}
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public <T> @Nullable Constructor<T> findConstructor(Class<T> clazz, Class<?>... parameterTypes) {
-		Constructor<T>[] constructors = (Constructor<T>[]) function6.apply(clazz);
+		Constructor<T>[] constructors = getConstructors(clazz);
 		for (Constructor<T> constructor : constructors) {
 			if (Arrays.equals((Class<?>[]) ctypes.get(constructor), parameterTypes)) return constructor;
 		}
@@ -97,7 +96,7 @@ public class DesktopClassHelper implements ClassHelper {
 
 	@Override
 	public Field getField(Class<?> clazz, String name) {
-		Field[] fields = function4.apply(clazz);
+		Field[] fields = getFields(clazz);
 		for (Field field : fields) {
 			if (field.getName().equals(name)) return field;
 		}
@@ -107,7 +106,7 @@ public class DesktopClassHelper implements ClassHelper {
 
 	@Override
 	public Method getMethod(Class<?> clazz, String name, Class<?>... parameterTypes) {
-		Method[] methods = function5.apply(clazz);
+		Method[] methods = getMethods(clazz);
 		for (Method method : methods) {
 			if (method.getName().equals(name) && Arrays.equals((Class<?>[]) mtypes.get(method), parameterTypes)) return method;
 		}
@@ -115,10 +114,9 @@ public class DesktopClassHelper implements ClassHelper {
 		throw sneakyThrow(new NoSuchMethodException(Reflects.methodToString(clazz, name, parameterTypes)));
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public <T> Constructor<T> getConstructor(Class<T> clazz, Class<?>... parameterTypes) {
-		Constructor<T>[] constructors = (Constructor<T>[]) function6.apply(clazz);
+		Constructor<T>[] constructors = getConstructors(clazz);
 		for (Constructor<T> constructor : constructors) {
 			if (Arrays.equals((Class<?>[]) ctypes.get(constructor), parameterTypes)) return constructor;
 		}
@@ -128,23 +126,35 @@ public class DesktopClassHelper implements ClassHelper {
 
 	@Override
 	public Field[] getFields(Class<?> clazz) {
-		return function4.apply(clazz);
+		try {
+			return (Field[]) getFields.invokeExact(clazz, false);
+		} catch (Throwable e) {
+			throw sneakyThrow(e);
+		}
 	}
 
 	@Override
 	public Method[] getMethods(Class<?> clazz) {
-		return function5.apply(clazz);
+		try {
+			return (Method[]) getMethods.invokeExact(clazz, false);
+		} catch (Throwable e) {
+			throw sneakyThrow(e);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> Constructor<T>[] getConstructors(Class<T> clazz) {
-		return (Constructor<T>[]) function6.apply(clazz);
+		try {
+			return (Constructor<T>[]) getConstructors.invokeExact(clazz, false);
+		} catch (Throwable e) {
+			throw sneakyThrow(e);
+		}
 	}
 
 	@Override
 	public @Nullable Field findField(Class<?> clazz, Boolf<Field> filler) {
-		Field[] fields = function4.apply(clazz);
+		Field[] fields = getFields(clazz);
 		for (Field field : fields) {
 			if (filler.get(field)) {
 				return field;
@@ -155,17 +165,16 @@ public class DesktopClassHelper implements ClassHelper {
 
 	@Override
 	public @Nullable Method findMethod(Class<?> clazz, Boolf<Method> filler) {
-		Method[] methods = function5.apply(clazz);
+		Method[] methods = getMethods(clazz);
 		for (Method method : methods) {
 			if (filler.get(method)) return method;
 		}
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public <T> @Nullable Constructor<T> findConstructor(Class<T> clazz, Boolf<Constructor<T>> filler) {
-		Constructor<T>[] constructors = (Constructor<T>[]) function6.apply(clazz);
+		Constructor<T>[] constructors = getConstructors(clazz);
 		for (Constructor<T> constructor : constructors) {
 			if (filler.get(constructor)) return constructor;
 		}
@@ -174,7 +183,7 @@ public class DesktopClassHelper implements ClassHelper {
 
 	@Override
 	public Field getField(Class<?> clazz, Boolf<Field> filler) {
-		Field[] fields = function4.apply(clazz);
+		Field[] fields = getFields(clazz);
 		for (Field field : fields) {
 			if (filler.get(field)) {
 				return field;
@@ -186,7 +195,7 @@ public class DesktopClassHelper implements ClassHelper {
 
 	@Override
 	public Method getMethod(Class<?> clazz, Boolf<Method> filler) {
-		Method[] methods = function5.apply(clazz);
+		Method[] methods = getMethods(clazz);
 		for (Method method : methods) {
 			if (filler.get(method)) return method;
 		}
@@ -194,10 +203,9 @@ public class DesktopClassHelper implements ClassHelper {
 		throw sneakyThrow(new NoSuchMethodException("Method not found"));
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public <T> Constructor<T> getConstructor(Class<T> clazz, Boolf<Constructor<T>> filler) {
-		Constructor<T>[] constructors = (Constructor<T>[]) function6.apply(clazz);
+		Constructor<T>[] constructors = getConstructors(clazz);
 		for (Constructor<T> constructor : constructors) {
 			if (filler.get(constructor)) return constructor;
 		}

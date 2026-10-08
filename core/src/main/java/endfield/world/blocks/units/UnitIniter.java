@@ -6,7 +6,7 @@ import arc.scene.ui.layout.Table;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import endfield.entities.Entitys2;
+import endfield.entities.Entities;
 import endfield.graphics.Drawn;
 import mindustry.Vars;
 import mindustry.content.Fx;
@@ -166,7 +166,7 @@ public class UnitIniter extends Block {
 		}
 
 		public void addUnit() {
-			if (Entitys2.spawnUnit(team, x, y, angle, spawnRange, delay, 0, toSpawnType, 1)) {
+			if (Entities.spawnUnit(team, x, y, angle, spawnRange, delay, 0, toSpawnType, 1)) {
 				kill();
 				addUnit = true;
 			}

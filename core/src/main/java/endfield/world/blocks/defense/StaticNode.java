@@ -19,7 +19,7 @@ import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import endfield.entities.Damage2;
+import endfield.entities.Damages;
 import endfield.world.meta.StatValues2;
 import mindustry.Vars;
 import mindustry.content.Fx;
@@ -233,7 +233,7 @@ public class StaticNode extends Block {
 					by = y1 + Tmp.v1.y;
 			float dst = Mathf.dst(bx + Tmp.v3.x, by + Tmp.v3.y, x2 - Tmp.v2.x + Tmp.v3.x, y2 - Tmp.v2.y + Tmp.v3.y);
 
-			boolean hit = Damage2.collideLine(damage, team, shockEffect, status, statusDuration,
+			boolean hit = Damages.collideLine(damage, team, shockEffect, status, statusDuration,
 					bx + Tmp.v3.x, by + Tmp.v3.y, angle1, dst,
 					hitGround, hitAir
 			);

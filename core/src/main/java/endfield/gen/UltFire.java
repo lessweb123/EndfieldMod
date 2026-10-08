@@ -184,7 +184,7 @@ public class UltFire extends Fire {
 
 	@Override
 	public int classId() {
-		return Entitys.getId(getClass());
+		return EntityRegister.getId(getClass());
 	}
 
 	@Override

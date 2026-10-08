@@ -5,7 +5,7 @@ import arc.graphics.g2d.Fill;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.util.Tmp;
-import endfield.entities.Damage2;
+import endfield.entities.Damages;
 import endfield.util.Constant;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
@@ -51,7 +51,7 @@ public class HealingNukeBulletType extends BulletType {
 
 	@Override
 	public void init(Bullet b) {
-		float[] data = Damage2.castCircle(b.x, b.y, radius, rays, Constant.BOOLF_BUILDING_TRUE, build -> {
+		float[] data = Damages.castCircle(b.x, b.y, radius, rays, Constant.BOOLF_BUILDING_TRUE, build -> {
 			if (build.team == b.team) {
 				Fx.healBlockFull.at(build.x, build.y, build.block.size, Pal.heal);
 				build.heal((healPercent / 100f) * build.maxHealth);

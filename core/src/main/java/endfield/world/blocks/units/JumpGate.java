@@ -19,7 +19,7 @@ import arc.util.Strings;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import endfield.entities.Entitys2;
+import endfield.entities.Entities;
 import endfield.gen.Spawner;
 import endfield.math.Mathm;
 import endfield.type.Recipe;
@@ -295,7 +295,7 @@ public class JumpGate extends Block {
 		}
 
 		public void findTiles() {
-			tiles = Entitys2.ableToSpawn(unitType(), x, y, maxRadius);
+			tiles = Entities.ableToSpawn(unitType(), x, y, maxRadius);
 		}
 
 		public void spawnUnit() {

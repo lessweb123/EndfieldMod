@@ -4,7 +4,6 @@ import arc.func.Func;
 import arc.func.Prov;
 import arc.struct.ObjectIntMap;
 import arc.struct.ObjectMap;
-import arc.util.Structs;
 import endfield.entities.effect.VapourizeEffect.VapourizeEffectState;
 import mindustry.ctype.Content;
 import mindustry.gen.EntityMapping;
@@ -17,12 +16,12 @@ import org.jetbrains.annotations.ApiStatus.Obsolete;
  *
  * @since 1.0.6
  */
-public final class Entitys {
+public final class EntityRegister {
 	static final ObjectIntMap<Class<? extends Entityc>> classIdMap = new ObjectIntMap<>();
 	static final ObjectMap<String, Prov<? extends Entityc>> needIdMap = new ObjectMap<>();
 
 	/** Don't let anyone instantiate this class. */
-	private Entitys() {}
+	private EntityRegister() {}
 
 	public static Prov<? extends Entityc> get(Class<? extends Entityc> type) {
 		return get(type.getSimpleName());
@@ -48,11 +47,12 @@ public final class Entitys {
 	public static <T extends Content> T content(String name, Class<? extends Entityc> type, Func<String, ? extends T> create) {
 		T content = create.get(name);
 
-		String suffix = content.minfo.mod == null ? "" : content.minfo.mod.name + "-";
+		if (content.minfo.mod != null) name = content.minfo.mod.name + "-" + name;
+
 		if (type.getName().startsWith("mindustry.gen.")) {
-			EntityMapping.nameMap.put(suffix + name, Structs.find(EntityMapping.idMap, p -> p != null && p.get().getClass() == type));
+			EntityMapping.nameMap.put(name, EntityMapping.map(type.getSimpleName()));
 		} else {
-			EntityMapping.nameMap.put(suffix + name, needIdMap.get(type.getSimpleName()));
+			EntityMapping.nameMap.put(name, needIdMap.get(type.getSimpleName()));
 		}
 		return content;
 	}

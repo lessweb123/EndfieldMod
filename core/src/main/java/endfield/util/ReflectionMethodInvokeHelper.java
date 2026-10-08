@@ -36,36 +36,35 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 			if (entry.key.match(types)) return entry.value;
 		}
 
-		Class<?> curr = clazz;
+		Class<?> current = clazz;
 
-		while (curr != null) {
+		while (current != null) {
 			try {
-				res = curr.getDeclaredMethod(name, types.paramType());
+				res = current.getDeclaredMethod(name, types.paramType());
 				res.setAccessible(true);
 				map.put(FunctionType.from(res), res);
 				return res;
 			} catch (Throwable ignored) {}
 
-			curr = curr.getSuperclass();
+			current = current.getSuperclass();
 		}
 
-		curr = clazz;
+		current = clazz;
 
-		while (curr != null) {
-			for (Method method : methodsMap.computeIfAbsent(curr, function2)) {
+		while (current != null) {
+			for (Method method : methodsMap.computeIfAbsent(current, function2)) {
 				if (!method.getName().equals(name)) continue;
 
 				FunctionType t;
 				if ((t = FunctionType.from(method)).match(types)) {
 					method.setAccessible(true);
-					res = method;
-					map.put(t, res);
-					return res;
+					map.put(t, method);
+					return method;
 				}
 				t.recycle();
 			}
 
-			curr = curr.getSuperclass();
+			current = current.getSuperclass();
 		}
 
 		throw sneakyThrow(new NoSuchMethodException("no such method " + name + " in class: " + clazz + " with assignable parameter: " + types));

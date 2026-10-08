@@ -11,7 +11,7 @@ import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
 import endfield.content.Fx2;
-import endfield.gen.Entitys;
+import endfield.gen.EntityRegister;
 import endfield.math.Mathm;
 import endfield.util.Get;
 import mindustry.content.Liquids;
@@ -113,7 +113,7 @@ public final class VapourizeEffect {
 
 		@Override
 		public int classId() {
-			return Entitys.getId(getClass());
+			return EntityRegister.getId(getClass());
 		}
 
 		@Override

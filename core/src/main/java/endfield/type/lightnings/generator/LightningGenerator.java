@@ -9,6 +9,7 @@ import arc.util.pooling.Pools;
 import endfield.func.Floatf2;
 import endfield.type.lightnings.LightningEffect;
 import endfield.type.lightnings.LightningVertex;
+import endfield.util.pooling.PoolImpl;
 
 import java.util.Iterator;
 
@@ -61,12 +62,7 @@ public abstract class LightningGenerator implements Iterable<LightningVertex>, I
 	public static final Pool<LightningVertex> vertexPool;
 
 	static {
-		Pools.set(LightningVertex.class, vertexPool = new Pool<>(8192, 65536) {
-			@Override
-			protected LightningVertex newObject() {
-				return new LightningVertex();
-			}
-		});
+		Pools.set(LightningVertex.class, vertexPool = new PoolImpl<>(LightningVertex::new, 8192, 65536));
 	}
 
 	public void setCurrentGen(LightningEffect curr) {

@@ -14,9 +14,9 @@ import arc.util.Tmp;
 import arc.util.pooling.Pool;
 import arc.util.pooling.Pool.Poolable;
 import arc.util.pooling.Pools;
-import endfield.entities.Damage2.BasicPool;
 import endfield.gen.BaseEntity;
 import endfield.math.Mathm;
+import endfield.util.pooling.PoolImpl;
 import mindustry.entities.Sized;
 import mindustry.gen.Groups;
 import mindustry.graphics.Layer;
@@ -32,7 +32,7 @@ public class Disintegration implements Poolable {
 	public float z = Layer.flyingUnit;
 	public Color drawnColor = Color.white.cpy(), scorchColor = Pal.rubble.cpy();
 
-	static Pool<Disintegration> pool = new BasicPool<>(Disintegration::new);
+	static Pool<Disintegration> pool = new PoolImpl<>(Disintegration::new);
 	static int maxDimension = 64;
 	static Point2 tmpPoint = new Point2();
 	static FloatSeq fseq = new FloatSeq();

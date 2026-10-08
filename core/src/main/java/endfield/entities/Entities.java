@@ -61,9 +61,9 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.function.Function;
 
-import static endfield.entities.Damage2.tmpBuild;
+import static endfield.entities.Damages.tmpBuild;
 
-public final class Entitys2 {
+public final class Entities {
 	public static final Vec2 v1 = new Vec2(), v2 = new Vec2(), v3 = new Vec2(), v4 = new Vec2(), v11 = new Vec2(), v12 = new Vec2(), v13 = new Vec2();
 	public static final Rect rect = new Rect(), hitRect = new Rect(), rect1 = new Rect(), rect2 = new Rect();
 	public static final Rand rand = new Rand();
@@ -93,7 +93,7 @@ public final class Entitys2 {
 	static final Function<Class<? extends Entityc>, Field> func1 = c -> ClassHandler.findField(c, "added");
 	static final Function<Class<? extends Building>, Field> func2 = c -> ClassHandler.findField(c, boolf1);
 
-	private Entitys2() {}
+	private Entities() {}
 
 	public static Position collideBuild(Team team, float x1, float y1, float x2, float y2, Boolf<Building> boolf) {
 		tmpBuild = null;
@@ -437,7 +437,7 @@ public final class Entitys2 {
 	public static Boolf<Tile> ableToSpawn(UnitType type) {
 		if (type.flying) {
 			return flyingFormat;
-		} else if (WaterMovec.class.isAssignableFrom(type.constructor.get().getClass())) {
+		} else if (type.sample instanceof WaterMovec) {
 			return navyFormat;
 		} else {
 			return groundFormat;

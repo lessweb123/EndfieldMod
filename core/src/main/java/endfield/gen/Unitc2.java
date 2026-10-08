@@ -26,6 +26,6 @@ public interface Unitc2 extends Unitc, ExtraVariable {
 
 	@Override
 	default int classId() {
-		return Entitys.getId(getClass());
+		return EntityRegister.getId(getClass());
 	}
 }

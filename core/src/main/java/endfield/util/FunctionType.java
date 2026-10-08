@@ -1,11 +1,13 @@
 package endfield.util;
 
 import arc.struct.Seq;
+import arc.util.pooling.Pool;
+import arc.util.pooling.Pool.Poolable;
+import arc.util.pooling.Pools;
 
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
-import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,7 +17,7 @@ import java.util.List;
  *
  * @author EBwilson
  */
-public class FunctionType {
+public class FunctionType implements Poolable {
 	/**
 	 * Reuse the recycling area capacity, changing the value usually does not require setting, but if you
 	 * may need large-scale recursion or a large number of concurrent calls, you may need to set this limit
@@ -23,12 +25,14 @@ public class FunctionType {
 	 */
 	public static int maxRecycle = 4096;
 
-	static final ArrayDeque<FunctionType> recyclePool = new ArrayDeque<>();
+	static final Pool<FunctionType> recyclePool = Pools.get(FunctionType.class, FunctionType::new);
 
 	Class<?>[] paramType;
 	int hash;
 
-	FunctionType(Class<?>... types) {
+	FunctionType() {}
+
+	FunctionType(Class<?>[] types) {
 		paramType = types;
 		hash = Arrays.hashCode(types);
 	}
@@ -42,9 +46,7 @@ public class FunctionType {
 	}
 
 	public static FunctionType inst(Class<?>... paramType) {
-		if (recyclePool.isEmpty()) return new FunctionType(paramType);
-
-		FunctionType res = recyclePool.pop();
+		FunctionType res = recyclePool.obtain();
 		res.paramType = paramType;
 		res.hash = Arrays.hashCode(paramType);
 		return res;
@@ -105,11 +107,13 @@ public class FunctionType {
 	}
 
 	public void recycle() {
-		if (recyclePool.size() >= maxRecycle) return;
+		Pools.free(this);
+	}
 
+	@Override
+	public void reset() {
 		paramType = Constant.EMPTY_CLASS;
 		hash = 0;
-		recyclePool.push(this);
 	}
 
 	@Override

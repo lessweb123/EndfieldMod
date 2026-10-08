@@ -9,7 +9,7 @@ import arc.math.Interp;
 import arc.math.Mathf;
 import arc.util.Time;
 import arc.util.Tmp;
-import endfield.entities.Entitys2;
+import endfield.entities.Entities;
 import endfield.graphics.Drawn;
 import mindustry.Vars;
 import mindustry.content.Fx;
@@ -104,7 +104,7 @@ public class StrafeLaserBulletType extends BulletType {
 
 		float fout = b.fout(fallScl) * Mathf.curve(b.fin(), 0, fallScl);
 		float maxRange = this.maxRange * fout;
-		float realLength = Entitys2.findLaserLength(b, rotation, maxRange);
+		float realLength = Entities.findLaserLength(b, rotation, maxRange);
 
 		Tmp.v1.trns(rotation, realLength);
 
@@ -168,7 +168,7 @@ public class StrafeLaserBulletType extends BulletType {
 	public void update(Bullet b) {
 		if (b.timer.get(1, computeTick)) {
 			float maxRange = this.maxRange * b.fout(fallScl) * Mathf.curve(b.fin(), 0, fallScl);
-			Entitys2.collideLine(b, b.team, Fx.none, b.x, b.y, dataRot ? b.fdata : b.rotation() + getRotation(b), maxRange, true, true);
+			Entities.collideLine(b, b.team, Fx.none, b.x, b.y, dataRot ? b.fdata : b.rotation() + getRotation(b), maxRange, true, true);
 		}
 
 		if (dataRot && b.owner instanceof Unit u) {

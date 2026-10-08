@@ -64,7 +64,7 @@ public class PressureGraphUpdater implements Entityc {
 
 	@Override
 	public int classId() {
-		return Entitys.getId(getClass());
+		return EntityRegister.getId(getClass());
 	}
 
 	@Override

@@ -14,15 +14,15 @@ import mindustry.world.meta.BlockGroup;
 import java.util.Arrays;
 
 public final class UnitSorts2 {
-	public static final Sortf slowest = (u, x, y) -> u.speed() + Mathf.dst2(u.x, u.y, x, y) / 6400f;
-	public static final Sortf fastest = (u, x, y) -> -u.speed() + Mathf.dst2(u.x, u.y, x, y) / 6400f;
-
 	static final float[][] costs = new float[16][];
 	static final float[][] cpriority = new float[16][];
 	static final Unit[][] result = new Unit[16][];
 	static final Unit[] empty = new Unit[0];
 
 	static float dcr;
+
+	public static final Sortf slowest = (u, x, y) -> u.speed() + Mathf.dst2(u.x, u.y, x, y) / 6400f;
+	public static final Sortf fastest = (u, x, y) -> -u.speed() + Mathf.dst2(u.x, u.y, x, y) / 6400f;
 
 	public static final Sortf regionalHPMaximumUnit = (u, x, y) -> {
 		dcr = 0;

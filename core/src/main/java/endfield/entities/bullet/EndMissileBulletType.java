@@ -5,7 +5,7 @@ import arc.math.Interp;
 import arc.math.Mathf;
 import arc.util.Time;
 import endfield.content.Fx2;
-import endfield.entities.Entitys2;
+import endfield.entities.Entities;
 import endfield.graphics.Pal2;
 import endfield.math.Mathm;
 import endfield.type.weapons.EndLauncherWeapon.EndLauncherData;
@@ -96,7 +96,7 @@ public class EndMissileBulletType extends BasicBulletType {
 
 		Fx2.desMissileHit.at(x, y, b.rotation());
 
-		Entitys2.scanEnemies(b.team, x, y, 40f, true, true, t -> {
+		Entities.scanEnemies(b.team, x, y, 40f, true, true, t -> {
 			float dam = Mathf.chance(0.333f) ? 1000f : 200f;
 
 			if (t instanceof Healthc h) {

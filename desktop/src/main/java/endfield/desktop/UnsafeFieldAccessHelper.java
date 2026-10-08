@@ -31,15 +31,15 @@ public class UnsafeFieldAccessHelper implements FieldAccessHelper {
 				return res;
 			}
 		} else {
-			Class<?> curr = clazz;
-			while (curr != null) {
-				res = findField(curr, name);
+			Class<?> current = clazz;
+			while (current != null) {
+				res = findField(current, name);
 				if (res != null && (res.getModifiers() & Modifier.STATIC) == 0) {
 					map.put(name, res);
 					return res;
 				}
 
-				curr = curr.getSuperclass();
+				current = current.getSuperclass();
 			}
 		}
 

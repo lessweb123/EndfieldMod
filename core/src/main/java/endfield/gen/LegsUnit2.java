@@ -20,7 +20,7 @@ public class LegsUnit2 extends LegsUnit implements Unitc2 {
 
 	@Override
 	public int classId() {
-		return Entitys.getId(getClass());
+		return EntityRegister.getId(getClass());
 	}
 
 	@Override

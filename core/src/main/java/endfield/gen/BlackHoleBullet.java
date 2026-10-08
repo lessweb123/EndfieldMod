@@ -14,6 +14,6 @@ public class BlackHoleBullet extends Bullet {
 
 	@Override
 	public int classId() {
-		return Entitys.getId(getClass());
+		return EntityRegister.getId(getClass());
 	}
 }

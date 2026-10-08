@@ -67,17 +67,17 @@ public final class ObjectHandler {
 	}
 
 	public static Seq<Field> getFields(Object object, @Nullable Boolf<Field> filler) {
-		Class<?> curr = object.getClass();
+		Class<?> current = object.getClass();
 		Seq<Field> fields = new Seq<>(Field.class);
 
-		while (curr != Object.class) {
-			for (Field field : ClassHandler.getFields(curr)) {
+		while (current != Object.class) {
+			for (Field field : ClassHandler.getFields(current)) {
 				if ((field.getModifiers() & Modifier.STATIC) != 0 || filler != null && !filler.get(field)) continue;
 
 				fields.add(field);
 			}
 
-			curr = curr.getSuperclass();
+			current = current.getSuperclass();
 		}
 		return fields;
 	}

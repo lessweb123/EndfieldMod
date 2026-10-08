@@ -11,7 +11,7 @@ import arc.math.geom.Vec2;
 import arc.util.Tmp;
 import endfield.audio.Sounds2;
 import endfield.content.Fx2;
-import endfield.entities.Damage2;
+import endfield.entities.Damages;
 import endfield.graphics.Pal2;
 import endfield.math.Mathm;
 import endfield.util.Get;
@@ -114,7 +114,7 @@ public class EndRailBulletType extends BulletType {
 		float vx = Tmp.v1.x, vy = Tmp.v1.y;
 		//float rot = b.rotation();
 
-		float len = b.fdata = Damage2.hitLaser(b.team, 4f, b.x, b.y, vx, vy, null, h -> (bulletHealth -= h.maxHealth()) <= 0, (h, x, y) -> {
+		float len = b.fdata = Damages.hitLaser(b.team, 4f, b.x, b.y, vx, vy, null, h -> (bulletHealth -= h.maxHealth()) <= 0, (h, x, y) -> {
 			hit(b, x, y);
 			//float hscl = h instanceof Sized s ? s.hitSize() : 0f;
 			//hitEnd(b, x, y, Mathm.clamp(hscl / 90f) + Mathf.sqrt(hscl / 400f));

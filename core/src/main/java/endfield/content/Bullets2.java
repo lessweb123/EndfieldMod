@@ -15,7 +15,7 @@ import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
 import endfield.audio.Sounds2;
-import endfield.entities.Entitys2;
+import endfield.entities.Entities;
 import endfield.entities.bullet.AccelBulletType;
 import endfield.entities.bullet.BlackHoleBulletType;
 import endfield.entities.bullet.BoidBulletType;
@@ -320,7 +320,7 @@ public final class Bullets2 {
 
 				@Override
 				public void init(Bullet b) {
-					Vec2 p = new Vec2().set(Entitys2.collideBuildOnLength(b.team, b.x, b.y, length, b.rotation(), Constant.BOOLF_BUILDING_TRUE));
+					Vec2 p = new Vec2().set(Entities.collideBuildOnLength(b.team, b.x, b.y, length, b.rotation(), Constant.BOOLF_BUILDING_TRUE));
 
 					float resultLength = b.dst(p), rot = b.rotation();
 
@@ -1042,7 +1042,7 @@ public final class Bullets2 {
 				Draw.reset();
 				float rotation = dataRot ? b.fdata : b.rotation() + getRotation(b);
 				float maxRangeFout = maxRange * fout;
-				float realLength = Entitys2.findLaserLength(b, rotation, maxRangeFout);
+				float realLength = Entities.findLaserLength(b, rotation, maxRangeFout);
 				Tmp.v1.trns(rotation, realLength);
 				Tmp.v2.trns(rotation, 0f, width / 2f * fout);
 				Tmp.v3.setZero();

@@ -9,6 +9,7 @@ import arc.util.Time;
 import endfield.content.Fx2;
 import endfield.math.Mathm;
 import endfield.world.meta.Stats2;
+import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.abilities.Ability;
@@ -96,14 +97,14 @@ public abstract class MirrorShieldAbility extends Ability implements ICollideBlo
 		if (unit.shield <= 0f && !wasBroken) {
 			unit.shield -= cooldown * regen;
 
-			breakEffect.at(unit.x, unit.y, unit.rotation(), unit.team.color, this);
+			breakEffect.at(unit.x, unit.y, unit.rotation(), unit.type.shieldColor(unit), this);
+		}
+
+		if (unit.shield < scaledMax(unit)) {
+			unit.shield += Time.delta * regen;
 		}
 
 		wasBroken = unit.shield <= 0f;
-
-		if (unit.shield < max) {
-			unit.shield += Time.delta * regen;
-		}
 
 		alpha = Mathf.lerpDelta(alpha, 0, 0.06f);
 
@@ -192,5 +193,9 @@ public abstract class MirrorShieldAbility extends Ability implements ICollideBlo
 
 			reflectEffect.at(bullet.x, bullet.y, baseAngel, bullet.type.hitColor);
 		}
+	}
+
+	public float scaledMax(Unit unit) {
+		return max * Vars.state.rules.unitHealth(unit.team);
 	}
 }

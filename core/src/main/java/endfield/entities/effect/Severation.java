@@ -22,12 +22,12 @@ import arc.util.Tmp;
 import arc.util.pooling.Pool;
 import arc.util.pooling.Pool.Poolable;
 import endfield.content.Fx2;
-import endfield.entities.Damage2.BasicPool;
-import endfield.entities.Entitys2;
+import endfield.entities.Entities;
 import endfield.gen.BaseEntity;
 import endfield.gen.RenderGroupEntity;
 import endfield.gen.RenderGroupEntity.DrawnRegion;
 import endfield.math.Mathm;
+import endfield.util.pooling.PoolImpl;
 import mindustry.Vars;
 import mindustry.entities.Effect;
 import mindustry.game.EventType.ResetEvent;
@@ -50,7 +50,7 @@ public class Severation extends BaseEntity implements QuadTreeObject {
 	public static QuadTree<Severation> cutTree;
 	public static Seq<Severation> cutsSeq = new Seq<>(Severation.class);
 	public static Seq<Slash> slashes = new Seq<>(Slash.class);
-	public static Pool<Slash> slashPool = new BasicPool<>(Slash::new);
+	public static Pool<Slash> slashPool = new PoolImpl<>(Slash::new);
 
 	public Seq<CutTri> tris = new Seq<>(CutTri.class);
 	public float bounds = 0f, area = 0f;
@@ -88,7 +88,7 @@ public class Severation extends BaseEntity implements QuadTreeObject {
 			}
 			if (slashes.any()) {
 				slashes.removeAll(s -> {
-					Entitys2.intersectLine(cutTree, 1f, s.x1, s.y1, s.x2, s.y2, (c, x, y) -> {
+					Entities.intersectLine(cutTree, 1f, s.x1, s.y1, s.x2, s.y2, (c, x, y) -> {
 						Rect b = Tmp.r3;
 						c.hitbox(b);
 						if (!b.contains(s.x1, s.y1) && !b.contains(s.x2, s.y2) && c.collided.add(s.id)) {

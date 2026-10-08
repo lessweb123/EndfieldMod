@@ -10,7 +10,6 @@ import static endfield.android.Unsafer.unsafe;
 /** Only For Android */
 @SuppressWarnings("removal")
 public final class HiddenApi {
-	public static final long intBytes = Integer.BYTES;
 	/**
 	 * <a href="https://cs.android.com/android/platform/superproject/main/+/main:art/runtime/mirror/executable.h;bpv=1;bpt=1;l=73?q=executable&ss=android&gsn=art_method_&gs=KYTHE%3A%2F%2Fkythe%3A%2F%2Fandroid.googlesource.com%2Fplatform%2Fsuperproject%2Fmain%2F%2Fmain%3Flang%3Dc%252B%252B%3Fpath%3Dart%2Fruntime%2Fmirror%2Fexecutable.h%23GLbGh3aGsjxEudfgKrvQvNcLL3KUjmUaJTc4nCOKuVY">
 	 * uint64_t Executable::art_method_</a>
@@ -56,8 +55,8 @@ public final class HiddenApi {
 		long address = addressOf(array);
 		long min = Long.MAX_VALUE, minSecond = Long.MAX_VALUE, max = Long.MIN_VALUE;
 		/* Find artMethod  */
-		for (int k = 0; k < length; ++k) {
-			final long addressKBs = address + k * intBytes;
+		for (long k = 0; k < length; ++k) {
+			final long addressKBs = address + k * Integer.BYTES;
 			final long addressMethod = unsafe.getInt(addressKBs);
 			final long addressArtMethod = unsafe.getLong(addressMethod + artMethodOffset);
 			if (min >= addressArtMethod) {

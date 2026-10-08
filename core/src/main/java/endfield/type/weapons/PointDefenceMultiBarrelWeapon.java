@@ -1,6 +1,6 @@
 package endfield.type.weapons;
 
-import endfield.entities.Damage2;
+import endfield.entities.Damages;
 import mindustry.entities.units.WeaponMount;
 import mindustry.gen.Bullet;
 import mindustry.gen.Teamc;
@@ -25,7 +25,7 @@ public class PointDefenceMultiBarrelWeapon extends MultiBarrelWeapon {
 
 	@Override
 	protected Teamc findTarget(Unit unit, float x, float y, float range, boolean air, boolean ground) {
-		return Damage2.nearestBullet(x, y, range, b -> b.team != unit.team && b.type.hittable && b.vel.len2() < 5f * 5f);
+		return Damages.nearestBullet(x, y, range, b -> b.team != unit.team && b.type.hittable && b.vel.len2() < 5f * 5f);
 	}
 
 	@Override

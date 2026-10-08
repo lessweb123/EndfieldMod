@@ -20,7 +20,7 @@ public class BuildingTetherPayloadUnit2 extends BuildingTetherPayloadUnit implem
 
 	@Override
 	public int classId() {
-		return Entitys.getId(getClass());
+		return EntityRegister.getId(getClass());
 	}
 
 	@Override

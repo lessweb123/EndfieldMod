@@ -4,7 +4,7 @@ import arc.ApplicationCore;
 import arc.math.Mathf;
 import arc.struct.ObjectSet;
 import arc.struct.Seq;
-import endfield.entities.Entitys2;
+import endfield.entities.Entities;
 import endfield.mod.Mods2;
 import mindustry.Vars;
 import mindustry.entities.bullet.BulletType;
@@ -26,7 +26,7 @@ public final class EndFieldListener implements IListener {
 
 	@Override
 	public void update() {
-		Entitys2.update();
+		Entities.update();
 	}
 
 	@Override

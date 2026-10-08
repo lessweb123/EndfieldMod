@@ -7,7 +7,7 @@ import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Strings;
 import arc.util.Structs;
-import endfield.entities.Entitys2;
+import endfield.entities.Entities;
 import endfield.files.Files2;
 import endfield.game.TeamPayloadData;
 import endfield.graphics.PositionLightning;
@@ -42,7 +42,7 @@ public final class Worlds {
 
 			PositionLightning.reset();
 
-			Entitys2.reset();
+			Entities.reset();
 		});
 	}
 

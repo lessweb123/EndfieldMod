@@ -27,15 +27,15 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 				return field;
 			}
 		} else {
-			Class<?> curr = clazz;
-			while (curr != null) {
-				field = findField(curr, name);
+			Class<?> current = clazz;
+			while (current != null) {
+				field = findField(current, name);
 				if (field != null) {
 					map.put(name, field);
 					return field;
 				}
 
-				curr = curr.getSuperclass();
+				current = current.getSuperclass();
 			}
 		}
 
