@@ -83,13 +83,10 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 
 		try {
 			res = clazz.getConstructor(types.paramType());
-		} catch (NoSuchMethodException ignored) {}
-
-		if (res != null) {
 			res.setAccessible(true);
 			map.put(FunctionType.from(res), res);
 			return res;
-		}
+		} catch (NoSuchMethodException ignored) {}
 
 		for (Constructor<?> constructor : constructorsMap.computeIfAbsent(clazz, function3)) {
 			FunctionType functionType;
@@ -106,6 +103,18 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 		if (res != null) return res;
 
 		throw sneakyThrow(new NoSuchMethodException("no such constructor in class: " + clazz + " with assignable parameter: " + types));
+	}
+
+	@Override
+	public void clear() {
+		methodsMap.clear();
+		constructorsMap.clear();
+	}
+
+	@Override
+	public void clear(Class<?> clazz) {
+		methodsMap.remove(clazz);
+		constructorsMap.remove(clazz);
 	}
 
 	@SuppressWarnings("unchecked")

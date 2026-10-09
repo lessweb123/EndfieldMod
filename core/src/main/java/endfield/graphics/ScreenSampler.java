@@ -18,9 +18,9 @@ import java.util.Objects;
 import static endfield.util.GetKt.sneakyThrow;
 
 public final class ScreenSampler {
-	private static final FieldAccessor currentBoundFramebuffer;
+	static final FieldAccessor currentBoundFramebuffer;
 
-	private static final FrameBuffer swapBuffer = new FrameBuffer();
+	static final FrameBuffer swapBuffer = new FrameBuffer();
 
 	private ScreenSampler() {}
 
@@ -65,7 +65,7 @@ public final class ScreenSampler {
 		Draw.blit(shader);
 	}
 
-	private static void copyPixels(GLFrameBuffer<?> target) {
+	static void copyPixels(GLFrameBuffer<?> target) {
 		if (Core.gl30 != null) {
 			Gl.bindFramebuffer(GL30.GL_READ_FRAMEBUFFER, 0);
 			Gl.bindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, target.getFramebufferHandle());
@@ -89,7 +89,7 @@ public final class ScreenSampler {
 		}
 	}
 
-	private static void blitBuffer(GLFrameBuffer<?> source, GLFrameBuffer<?> target) {
+	static void blitBuffer(GLFrameBuffer<?> source, GLFrameBuffer<?> target) {
 		if (Core.gl30 != null) {
 			Core.gl30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, source.getFramebufferHandle());
 			Core.gl30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, target.getFramebufferHandle());

@@ -55,6 +55,16 @@ public class UnsafeFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
+	public void clear() {
+		fieldsMap.clear();
+	}
+
+	@Override
+	public void clear(Class<?> clazz) {
+		fieldsMap.remove(clazz);
+	}
+
+	@Override
 	public void setByte(Object object, String name, byte value) {
 		Field field = getField(object.getClass(), name, false);
 

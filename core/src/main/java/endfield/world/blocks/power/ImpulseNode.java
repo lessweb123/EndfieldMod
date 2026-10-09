@@ -23,45 +23,52 @@ import mindustry.world.blocks.power.PowerNode;
 
 public class ImpulseNode extends PowerNode {
 	// TODO bring all buffers to their own class
-	public static FrameBuffer lightningBuffer = Core.graphics == null ? null : new FrameBuffer(Core.graphics.getWidth(), Core.graphics.getHeight());
-	public static Seq<Runnable> lightningBufferDrawCalls = new Seq<>(Runnable.class);
+	public static FrameBuffer lightningBuffer;
+	public static Seq<Runnable> lightningBufferDrawCalls;
 
 	static {
-		Events.on(ResizeEvent.class, e -> {
-			lightningBuffer.resize(Core.graphics.getWidth(), Core.graphics.getHeight());
-		});
-		Events.run(Trigger.draw, () -> {
-			if (!lightningBufferDrawCalls.isEmpty()) {
-				var copy = lightningBufferDrawCalls.copy();
-				lightningBufferDrawCalls.clear();
+		if (!Vars.headless && Core.graphics != null) {
+			lightningBuffer = new FrameBuffer(Core.graphics.getWidth(), Core.graphics.getHeight());
+			lightningBufferDrawCalls = new Seq<>(Runnable.class);
 
-				Draw.draw(Layer.power, () -> {
-					Draw.flush();
-					lightningBuffer.begin(Color.clear);
-					copy.each(Runnable::run);
-					lightningBuffer.end();
+			Events.on(ResizeEvent.class, e -> {
+				lightningBuffer.resize(Core.graphics.getWidth(), Core.graphics.getHeight());
+			});
+			Events.run(Trigger.draw, () -> {
+				if (!lightningBufferDrawCalls.isEmpty()) {
+					var copy = lightningBufferDrawCalls.copy();
+					lightningBufferDrawCalls.clear();
 
-					Draw.alpha(Renderer.laserOpacity);
-					Draw.rect(
-							Draw.wrap(lightningBuffer.getTexture()),
-							Core.camera.position.x,
-							Core.camera.position.y,
-							Core.camera.width,
-							-Core.camera.height
-					);
-					Draw.reset();
-					Draw.flush();
-				});
-			}
-		});
-		Events.on(DisposeEvent.class, e -> lightningBuffer.dispose());
+					Draw.draw(Layer.power, () -> {
+						Draw.flush();
+						lightningBuffer.begin(Color.clear);
+						copy.each(Runnable::run);
+						lightningBuffer.end();
+
+						Draw.alpha(Renderer.laserOpacity);
+						Draw.rect(
+								Draw.wrap(lightningBuffer.getTexture()),
+								Core.camera.position.x,
+								Core.camera.position.y,
+								Core.camera.width,
+								-Core.camera.height
+						);
+						Draw.reset();
+						Draw.flush();
+					});
+				}
+			});
+			Events.on(DisposeEvent.class, e -> lightningBuffer.dispose());
+		}
 	}
 
 	public int effectTimer = timers++;
 	public float effectTime = 20;
 	public Effect lightningEffect = new Effect(10, e -> {
-		if (!(e.data instanceof Seq)) return;
+		if (!(e.data instanceof Seq<?>)) return;
+
 		Seq<Vec2> lines = e.data();
+
 		float fin = e.fin();
 		float fout = e.fout();
 		Color color = e.color;

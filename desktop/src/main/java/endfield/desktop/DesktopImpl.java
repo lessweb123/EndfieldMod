@@ -75,6 +75,8 @@ public class DesktopImpl implements PlatformImpl {
 		lookupBuilder = clazz -> methodInvokeHelper.newInstance(lookupCtor, clazz, null, 95);
 	}
 
+	public DesktopImpl() {}
+
 	@Override
 	public Lookup lookup(Class<?> clazz) {
 		return lookupMap.computeIfAbsent(clazz, lookupBuilder);

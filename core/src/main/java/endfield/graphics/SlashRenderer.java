@@ -11,15 +11,15 @@ import arc.util.Tmp;
 import mindustry.Vars;
 
 public final class SlashRenderer {
-	private static final Seq<SlashData> slashes = new Seq<>(SlashData.class);
-	private static int maxCount = 4;
-	private static SlashShader slashShader;
-	private static int slashIndex = 0;
-	private static FrameBuffer buffer;
+	static final Seq<SlashData> slashes = new Seq<>(SlashData.class);
+	static int maxCount = 4;
+	static SlashShader slashShader;
+	static int slashIndex = 0;
+	static FrameBuffer buffer;
 
 	private SlashRenderer() {}
 
-	private static void createShader() {
+	static void createShader() {
 		if (maxCount >= 1021) return; //Exceeds maximum number of registers for a single shader
 
 		if (slashShader != null) {
@@ -85,7 +85,7 @@ public final class SlashRenderer {
 		});
 	}
 
-	private static void drawSlashes() {
+	static void drawSlashes() {
 		for (int i = 0; i < slashIndex; i++) {
 			SlashData slash = slashes.items[i];
 			float ang = slash.angle * Mathf.radDeg;

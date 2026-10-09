@@ -21,4 +21,10 @@ public interface MethodInvokeHelper {
 	<T> T invokeStatic(Method method, Object... args);
 
 	<T> T newInstance(Constructor<T> constructor, Object... args);
+
+	/** Clear the method cache of all classes. */
+	default void clear() {}
+
+	/** Clear the method cache of the specified class. */
+	default void clear(Class<?> clazz) {}
 }

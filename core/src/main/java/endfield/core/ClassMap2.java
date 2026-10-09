@@ -93,6 +93,7 @@ import endfield.type.LiquidBottle;
 import endfield.type.Recipe;
 import endfield.type.unit.AncientUnitType;
 import endfield.type.unit.CopterUnitType;
+import endfield.type.unit.DayunTankUnitType;
 import endfield.type.unit.DoubleLegMechUnitType;
 import endfield.type.unit.EnergyUnitType;
 import endfield.type.unit.NucleoidUnitType;
@@ -484,6 +485,7 @@ final class ClassMap2 {
 		classes.put("UnitType2", UnitType2.class);
 		classes.put("AncientUnitType", AncientUnitType.class);
 		classes.put("CopterUnitType", CopterUnitType.class);
+		classes.put("DayunTankUnitType", DayunTankUnitType.class);
 		classes.put("DoubleLegMechUnitType", DoubleLegMechUnitType.class);
 		classes.put("EnergyUnitType", EnergyUnitType.class);
 		classes.put("NucleoidUnitType", NucleoidUnitType.class);

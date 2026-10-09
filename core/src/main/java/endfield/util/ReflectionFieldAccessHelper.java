@@ -51,6 +51,16 @@ public class ReflectionFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
+	public void clear() {
+		fieldsMap.clear();
+	}
+
+	@Override
+	public void clear(Class<?> clazz) {
+		fieldsMap.remove(clazz);
+	}
+
+	@Override
 	public void setByte(Object object, String name, byte value) {
 		try {
 			getField(object.getClass(), name, false).setByte(object, value);

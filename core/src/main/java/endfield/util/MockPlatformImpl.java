@@ -1,34 +1,19 @@
 package endfield.util;
 
-import arc.util.Reflect;
 import endfield.Vars2;
-import endfield.util.handler.ObjectHandler;
-import sun.misc.Unsafe;
 
 import java.lang.invoke.MethodHandles.Lookup;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
-import static endfield.util.GetKt.sneakyThrow;
-
-@SuppressWarnings("removal")
 public class MockPlatformImpl implements PlatformImpl {
-	public static Unsafe unsafe;
-
-	static {
-		unsafe = Reflect.get(Unsafe.class, "theUnsafe");
+	public MockPlatformImpl() {
+		init();
 	}
 
-	public MockPlatformImpl() {}
-
-	public MockPlatformImpl setup() {
+	protected void init() {
 		Vars2.fieldAccessHelper = new ReflectionFieldAccessHelper();
 		Vars2.methodInvokeHelper = new ReflectionMethodInvokeHelper();
 		Vars2.classHelper = new MockClassHelper();
 		Vars2.accessibleHelper = new MockAccessibleHelper();
-
-		return this;
 	}
 
 	@Override
@@ -36,39 +21,28 @@ public class MockPlatformImpl implements PlatformImpl {
 		return Reflects.publicLookup;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T clone(T object) {
-		Class<?> type = object.getClass();
-
-		if (type == Class.class || type == Field.class || type == Method.class || type == Constructor.class) return object;
-
-		try {
-			T result = (T) unsafe.allocateInstance(type);
-			ObjectHandler.copyField(object, result);
-			return result;
-		} catch (InstantiationException e) {
-			throw sneakyThrow(e);
-		}
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void put(long srcAddress, long destAddress, long bytes) {
-		unsafe.copyMemory(srcAddress, destAddress, bytes);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void put(Object src, int srcOffset, Object dst, int dstOffset, long bytes) {
-		unsafe.copyMemory(src, srcOffset, dst, dstOffset, bytes);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public int arrayBaseOffset(Class<?> arrayClass) {
-		return unsafe.arrayBaseOffset(arrayClass);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public int arrayIndexScale(Class<?> arrayClass) {
-		return unsafe.arrayIndexScale(arrayClass);
+		throw new UnsupportedOperationException();
 	}
 }

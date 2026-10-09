@@ -86,13 +86,12 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 			if (entry.key.match(types)) return entry.value;
 		}
 
-		Constructor<?> find = findConstructor(clazz, types.paramType());
-		if (find != null) {
-			res = asSpreader(find);
-			map.put(from(find), res);
+		Constructor<?> ctr = findConstructor(clazz, types.paramType());
+		if (ctr != null) {
+			res = asSpreader(ctr);
+			map.put(from(ctr), res);
+			return res;
 		}
-
-		if (res != null) return res;
 
 		for (Constructor<?> constructor : constructorsMap.computeIfAbsent(clazz, function6)) {
 			FunctionType functionType;
@@ -151,6 +150,18 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 		int paramCount = target.type().parameterCount();
 		MethodHandle spread = target.asSpreader(Object[].class, paramCount);
 		return spread.asType(MethodType.methodType(Object.class, Object[].class));
+	}
+
+	@Override
+	public void clear() {
+		methodsMap.clear();
+		constructorsMap.clear();
+	}
+
+	@Override
+	public void clear(Class<?> clazz) {
+		methodsMap.remove(clazz);
+		constructorsMap.remove(clazz);
 	}
 
 	@SuppressWarnings("unchecked")

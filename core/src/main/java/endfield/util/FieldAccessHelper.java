@@ -162,4 +162,10 @@ public interface FieldAccessHelper {
 	<T> T get(Object object, Field field);
 
 	<T> T getStatic(Field field);
+
+	/** Clear the field cache of all classes. */
+	default void clear() {}
+
+	/** Clear the field cache of the specified class. */
+	default void clear(Class<?> clazz) {}
 }

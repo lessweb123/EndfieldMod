@@ -91,7 +91,7 @@ public final class EndFieldMod extends Mod {
 					"endfield.desktop.DesktopImpl");
 			platformImpl = (PlatformImpl) impl.getConstructor().newInstance();
 		} catch (Throwable e) {
-			platformImpl = new MockPlatformImpl().setup();
+			platformImpl = new MockPlatformImpl();
 
 			Log.err(e);
 		}
