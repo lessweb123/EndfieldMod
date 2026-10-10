@@ -29,22 +29,21 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 	protected static final Prov<CollectionObjectMap<String, CollectionObjectMap<FunctionType, MethodHandle>>> prov6 = () -> new CollectionObjectMap<>(String.class, CollectionObjectMap.class);
 	protected static final Prov<CollectionObjectMap<FunctionType, MethodHandle>> prov7 = () -> new CollectionObjectMap<>(FunctionType.class, MethodHandle.class);
 
-	protected MethodHandle getMethod(Class<?> clazz, String name, FunctionType types) throws IllegalAccessException {
+	protected MethodHandle getMethod(Class<?> clazz, String name, FunctionType functionType) throws IllegalAccessException {
 		CollectionObjectMap<FunctionType, MethodHandle> map = methodPool.get(clazz, prov6).get(name, prov7);
 
-		FunctionType type = FunctionType.inst(types);
-		MethodHandle res = map.get(type);
+		MethodHandle res = map.get(functionType);
 
 		if (res != null) return res;
 
 		for (var entry : map) {
-			if (entry.key.match(types)) return entry.value;
+			if (entry.key.match(functionType)) return entry.value;
 		}
 
 		Class<?> current = clazz;
 
 		while (current != null) {
-			Method method = findMethod(current, name, types.paramType());
+			Method method = findMethod(current, name, functionType.paramType());
 
 			if (method != null) {
 				res = asSpreader(method);
@@ -61,52 +60,52 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 			for (Method method : methodsMap.computeIfAbsent(current, function5)) {
 				if (!method.getName().equals(name)) continue;
 
-				FunctionType t;
-				if ((t = from(method)).match(types)) {
+				FunctionType type;
+				if ((type = from(method)).match(functionType)) {
 					res = asSpreader(method);
-					map.put(t, res);
+					map.put(type, res);
 					return res;
 				}
-				t.recycle();
+				type.recycle();
 			}
 
 			current = current.getSuperclass();
 		}
 
-		throw sneakyThrow(new NoSuchMethodException("no such method " + name + " in class: " + clazz + " with assignable parameter: " + types));
+		throw sneakyThrow(new NoSuchMethodException("no such method " + name + " in class: " + clazz + " with assignable parameter: " + functionType));
 	}
 
-	protected MethodHandle getConstructor(Class<?> clazz, FunctionType types) throws IllegalAccessException {
+	protected MethodHandle getConstructor(Class<?> clazz, FunctionType functionType) throws IllegalAccessException {
 		CollectionObjectMap<FunctionType, MethodHandle> map = methodPool.get(clazz, prov6).get("<init>", prov7);
 
-		MethodHandle res = map.get(types);
+		MethodHandle res = map.get(functionType);
 		if (res != null) return res;
 
 		for (var entry : map) {
-			if (entry.key.match(types)) return entry.value;
+			if (entry.key.match(functionType)) return entry.value;
 		}
 
-		Constructor<?> ctr = findConstructor(clazz, types.paramType());
-		if (ctr != null) {
-			res = asSpreader(ctr);
-			map.put(from(ctr), res);
+		Constructor<?> cons = findConstructor(clazz, functionType.paramType());
+		if (cons != null) {
+			res = asSpreader(cons);
+			map.put(from(cons), res);
 			return res;
 		}
 
 		for (Constructor<?> constructor : constructorsMap.computeIfAbsent(clazz, function6)) {
-			FunctionType functionType;
-			if ((functionType = from(constructor)).match(types)) {
+			FunctionType type;
+			if ((type = from(constructor)).match(functionType)) {
 				res = asSpreader(constructor);
-				map.put(functionType, res);
+				map.put(type, res);
 
 				break;
 			}
-			functionType.recycle();
+			type.recycle();
 		}
 
 		if (res != null) return res;
 
-		throw sneakyThrow(new NoSuchMethodException("no such constructor in class: " + clazz + " with assignable parameter: " + types));
+		throw sneakyThrow(new NoSuchMethodException("no such constructor in class: " + clazz + " with assignable parameter: " + functionType));
 	}
 
 	protected @Nullable Method findMethod(Class<?> type, String name, Class<?>[] paramType) {
@@ -242,16 +241,15 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 		}
 	}
 
-	protected MethodHandle getMethod(Method method, FunctionType types) throws IllegalAccessException {
+	protected MethodHandle getMethod(Method method, FunctionType functionType) throws IllegalAccessException {
 		CollectionObjectMap<FunctionType, MethodHandle> map = methodPool.get(method.getDeclaringClass(), prov6).get(method.getName(), prov7);
 
-		FunctionType type = FunctionType.inst(types);
-		MethodHandle res = map.get(type);
+		MethodHandle res = map.get(functionType);
 
 		if (res != null) return res;
 
 		for (var entry : map) {
-			if (entry.key.match(types)) return entry.value;
+			if (entry.key.match(functionType)) return entry.value;
 		}
 
 		res = asSpreader(method);
@@ -261,19 +259,19 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 		return res;
 	}
 
-	protected MethodHandle getConstructor(Constructor<?> constructor, FunctionType types) throws IllegalAccessException {
+	protected MethodHandle getConstructor(Constructor<?> constructor, FunctionType functionType) throws IllegalAccessException {
 		CollectionObjectMap<FunctionType, MethodHandle> map = methodPool.get(constructor.getDeclaringClass(), prov6).get("<init>", prov7);
 
-		MethodHandle res = map.get(types);
+		MethodHandle res = map.get(functionType);
 		if (res != null) return res;
 
 		for (var entry : map) {
-			if (entry.key.match(types)) return entry.value;
+			if (entry.key.match(functionType)) return entry.value;
 		}
 
 		res = asSpreader(constructor);
 
-		map.put(types, res);
+		map.put(functionType, res);
 
 		return res;
 	}

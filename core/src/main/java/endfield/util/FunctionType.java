@@ -52,16 +52,8 @@ public class FunctionType implements Poolable {
 		return res;
 	}
 
-	public static FunctionType inst(Method method) {
-		return inst(method.getParameterTypes());
-	}
-
 	public static FunctionType inst(Object... param) {
 		return inst(Reflects.unwrapped(Reflects.toTypes(param)));
-	}
-
-	public static FunctionType inst(FunctionType type) {
-		return inst(type.paramType);
 	}
 
 	public static FunctionType from(MethodType type) {

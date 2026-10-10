@@ -18,6 +18,7 @@ import java.util.function.Function;
 import static endfield.Vars2.accessibleHelper;
 import static endfield.Vars2.classHelper;
 import static endfield.Vars2.fieldAccessHelper;
+import static endfield.Vars2.imageHandle;
 import static endfield.Vars2.methodInvokeHelper;
 import static endfield.android.Unsafer.unsafe;
 import static endfield.util.GetKt.sneakyThrow;
@@ -41,6 +42,8 @@ public class AndroidImpl implements PlatformImpl {
 		classHelper = new AndroidClassHelper();
 		fieldAccessHelper = new UnsafeFieldAccessHelper();
 		methodInvokeHelper = new ReflectionMethodInvokeHelper();
+
+		imageHandle = new AndroidImageHandle();
 	}
 
 	@SuppressWarnings("unchecked")

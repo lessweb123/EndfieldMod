@@ -24,23 +24,22 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 	protected static final Function<Class<?>, Method[]> function2 = Class::getDeclaredMethods;
 	protected static final Function<Class<?>, Constructor<?>[]> function3 = Class::getDeclaredConstructors;
 
-	protected Method getMethod(Class<?> clazz, String name, FunctionType types) {
+	protected Method getMethod(Class<?> clazz, String name, FunctionType functionType) {
 		CollectionObjectMap<FunctionType, Method> map = methodPool.get(clazz, prov2).get(name, prov3);
 
-		FunctionType type = FunctionType.inst(types);
-		Method res = map.get(type);
+		Method res = map.get(functionType);
 
 		if (res != null) return res;
 
 		for (ObjectHolder<FunctionType, Method> entry : map) {
-			if (entry.key.match(types)) return entry.value;
+			if (entry.key.match(functionType)) return entry.value;
 		}
 
 		Class<?> current = clazz;
 
 		while (current != null) {
 			try {
-				res = current.getDeclaredMethod(name, types.paramType());
+				res = current.getDeclaredMethod(name, functionType.paramType());
 				res.setAccessible(true);
 				map.put(FunctionType.from(res), res);
 				return res;
@@ -55,54 +54,54 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 			for (Method method : methodsMap.computeIfAbsent(current, function2)) {
 				if (!method.getName().equals(name)) continue;
 
-				FunctionType t;
-				if ((t = FunctionType.from(method)).match(types)) {
+				FunctionType type;
+				if ((type = FunctionType.from(method)).match(functionType)) {
 					method.setAccessible(true);
-					map.put(t, method);
+					map.put(type, method);
 					return method;
 				}
-				t.recycle();
+				type.recycle();
 			}
 
 			current = current.getSuperclass();
 		}
 
-		throw sneakyThrow(new NoSuchMethodException("no such method " + name + " in class: " + clazz + " with assignable parameter: " + types));
+		throw sneakyThrow(new NoSuchMethodException("no such method " + name + " in class: " + clazz + " with assignable parameter: " + functionType));
 	}
 
 	@SuppressWarnings("unchecked")
-	protected <T> Constructor<T> getConstructor(Class<T> clazz, FunctionType types) {
+	protected <T> Constructor<T> getConstructor(Class<T> clazz, FunctionType functionType) {
 		CollectionObjectMap<FunctionType, Constructor<?>> map = constructorPool.get(clazz, prov4);
 
-		Constructor<T> res = (Constructor<T>) map.get(types);
+		Constructor<T> res = (Constructor<T>) map.get(functionType);
 		if (res != null) return res;
 
 		for (ObjectHolder<FunctionType, Constructor<?>> entry : map) {
-			if (entry.key.match(types)) return (Constructor<T>) entry.value;
+			if (entry.key.match(functionType)) return (Constructor<T>) entry.value;
 		}
 
 		try {
-			res = clazz.getConstructor(types.paramType());
+			res = clazz.getConstructor(functionType.paramType());
 			res.setAccessible(true);
 			map.put(FunctionType.from(res), res);
 			return res;
 		} catch (NoSuchMethodException ignored) {}
 
 		for (Constructor<?> constructor : constructorsMap.computeIfAbsent(clazz, function3)) {
-			FunctionType functionType;
-			if ((functionType = FunctionType.from(constructor)).match(types)) {
-				map.put(functionType, constructor);
+			FunctionType type;
+			if ((type = FunctionType.from(constructor)).match(functionType)) {
+				map.put(type, constructor);
 				res = (Constructor<T>) constructor;
 				res.setAccessible(true);
 
 				break;
 			}
-			functionType.recycle();
+			type.recycle();
 		}
 
 		if (res != null) return res;
 
-		throw sneakyThrow(new NoSuchMethodException("no such constructor in class: " + clazz + " with assignable parameter: " + types));
+		throw sneakyThrow(new NoSuchMethodException("no such constructor in class: " + clazz + " with assignable parameter: " + functionType));
 	}
 
 	@Override

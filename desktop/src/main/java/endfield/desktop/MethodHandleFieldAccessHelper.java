@@ -25,23 +25,17 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 
 	protected static final Function<Field, MethodHandle> function7 = field -> {
 		try {
-			String name = field.getName();
-			Class<?> dec = field.getDeclaringClass(), type = field.getType();
-
 			return (field.getModifiers() & Modifier.STATIC) != 0 ?
-					lookup.findStaticGetter(dec, name, type) :
-					lookup.findGetter(dec, name, type);
+					lookup.findStaticGetter(field.getDeclaringClass(), field.getName(), field.getType()) :
+					lookup.findGetter(field.getDeclaringClass(), field.getName(), field.getType());
 		} catch (IllegalAccessException | NoSuchFieldException e) {
 			throw sneakyThrow(e);
 		}
 	}, function8 = field -> {
 		try {
-			String name = field.getName();
-			Class<?> dec = field.getDeclaringClass(), type = field.getType();
-
 			return (field.getModifiers() & Modifier.STATIC) != 0 ?
-					lookup.findStaticSetter(dec, name, type) :
-					lookup.findSetter(dec, name, type);
+					lookup.findStaticSetter(field.getDeclaringClass(), field.getName(), field.getType()) :
+					lookup.findSetter(field.getDeclaringClass(), field.getName(), field.getType());
 		} catch (IllegalAccessException | NoSuchFieldException e) {
 			throw sneakyThrow(e);
 		}
@@ -59,15 +53,15 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 				return res;
 			}
 		} else {
-			Class<?> curr = clazz;
-			while (curr != null) {
-				res = findField(curr, name);
+			Class<?> current = clazz;
+			while (current != null) {
+				res = findField(current, name);
 				if (res != null && (res.getModifiers() & Modifier.STATIC) == 0) {
 					map.put(name, res);
 					return res;
 				}
 
-				curr = curr.getSuperclass();
+				current = current.getSuperclass();
 			}
 		}
 

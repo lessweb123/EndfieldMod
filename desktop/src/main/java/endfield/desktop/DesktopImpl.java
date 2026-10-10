@@ -31,21 +31,18 @@ import java.util.function.Function;
 import static endfield.Vars2.accessibleHelper;
 import static endfield.Vars2.classHelper;
 import static endfield.Vars2.fieldAccessHelper;
+import static endfield.Vars2.imageHandle;
 import static endfield.Vars2.methodInvokeHelper;
 import static endfield.desktop.Unsafer.unsafe;
 import static endfield.util.GetKt.sneakyThrow;
 
 public class DesktopImpl implements PlatformImpl {
 	static Lookup lookup;
-	static Constructor<Lookup> lookupCtor;
-
-	static final CollectionObjectMap<Class<?>, Lookup> lookupMap;
-	static final Function<Class<?>, Lookup> lookupBuilder;
 
 	static {
 		try {
 			lookup = (Lookup) ReflectionFactory.getReflectionFactory()
-					.newConstructorForSerialization(Lookup.class, lookupCtor = Lookup.class.getDeclaredConstructor(Class.class, Class.class, int.class))
+					.newConstructorForSerialization(Lookup.class, Lookup.class.getDeclaredConstructor(Class.class, Class.class, int.class))
 					.newInstance(EndFieldMod.class, null, -1);
 
 			Demodulator.openModules();
@@ -71,15 +68,14 @@ public class DesktopImpl implements PlatformImpl {
 			};
 		}
 
-		lookupMap = new CollectionObjectMap<>(Class.class, Lookup.class);
-		lookupBuilder = clazz -> methodInvokeHelper.newInstance(lookupCtor, clazz, null, 95);
+		imageHandle = new DesktopImageHandle();
 	}
 
 	public DesktopImpl() {}
 
 	@Override
 	public Lookup lookup(Class<?> clazz) {
-		return lookupMap.computeIfAbsent(clazz, lookupBuilder);
+		return LookupHelper.lookupMap.computeIfAbsent(clazz, LookupHelper.lookupBuilder);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -106,7 +102,9 @@ public class DesktopImpl implements PlatformImpl {
 
 	@Override
 	public FieldAccessor fieldAccessor(Field field) {
-		return UnsafeFieldAccessor.getUnsafeFieldAccessor(field);
+		return (field.getModifiers() & Modifier.FINAL) == 0 ?
+				VarHandleFieldAccessor.getVarHandleFieldAccessor(field) :
+				UnsafeFieldAccessor.getUnsafeFieldAccessor(field);
 	}
 
 	@Override
@@ -167,5 +165,29 @@ public class DesktopImpl implements PlatformImpl {
 		}
 
 		private CloneHelper() {}
+	}
+
+	static final class LookupHelper {
+		static final MethodHandle lookupCtor;
+		static final CollectionObjectMap<Class<?>, Lookup> lookupMap;
+		static final Function<Class<?>, Lookup> lookupBuilder;
+
+		static {
+			try {
+				lookupCtor = lookup.findConstructor(Lookup.class, MethodType.methodType(void.class, Class.class, Class.class, int.class));
+				lookupMap = new CollectionObjectMap<>(Class.class, Lookup.class);
+				lookupBuilder = clazz -> {
+					try {
+						return (Lookup) lookupCtor.invokeExact(clazz, (Class<?>) null, 95);
+					} catch (Throwable e) {
+						throw sneakyThrow(e);
+					}
+				};
+			} catch (NoSuchMethodException | IllegalAccessException e) {
+				throw sneakyThrow(e);
+			}
+		}
+
+		private LookupHelper() {}
 	}
 }

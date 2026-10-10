@@ -10,6 +10,7 @@ import java.lang.reflect.Field;
 import static endfield.Vars2.accessibleHelper;
 import static endfield.Vars2.classHelper;
 import static endfield.Vars2.fieldAccessHelper;
+import static endfield.Vars2.imageHandle;
 import static endfield.Vars2.methodInvokeHelper;
 import static endfield.android.Unsafer2.internalUnsafe;
 
@@ -24,6 +25,8 @@ public class AndroidImpl2 extends AndroidImpl {
 		classHelper = new AndroidClassHelper2();
 		fieldAccessHelper = new UnsafeFieldAccessHelper2();
 		methodInvokeHelper = new ReflectionMethodInvokeHelper();
+
+		imageHandle = new AndroidImageHandle();
 	}
 
 	@Override

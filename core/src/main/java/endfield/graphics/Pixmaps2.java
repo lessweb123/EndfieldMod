@@ -10,6 +10,10 @@ import arc.math.Mathf;
 import endfield.func.IntBoolf;
 import endfield.func.Intf2;
 
+import java.io.File;
+
+import static endfield.Vars2.imageHandle;
+
 public final class Pixmaps2 {
 	public static Pixmap white;
 	public static Pixmap bottleTop, bottleBottom;
@@ -144,5 +148,21 @@ public final class Pixmaps2 {
 
 	public static PixmapRegion color(PixmapRegion region, Color from, Color to) {
 		return color(region, c -> c == from.rgba(), (x, y) -> to);
+	}
+
+	public static Pixmap load(Fi file) {
+		return imageHandle.decode(file.file());
+	}
+
+	public static Pixmap load(File file) {
+		return imageHandle.decode(file);
+	}
+
+	public static Pixmap load(byte[] data) {
+		return imageHandle.decode(data);
+	}
+
+	public static boolean isSupported(String mimeType) {
+		return imageHandle.isSupported(mimeType);
 	}
 }

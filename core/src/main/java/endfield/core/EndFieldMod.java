@@ -32,6 +32,7 @@ import endfield.graphics.Pixmaps2;
 import endfield.graphics.Regions2;
 import endfield.graphics.ScreenSampler;
 import endfield.graphics.Shaders2;
+import endfield.graphics.CustomMenuRenderer;
 import endfield.graphics.Textures2;
 import endfield.graphics.g2d.CutBatch;
 import endfield.graphics.g2d.DevastationBatch;
@@ -49,6 +50,7 @@ import endfield.ui.Styles2;
 import endfield.ui.Tex2;
 import endfield.util.MockPlatformImpl;
 import endfield.util.PlatformImpl;
+import endfield.util.handler.ClassHandler;
 import endfield.util.script.Scripts2;
 import endfield.world.Worlds;
 import endfield.world.patterns.PatternManager;
@@ -58,11 +60,15 @@ import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.game.EventType.DisposeEvent;
 import mindustry.game.EventType.FileTreeInitEvent;
 import mindustry.game.EventType.MusicRegisterEvent;
+import mindustry.graphics.MenuRenderer;
 import mindustry.mod.Mod;
 import mindustry.mod.Mods.LoadedMod;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable;
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.Setting;
+import mindustry.ui.fragments.MenuFragment;
+
+import java.lang.reflect.Field;
 
 import static endfield.Vars2.author;
 import static endfield.Vars2.linkGitHub;
@@ -106,6 +112,8 @@ public final class EndFieldMod extends Mod {
 			PatternManager.register();
 
 			if (Vars.headless || Vars2.isPlugin || Core.settings.getBool("closed-dialog")) return;
+
+			loadMenuRenderer();
 
 			FLabel label = new FLabel(Core.bundle.format("text.author", author));
 			BaseDialog dialog = new BaseDialog(Core.bundle.get("text.name"));
@@ -270,6 +278,8 @@ public final class EndFieldMod extends Mod {
 							table.row();
 						}
 					});
+					table.checkPref("override-background", false);
+					table.textPref("override-background-path", "", EndFieldMod::updateBackgroundPath);
 				});
 			}
 
@@ -282,5 +292,32 @@ public final class EndFieldMod extends Mod {
 		}
 
 		AdaptiveCoreDatabase.init();
+	}
+
+	void loadMenuRenderer() {
+		try {
+			Field field = MenuFragment.class.getDeclaredField("renderer");
+			field.setAccessible(true);
+
+			Vars2.originalMenuRenderer = (MenuRenderer) field.get(Vars.ui.menufrag);
+
+			field.set(Vars.ui.menufrag, Vars2.menuRenderer = ClassHandler.allocateInstance(CustomMenuRenderer.class));
+
+			CustomMenuRenderer.init();
+
+			updateBackgroundPath(Core.settings.getString("override-background-path", ""));
+		} catch (Throwable e) {
+			Log.err(e);
+		}
+	}
+
+	public static void updateBackgroundPath(String path) {
+		if (path == null || path.isEmpty()) return;
+
+		try {
+			CustomMenuRenderer.setPaths(path);
+		} catch (Exception e) {
+			Log.err(e);
+		}
 	}
 }

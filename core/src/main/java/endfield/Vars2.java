@@ -7,7 +7,9 @@ import arc.util.OS;
 import endfield.core.EndFieldListener;
 import endfield.core.EndFieldMod;
 import endfield.files.InternalFileTree;
+import endfield.graphics.ImageHandle;
 import endfield.graphics.SizedGraphics;
+import endfield.graphics.CustomMenuRenderer;
 import endfield.graphics.g2d.CutBatch;
 import endfield.graphics.g2d.DevastationBatch;
 import endfield.graphics.g2d.FragmentationBatch;
@@ -20,6 +22,7 @@ import endfield.util.MethodInvokeHelper;
 import endfield.util.PlatformImpl;
 import mindustry.Vars;
 import mindustry.content.TechTree.TechNode;
+import mindustry.graphics.MenuRenderer;
 import mindustry.type.Sector;
 
 /**
@@ -50,6 +53,8 @@ public final class Vars2 {
 	public static FieldAccessHelper fieldAccessHelper;
 	public static MethodInvokeHelper methodInvokeHelper;
 
+	public static ImageHandle imageHandle;
+
 	public static SizedGraphics sizedGraphics;
 
 	public static FragmentationBatch fragBatch;
@@ -58,6 +63,9 @@ public final class Vars2 {
 	public static DevastationBatch devasBatch;
 
 	public static EndFieldListener listener;
+
+	public static MenuRenderer originalMenuRenderer;
+	public static CustomMenuRenderer menuRenderer;
 
 	public static final float boardTimeTotal = 60 * 6;
 
