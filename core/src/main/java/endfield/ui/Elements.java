@@ -48,6 +48,7 @@ import arc.scene.ui.layout.Table;
 import arc.struct.OrderedMap;
 import arc.struct.Seq;
 import arc.util.Align;
+import arc.util.Nullable;
 import arc.util.Scaling;
 import arc.util.Strings;
 import arc.util.Time;
@@ -74,7 +75,6 @@ import mindustry.world.meta.StatCat;
 import mindustry.world.meta.StatValue;
 import mindustry.world.meta.Stats;
 import mindustry.world.modules.ItemModule;
-import org.jetbrains.annotations.Nullable;
 
 public final class Elements {
 	public static final float LEN = 60f, OFFSET = 12f;

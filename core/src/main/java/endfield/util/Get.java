@@ -20,6 +20,7 @@ import arc.struct.IntSet;
 import arc.struct.IntSet.IntSetIterator;
 import arc.struct.Seq;
 import arc.util.Log;
+import arc.util.Nullable;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.pooling.Pool.Poolable;
@@ -57,7 +58,6 @@ import mindustry.world.draw.DrawDefault;
 import mindustry.world.draw.DrawMulti;
 import mindustry.world.draw.DrawRegion;
 import mindustry.world.meta.StatUnit;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 

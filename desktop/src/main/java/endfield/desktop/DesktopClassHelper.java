@@ -1,9 +1,9 @@
 package endfield.desktop;
 
 import arc.func.Boolf;
+import arc.util.Nullable;
 import endfield.util.ClassHelper;
 import endfield.util.Reflects;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;

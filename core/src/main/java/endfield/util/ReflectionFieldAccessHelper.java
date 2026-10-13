@@ -1,7 +1,7 @@
 package endfield.util;
 
 import arc.func.Prov;
-import org.jetbrains.annotations.Nullable;
+import arc.util.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.function.Function;

@@ -14,6 +14,7 @@ import arc.math.geom.Point2;
 import arc.struct.IntSeq;
 import arc.struct.Seq;
 import arc.util.Eachable;
+import arc.util.Nullable;
 import arc.util.Structs;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -41,7 +42,6 @@ import mindustry.world.Edges;
 import mindustry.world.Tile;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
-import org.jetbrains.annotations.Nullable;
 
 import static endfield.Vars2.modName;
 

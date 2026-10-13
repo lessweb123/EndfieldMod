@@ -25,6 +25,7 @@ import arc.struct.OrderedMap;
 import arc.struct.Seq;
 import arc.util.I18NBundle;
 import arc.util.Log;
+import arc.util.Nullable;
 import arc.util.Reflect;
 import arc.util.Strings;
 import arc.util.Structs;
@@ -161,7 +162,6 @@ import mindustry.world.draw.DrawMulti;
 import mindustry.world.meta.Attribute;
 import mindustry.world.meta.BuildVisibility;
 import mindustry.world.meta.Env;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

@@ -102,6 +102,8 @@ import endfield.world.blocks.logic.ProcessorCooler;
 import endfield.world.blocks.logic.ProcessorFan;
 import endfield.world.blocks.payload.PayloadJunction;
 import endfield.world.blocks.payload.PayloadRail;
+import endfield.world.blocks.payload.SpawnEgg;
+import endfield.world.blocks.payload.SpawnerBlock;
 import endfield.world.blocks.power.ArmoredPowerNode;
 import endfield.world.blocks.power.BeamDiode;
 import endfield.world.blocks.power.GlowNuclearReactor;
@@ -583,6 +585,8 @@ public final class Blocks2 {
 	public static LandingPad largeLandingPad;
 	//sandbox
 	public static UnitIniter unitIniter;
+	public static SpawnEgg spawnEgg;
+	public static SpawnerBlock spawnerBlock;
 	public static ItemSource reinforcedItemSource;
 	public static LiquidSource reinforcedLiquidSource;
 	public static PowerSource reinforcedPowerSource;
@@ -6644,6 +6648,17 @@ public final class Blocks2 {
 		}};
 		//sandbox
 		unitIniter = new UnitIniter("unit-initer");
+		spawnEgg = new SpawnEgg("spawn-egg") {{
+			requirements(Category.units, BuildVisibility.sandboxOnly, ItemStack.empty);
+			health = 1000;
+			armor = 10f;
+		}};
+		spawnerBlock = new SpawnerBlock("spawner-block") {{
+			requirements(Category.units, BuildVisibility.sandboxOnly, ItemStack.empty);
+			size = 3;
+			health = 1000;
+			armor = 10f;
+		}};
 		reinforcedItemSource = new ItemSource("reinforced-item-source") {{
 			requirements(Category.distribution, BuildVisibility.sandboxOnly, ItemStack.empty);
 			health = 1000;

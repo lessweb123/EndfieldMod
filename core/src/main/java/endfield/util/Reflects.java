@@ -4,11 +4,10 @@ import arc.func.Boolf;
 import arc.func.Prov;
 import arc.struct.ObjectSet;
 import arc.struct.Seq;
+import arc.util.Nullable;
 import arc.util.Structs;
 import endfield.util.handler.ClassHandler;
 import mindustry.Vars;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -112,6 +111,14 @@ public final class Reflects {
 		return platformImpl.constructorAccessor(constructor);
 	}
 
+	public static MethodInvoker newMethodInvoker(Method method) {
+		return platformImpl.methodInvoker(method);
+	}
+
+	public static MethodInvoker MethodHandleInvoker(Constructor<?> constructor) {
+		return platformImpl.methodInvoker(constructor);
+	}
+
 	/**
 	 * @throws RuntimeException Any exception that occurs in reflection
 	 */
@@ -147,7 +154,7 @@ public final class Reflects {
 	 * @return The class, or {@code null} if not found.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> @UnknownNullability Class<T> findClass(String name) {
+	public static <T> Class<T> findClass(String name) {
 		try {
 			return name == null ? null : (Class<T>) Class.forName(name, false, Vars.mods.mainLoader());
 		} catch (ClassNotFoundException e) {
@@ -324,7 +331,7 @@ public final class Reflects {
 		return types;
 	}
 
-	/*public static int typeNameHash(Class<?>[] types) {
+	public static int typeNameHash(Class<?>[] types) {
 		int result = 1;
 
 		for (Class<?> type : types) {
@@ -333,7 +340,7 @@ public final class Reflects {
 
 		return result;
 		//return Arrays.hashCode(Arrays.stream(types).map(Class::getName).toArray());
-	}*/
+	}
 
 	public static boolean match(Class<?>[] sourceTypes, Object... args) {
 		return match(sourceTypes, unwrapped(toTypes(args)));
@@ -408,6 +415,11 @@ public final class Reflects {
 		return platformImpl.lookup(clazz);
 	}
 
+	// Only Desktop
+	public static Lookup lookup() {
+		return platformImpl.lookup();
+	}
+
 	public static MethodHandle findSpecial(Class<?> refc, String name, Class<?> rtype, Class<?>... ptypes) {
 		return ReflectsKt.findSpecial(refc, name, MethodType.methodType(rtype, ptypes));
 	}
@@ -418,8 +430,8 @@ public final class Reflects {
 		return constructor.newInstance(args);
 	}
 
-	public static Object invoke(Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
-		return method.invoke(args);
+	public static Object invoke(Method method, Object object, Object[] args) throws InvocationTargetException, IllegalAccessException {
+		return method.invoke(object, args);
 	}
 
 	// -------------------- reflection utils only ------------------------

@@ -7,6 +7,7 @@ import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 import static endfield.util.GetKt.sneakyThrow;
 
@@ -17,6 +18,10 @@ import static endfield.util.GetKt.sneakyThrow;
  */
 public interface PlatformImpl {
 	Lookup lookup(Class<?> clazz);
+
+	default Lookup lookup() {
+		throw new UnsupportedOperationException();
+	}
 
 	<T> T clone(T object);
 
@@ -30,6 +35,16 @@ public interface PlatformImpl {
 
 	default <T> ConstructorAccessor<T> constructorAccessor(Constructor<T> constructor) {
 		return new ReflectionConstructorAccessor<>(constructor);
+	}
+
+	default MethodInvoker methodInvoker(Method method) {
+		return (method.getModifiers() & Modifier.STATIC) != 0 ?
+				new ReflectionStaticMethodInvoker(method) :
+				new ReflectionVirtualMethodInvoker(method);
+	}
+
+	default MethodInvoker methodInvoker(Constructor<?> constructor) {
+		return new ReflectionConstructorInvoker(constructor);
 	}
 
 	default PackageAccessHandler packageAccessHandler(ClassAccessor accessor) {

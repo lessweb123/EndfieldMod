@@ -2,6 +2,7 @@ package endfield.world.consumers;
 
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.util.Nullable;
 import arc.util.Time;
 import endfield.world.blocks.HasPressure;
 import endfield.world.meta.StatValues2;
@@ -11,7 +12,6 @@ import mindustry.world.Block;
 import mindustry.world.consumers.Consume;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.Stats;
-import org.jetbrains.annotations.Nullable;
 
 public class ConsumeFluid extends Consume {
 	/**

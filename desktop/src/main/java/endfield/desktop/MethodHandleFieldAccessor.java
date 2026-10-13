@@ -1,3 +1,4 @@
+/*
 package endfield.desktop;
 
 import endfield.util.AbstractFieldAccessor;
@@ -587,8 +588,6 @@ final class MethodHandleFloatFieldAccessor extends MethodHandleFieldAccessor {
 	public float getFloat(Object object) {
 		try {
 			return (float) getter.invokeExact(object);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
 			throw sneakyThrow(e);
 		}
@@ -598,8 +597,6 @@ final class MethodHandleFloatFieldAccessor extends MethodHandleFieldAccessor {
 	public void setFloat(Object object, float value) {
 		try {
 			setter.invokeExact(object, value);
-		} catch (RuntimeException | Error e) {
-			throw e;
 		} catch (Throwable e) {
 			throw sneakyThrow(e);
 		}
@@ -1179,4 +1176,4 @@ final class MethodHandleStaticDoubleFieldAccessor extends MethodHandleFieldAcces
 			throw sneakyThrow(e);
 		}
 	}
-}
+}*/

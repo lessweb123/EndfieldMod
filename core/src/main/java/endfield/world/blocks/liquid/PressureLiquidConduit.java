@@ -9,6 +9,7 @@ import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import arc.struct.Seq;
 import arc.util.Eachable;
+import arc.util.Nullable;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -28,7 +29,6 @@ import mindustry.graphics.Drawf;
 import mindustry.type.Liquid;
 import mindustry.world.Block;
 import mindustry.world.meta.BlockGroup;
-import org.jetbrains.annotations.Nullable;
 
 import static endfield.Vars2.modName;
 

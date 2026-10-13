@@ -3,7 +3,7 @@ package endfield.util.handler;
 import arc.func.Boolf;
 import arc.struct.ObjectSet;
 import arc.struct.Seq;
-import org.jetbrains.annotations.Nullable;
+import arc.util.Nullable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

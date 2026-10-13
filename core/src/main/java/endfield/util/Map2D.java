@@ -5,9 +5,9 @@ import arc.func.Intc2;
 import arc.func.Prov;
 import arc.math.geom.Point2;
 import arc.util.Eachable;
+import arc.util.Nullable;
 import endfield.func.Intg2;
 import endfield.math.Mathm;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
 import java.util.Iterator;
@@ -71,7 +71,7 @@ public class Map2D<T> implements Iterable<T>, Eachable<T> {
 	/**
 	 * @return a tile at coordinates, or null if out of bounds
 	 */
-	public @Nullable  T get(int x, int y) {
+	public @Nullable T get(int x, int y) {
 		return (x < 0 || x >= width || y < 0 || y >= height) ? null : array[y * width + x];
 	}
 

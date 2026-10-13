@@ -1,11 +1,11 @@
 package endfield.world.meta;
 
 import arc.struct.Seq;
+import arc.util.Nullable;
 import endfield.content.Liquids2;
 import endfield.world.blocks.HasPressure;
 import mindustry.Vars;
 import mindustry.type.Liquid;
-import org.jetbrains.annotations.Nullable;
 
 public class PressureTank {
 	public Seq<HasPressure> builds = new Seq<>(HasPressure.class);

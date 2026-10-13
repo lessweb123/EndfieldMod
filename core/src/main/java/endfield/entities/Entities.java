@@ -20,6 +20,7 @@ import arc.struct.IntIntMap;
 import arc.struct.IntSet;
 import arc.struct.Seq;
 import arc.util.Log;
+import arc.util.Nullable;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.pooling.Pool.Poolable;
@@ -54,8 +55,6 @@ import mindustry.type.StatusEffect;
 import mindustry.type.UnitType;
 import mindustry.world.Tile;
 import mindustry.world.blocks.defense.turrets.Turret.TurretBuild;
-import org.jetbrains.annotations.ApiStatus.Obsolete;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -629,7 +628,7 @@ public final class Entities {
 	}
 
 	/** Please use {@link #getObjects(QuadTree, Class)} */
-	@Obsolete(since = "1.0.8")
+	@Deprecated(since = "1.0.8")
 	public static <T extends QuadTreeObject> Seq<T> getObjects(QuadTree<T> tree) {
 		Seq<T> seq = new Seq<>();
 

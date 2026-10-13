@@ -2,6 +2,7 @@ package endfield.util.aspector.classes;
 
 import arc.func.Prov;
 import arc.struct.IntMap;
+import arc.util.Nullable;
 import endfield.util.Collections2;
 import endfield.util.Constant;
 import kotlin.Metadata;
@@ -20,7 +21,6 @@ import kotlin.metadata.jvm.JvmExtensionsKt;
 import kotlin.metadata.jvm.JvmFieldSignature;
 import kotlin.metadata.jvm.JvmMethodSignature;
 import kotlin.metadata.jvm.KotlinClassMetadata;
-import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;

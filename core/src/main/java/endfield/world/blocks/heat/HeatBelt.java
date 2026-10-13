@@ -9,6 +9,7 @@ import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.struct.Seq;
 import arc.util.Eachable;
+import arc.util.Nullable;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -34,7 +35,6 @@ import mindustry.world.blocks.power.NuclearReactor;
 import mindustry.world.blocks.power.ThermalGenerator;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
-import org.jetbrains.annotations.Nullable;
 
 import static mindustry.Vars.headless;
 import static mindustry.Vars.tilesize;

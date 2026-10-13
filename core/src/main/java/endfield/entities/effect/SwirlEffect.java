@@ -4,6 +4,7 @@ import arc.graphics.Color;
 import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.util.Nullable;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.pooling.Pools;
@@ -18,7 +19,6 @@ import mindustry.gen.Rotc;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Trail;
 import mindustry.world.blocks.defense.turrets.BaseTurret.BaseTurretBuild;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * A particle with a trail that falls into the center.

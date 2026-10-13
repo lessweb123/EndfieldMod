@@ -3,10 +3,10 @@ package endfield.mod;
 import arc.files.Fi;
 import arc.files.ZipFi;
 import arc.util.ArcRuntimeException;
+import arc.util.Nullable;
 import arc.util.serialization.Jval;
 import endfield.util.Reflects;
 import mindustry.mod.Mod;
-import org.jetbrains.annotations.Nullable;
 
 public class ModInfo {
 	public final String name;

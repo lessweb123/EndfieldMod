@@ -1,7 +1,7 @@
 package endfield.util.handler;
 
 import arc.func.Boolf;
-import org.jetbrains.annotations.Nullable;
+import arc.util.Nullable;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;

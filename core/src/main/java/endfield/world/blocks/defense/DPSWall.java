@@ -6,6 +6,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Font;
 import arc.math.Mathf;
 import arc.util.Align;
+import arc.util.Nullable;
 import arc.util.Time;
 import endfield.world.blocks.IControlBlock;
 import mindustry.Vars;
@@ -15,7 +16,6 @@ import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
 import mindustry.ui.Fonts;
 import mindustry.world.blocks.defense.Wall;
-import org.jetbrains.annotations.Nullable;
 
 import static endfield.Vars2.boardTimeTotal;
 

@@ -2,12 +2,12 @@ package endfield.ai;
 
 import arc.struct.ObjectSet;
 import arc.struct.Seq;
+import arc.util.Nullable;
 import mindustry.Vars;
 import mindustry.ai.types.CargoAI;
 import mindustry.gen.Building;
 import mindustry.gen.Call;
 import mindustry.world.meta.BlockFlag;
-import org.jetbrains.annotations.Nullable;
 
 // cargo AI that doesn't require the unit to be tethered
 public class TargetCargoAI extends CargoAI {

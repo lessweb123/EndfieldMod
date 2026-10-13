@@ -19,6 +19,7 @@ import arc.struct.EnumSet;
 import arc.struct.IntSeq;
 import arc.struct.Seq;
 import arc.util.Eachable;
+import arc.util.Nullable;
 import arc.util.Scaling;
 import arc.util.Strings;
 import arc.util.Structs;
@@ -74,7 +75,6 @@ import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.BlockStatus;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatValues;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 
@@ -838,8 +838,8 @@ public class UnitAssembler2 extends PayloadBlock {
 		public UnitType unit;
 
 		public @Nullable Seq<PayloadStack> requirements;
-		public ItemStack @Nullable [] itemReq;
-		public LiquidStack @Nullable [] liquidReq;
+		public @Nullable ItemStack[] itemReq;
+		public @Nullable LiquidStack[] liquidReq;
 		public float time;
 
 		//public int tier;
@@ -855,7 +855,7 @@ public class UnitAssembler2 extends PayloadBlock {
 			time = t;
 		}
 
-		public AssemblerUnitPlan2(UnitType u, float t, ItemStack @Nullable [] items) {
+		public AssemblerUnitPlan2(UnitType u, float t, @Nullable ItemStack[] items) {
 			unit = u;
 			time = t;
 			itemReq = items;

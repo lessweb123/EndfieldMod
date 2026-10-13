@@ -6,7 +6,7 @@ import arc.graphics.Gl;
 import arc.graphics.Pixmap.Format;
 import arc.graphics.Texture.TextureFilter;
 import arc.graphics.gl.FrameBufferCubemap;
-import org.jetbrains.annotations.Nullable;
+import arc.util.Nullable;
 
 /**
  * A cubemap framebuffer that requests depth (and stencil) textures instead of renderbuffers, letting users sample from

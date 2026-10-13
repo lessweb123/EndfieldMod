@@ -26,7 +26,6 @@ import mindustry.world.blocks.power.ConsumeGenerator;
 import mindustry.world.consumers.Consume;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValues;
-import org.jetbrains.annotations.Nullable;
 
 public class AreaGenerator extends ConsumeGenerator {
 	public int range = 5;
@@ -86,7 +85,7 @@ public class AreaGenerator extends ConsumeGenerator {
 		}
 	}
 
-	public boolean checkNearby(int x, int y, Boolf<@Nullable Tile> pos) {
+	public boolean checkNearby(int x, int y, Boolf<Tile> pos) {
 		int r = range + Mathf.ceil(size / 2f) + ((size + 1) % 2);
 		for (int i = -r + 1; i < r; i++) {
 			for (int j = -r + 1; j < r; j++) {

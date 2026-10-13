@@ -6,6 +6,7 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import arc.util.Nullable;
 import endfield.math.Mathm;
 import mindustry.gen.Building;
 import mindustry.graphics.Pal;
@@ -18,7 +19,6 @@ import mindustry.world.consumers.ConsumeLiquidBase;
 import mindustry.world.consumers.ConsumeLiquidFilter;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
-import org.jetbrains.annotations.Nullable;
 
 public class ProcessorCooler extends Block {
 	public TextureRegion heatRegion, liquidRegion, topRegion;

@@ -4,13 +4,13 @@ import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.struct.Seq;
+import arc.util.Nullable;
 import endfield.world.blocks.GenericPressureBlock;
 import endfield.world.blocks.HasPressure;
 import mindustry.gen.Building;
 import mindustry.type.Liquid;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
-import org.jetbrains.annotations.Nullable;
 
 public class PressureLiquidJunction extends GenericPressureBlock {
 	public DrawBlock drawer = new DrawDefault();

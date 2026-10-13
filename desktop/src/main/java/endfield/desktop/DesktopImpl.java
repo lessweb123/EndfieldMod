@@ -6,6 +6,11 @@ import endfield.util.CollectionObjectMap;
 import endfield.util.ConstructorAccessor;
 import endfield.util.FieldAccessor;
 import endfield.util.MethodAccessor;
+import endfield.util.MethodHandleConstructorAccessor;
+import endfield.util.MethodHandleInvoker;
+import endfield.util.MethodHandleStaticMethodAccessor;
+import endfield.util.MethodHandleVirtualMethodAccessor;
+import endfield.util.MethodInvoker;
 import endfield.util.MockAccessibleHelper;
 import endfield.util.MockClassHelper;
 import endfield.util.PlatformImpl;
@@ -78,6 +83,11 @@ public class DesktopImpl implements PlatformImpl {
 		return LookupHelper.lookupMap.computeIfAbsent(clazz, LookupHelper.lookupBuilder);
 	}
 
+	@Override
+	public Lookup lookup() {
+		return lookup;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T clone(T object) {
@@ -117,6 +127,16 @@ public class DesktopImpl implements PlatformImpl {
 	@Override
 	public <T> ConstructorAccessor<T> constructorAccessor(Constructor<T> constructor) {
 		return new MethodHandleConstructorAccessor<>(constructor);
+	}
+
+	@Override
+	public MethodInvoker methodInvoker(Method method) {
+		return MethodHandleInvoker.unreflect(method);
+	}
+
+	@Override
+	public MethodInvoker methodInvoker(Constructor<?> constructor) {
+		return MethodHandleInvoker.unreflect(constructor);
 	}
 
 	@Override

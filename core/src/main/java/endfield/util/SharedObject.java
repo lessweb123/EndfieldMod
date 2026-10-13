@@ -3,7 +3,6 @@ package endfield.util;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import endfield.util.handler.FieldHandler;
-import org.jetbrains.annotations.ApiStatus.NonExtendable;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -34,7 +33,6 @@ public interface SharedObject {
 		return System.getProperties();
 	}
 
-	@NonExtendable
 	default void setupSharedReferences() {
 		Properties properties = sharedDataSwapProp();
 		Object className = properties.get("shared-" + sharedID());

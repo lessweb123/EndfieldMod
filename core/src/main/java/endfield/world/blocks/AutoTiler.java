@@ -6,6 +6,7 @@ import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import arc.util.Eachable;
+import arc.util.Nullable;
 import arc.util.Tmp;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
@@ -13,7 +14,6 @@ import mindustry.world.Block;
 import mindustry.world.Edges;
 import mindustry.world.Tile;
 import mindustry.world.blocks.Autotiler;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 
@@ -42,7 +42,7 @@ public interface AutoTiler extends Autotiler {
 	}
 
 	@Override
-	default int @Nullable [] getTiling(BuildPlan plan, Eachable<BuildPlan> list) {
+	default @Nullable int[] getTiling(BuildPlan plan, Eachable<BuildPlan> list) {
 		if (plan.tile() == null) return null;
 		BuildPlan[] directionals = AutoTilerHolder.directionals;
 
@@ -117,7 +117,7 @@ public interface AutoTiler extends Autotiler {
 	}
 
 	@Override
-	default boolean blends(Tile tile, int rotation, BuildPlan @Nullable [] directional, int direction, boolean checkWorld) {
+	default boolean blends(Tile tile, int rotation, @Nullable BuildPlan[] directional, int direction, boolean checkWorld) {
 		int realDir = Mathf.mod(rotation - direction, 4);
 		if (directional != null && directional[realDir] != null) {
 			BuildPlan req = directional[realDir];

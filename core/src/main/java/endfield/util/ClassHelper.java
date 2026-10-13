@@ -1,7 +1,7 @@
 package endfield.util;
 
 import arc.func.Boolf;
-import org.jetbrains.annotations.Nullable;
+import arc.util.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

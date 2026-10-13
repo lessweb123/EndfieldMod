@@ -3,7 +3,7 @@ package endfield.util;
 import arc.func.Boolf;
 import arc.func.Cons;
 import arc.util.Eachable;
-import org.jetbrains.annotations.Nullable;
+import arc.util.Nullable;
 
 import java.lang.reflect.Array;
 import java.util.AbstractQueue;

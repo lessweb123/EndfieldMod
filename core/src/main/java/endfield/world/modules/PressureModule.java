@@ -1,6 +1,7 @@
 package endfield.world.modules;
 
 import arc.math.Mathf;
+import arc.util.Nullable;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import endfield.world.graph.PressureGraph;
@@ -8,7 +9,6 @@ import endfield.world.meta.PressureTank;
 import mindustry.Vars;
 import mindustry.type.Liquid;
 import mindustry.world.modules.BlockModule;
-import org.jetbrains.annotations.Nullable;
 
 public class PressureModule extends BlockModule {
 	public PressureGraph graph = new PressureGraph();

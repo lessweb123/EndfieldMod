@@ -9,6 +9,7 @@ import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import arc.struct.Seq;
 import arc.util.Eachable;
+import arc.util.Nullable;
 import arc.util.Tmp;
 import endfield.input.BeltPlacement;
 import endfield.world.blocks.AutoTiler;
@@ -22,7 +23,6 @@ import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.distribution.ItemBridge;
 import mindustry.world.blocks.liquid.LiquidJunction;
-import org.jetbrains.annotations.Nullable;
 
 public class Pipe extends MergingLiquidBlock implements AutoTiler {
 	public static final int[][] blendIndices = {

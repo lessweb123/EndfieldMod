@@ -13,6 +13,7 @@ import arc.struct.EnumSet;
 import arc.struct.ObjectMap;
 import arc.struct.ObjectSet;
 import arc.struct.Seq;
+import arc.util.Nullable;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -43,7 +44,6 @@ import mindustry.world.Tile;
 import mindustry.world.blocks.ItemSelection;
 import mindustry.world.blocks.UnitTetherBlock;
 import mindustry.world.meta.BlockFlag;
-import org.jetbrains.annotations.Nullable;
 
 public class UnitMinerDepot extends Block {
 	public @Nullable Item blockedItem;

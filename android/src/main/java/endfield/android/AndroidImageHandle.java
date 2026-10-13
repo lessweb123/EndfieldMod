@@ -1,26 +1,36 @@
 package endfield.android;
 
 import android.graphics.Bitmap;
+import android.graphics.ColorSpace;
+import android.graphics.ColorSpace.Named;
 import android.graphics.ImageDecoder;
+import android.graphics.ImageDecoder.OnHeaderDecodedListener;
 import android.graphics.ImageDecoder.Source;
-import arc.graphics.Color;
 import arc.graphics.Pixmap;
+import arc.util.Log;
 import endfield.graphics.ImageHandle;
+import endfield.graphics.Pixmaps2;
 
 import java.io.File;
 import java.io.IOException;
 
-import static endfield.util.GetKt.sneakyThrow;
-
 public class AndroidImageHandle implements ImageHandle {
+	static final OnHeaderDecodedListener listener = (decoder, info, source) -> {
+		decoder.setAllocator(ImageDecoder.ALLOCATOR_SOFTWARE);
+		decoder.setTargetColorSpace(ColorSpace.get(Named.LINEAR_SRGB));
+	};
+
 	@Override
 	public Pixmap decode(File file) {
 		try {
 			Source source = ImageDecoder.createSource(file);
-			Bitmap bitmap = ImageDecoder.decodeBitmap(source);
-			return bitmapToPixmap(bitmap);
+			Bitmap bitmap = ImageDecoder.decodeBitmap(source, listener);
+			Pixmap pixmap = bitmapToPixmap(bitmap);
+			bitmap.recycle();
+			return pixmap;
 		} catch (IOException e) {
-			throw sneakyThrow(e);
+			Log.err(e);
+			return Pixmaps2.error;
 		}
 	}
 
@@ -28,10 +38,13 @@ public class AndroidImageHandle implements ImageHandle {
 	public Pixmap decode(byte[] data) {
 		try {
 			Source source = ImageDecoder.createSource(data);
-			Bitmap bitmap = ImageDecoder.decodeBitmap(source);
-			return bitmapToPixmap(bitmap);
+			Bitmap bitmap = ImageDecoder.decodeBitmap(source, listener);
+			Pixmap pixmap = bitmapToPixmap(bitmap);
+			bitmap.recycle();
+			return pixmap;
 		} catch (IOException e) {
-			throw sneakyThrow(e);
+			Log.err(e);
+			return Pixmaps2.error;
 		}
 	}
 
@@ -55,9 +68,11 @@ public class AndroidImageHandle implements ImageHandle {
 				int r = (argb >> 16) & 0xff;
 				int g = (argb >> 8) & 0xff;
 				int b = argb & 0xff;
-				pixmap.set(x, y, Color.rgba8888(r / 255f, g / 255f, b / 255f, a / 255f));
+
+				pixmap.setRaw(x, y, r << 24 | g << 16 | b << 8 | a);
 			}
 		}
+
 		return pixmap;
 	}
 }

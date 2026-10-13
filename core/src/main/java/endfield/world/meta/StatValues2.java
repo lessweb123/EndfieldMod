@@ -17,6 +17,7 @@ import arc.scene.ui.layout.Table;
 import arc.struct.ObjectFloatMap;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
+import arc.util.Nullable;
 import arc.util.Scaling;
 import arc.util.Strings;
 import endfield.graphics.Regions2;
@@ -43,8 +44,6 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValue;
 import mindustry.world.meta.StatValues;
-import org.jetbrains.annotations.ApiStatus.Obsolete;
-import org.jetbrains.annotations.Nullable;
 
 import static endfield.Vars2.modName;
 import static mindustry.Vars.content;
@@ -896,13 +895,13 @@ public final class StatValues2 {
 		};
 	}
 
-	@Obsolete(since = "1.0.8")
+	@Deprecated(since = "1.0.8")
 	public static Cell<Label> sep(Table table, String text) {
 		table.row();
 		return table.add(text);
 	}
 
-	@Obsolete(since = "1.0.8")
+	@Deprecated(since = "1.0.8")
 	public static TextureRegion icon(@Nullable UnlockableContent content) {
 		return content == null ? Regions2.white : content.uiIcon;
 	}

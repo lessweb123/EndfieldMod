@@ -111,9 +111,11 @@ public final class EndFieldMod extends Mod {
 		Events.on(ClientLoadEvent.class, event -> {
 			PatternManager.register();
 
-			if (Vars.headless || Vars2.isPlugin || Core.settings.getBool("closed-dialog")) return;
+			if (Vars.headless || Vars2.isPlugin) return;
 
 			loadMenuRenderer();
+
+			if (Core.settings.getBool("closed-dialog")) return;
 
 			FLabel label = new FLabel(Core.bundle.format("text.author", author));
 			BaseDialog dialog = new BaseDialog(Core.bundle.get("text.name"));
@@ -315,7 +317,7 @@ public final class EndFieldMod extends Mod {
 		if (path == null || path.isEmpty()) return;
 
 		try {
-			CustomMenuRenderer.setPaths(path);
+			CustomMenuRenderer.applyPath(path);
 		} catch (Exception e) {
 			Log.err(e);
 		}

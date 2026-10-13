@@ -1,3 +1,4 @@
+/*
 package endfield.desktop;
 
 import endfield.util.AbstractMethodAccessor;
@@ -42,3 +43,4 @@ public final class MethodHandleVirtualMethodAccessor extends AbstractMethodAcces
 		}
 	}
 }
+*/

@@ -25,6 +25,7 @@ import arc.scene.ui.Image;
 import arc.scene.ui.layout.Scl;
 import arc.struct.FloatSeq;
 import arc.util.Align;
+import arc.util.Nullable;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.pooling.Pools;
@@ -41,7 +42,6 @@ import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.graphics.Shaders;
 import mindustry.ui.Fonts;
-import org.jetbrains.annotations.Nullable;
 
 import static endfield.Vars2.modName;
 

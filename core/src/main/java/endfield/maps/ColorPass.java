@@ -2,8 +2,8 @@ package endfield.maps;
 
 import arc.graphics.Color;
 import arc.math.geom.Vec3;
+import arc.util.Nullable;
 import arc.util.noise.Simplex;
-import org.jetbrains.annotations.Nullable;
 
 public abstract class ColorPass {
 	public abstract @Nullable Color color(Vec3 pos, float height);

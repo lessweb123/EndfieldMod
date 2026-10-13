@@ -14,9 +14,9 @@ import arc.struct.IntSeq;
 import arc.struct.Sort;
 import arc.util.ArcRuntimeException;
 import arc.util.Eachable;
+import arc.util.Nullable;
 import arc.util.Structs;
 import endfield.math.Mathm;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
 import java.util.AbstractList;

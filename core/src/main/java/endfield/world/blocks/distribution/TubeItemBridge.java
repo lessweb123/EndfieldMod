@@ -33,7 +33,6 @@ import mindustry.world.Tile;
 import mindustry.world.blocks.distribution.ItemBridge;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
-import org.jetbrains.annotations.ApiStatus.Obsolete;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
@@ -42,7 +41,6 @@ import static mindustry.Vars.world;
  * A bridge with the same connection method as the power node.
  * <p>Obsolete: This block is not done very well.
  */
-@Obsolete(since = "1.0.8")
 public class TubeItemBridge extends ItemBridge {
 	//public final int timerAccept = timers++;
 

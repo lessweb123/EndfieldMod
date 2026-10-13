@@ -10,11 +10,11 @@ import arc.math.Mathf;
 import arc.scene.Element;
 import arc.struct.Seq;
 import arc.util.Align;
+import arc.util.Nullable;
 import arc.util.pooling.Pools;
 import endfield.func.Intg;
 import endfield.ui.chart.Chart.StatGroup;
 import mindustry.ui.Fonts;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Iterator;

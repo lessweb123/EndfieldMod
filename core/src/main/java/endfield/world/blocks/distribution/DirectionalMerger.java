@@ -1,9 +1,9 @@
 package endfield.world.blocks.distribution;
 
+import arc.util.Nullable;
 import mindustry.gen.Building;
 import mindustry.type.Item;
 import mindustry.world.Edges;
-import org.jetbrains.annotations.Nullable;
 
 public class DirectionalMerger extends DirectionalRouter {
 	public DirectionalMerger(String name) {

@@ -1,11 +1,11 @@
 package endfield.world.blocks.payload;
 
+import arc.util.Nullable;
 import endfield.math.IPosition;
 import mindustry.Vars;
 import mindustry.gen.Building;
 import mindustry.gen.Unit;
 import mindustry.world.blocks.payloads.Payload;
-import org.jetbrains.annotations.Nullable;
 
 public interface IPayload extends Payload, IPosition {
 	@Override

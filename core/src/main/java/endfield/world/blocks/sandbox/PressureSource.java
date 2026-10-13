@@ -8,6 +8,7 @@ import arc.scene.ui.Button;
 import arc.scene.ui.ImageButton.ImageButtonStyle;
 import arc.scene.ui.layout.Table;
 import arc.util.Eachable;
+import arc.util.Nullable;
 import arc.util.Strings;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -22,7 +23,6 @@ import mindustry.type.Liquid;
 import mindustry.ui.Styles;
 import mindustry.world.blocks.liquid.LiquidBlock;
 import mindustry.world.meta.BuildVisibility;
-import org.jetbrains.annotations.Nullable;
 
 import static endfield.Vars2.modName;
 

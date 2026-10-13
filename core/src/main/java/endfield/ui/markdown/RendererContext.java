@@ -9,6 +9,7 @@ import arc.graphics.g2d.Font;
 import arc.scene.ui.layout.Scl;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
+import arc.util.Nullable;
 import endfield.ui.markdown.Markdown.ChapterEntry;
 import endfield.ui.markdown.Markdown.MarkdownDraw;
 import endfield.ui.markdown.Markdown.MarkdownStyle;
@@ -21,7 +22,6 @@ import kotlin.collections.MapsKt;
 import kotlin.text.StringsKt;
 import mindustry.ui.Fonts;
 import org.commonmark.node.Node;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -15,6 +15,7 @@ import arc.struct.ObjectFloatMap;
 import arc.struct.ObjectSet;
 import arc.struct.Seq;
 import arc.util.Eachable;
+import arc.util.Nullable;
 import arc.util.Scaling;
 import arc.util.Strings;
 import arc.util.Time;
@@ -51,7 +52,6 @@ import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValues;
-import org.jetbrains.annotations.Nullable;
 
 import static mindustry.Vars.content;
 import static mindustry.Vars.indexer;

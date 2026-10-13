@@ -5,6 +5,7 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.math.Angles;
 import arc.math.Mathf;
+import arc.util.Nullable;
 import endfield.graphics.Pal2;
 import endfield.util.Get;
 import mindustry.content.Fx;
@@ -17,7 +18,6 @@ import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
-import org.jetbrains.annotations.Nullable;
 
 import static endfield.Vars2.modName;
 

@@ -1,6 +1,7 @@
 package endfield.util.aspector;
 
 import arc.func.Func;
+import arc.util.Nullable;
 import endfield.util.aspector.accesses.PackageAccessHandler;
 import endfield.util.aspector.classes.BytecodeClassLoader;
 import endfield.util.aspector.classes.BytecodeLoader;
@@ -12,7 +13,6 @@ import endfield.util.aspector.generate.AspectFactory;
 import endfield.util.handler.MethodHandler;
 import kotlin.jvm.JvmClassMappingKt;
 import kotlin.reflect.KClass;
-import org.jetbrains.annotations.Nullable;
 
 public final class RuntimeAspector {
 	private RuntimeAspector() {}

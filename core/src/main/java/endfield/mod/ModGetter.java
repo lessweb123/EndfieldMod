@@ -7,9 +7,9 @@ import arc.func.Boolf2;
 import arc.struct.ObjectSet;
 import arc.struct.Seq;
 import arc.util.ArcRuntimeException;
+import arc.util.Nullable;
 import arc.util.serialization.Jval;
 import mindustry.mod.Mod;
-import org.jetbrains.annotations.Nullable;
 
 public final class ModGetter {
 	public static final ObjectSet<Throwable> errors = new ObjectSet<>();

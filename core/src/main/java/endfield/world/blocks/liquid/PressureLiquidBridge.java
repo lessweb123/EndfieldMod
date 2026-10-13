@@ -10,6 +10,7 @@ import arc.math.geom.Point2;
 import arc.struct.IntSeq;
 import arc.struct.Seq;
 import arc.util.Eachable;
+import arc.util.Nullable;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -30,7 +31,6 @@ import mindustry.ui.Bar;
 import mindustry.world.Tile;
 import mindustry.world.blocks.liquid.LiquidBlock;
 import mindustry.world.meta.BlockGroup;
-import org.jetbrains.annotations.Nullable;
 
 import static endfield.Vars2.modName;
 

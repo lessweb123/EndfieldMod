@@ -7,7 +7,7 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.struct.IntIntMap;
-import org.jetbrains.annotations.Nullable;
+import arc.util.Nullable;
 
 import java.util.Arrays;
 
@@ -260,7 +260,7 @@ public final class Sprites {
 		return splitArray(region, size, pad, null);
 	}
 
-	public static TextureRegion[] splitArray(TextureRegion region, int size, int pad, int @Nullable [] indexMap) {
+	public static TextureRegion[] splitArray(TextureRegion region, int size, int pad, @Nullable int[] indexMap) {
 		Texture texture = region.texture;
 
 		int x = region.getX();

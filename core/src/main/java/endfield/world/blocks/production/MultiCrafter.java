@@ -18,6 +18,7 @@ import arc.struct.EnumSet;
 import arc.struct.OrderedMap;
 import arc.struct.Seq;
 import arc.util.Eachable;
+import arc.util.Nullable;
 import arc.util.Structs;
 import arc.util.Time;
 import arc.util.io.Reads;
@@ -56,7 +57,6 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValues;
 import mindustry.world.meta.Stats;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicReference;
 

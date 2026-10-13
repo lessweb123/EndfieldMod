@@ -1,13 +1,13 @@
 package endfield.world.blocks;
 
 import arc.struct.Seq;
+import arc.util.Nullable;
 import endfield.type.FluidInteraction;
 import endfield.world.graph.PressureGraph;
 import endfield.world.meta.PressureConfig;
 import endfield.world.meta.PressureTank;
 import endfield.world.modules.PressureModule;
 import mindustry.type.Liquid;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Interface representing a pressure building.

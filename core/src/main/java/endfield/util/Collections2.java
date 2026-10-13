@@ -1,7 +1,7 @@
 package endfield.util;
 
 import arc.func.Func;
-import org.jetbrains.annotations.Nullable;
+import arc.util.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;

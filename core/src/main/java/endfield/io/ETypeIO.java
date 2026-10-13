@@ -2,6 +2,7 @@ package endfield.io;
 
 import arc.func.Prov;
 import arc.math.geom.Point2;
+import arc.util.Nullable;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import endfield.func.Intg;
@@ -16,7 +17,6 @@ import mindustry.world.Block;
 import mindustry.world.blocks.payloads.BuildPayload;
 import mindustry.world.blocks.payloads.Payload;
 import mindustry.world.blocks.payloads.UnitPayload;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
 

@@ -1,9 +1,9 @@
 package endfield.desktop;
 
 import arc.func.Prov;
+import arc.util.Nullable;
 import endfield.util.CollectionObjectMap;
 import endfield.util.FieldAccessHelper;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

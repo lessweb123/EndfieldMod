@@ -3,8 +3,8 @@ package endfield.type.unit;
 import arc.audio.Sound;
 import arc.graphics.Color;
 import arc.struct.ObjectSet;
+import arc.util.Nullable;
 import mindustry.gen.Sounds;
-import org.jetbrains.annotations.Nullable;
 
 public class DayunTankUnitType extends UnitType2 {
 	public Sound truckMusic = Sounds.none;

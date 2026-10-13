@@ -3,12 +3,12 @@ package endfield.world.consumers;
 import arc.func.Boolf;
 import arc.func.Floatf;
 import arc.struct.ObjectFloatMap;
+import arc.util.Nullable;
 import endfield.world.meta.StatValues2;
 import mindustry.type.Liquid;
 import mindustry.world.consumers.ConsumeLiquidFilter;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.Stats;
-import org.jetbrains.annotations.Nullable;
 
 public class ConsumeLiquidEfficiency extends ConsumeLiquidFilter {
 	public @Nullable ObjectFloatMap<Liquid> liquidDurationMultipliers;

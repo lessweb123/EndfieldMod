@@ -1,6 +1,8 @@
 package endfield.core;
 
 import arc.util.Log;
+import endfield.util.MethodHandleInvoker;
+import endfield.util.MethodInvoker;
 import endfield.util.SpecialMethodAccessor;
 import endfield.util.aspector.AspectExtends;
 import endfield.util.aspector.RuntimeAspector;
@@ -16,16 +18,15 @@ import endfield.util.aspector.classes.ClassName;
 import endfield.util.aspector.generate.ProxyAspectFactory;
 import endfield.util.handler.EnumHandler;
 import kotlin.NotImplementedError;
-import org.jetbrains.annotations.TestOnly;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.invoke.MethodType;
 import java.util.Arrays;
 import java.util.Random;
 
-@TestOnly
 public class Test extends @Stub Random {
 	public @TestAnno(
 			str = "test text",
@@ -89,6 +90,24 @@ public class Test extends @Stub Random {
 		} catch (Throwable e) {
 			Log.err(e);
 		}
+	}
+
+	public static void test5() {
+		try {
+			MethodInvoker i1 = MethodHandleInvoker.findStatic(Test.class, "print", MethodType.methodType(void.class));
+			MethodInvoker i2 = MethodHandleInvoker.findVirtual(B.class, "print", MethodType.methodType(void.class));
+			MethodInvoker i3 = MethodHandleInvoker.findSpecial(A.class, "print", MethodType.methodType(void.class));
+
+			i1.invoke();
+			i2.invoke(new B());
+			i3.invoke(new C());
+		} catch (Throwable e) {
+			Log.err(e);
+		}
+	}
+
+	public static void print() {
+		Log.info("test print");
 	}
 
 	public static class A {

@@ -5,6 +5,7 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import arc.util.Nullable;
 import arc.util.Time;
 import endfield.math.Mathm;
 import mindustry.game.Team;
@@ -20,7 +21,6 @@ import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Env;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
-import org.jetbrains.annotations.Nullable;
 
 import static mindustry.Vars.iconSmall;
 import static mindustry.Vars.tilesize;

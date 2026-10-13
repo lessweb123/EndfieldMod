@@ -19,9 +19,9 @@ import arc.scene.ui.layout.Scl;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.Align;
+import arc.util.Nullable;
 import arc.util.Tmp;
 import endfield.ui.Listeners.ClickOnOtherListener;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicReference;
 

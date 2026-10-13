@@ -4,8 +4,8 @@ import arc.math.geom.Mat3D;
 import arc.math.geom.Quat;
 import arc.math.geom.Vec3;
 import arc.struct.Seq;
+import arc.util.Nullable;
 import endfield.math.IPosition;
-import org.jetbrains.annotations.Nullable;
 
 public interface Transform extends IPosition {
 	Seq<Transform> tmpStack = new Seq<>(Transform.class);

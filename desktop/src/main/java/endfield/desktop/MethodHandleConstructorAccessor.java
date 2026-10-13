@@ -1,3 +1,4 @@
+/*
 package endfield.desktop;
 
 import endfield.util.AbstractConstructorAccessor;
@@ -36,3 +37,4 @@ public final class MethodHandleConstructorAccessor<T> extends AbstractConstructo
 		}
 	}
 }
+*/

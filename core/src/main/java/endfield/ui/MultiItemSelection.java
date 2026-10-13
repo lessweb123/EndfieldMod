@@ -8,6 +8,7 @@ import arc.scene.ui.ScrollPane;
 import arc.scene.ui.TextField;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
+import arc.util.Nullable;
 import endfield.math.Mathm;
 import endfield.util.Constant;
 import mindustry.Vars;
@@ -17,7 +18,6 @@ import mindustry.gen.Tex;
 import mindustry.type.Item;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
-import org.jetbrains.annotations.Nullable;
 
 public final class MultiItemSelection {
 	static TextField search;

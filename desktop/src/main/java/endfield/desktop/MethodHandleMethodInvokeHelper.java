@@ -1,10 +1,10 @@
 package endfield.desktop;
 
 import arc.func.Prov;
+import arc.util.Nullable;
 import endfield.util.CollectionObjectMap;
 import endfield.util.FunctionType;
 import endfield.util.MethodInvokeHelper;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;

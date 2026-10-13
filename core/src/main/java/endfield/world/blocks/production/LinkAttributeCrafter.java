@@ -1,6 +1,7 @@
 package endfield.world.blocks.production;
 
 import arc.Core;
+import arc.util.Nullable;
 import mindustry.Vars;
 import mindustry.game.Team;
 import mindustry.graphics.Pal;
@@ -8,7 +9,6 @@ import mindustry.ui.Bar;
 import mindustry.world.Tile;
 import mindustry.world.meta.Attribute;
 import mindustry.world.meta.Stat;
-import org.jetbrains.annotations.Nullable;
 
 //and also the code are duplicated, its silly but for qol mod reason i have to extend AttributeCrafter instead of MultiBlockCrafter
 public class LinkAttributeCrafter extends LinkGenericCrafter {

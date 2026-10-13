@@ -10,6 +10,7 @@ import arc.struct.EnumSet;
 import arc.struct.ObjectFloatMap;
 import arc.struct.Seq;
 import arc.util.Eachable;
+import arc.util.Nullable;
 import arc.util.Strings;
 import endfield.util.Sprites;
 import endfield.world.blocks.production.ModuleDrill.ModuleDrillBuild;
@@ -24,7 +25,6 @@ import mindustry.world.Block;
 import mindustry.world.Edges;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.BlockGroup;
-import org.jetbrains.annotations.Nullable;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;

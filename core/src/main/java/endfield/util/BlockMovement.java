@@ -7,6 +7,7 @@ import arc.math.geom.Point2;
 import arc.struct.ObjectMap;
 import arc.struct.PQueue;
 import arc.struct.Seq;
+import arc.util.Nullable;
 import arc.util.Structs;
 import arc.util.Time;
 import mindustry.Vars;
@@ -22,7 +23,6 @@ import mindustry.world.blocks.payloads.BuildPayload;
 import mindustry.world.blocks.payloads.PayloadBlock;
 import mindustry.world.blocks.payloads.PayloadConveyor;
 import mindustry.world.blocks.storage.CoreBlock;
-import org.jetbrains.annotations.Nullable;
 
 public final class BlockMovement {
 	//ported from Facdustrio

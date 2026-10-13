@@ -1,10 +1,10 @@
 package endfield.ai;
 
+import arc.util.Nullable;
 import mindustry.entities.units.AIController;
 import mindustry.entities.units.UnitController;
 import mindustry.gen.Bullet;
 import mindustry.gen.Unit;
-import org.jetbrains.annotations.Nullable;
 
 public interface BaseCommand extends UnitController {
 	@Override

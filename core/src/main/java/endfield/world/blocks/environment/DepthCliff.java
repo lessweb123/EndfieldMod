@@ -5,6 +5,7 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.geom.Geometry;
 import arc.scene.ui.layout.Table;
 import arc.struct.IntSeq;
+import arc.util.Nullable;
 import arc.util.Tmp;
 import endfield.util.Sprites;
 import mindustry.Vars;
@@ -17,7 +18,6 @@ import mindustry.graphics.CacheLayer;
 import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.Tile;
-import org.jetbrains.annotations.Nullable;
 
 public class DepthCliff extends Block {
 	//                            0  1  2  3  4  5   6   7  8   9  10  11  12  13  14  15

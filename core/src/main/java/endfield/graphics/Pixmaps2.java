@@ -1,5 +1,6 @@
 package endfield.graphics;
 
+import arc.Core;
 import arc.files.Fi;
 import arc.func.Intc2;
 import arc.graphics.Color;
@@ -15,13 +16,14 @@ import java.io.File;
 import static endfield.Vars2.imageHandle;
 
 public final class Pixmaps2 {
-	public static Pixmap white;
+	public static Pixmap white, error;
 	public static Pixmap bottleTop, bottleBottom;
 
 	private Pixmaps2() {}
 
 	public static void load() {
 		white = new Pixmap(Textures2.texturesDir.child("white.png"));
+		error = new Pixmap(Core.files.internal("sprites/error.png"));
 
 		Fi itemsDir = Regions2.spritesDir.child("items");
 

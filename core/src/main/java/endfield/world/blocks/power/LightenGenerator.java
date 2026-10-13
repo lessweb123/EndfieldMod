@@ -7,6 +7,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
 import arc.struct.ObjectMap;
+import arc.util.Nullable;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -31,7 +32,6 @@ import mindustry.graphics.Pal;
 import mindustry.world.blocks.power.NuclearReactor;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatValues;
-import org.jetbrains.annotations.Nullable;
 
 import static endfield.Vars2.modName;
 

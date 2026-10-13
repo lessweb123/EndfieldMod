@@ -4,10 +4,10 @@ import arc.Input;
 import arc.func.Cons;
 import arc.func.Cons2;
 import arc.input.KeyCode;
+import arc.util.Nullable;
 import kotlin.Pair;
 import kotlin.collections.MapsKt;
 import kotlin.jvm.functions.Function1;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
