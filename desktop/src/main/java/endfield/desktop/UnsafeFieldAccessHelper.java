@@ -10,8 +10,8 @@ import java.lang.reflect.Modifier;
 
 import static endfield.desktop.DesktopClassHelper.function4;
 import static endfield.util.GetKt.sneakyThrow;
-import static endfield.util.Reflects.getGetMessage;
-import static endfield.util.Reflects.getSetMessage;
+import static endfield.util.Reflections.getGetMessage;
+import static endfield.util.Reflections.getSetMessage;
 
 public class UnsafeFieldAccessHelper implements FieldAccessHelper {
 	protected static final CollectionObjectMap<Class<?>, CollectionObjectMap<String, Field>> fieldMap = new CollectionObjectMap<>(Class.class, CollectionObjectMap.class);

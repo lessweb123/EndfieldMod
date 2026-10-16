@@ -1,13 +1,13 @@
 package endfield.android;
 
-import endfield.util.ReflectionFieldAccessHelper;
+import endfield.util.AbstractFieldAccessorHelper;
 
 import java.lang.reflect.Field;
 
-import static endfield.util.Reflects.getGetMessage;
-import static endfield.util.Reflects.getSetMessage;
+import static endfield.util.Reflections.getGetMessage;
+import static endfield.util.Reflections.getSetMessage;
 
-public class UnsafeFieldAccessHelper extends ReflectionFieldAccessHelper {
+public class UnsafeFieldAccessHelper extends AbstractFieldAccessorHelper {
 	@Override
 	public void setByte(Object object, String name, byte value) {
 		Field field = getField(object.getClass(), name, false);

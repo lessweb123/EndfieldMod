@@ -1,24 +1,22 @@
 package endfield.android;
 
 import arc.util.Log;
-import endfield.util.CollectionObjectMap;
 import endfield.util.FieldAccessor;
 import endfield.util.PlatformImpl;
 import endfield.util.ReflectionMethodInvokeHelper;
 import libcore.io.Memory;
 
-import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Objects;
-import java.util.function.Function;
 
 import static endfield.Vars2.accessibleHelper;
 import static endfield.Vars2.classHelper;
 import static endfield.Vars2.fieldAccessHelper;
 import static endfield.Vars2.imageHandle;
+import static endfield.Vars2.invokers;
 import static endfield.Vars2.methodInvokeHelper;
 import static endfield.android.Unsafer.unsafe;
 import static endfield.util.GetKt.sneakyThrow;
@@ -29,7 +27,7 @@ public class AndroidImpl implements PlatformImpl {
 		try {
 			HiddenApi.setup();
 		} catch (Throwable e) {
-			Log.err("It seems you platform is special. (But don't worry)", e);
+			Log.err(e);
 		}
 	}
 
@@ -38,6 +36,7 @@ public class AndroidImpl implements PlatformImpl {
 	}
 
 	void init() {
+		invokers = new AndroidInvokers();
 		accessibleHelper = new AndroidAccessibleHelper();
 		classHelper = new AndroidClassHelper();
 		fieldAccessHelper = new UnsafeFieldAccessHelper();
@@ -54,16 +53,10 @@ public class AndroidImpl implements PlatformImpl {
 		if (type == Class.class || type == Field.class || type == Method.class || type == Constructor.class) return object;
 
 		try {
-			return (T) CloneHelper.clone.invoke(object);
+			return (T) Companion.cloneMethod.invoke(object);
 		} catch (IllegalAccessException | InvocationTargetException e) {
 			throw sneakyThrow(e);
 		}
-	}
-
-	// Due to the lack of TRUSTED lookup in Android, each class needs to create an ALL_MODES lookup.
-	@Override
-	public Lookup lookup(Class<?> clazz) {
-		return LookupHelper.lookupMap.computeIfAbsent(clazz, LookupHelper.lookupBuilder);
 	}
 
 	@Override
@@ -94,43 +87,18 @@ public class AndroidImpl implements PlatformImpl {
 		return unsafe.arrayIndexScale(arrayClass);
 	}
 
-	static final class LookupHelper {
-		static final Constructor<Lookup> constructor;
-		static final CollectionObjectMap<Class<?>, Lookup> lookupMap = new CollectionObjectMap<>(Class.class, Lookup.class);
-		static final Function<Class<?>, Lookup> lookupBuilder;
-
-		private LookupHelper() {}
+	public static final class Companion {
+		static final Method cloneMethod;
 
 		static {
 			try {
-				constructor = Lookup.class.getDeclaredConstructor(Class.class, int.class);
-				constructor.setAccessible(true);
-
-				lookupBuilder = clazz -> {
-					try {
-						return constructor.newInstance(clazz, 15);
-					} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-						throw sneakyThrow(e);
-					}
-				};
+				cloneMethod = Object.class.getDeclaredMethod("internalClone");
+				cloneMethod.setAccessible(true);
 			} catch (Throwable e) {
 				throw sneakyThrow(e);
 			}
 		}
-	}
 
-	static final class CloneHelper {
-		static final Method clone;
-
-		private CloneHelper() {}
-
-		static {
-			try {
-				clone = Object.class.getDeclaredMethod("internalClone");
-				clone.setAccessible(true);
-			} catch (Throwable e) {
-				throw sneakyThrow(e);
-			}
-		}
+		private Companion() {}
 	}
 }

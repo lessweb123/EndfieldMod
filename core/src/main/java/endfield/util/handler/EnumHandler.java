@@ -2,7 +2,7 @@ package endfield.util.handler;
 
 import arc.struct.Seq;
 import endfield.util.FieldAccessor;
-import endfield.util.Reflects;
+import endfield.util.Reflections;
 
 /**
  * The enumeration processor provides some operation methods for enum, which can create enumeration
@@ -29,8 +29,8 @@ public class EnumHandler<T extends Enum<T>> {
 	public final Class<T> clazz;
 
 	static {
-		ordinalAccessor = Reflects.newFieldAccessor(Enum.class, "ordinal");
-		nameAccessor = Reflects.newFieldAccessor(Enum.class, "name");
+		ordinalAccessor = Reflections.getFieldAccessor(Enum.class, "ordinal");
+		nameAccessor = Reflections.getFieldAccessor(Enum.class, "name");
 	}
 
 	/**
@@ -44,7 +44,7 @@ public class EnumHandler<T extends Enum<T>> {
 	public EnumHandler(Class<T> c) {
 		clazz = c;
 
-		valuesAccessor = Reflects.newFieldAccessor(clazz, field -> field.getName().contains("$VALUES"));
+		valuesAccessor = Reflections.getFieldAccessor(clazz, field -> field.getName().contains("$VALUES"));
 	}
 
 	/**

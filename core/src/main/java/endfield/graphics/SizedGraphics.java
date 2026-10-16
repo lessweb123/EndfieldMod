@@ -8,8 +8,8 @@ import arc.graphics.GL20;
 import arc.graphics.GL30;
 import arc.graphics.Pixmap;
 import arc.graphics.gl.GLVersion;
-import endfield.util.MethodAccessor;
-import endfield.util.Reflects;
+import endfield.util.MethodInvoker;
+import endfield.util.Reflections;
 
 import static endfield.util.GetKt.sneakyThrow;
 
@@ -24,15 +24,15 @@ import static endfield.util.GetKt.sneakyThrow;
  * @author GlFolker
  */
 public class SizedGraphics extends Graphics {
-	public static final MethodAccessor setCursor, setSystemCursor;
+	public static final MethodInvoker setCursor, setSystemCursor;
 
 	protected int overrideWidth, overrideHeight;
 	protected Graphics delegate;
 
 	static {
 		try {
-			setCursor = Reflects.newMethodAccessor(Graphics.class.getDeclaredMethod("setCursor", Cursor.class));
-			setSystemCursor = Reflects.newMethodAccessor(Graphics.class.getDeclaredMethod("setSystemCursor", SystemCursor.class));
+			setCursor = Reflections.getMethodInvoker(Graphics.class.getDeclaredMethod("setCursor", Cursor.class));
+			setSystemCursor = Reflections.getMethodInvoker(Graphics.class.getDeclaredMethod("setSystemCursor", SystemCursor.class));
 		} catch (NoSuchMethodException e) {
 			throw sneakyThrow(e);
 		}

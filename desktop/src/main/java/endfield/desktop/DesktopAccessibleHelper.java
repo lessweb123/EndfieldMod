@@ -11,10 +11,10 @@ import static endfield.util.GetKt.sneakyThrow;
 public class DesktopAccessibleHelper implements AccessibleHelper {
 	@Override
 	public void makeAccessible(AccessibleObject object) {
-		OverrideHelper.override.set(object, true);
+		Companion.override.set(object, true);
 	}
 
-	static final class OverrideHelper {
+	public static final class Companion {
 		static VarHandle override;
 
 		static {
@@ -25,6 +25,6 @@ public class DesktopAccessibleHelper implements AccessibleHelper {
 			}
 		}
 
-		private OverrideHelper() {}
+		private Companion() {}
 	}
 }

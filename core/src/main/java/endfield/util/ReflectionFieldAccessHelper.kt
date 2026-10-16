@@ -1,790 +1,253 @@
-package endfield.util;
-
-import arc.func.Prov;
-import arc.util.Nullable;
-
-import java.lang.reflect.Field;
-import java.util.function.Function;
+package endfield.util
 
-import static endfield.util.GetKt.sneakyThrow;
-
-public class ReflectionFieldAccessHelper implements FieldAccessHelper {
-	protected static final CollectionObjectMap<Class<?>, CollectionObjectMap<String, Field>> fieldMap = new CollectionObjectMap<>(Class.class, CollectionObjectMap.class);
-	protected static final CollectionObjectMap<Class<?>, Field[]> fieldsMap = new CollectionObjectMap<>(Class.class, Field[].class);
-
-	protected static final Prov<CollectionObjectMap<String, Field>> prov1 = () -> new CollectionObjectMap<>(String.class, Field.class);
-	protected static final Function<Class<?>, Field[]> function1 = Class::getDeclaredFields;
+import java.lang.reflect.Field
 
-	public Field getField(Class<?> clazz, String name, boolean isStatic) {
-		CollectionObjectMap<String, Field> map = fieldMap.get(clazz, prov1);
-		Field field = map.get(name);
-		if (field != null) return field;
-
-		if (isStatic) {
-			field = findField(clazz, name);
-			if (field != null) {
-				map.put(name, field);
-				return field;
-			}
-		} else {
-			Class<?> current = clazz;
-			while (current != null) {
-				field = findField(current, name);
-				if (field != null) {
-					map.put(name, field);
-					return field;
-				}
-
-				current = current.getSuperclass();
-			}
-		}
-
-		throw sneakyThrow(new NoSuchFieldException("field " + name + " was not found in class: " + clazz));
-	}
-
-	protected @Nullable Field findField(Class<?> clazz, String name) {
-		Field[] fields = fieldsMap.computeIfAbsent(clazz, function1);
-		for (Field field : fields) {
-			if (field.getName().equals(name)) return field;
-		}
-		return null;
-	}
-
-	@Override
-	public void clear() {
-		fieldsMap.clear();
-	}
-
-	@Override
-	public void clear(Class<?> clazz) {
-		fieldsMap.remove(clazz);
-	}
-
-	@Override
-	public void setByte(Object object, String name, byte value) {
-		try {
-			getField(object.getClass(), name, false).setByte(object, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setByteStatic(Class<?> clazz, String name, byte value) {
-		try {
-			getField(clazz, name, true).setByte(null, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public byte getByte(Object object, String name) {
-		try {
-			return getField(object.getClass(), name, false).getByte(object);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public byte getByteStatic(Class<?> clazz, String name) {
-		try {
-			return getField(clazz, name, true).getByte(null);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setShort(Object object, String name, short value) {
-		try {
-			getField(object.getClass(), name, false).setInt(object, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setShortStatic(Class<?> clazz, String name, short value) {
-		try {
-			getField(clazz, name, true).setShort(null, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public short getShort(Object object, String name) {
-		try {
-			return getField(object.getClass(), name, false).getShort(object);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public short getShortStatic(Class<?> clazz, String name) {
-		try {
-			return getField(clazz, name, true).getShort(null);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setInt(Object object, String name, int value) {
-		try {
-			getField(object.getClass(), name, false).setInt(object, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setIntStatic(Class<?> clazz, String name, int value) {
-		try {
-			getField(clazz, name, true).setInt(null, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public int getInt(Object object, String name) {
-		try {
-			return getField(object.getClass(), name, false).getInt(object);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public int getIntStatic(Class<?> clazz, String name) {
-		try {
-			return getField(clazz, name, true).getInt(null);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setLong(Object object, String name, long value) {
-		try {
-			getField(object.getClass(), name, false).setLong(object, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setLongStatic(Class<?> clazz, String name, long value) {
-		try {
-			getField(clazz, name, true).setLong(null, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public long getLong(Object object, String name) {
-		try {
-			return getField(object.getClass(), name, false).getLong(object);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public long getLongStatic(Class<?> clazz, String name) {
-		try {
-			return getField(clazz, name, true).getLong(null);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setFloat(Object object, String name, float value) {
-		try {
-			getField(object.getClass(), name, false).setFloat(object, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setFloatStatic(Class<?> clazz, String name, float value) {
-		try {
-			getField(clazz, name, true).setFloat(null, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public float getFloat(Object object, String name) {
-		try {
-			return getField(object.getClass(), name, false).getFloat(object);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public float getFloatStatic(Class<?> clazz, String name) {
-		try {
-			return getField(clazz, name, true).getFloat(null);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setDouble(Object object, String name, double value) {
-		try {
-			getField(object.getClass(), name, false).setDouble(object, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setDoubleStatic(Class<?> clazz, String name, double value) {
-		try {
-			getField(clazz, name, true).setDouble(null, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public double getDouble(Object object, String name) {
-		try {
-			return getField(object.getClass(), name, false).getDouble(object);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public double getDoubleStatic(Class<?> clazz, String name) {
-		try {
-			return getField(clazz, name, true).getDouble(null);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setChar(Object object, String name, char value) {
-		try {
-			getField(object.getClass(), name, false).setChar(object, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setCharStatic(Class<?> clazz, String name, char value) {
-		try {
-			getField(clazz, name, true).setChar(null, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public char getChar(Object object, String name) {
-		try {
-			return getField(object.getClass(), name, false).getChar(object);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public char getCharStatic(Class<?> clazz, String name) {
-		try {
-			return getField(clazz, name, true).getChar(null);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setBoolean(Object object, String name, boolean value) {
-		try {
-			getField(object.getClass(), name, false).setBoolean(object, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setBooleanStatic(Class<?> clazz, String name, boolean value) {
-		try {
-			getField(clazz, name, true).setBoolean(null, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public boolean getBoolean(Object object, String name) {
-		try {
-			return getField(object.getClass(), name, false).getBoolean(object);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public boolean getBooleanStatic(Class<?> clazz, String name) {
-		try {
-			return getField(clazz, name, true).getBoolean(null);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setObject(Object object, String name, Object value) {
-		try {
-			getField(object.getClass(), name, false).set(object, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setObjectStatic(Class<?> clazz, String name, Object value) {
-		try {
-			getField(clazz, name, true).set(null, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> T getObject(Object object, String name) {
-		try {
-			return (T) getField(object.getClass(), name, false).get(object);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> T getObjectStatic(Class<?> clazz, String name) {
-		try {
-			return (T) getField(clazz, name, true).get(null);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void set(Object object, String name, Object value) {
-		try {
-			getField(object.getClass(), name, false).set(object, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setStatic(Class<?> clazz, String name, Object value) {
-		try {
-			getField(clazz, name, true).set(null, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> T get(Object object, String name) {
-		try {
-			return (T) getField(object.getClass(), name, false).get(object);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> T getStatic(Class<?> clazz, String name) {
-		try {
-			return (T) getField(clazz, name, true).get(null);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setByte(Object object, Field field, byte value) {
-		try {
-			field.setByte(object, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setByteStatic(Field field, byte value) {
-		try {
-			field.setByte(null, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public byte getByte(Object object, Field field) {
-		try {
-			return field.getByte(object);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public byte getByteStatic(Field field) {
-		try {
-			return field.getByte(null);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setShort(Object object, Field field, short value) {
-		try {
-			field.setShort(object, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setShortStatic(Field field, short value) {
-		try {
-			field.setShort(null, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public short getShort(Object object, Field field) {
-		try {
-			return field.getShort(object);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public short getShortStatic(Field field) {
-		try {
-			return field.getShort(null);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setInt(Object object, Field field, int value) {
-		try {
-			field.setInt(object, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setIntStatic(Field field, int value) {
-		try {
-			field.setInt(null, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public int getInt(Object object, Field field) {
-		try {
-			return field.getInt(object);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public int getIntStatic(Field field) {
-		try {
-			return field.getInt(null);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setLong(Object object, Field field, long value) {
-		try {
-			field.setLong(object, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setLongStatic(Field field, long value) {
-		try {
-			field.setLong(null, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public long getLong(Object object, Field field) {
-		try {
-			return field.getLong(object);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public long getLongStatic(Field field) {
-		try {
-			return field.getLong(null);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setFloat(Object object, Field field, float value) {
-		try {
-			field.setFloat(object, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setFloatStatic(Field field, float value) {
-		try {
-			field.setFloat(null, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public float getFloat(Object object, Field field) {
-		try {
-			return field.getFloat(object);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public float getFloatStatic(Field field) {
-		try {
-			return field.getFloat(null);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setDouble(Object object, Field field, double value) {
-		try {
-			field.setDouble(object, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setDoubleStatic(Field field, double value) {
-		try {
-			field.setDouble(null, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public double getDouble(Object object, Field field) {
-		try {
-			return field.getDouble(object);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public double getDoubleStatic(Field field) {
-		try {
-			return field.getDouble(null);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setChar(Object object, Field field, char value) {
-		try {
-			field.setChar(object, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setCharStatic(Field field, char value) {
-		try {
-			field.setChar(null, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public char getChar(Object object, Field field) {
-		try {
-			return field.getChar(object);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public char getCharStatic(Field field) {
-		try {
-			return field.getChar(null);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setBoolean(Object object, Field field, boolean value) {
-		try {
-			field.setBoolean(object, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setBooleanStatic(Field field, boolean value) {
-		try {
-			field.setBoolean(null, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public boolean getBoolean(Object object, Field field) {
-		try {
-			return field.getBoolean(object);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public boolean getBooleanStatic(Field field) {
-		try {
-			return field.getBoolean(null);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setObject(Object object, Field field, Object value) {
-		try {
-			field.set(object, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setObjectStatic(Field field, Object value) {
-		try {
-			field.set(null, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> T getObject(Object object, Field field) {
-		try {
-			return (T) field.get(object);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> T getObjectStatic(Field field) {
-		try {
-			return (T) field.get(null);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void set(Object object, Field field, Object value) {
-		try {
-			field.set(object, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@Override
-	public void setStatic(Field field, Object value) {
-		try {
-			field.set(null, value);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> T get(Object object, Field field) {
-		try {
-			return (T) field.get(object);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> T getStatic(Field field) {
-		try {
-			return (T) field.get(null);
-		} catch (IllegalAccessException e) {
-			throw sneakyThrow(e);
-		}
+open class ReflectionFieldAccessHelper : AbstractFieldAccessorHelper() {
+	override fun setByte(any: Any, name: String, value: Byte) {
+		getField(any.javaClass, name, false).setByte(any, value)
 	}
+
+	override fun setByteStatic(clazz: Class<*>, name: String, value: Byte) {
+		getField(clazz, name, true).setByte(null, value)
+	}
+
+	override fun getByte(any: Any, name: String): Byte = getField(any.javaClass, name, false).getByte(any)
+
+	override fun getByteStatic(clazz: Class<*>, name: String): Byte = getField(clazz, name, true).getByte(null)
+
+	override fun setShort(any: Any, name: String, value: Short) {
+		getField(any.javaClass, name, false).setShort(any, value)
+	}
+
+	override fun setShortStatic(clazz: Class<*>, name: String, value: Short) {
+		getField(clazz, name, true).setShort(null, value)
+	}
+
+	override fun getShort(any: Any, name: String): Short = getField(any.javaClass, name, false).getShort(any)
+
+	override fun getShortStatic(clazz: Class<*>, name: String): Short = getField(clazz, name, true).getShort(null)
+
+	override fun setInt(any: Any, name: String, value: Int) {
+		getField(any.javaClass, name, false).setInt(any, value)
+	}
+
+	override fun setIntStatic(clazz: Class<*>, name: String, value: Int) {
+		getField(clazz, name, true).setInt(null, value)
+	}
+
+	override fun getInt(any: Any, name: String): Int = getField(any.javaClass, name, false).getInt(any)
+
+	override fun getIntStatic(clazz: Class<*>, name: String): Int = getField(clazz, name, true).getInt(null)
+
+	override fun setLong(any: Any, name: String, value: Long) {
+		getField(any.javaClass, name, false).setLong(any, value)
+	}
+
+	override fun setLongStatic(clazz: Class<*>, name: String, value: Long) {
+		getField(clazz, name, true).setLong(null, value)
+	}
+
+	override fun getLong(any: Any, name: String): Long = getField(any.javaClass, name, false).getLong(any)
+
+	override fun getLongStatic(clazz: Class<*>, name: String): Long = getField(clazz, name, true).getLong(null)
+
+	override fun setFloat(any: Any, name: String, value: Float) {
+		getField(any.javaClass, name, false).setFloat(any, value)
+	}
+
+	override fun setFloatStatic(clazz: Class<*>, name: String, value: Float) {
+		getField(clazz, name, true).setFloat(null, value)
+	}
+
+	override fun getFloat(any: Any, name: String): Float = getField(any.javaClass, name, false).getFloat(any)
+
+	override fun getFloatStatic(clazz: Class<*>, name: String): Float = getField(clazz, name, true).getFloat(null)
+
+	override fun setDouble(any: Any, name: String, value: Double) {
+		getField(any.javaClass, name, false).setDouble(any, value)
+	}
+
+	override fun setDoubleStatic(clazz: Class<*>, name: String, value: Double) {
+		getField(clazz, name, true).setDouble(null, value)
+	}
+
+	override fun getDouble(any: Any, name: String): Double = getField(any.javaClass, name, false).getDouble(any)
+
+	override fun getDoubleStatic(clazz: Class<*>, name: String): Double = getField(clazz, name, true).getDouble(null)
+
+	override fun setChar(any: Any, name: String, value: Char) {
+		getField(any.javaClass, name, false).setChar(any, value)
+	}
+
+	override fun setCharStatic(clazz: Class<*>, name: String, value: Char) {
+		getField(clazz, name, true).setChar(null, value)
+	}
+
+	override fun getChar(any: Any, name: String): Char = getField(any.javaClass, name, false).getChar(any)
+
+	override fun getCharStatic(clazz: Class<*>, name: String): Char = getField(clazz, name, true).getChar(null)
+
+	override fun setBoolean(any: Any, name: String, value: Boolean) {
+		getField(any.javaClass, name, false).setBoolean(any, value)
+	}
+
+	override fun setBooleanStatic(clazz: Class<*>, name: String, value: Boolean) {
+		getField(clazz, name, true).setBoolean(null, value)
+	}
+
+	override fun getBoolean(any: Any, name: String): Boolean = getField(any.javaClass, name, false).getBoolean(any)
+
+	override fun getBooleanStatic(clazz: Class<*>, name: String): Boolean = getField(clazz, name, true).getBoolean(null)
+
+	override fun setObject(any: Any, name: String, value: Any?) {
+		getField(any.javaClass, name, false).set(any, value)
+	}
+
+	override fun setObjectStatic(clazz: Class<*>, name: String, value: Any?) {
+		getField(clazz, name, true).set(null, value)
+	}
+
+	@Suppress("UNCHECKED_CAST")
+	override fun <T> getObject(any: Any, name: String): T = getField(any.javaClass, name, false).get(any) as T
+
+	@Suppress("UNCHECKED_CAST")
+	override fun <T> getObjectStatic(clazz: Class<*>, name: String): T = getField(clazz, name, true).get(null) as T
+
+	override fun set(any: Any, name: String, value: Any?) {
+		getField(any.javaClass, name, false).set(any, value)
+	}
+
+	override fun setStatic(clazz: Class<*>, name: String, value: Any?) {
+		getField(clazz, name, true).set(null, value)
+	}
+
+	@Suppress("UNCHECKED_CAST")
+	override fun <T> get(any: Any, name: String): T = getField(any.javaClass, name, false).get(any) as T
+
+	@Suppress("UNCHECKED_CAST")
+	override fun <T> getStatic(clazz: Class<*>, name: String): T = getField(clazz, name, true).get(null) as T
+
+	override fun setByte(any: Any, field: Field, value: Byte) {
+		field.setByte(any, value)
+	}
+
+	override fun setByteStatic(field: Field, value: Byte) {
+		field.setByte(null, value)
+	}
+
+	override fun getByte(any: Any, field: Field): Byte = field.getByte(any)
+
+	override fun getByteStatic(field: Field): Byte = field.getByte(null)
+
+	override fun setShort(any: Any, field: Field, value: Short) {
+		field.setShort(any, value)
+	}
+
+	override fun setShortStatic(field: Field, value: Short) {
+		field.setShort(null, value)
+	}
+
+	override fun getShort(any: Any, field: Field): Short = field.getShort(any)
+
+	override fun getShortStatic(field: Field): Short = field.getShort(null)
+
+	override fun setInt(any: Any, field: Field, value: Int) {
+		field.setInt(any, value)
+	}
+
+	override fun setIntStatic(field: Field, value: Int) {
+		field.setInt(null, value)
+	}
+
+	override fun getInt(any: Any, field: Field): Int = field.getInt(any)
+
+	override fun getIntStatic(field: Field): Int = field.getInt(null)
+
+	override fun setLong(any: Any, field: Field, value: Long) {
+		field.setLong(any, value)
+	}
+
+	override fun setLongStatic(field: Field, value: Long) {
+		field.setLong(null, value)
+	}
+
+	override fun getLong(any: Any, field: Field): Long = field.getLong(any)
+
+	override fun getLongStatic(field: Field): Long = field.getLong(null)
+
+	override fun setFloat(any: Any, field: Field, value: Float) {
+		field.setFloat(any, value)
+	}
+
+	override fun setFloatStatic(field: Field, value: Float) {
+		field.setFloat(null, value)
+	}
+
+	override fun getFloat(any: Any, field: Field): Float = field.getFloat(any)
+
+	override fun getFloatStatic(field: Field): Float = field.getFloat(null)
+
+	override fun setDouble(any: Any, field: Field, value: Double) {
+		field.setDouble(any, value)
+	}
+
+	override fun setDoubleStatic(field: Field, value: Double) {
+		field.setDouble(null, value)
+	}
+
+	override fun getDouble(any: Any, field: Field): Double = field.getDouble(any)
+
+	override fun getDoubleStatic(field: Field): Double = field.getDouble(null)
+
+	override fun setChar(any: Any, field: Field, value: Char) {
+		field.setChar(any, value)
+	}
+
+	override fun setCharStatic(field: Field, value: Char) {
+		field.setChar(null, value)
+	}
+
+	override fun getChar(any: Any, field: Field): Char = field.getChar(any)
+
+	override fun getCharStatic(field: Field): Char = field.getChar(null)
+
+	override fun setBoolean(any: Any, field: Field, value: Boolean) {
+		field.setBoolean(any, value)
+	}
+
+	override fun setBooleanStatic(field: Field, value: Boolean) {
+		field.setBoolean(null, value)
+	}
+
+	override fun getBoolean(any: Any, field: Field): Boolean = field.getBoolean(any)
+
+	override fun getBooleanStatic(field: Field): Boolean = field.getBoolean(null)
+
+	override fun setObject(any: Any, field: Field, value: Any?) {
+		field.set(any, value)
+	}
+
+	override fun setObjectStatic(field: Field, value: Any?) {
+		field.set(null, value)
+	}
+
+	@Suppress("UNCHECKED_CAST")
+	override fun <T> getObject(any: Any, field: Field): T = field.get(any) as T
+
+	@Suppress("UNCHECKED_CAST")
+	override fun <T> getObjectStatic(field: Field): T = field.get(null) as T
+
+	override fun set(any: Any, field: Field, value: Any?) {
+		field.set(any, value)
+	}
+
+	override fun setStatic(field: Field, value: Any?) {
+		field.set(null, value)
+	}
+
+	@Suppress("UNCHECKED_CAST")
+	override fun <T> get(any: Any, field: Field): T = field.get(any) as T
+
+	@Suppress("UNCHECKED_CAST")
+	override fun <T> getStatic(field: Field): T = field.get(null) as T
 }

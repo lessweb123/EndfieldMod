@@ -121,6 +121,15 @@ public interface ClassHelper {
 		throw sneakyThrow(new NoSuchMethodException("Constructor not found"));
 	}
 
+	default <T> Class<T> ensureInitialized(Class<T> targetClass) {
+		try {
+			Class.forName(targetClass.getName(), true, targetClass.getClassLoader());
+			return targetClass;
+		} catch (ClassNotFoundException e) {
+			throw sneakyThrow(e);
+		}
+	}
+
 	<T> T allocateInstance(Class<? extends T> clazz);
 
 	Class<?> defineClass(String name, byte[] bytes, ClassLoader loader);

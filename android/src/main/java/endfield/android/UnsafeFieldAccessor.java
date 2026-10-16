@@ -8,8 +8,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import static endfield.android.Unsafer.unsafe;
-import static endfield.util.Reflects.getGetMessage;
-import static endfield.util.Reflects.getSetMessage;
+import static endfield.util.Reflections.getGetMessage;
+import static endfield.util.Reflections.getSetMessage;
 
 @SuppressWarnings("removal")
 public class UnsafeFieldAccessor extends AbstractFieldAccessor {

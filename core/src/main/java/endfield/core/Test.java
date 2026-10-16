@@ -16,7 +16,9 @@ import endfield.util.aspector.classes.BytecodeClassLoader;
 import endfield.util.aspector.classes.ClassDecl;
 import endfield.util.aspector.classes.ClassName;
 import endfield.util.aspector.generate.ProxyAspectFactory;
+import endfield.util.handler.ClassHandler;
 import endfield.util.handler.EnumHandler;
+import endfield.util.handler.ObjectHandler;
 import kotlin.NotImplementedError;
 
 import java.lang.annotation.ElementType;
@@ -80,10 +82,8 @@ public class Test extends @Stub Random {
 
 	public static void test4() {
 		try {
-			EnumHandler<TestEnum> handler = new EnumHandler<>(TestEnum.class);
-
 			// Before using Unsafe to read and write fields, it is necessary to ensure that the class is initialized.
-			Class.forName(TestEnum.class.getName(), true, TestEnum.class.getClassLoader());
+			EnumHandler<TestEnum> handler = new EnumHandler<>(ClassHandler.ensureInitialized(TestEnum.class));
 
 			handler.addEnumItemTail("D");
 			Log.info(Arrays.toString(TestEnum.values()));
@@ -101,6 +101,16 @@ public class Test extends @Stub Random {
 			i1.invoke();
 			i2.invoke(new B());
 			i3.invoke(new C());
+		} catch (Throwable e) {
+			Log.err(e);
+		}
+	}
+
+	public static void test6() {
+		try {
+			TestData source = new TestData(325, 799.9f, "arknights"), target = new TestData(-1, -1, "none");
+			ObjectHandler.copyField(source, target);
+			Log.info(target);
 		} catch (Throwable e) {
 			Log.err(e);
 		}
@@ -132,6 +142,25 @@ public class Test extends @Stub Random {
 
 	public enum TestEnum {
 		A, B, C
+	}
+
+	public static class TestData {
+		public int intValue;
+		public float floatValue;
+		public String stringValue;
+
+		public TestData(int i, float f, String s) {
+			intValue = i;
+			floatValue = f;
+			stringValue = s;
+		}
+
+		public TestData() {}
+
+		@Override
+		public String toString() {
+			return "TestData{intValue=" + intValue + ", floatValue=" + floatValue + ", stringValue=" + stringValue + "}";
+		}
 	}
 
 	@Target(ElementType.TYPE_USE)

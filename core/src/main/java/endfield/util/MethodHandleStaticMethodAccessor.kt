@@ -6,17 +6,17 @@ import java.lang.reflect.Method
 
 class MethodHandleStaticMethodAccessor(method: Method) : AbstractMethodAccessor(method) {
 	@JvmField
-	val spreadHandle: MethodHandle
+	val spread: MethodHandle
 
 	init {
-		val target = Reflects.lookup(method.declaringClass).unreflect(method).asFixedArity()
+		val target = HandleSupport.unreflect(method).asFixedArity()
 
 		val paramCount = target.type().parameterCount()
 
-		spreadHandle = target.asSpreader(Array<Any>::class.java, paramCount)
+		spread = target.asSpreader(Array<Any>::class.java, paramCount)
 			.asType(MethodType.methodType(Any::class.java, Array<Any>::class.java))
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun <T> invoke(any: Any?, vararg args: Any?): T = spreadHandle.invokeExact(args) as T
+	override fun <T> invoke(any: Any?, vararg args: Any?): T = spread.invokeExact(args) as T
 }

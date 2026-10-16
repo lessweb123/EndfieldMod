@@ -3,7 +3,7 @@ package endfield.desktop;
 import arc.func.Boolf;
 import arc.util.Nullable;
 import endfield.util.ClassHelper;
-import endfield.util.Reflects;
+import endfield.util.Reflections;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
@@ -111,7 +111,7 @@ public class DesktopClassHelper implements ClassHelper {
 			if (method.getName().equals(name) && Arrays.equals((Class<?>[]) mtypes.get(method), parameterTypes)) return method;
 		}
 
-		throw sneakyThrow(new NoSuchMethodException(Reflects.methodToString(clazz, name, parameterTypes)));
+		throw sneakyThrow(new NoSuchMethodException(Reflections.methodToString(clazz, name, parameterTypes)));
 	}
 
 	@Override
@@ -121,7 +121,7 @@ public class DesktopClassHelper implements ClassHelper {
 			if (Arrays.equals((Class<?>[]) ctypes.get(constructor), parameterTypes)) return constructor;
 		}
 
-		throw sneakyThrow(new NoSuchMethodException(Reflects.methodToString(clazz, "<init>", parameterTypes)));
+		throw sneakyThrow(new NoSuchMethodException(Reflections.methodToString(clazz, "<init>", parameterTypes)));
 	}
 
 	@Override
@@ -213,6 +213,12 @@ public class DesktopClassHelper implements ClassHelper {
 		throw sneakyThrow(new NoSuchMethodException("Constructor not found"));
 	}
 
+	@Override
+	public <T> Class<T> ensureInitialized(Class<T> targetClass) {
+		unsafe.ensureClassInitialized(targetClass);
+		return targetClass;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T allocateInstance(Class<? extends T> clazz) {
@@ -226,7 +232,7 @@ public class DesktopClassHelper implements ClassHelper {
 	}
 
 	@Override
-	public Class<?> defineClass(String name, byte[] bytes, ClassLoader loader) throws ClassFormatError {
+	public Class<?> defineClass(String name, byte[] bytes, ClassLoader loader) {
 		return unsafe.defineClass(name, bytes, 0, bytes.length, loader, null);
 	}
 }

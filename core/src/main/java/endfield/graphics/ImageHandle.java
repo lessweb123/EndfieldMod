@@ -1,11 +1,10 @@
 package endfield.graphics;
 
+import arc.files.Fi;
 import arc.graphics.Pixmap;
 
-import java.io.File;
-
 public interface ImageHandle {
-	Pixmap decode(File file);
+	Pixmap decode(Fi file);
 
 	Pixmap decode(byte[] data);
 

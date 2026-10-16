@@ -4,6 +4,9 @@ import arc.func.Boolf;
 import arc.struct.ObjectSet;
 import arc.struct.Seq;
 import arc.util.Nullable;
+import endfield.util.CollectionObjectMap;
+import endfield.util.FieldAccessor;
+import endfield.util.Reflections;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -14,6 +17,8 @@ import java.lang.reflect.Modifier;
  * @since 1.0.9
  */
 public final class ObjectHandler {
+	static final CollectionObjectMap<Class<?>, FieldAccessor[]> accessors = new CollectionObjectMap<>(Class.class, FieldAccessor[].class);
+
 	private ObjectHandler() {}
 
 	/**
@@ -25,10 +30,28 @@ public final class ObjectHandler {
 	 * @throws IllegalArgumentException If the target object is not assigned from the source class
 	 */
 	public static <S, T extends S> void copyField(S source, T target) {
-		Seq<Field> fields = getFields(source, null);
+		/*Seq<Field> fields = getFields(source, null);
 
 		for (Field field : fields) {
 			FieldHandler.set(target, field, FieldHandler.get(source, field));
+		}*/
+
+		// Cache fields to improve performance.
+		for (FieldAccessor accessor : accessors.computeIfAbsent(source.getClass(), c -> {
+			Seq<FieldAccessor> fields = new Seq<>(FieldAccessor.class);
+			Class<?> current = c;
+			while (current != Object.class) {
+				for (Field field : ClassHandler.getFields(current)) {
+					if ((field.getModifiers() & Modifier.STATIC) != 0) continue;
+
+					fields.add(Reflections.getFieldAccessor(field));
+				}
+
+				current = current.getSuperclass();
+			}
+			return fields.toArray(FieldAccessor.class);
+		})) {
+			accessor.set(target, accessor.get(source));
 		}
 	}
 
@@ -67,9 +90,9 @@ public final class ObjectHandler {
 	}
 
 	public static Seq<Field> getFields(Object object, @Nullable Boolf<Field> filler) {
-		Class<?> current = object.getClass();
 		Seq<Field> fields = new Seq<>(Field.class);
 
+		Class<?> current = object.getClass();
 		while (current != Object.class) {
 			for (Field field : ClassHandler.getFields(current)) {
 				if ((field.getModifiers() & Modifier.STATIC) != 0 || filler != null && !filler.get(field)) continue;

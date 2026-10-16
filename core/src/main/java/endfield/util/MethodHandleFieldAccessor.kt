@@ -2,7 +2,6 @@
 
 package endfield.util
 
-import arc.util.OS
 import java.lang.invoke.MethodHandle
 import java.lang.invoke.MethodType
 import java.lang.reflect.Field
@@ -18,9 +17,9 @@ open class MethodHandleFieldAccessor internal constructor(field: Field) : Abstra
 				if (type.isPrimitive) {
 					if (type === Boolean::class.javaPrimitiveType) MethodHandleStaticBooleanFieldAccessor(field)
 					else if (type === Byte::class.javaPrimitiveType) MethodHandleStaticByteFieldAccessor(field)
-					else if (type === Char::class.javaPrimitiveType) MethodHandleStaticCharFieldAccessor(field)
+					else if (type === Character.TYPE) MethodHandleStaticCharFieldAccessor(field)
 					else if (type === Short::class.javaPrimitiveType) MethodHandleStaticShortFieldAccessor(field)
-					else if (type === Int::class.javaPrimitiveType) MethodHandleStaticIntFieldAccessor(field)
+					else if (type === Integer.TYPE) MethodHandleStaticIntFieldAccessor(field)
 					else if (type === Long::class.javaPrimitiveType) MethodHandleStaticLongFieldAccessor(field)
 					else if (type === Float::class.javaPrimitiveType) MethodHandleStaticFloatFieldAccessor(field)
 					else if (type === Double::class.javaPrimitiveType) MethodHandleStaticDoubleFieldAccessor(field)
@@ -32,9 +31,9 @@ open class MethodHandleFieldAccessor internal constructor(field: Field) : Abstra
 				if (type.isPrimitive) {
 					if (type === Boolean::class.javaPrimitiveType) MethodHandleBooleanFieldAccessor(field)
 					else if (type === Byte::class.javaPrimitiveType) MethodHandleByteFieldAccessor(field)
-					else if (type === Char::class.javaPrimitiveType) MethodHandleCharFieldAccessor(field)
+					else if (type === Character.TYPE) MethodHandleCharFieldAccessor(field)
 					else if (type === Short::class.javaPrimitiveType) MethodHandleShortFieldAccessor(field)
-					else if (type === Int::class.javaPrimitiveType) MethodHandleIntFieldAccessor(field)
+					else if (type === Integer.TYPE) MethodHandleIntFieldAccessor(field)
 					else if (type === Long::class.javaPrimitiveType) MethodHandleLongFieldAccessor(field)
 					else if (type === Float::class.javaPrimitiveType) MethodHandleFloatFieldAccessor(field)
 					else if (type === Double::class.javaPrimitiveType) MethodHandleDoubleFieldAccessor(field)
@@ -52,110 +51,101 @@ open class MethodHandleFieldAccessor internal constructor(field: Field) : Abstra
 	protected val setter: MethodHandle
 
 	init {
-		val declaring = field.declaringClass
+		val refc = field.declaringClass
 		val name = field.name
 		val type = field.type
 		val returnType = if (type.isPrimitive) type else Any::class.java
 		val modifiers = field.modifiers
 
-		Reflects.setAccessible(field)
+		Reflections.setAccessible(field)
 
-		if (OS.isAndroid || (modifiers and Modifier.FINAL) == 0) {
-			val lookup = Reflects.lookup(declaring)
-
-			getter = lookup.unreflectGetter(field)
-			setter = lookup.unreflectSetter(field)
+		if ((modifiers and Modifier.STATIC) != 0) {
+			getter = HandleSupport.findStaticGetter(refc, name, type).asType(MethodType.methodType(returnType))
+			setter = HandleSupport.findStaticSetter(refc, name, type).asType(MethodType.methodType(Void.TYPE, returnType))
 		} else {
-			val lookup = Reflects.lookup()
-
-			if ((modifiers and Modifier.STATIC) != 0) {
-				getter = lookup.findStaticGetter(declaring, name, type).asType(MethodType.methodType(returnType))
-				setter = lookup.findStaticSetter(declaring, name, type).asType(MethodType.methodType(Void.TYPE, returnType))
-			} else {
-				getter = lookup.findGetter(declaring, name, type).asType(MethodType.methodType(returnType, Any::class.java))
-				setter = lookup.findSetter(declaring, name, type).asType(MethodType.methodType(Void.TYPE, Any::class.java, returnType))
-			}
+			getter = HandleSupport.findGetter(refc, name, type).asType(MethodType.methodType(returnType, Any::class.java))
+			setter = HandleSupport.findSetter(refc, name, type).asType(MethodType.methodType(Void.TYPE, arrayOf(Any::class.java, returnType)))
 		}
 	}
 
 	override fun <T> get(any: Any?): T {
-		throw IllegalArgumentException(Reflects.getGetMessage(field, Any::class.java.getName()))
+		throw IllegalArgumentException(Reflections.getGetMessage(field, Any::class.java.getName()))
 	}
 
 	override fun set(any: Any?, value: Any?) {
-		throw IllegalArgumentException(Reflects.getSetMessage(field, value))
+		throw IllegalArgumentException(Reflections.getSetMessage(field, value))
 	}
 
 	override fun <T> getObject(any: Any?): T {
-		throw IllegalArgumentException(Reflects.getGetMessage(field, Any::class.java.getName()))
+		throw IllegalArgumentException(Reflections.getGetMessage(field, Any::class.java.getName()))
 	}
 
 	override fun setObject(any: Any?, value: Any?) {
-		throw IllegalArgumentException(Reflects.getSetMessage(field, value))
+		throw IllegalArgumentException(Reflections.getSetMessage(field, value))
 	}
 
 	override fun getBoolean(any: Any?): Boolean {
-		throw IllegalArgumentException(Reflects.getGetMessage(field, "boolean"))
+		throw IllegalArgumentException(Reflections.getGetMessage(field, "boolean"))
 	}
 
 	override fun setBoolean(any: Any?, value: Boolean) {
-		throw IllegalArgumentException(Reflects.getSetMessage(field, "boolean", value.toString()))
+		throw IllegalArgumentException(Reflections.getSetMessage(field, "boolean", value.toString()))
 	}
 
 	override fun getByte(any: Any?): Byte {
-		throw IllegalArgumentException(Reflects.getGetMessage(field, "boolean"))
+		throw IllegalArgumentException(Reflections.getGetMessage(field, "boolean"))
 	}
 
 	override fun setByte(any: Any?, value: Byte) {
-		throw IllegalArgumentException(Reflects.getSetMessage(field, "byte", value.toInt().toString()))
+		throw IllegalArgumentException(Reflections.getSetMessage(field, "byte", value.toInt().toString()))
 	}
 
 	override fun getChar(any: Any?): Char {
-		throw IllegalArgumentException(Reflects.getGetMessage(field, "char"))
+		throw IllegalArgumentException(Reflections.getGetMessage(field, "char"))
 	}
 
 	override fun setChar(any: Any?, value: Char) {
-		throw IllegalArgumentException(Reflects.getSetMessage(field, "char", value.toString()))
+		throw IllegalArgumentException(Reflections.getSetMessage(field, "char", value.toString()))
 	}
 
 	override fun getShort(any: Any?): Short {
-		throw IllegalArgumentException(Reflects.getGetMessage(field, "short"))
+		throw IllegalArgumentException(Reflections.getGetMessage(field, "short"))
 	}
 
 	override fun setShort(any: Any?, value: Short) {
-		throw IllegalArgumentException(Reflects.getSetMessage(field, "short", value.toInt().toString()))
+		throw IllegalArgumentException(Reflections.getSetMessage(field, "short", value.toInt().toString()))
 	}
 
 	override fun getInt(any: Any?): Int {
-		throw IllegalArgumentException(Reflects.getGetMessage(field, "int"))
+		throw IllegalArgumentException(Reflections.getGetMessage(field, "int"))
 	}
 
 	override fun setInt(any: Any?, value: Int) {
-		throw IllegalArgumentException(Reflects.getSetMessage(field, "int", value.toString()))
+		throw IllegalArgumentException(Reflections.getSetMessage(field, "int", value.toString()))
 	}
 
 	override fun getLong(any: Any?): Long {
-		throw IllegalArgumentException(Reflects.getGetMessage(field, "long"))
+		throw IllegalArgumentException(Reflections.getGetMessage(field, "long"))
 	}
 
 	override fun setLong(any: Any?, value: Long) {
-		throw IllegalArgumentException(Reflects.getSetMessage(field, "long", value.toString()))
+		throw IllegalArgumentException(Reflections.getSetMessage(field, "long", value.toString()))
 	}
 
 	override fun getFloat(any: Any?): Float {
-		throw IllegalArgumentException(Reflects.getGetMessage(field, "float"))
+		throw IllegalArgumentException(Reflections.getGetMessage(field, "float"))
 	}
 
 	override fun setFloat(any: Any?, value: Float) {
-		throw IllegalArgumentException(Reflects.getSetMessage(field, "float", value.toString()))
+		throw IllegalArgumentException(Reflections.getSetMessage(field, "float", value.toString()))
 	}
 
 	override fun getDouble(any: Any?): Double {
-		throw IllegalArgumentException(Reflects.getGetMessage(field, "double"))
+		throw IllegalArgumentException(Reflections.getGetMessage(field, "double"))
 	}
 
 	override fun setDouble(any: Any?, value: Double) {
-		throw IllegalArgumentException(Reflects.getSetMessage(field, "double", value.toString()))
+		throw IllegalArgumentException(Reflections.getSetMessage(field, "double", value.toString()))
 	}
 }
 

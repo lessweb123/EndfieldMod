@@ -17,11 +17,6 @@ public class MockPlatformImpl implements PlatformImpl {
 	}
 
 	@Override
-	public Lookup lookup(Class<?> clazz) {
-		return Reflects.publicLookup;
-	}
-
-	@Override
 	public <T> T clone(T object) {
 		throw new UnsupportedOperationException();
 	}

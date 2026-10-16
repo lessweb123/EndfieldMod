@@ -3,7 +3,7 @@ package endfield.util.script;
 import arc.func.Func;
 import arc.util.Log;
 import endfield.files.Files2;
-import endfield.util.Reflects;
+import endfield.util.Reflections;
 import mindustry.Vars;
 import rhino.Context;
 import rhino.Function;
@@ -46,7 +46,7 @@ public final class Scripts2 {
 
 	@SuppressWarnings("unchecked")
 	public static <T> Func<Object[], T> requireType(Function func, Context context, Scriptable scope, Class<?> returnType) {
-		Class<?> type = Reflects.wrapper(returnType);
+		Class<?> type = Reflections.wrapper(returnType);
 		return args -> {
 			Object res = func.call(context, scope, scope, args);
 

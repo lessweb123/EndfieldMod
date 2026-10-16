@@ -29,7 +29,7 @@ import endfield.content.Fx2;
 import endfield.gen.Spawner;
 import endfield.math.Mathm;
 import endfield.util.CollectionObjectMap;
-import endfield.util.Reflects;
+import endfield.util.Reflections;
 import endfield.util.handler.ClassHandler;
 import endfield.util.handler.FieldHandler;
 import mindustry.Vars;
@@ -835,7 +835,7 @@ public final class Entities {
 
 		if (field != null) {
 			try {
-				Reflects.setAccessible(field);
+				Reflections.setAccessible(field);
 				FieldHandler.setBoolean(entity, field, value);
 			} catch (Throwable e) {
 				Log.err(e);
@@ -848,7 +848,7 @@ public final class Entities {
 
 		if (field != null) {
 			try {
-				Reflects.setAccessible(field);
+				Reflections.setAccessible(field);
 				cons.get(FieldHandler.get(build, field));
 			} catch (Throwable e) {
 				Log.err(e);

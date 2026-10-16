@@ -9,7 +9,7 @@ public class ReflectionMethodAccessor extends AbstractMethodAccessor {
 	public ReflectionMethodAccessor(Method method) {
 		super(method);
 
-		if (!Reflects.setAccessible(method)) throw new IllegalArgumentException("Unable to access method: " + method);
+		if (!Reflections.setAccessible(method)) throw new IllegalArgumentException("Unable to access method: " + method);
 	}
 
 	@SuppressWarnings("unchecked")

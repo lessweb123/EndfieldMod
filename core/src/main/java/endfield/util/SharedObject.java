@@ -66,8 +66,8 @@ public interface SharedObject {
 			if (existing == null)
 				throw new IllegalArgumentException("Field " + field.getName() + " not found in existed shared object.");
 
-			Reflects.setAccessible(existing);
-			Reflects.setAccessible(field);
+			Reflections.setAccessible(existing);
+			Reflections.setAccessible(field);
 
 			FieldHandler.set(this, field, FieldHandler.get(existingSharedObject, existing));
 		}

@@ -7,8 +7,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import static endfield.desktop.Unsafer.unsafe;
-import static endfield.util.Reflects.getGetMessage;
-import static endfield.util.Reflects.getSetMessage;
+import static endfield.util.Reflections.getGetMessage;
+import static endfield.util.Reflections.getSetMessage;
 
 public sealed class UnsafeFieldAccessor extends AbstractFieldAccessor {
 	protected final long offset;

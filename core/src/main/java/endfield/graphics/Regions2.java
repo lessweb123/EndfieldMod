@@ -34,16 +34,20 @@ public final class Regions2 {
 		regionmap = Core.atlas.getRegionMap();
 		pixmaps = Core.atlas.getPixmaps();
 
-		textures.add(Textures2.white);
-		regions.add(white);
-		regionmap.put(white.name, white);
+		add(white);
 
-		Seq<Fi> fis = internalTree.child("sprites-add").findAll(f -> f.extension().equals("png"));
+		internalTree.child("sprites-add").walk(f -> {
+			if (f.extension().equals("png")) {
+				Texture texture = new Texture(f);
+				Core.atlas.addRegion(f.nameWithoutExtension(), texture, 0, 0, texture.width, texture.height);
+			}
+		});
+	}
 
-		for (Fi fi : fis) {
-			Texture texture = new Texture(fi);
-			Core.atlas.addRegion(fi.nameWithoutExtension(), texture, 0, 0, texture.width, texture.height);
-		}
+	public static void add(AtlasRegion region) {
+		textures.add(region.texture);
+		regions.add(region);
+		regionmap.put(region.name, region);
 	}
 
 	public static AtlasRegion create(Texture texture, String name) {

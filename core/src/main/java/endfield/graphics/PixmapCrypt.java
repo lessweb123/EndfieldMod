@@ -5,10 +5,10 @@ import arc.struct.IntSeq;
 
 import java.nio.IntBuffer;
 
-public final class TomatoCryptLegacy {
+public final class PixmapCrypt {
 	static IntSeq tmp = new IntSeq();
 
-	private TomatoCryptLegacy() {}
+	private PixmapCrypt() {}
 
 	public static Pixmap encrypt(Pixmap input) {
 		int w = input.getWidth(), h = input.getHeight();

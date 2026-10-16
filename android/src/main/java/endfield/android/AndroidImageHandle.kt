@@ -1,78 +1,65 @@
-package endfield.android;
+package endfield.android
 
-import android.graphics.Bitmap;
-import android.graphics.ColorSpace;
-import android.graphics.ColorSpace.Named;
-import android.graphics.ImageDecoder;
-import android.graphics.ImageDecoder.OnHeaderDecodedListener;
-import android.graphics.ImageDecoder.Source;
-import arc.graphics.Pixmap;
-import arc.util.Log;
-import endfield.graphics.ImageHandle;
-import endfield.graphics.Pixmaps2;
+import android.graphics.Bitmap
+import android.graphics.ColorSpace
+import android.graphics.ImageDecoder
+import android.graphics.ImageDecoder.ImageInfo
+import android.graphics.ImageDecoder.OnHeaderDecodedListener
+import arc.files.Fi
+import arc.graphics.Pixmap
+import endfield.graphics.ImageHandle
 
-import java.io.File;
-import java.io.IOException;
-
-public class AndroidImageHandle implements ImageHandle {
-	static final OnHeaderDecodedListener listener = (decoder, info, source) -> {
-		decoder.setAllocator(ImageDecoder.ALLOCATOR_SOFTWARE);
-		decoder.setTargetColorSpace(ColorSpace.get(Named.LINEAR_SRGB));
-	};
-
-	@Override
-	public Pixmap decode(File file) {
-		try {
-			Source source = ImageDecoder.createSource(file);
-			Bitmap bitmap = ImageDecoder.decodeBitmap(source, listener);
-			Pixmap pixmap = bitmapToPixmap(bitmap);
-			bitmap.recycle();
-			return pixmap;
-		} catch (IOException e) {
-			Log.err(e);
-			return Pixmaps2.error;
-		}
+class AndroidImageHandle : ImageHandle {
+	override fun decode(file: Fi): Pixmap {
+		val source = ImageDecoder.createSource(file.file())
+		val bitmap = ImageDecoder.decodeBitmap(source, listener)
+		val pixmap: Pixmap = bitmapToPixmap(bitmap)
+		bitmap.recycle()
+		return pixmap
 	}
 
-	@Override
-	public Pixmap decode(byte[] data) {
-		try {
-			Source source = ImageDecoder.createSource(data);
-			Bitmap bitmap = ImageDecoder.decodeBitmap(source, listener);
-			Pixmap pixmap = bitmapToPixmap(bitmap);
-			bitmap.recycle();
-			return pixmap;
-		} catch (IOException e) {
-			Log.err(e);
-			return Pixmaps2.error;
-		}
+	override fun decode(data: ByteArray): Pixmap {
+		val source = ImageDecoder.createSource(data)
+		val bitmap = ImageDecoder.decodeBitmap(source, listener)
+		val pixmap: Pixmap = bitmapToPixmap(bitmap)
+		bitmap.recycle()
+		return pixmap
 	}
 
-	@Override
-	public boolean isSupported(String mimeType) {
-		return ImageDecoder.isMimeTypeSupported(mimeType);
+	override fun isSupported(mimeType: String): Boolean {
+		return ImageDecoder.isMimeTypeSupported(mimeType)
 	}
 
-	static Pixmap bitmapToPixmap(Bitmap bitmap) {
-		int width = bitmap.getWidth();
-		int height = bitmap.getHeight();
-		Pixmap pixmap = new Pixmap(width, height);
-
-		int[] pixels = new int[width * height];
-		bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
-
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
-				int argb = pixels[y * width + x];
-				int a = (argb >> 24) & 0xff;
-				int r = (argb >> 16) & 0xff;
-				int g = (argb >> 8) & 0xff;
-				int b = argb & 0xff;
-
-				pixmap.setRaw(x, y, r << 24 | g << 16 | b << 8 | a);
+	companion object {
+		@JvmField
+		val listener: OnHeaderDecodedListener =
+			OnHeaderDecodedListener { decoder: ImageDecoder, _: ImageInfo, _: ImageDecoder.Source ->
+				decoder.setAllocator(ImageDecoder.ALLOCATOR_SOFTWARE)
+				decoder.setTargetColorSpace(ColorSpace.get(ColorSpace.Named.LINEAR_SRGB))
 			}
-		}
 
-		return pixmap;
+		@JvmStatic
+		fun bitmapToPixmap(bitmap: Bitmap): Pixmap {
+			val width = bitmap.width
+			val height = bitmap.height
+			val pixmap = Pixmap(width, height)
+
+			val pixels = IntArray(width * height)
+			bitmap.getPixels(pixels, 0, width, 0, 0, width, height)
+
+			for (y in 0..<height) {
+				for (x in 0..<width) {
+					val argb = pixels[y * width + x]
+					val a = (argb shr 24) and 0xff
+					val r = (argb shr 16) and 0xff
+					val g = (argb shr 8) and 0xff
+					val b = argb and 0xff
+
+					pixmap.setRaw(x, y, r shl 24 or (g shl 16) or (b shl 8) or a)
+				}
+			}
+
+			return pixmap
+		}
 	}
 }

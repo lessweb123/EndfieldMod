@@ -153,10 +153,6 @@ public final class Pixmaps2 {
 	}
 
 	public static Pixmap load(Fi file) {
-		return imageHandle.decode(file.file());
-	}
-
-	public static Pixmap load(File file) {
 		return imageHandle.decode(file);
 	}
 

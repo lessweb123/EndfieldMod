@@ -81,7 +81,7 @@ public final class Get {
 	public static final Team[] baseTeams = {Team.derelict, Team.sharded, Team.crux, Team.green, Team.malis, Team.blue};
 
 	static final FieldAccessor consumeBuilderAccessor;
-	static final MethodAccessor iconsAccessor, initAccessor;
+	static final MethodInvoker iconsAccessor, initAccessor;
 
 	static final Seq<ItemStack> itemStacks = new Seq<>(ItemStack.class);
 	static final Seq<Item> items = new Seq<>(Item.class);
@@ -90,9 +90,9 @@ public final class Get {
 
 	static {
 		try {
-			consumeBuilderAccessor = Reflects.newFieldAccessor(Block.class.getDeclaredField("consumeBuilder"));
-			iconsAccessor = Reflects.newMethodAccessor(Block.class.getDeclaredMethod("icons"));
-			initAccessor = new SpecialMethodAccessor(Block.class.getMethod("init"));
+			consumeBuilderAccessor = Reflections.getFieldAccessor(Block.class.getDeclaredField("consumeBuilder"));
+			iconsAccessor = Reflections.getMethodInvoker(Block.class.getDeclaredMethod("icons"));
+			initAccessor = MethodHandleInvoker.unreflectSpecial(Block.class.getMethod("init"));
 		} catch (NoSuchFieldException | NoSuchMethodException e) {
 			throw sneakyThrow(e);
 		}
@@ -533,11 +533,11 @@ public final class Get {
 	}
 
 	public static TextureRegion[] icons(Block block) {
-		return iconsAccessor.invoke(block, Constant.EMPTY_OBJECT);
+		return iconsAccessor.invoke(block);
 	}
 
 	public static void init(Block block) {
-		initAccessor.invoke(block, Constant.EMPTY_OBJECT);
+		initAccessor.invoke(block);
 	}
 
 	public static void initBuilding(Block block) {
@@ -555,7 +555,7 @@ public final class Get {
 					if (type.isInterface() || !Building.class.isAssignableFrom(type)) continue;
 
 					Constructor<?> constructor = type.getDeclaredConstructor(current);
-					ConstructorAccessor<?> accessor = Reflects.newConstructorAccessor(constructor);
+					ConstructorAccessor<?> accessor = Reflections.getConstructorAccessor(constructor);
 
 					block.buildType = () -> (Building) accessor.newInstance(block);
 				}

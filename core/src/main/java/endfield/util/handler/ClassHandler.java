@@ -120,6 +120,10 @@ public final class ClassHandler {
 		return classHelper.getConstructors(type);
 	}
 
+	public static <T> Class<T> ensureInitialized(Class<T> targetClass) {
+		return classHelper.ensureInitialized(targetClass);
+	}
+
 	/**
 	 * Create an instance object of a class directly by bypassing the constructor, where all field values
 	 * within the object are in an uninitialized state. Cannot support primitive classes, abstract classes, and

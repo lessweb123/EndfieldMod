@@ -11,6 +11,7 @@ import static endfield.Vars2.accessibleHelper;
 import static endfield.Vars2.classHelper;
 import static endfield.Vars2.fieldAccessHelper;
 import static endfield.Vars2.imageHandle;
+import static endfield.Vars2.invokers;
 import static endfield.Vars2.methodInvokeHelper;
 import static endfield.android.Unsafer2.internalUnsafe;
 
@@ -21,6 +22,7 @@ public class AndroidImpl2 extends AndroidImpl {
 
 	@Override
 	void init() {
+		invokers = new AndroidInvokers();
 		accessibleHelper = new AndroidAccessibleHelper();
 		classHelper = new AndroidClassHelper2();
 		fieldAccessHelper = new UnsafeFieldAccessHelper2();

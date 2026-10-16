@@ -5,7 +5,7 @@ import arc.files.ZipFi;
 import arc.util.ArcRuntimeException;
 import arc.util.Nullable;
 import arc.util.serialization.Jval;
-import endfield.util.Reflects;
+import endfield.util.Reflections;
 import mindustry.mod.Mod;
 
 public class ModInfo {
@@ -31,7 +31,7 @@ public class ModInfo {
 		name = info.getString("name", "");
 		version = info.getString("version", "");
 
-		main = Reflects.findClass(info.getString("main", null));
+		main = Reflections.findClass(info.getString("main", null));
 	}
 
 	@Override

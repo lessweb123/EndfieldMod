@@ -47,7 +47,7 @@ import endfield.ui.markdown.url.HttpHandler;
 import endfield.ui.markdown.url.LocalFileHandler;
 import endfield.ui.markdown.url.ResourceHandler;
 import endfield.util.FieldAccessor;
-import endfield.util.Reflects;
+import endfield.util.Reflections;
 import org.commonmark.Extension;
 import org.commonmark.ext.gfm.strikethrough.Strikethrough;
 import org.commonmark.ext.gfm.tables.TableBlock;
@@ -89,7 +89,7 @@ public class BaseProvider implements MarkdownProvider, CurtainProvider, InsProvi
 
 	static {
 		try {
-			clickListenerAccessor = Reflects.newFieldAccessor(Button.class.getDeclaredField("clickListener"));
+			clickListenerAccessor = Reflections.getFieldAccessor(Button.class.getDeclaredField("clickListener"));
 		} catch (NoSuchFieldException e) {
 			throw sneakyThrow(e);
 		}

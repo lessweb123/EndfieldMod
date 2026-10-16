@@ -9,10 +9,6 @@ import arc.util.Structs;
 import endfield.util.handler.ClassHandler;
 import mindustry.Vars;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodHandles.Lookup;
-import java.lang.invoke.MethodType;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -31,11 +27,9 @@ import static endfield.Vars2.platformImpl;
  * @author LessWeb
  * @since 1.0.6
  */
-public final class Reflects {
-	public static final Lookup publicLookup = MethodHandles.publicLookup();
-
+public final class Reflections {
 	/** Don't let anyone instantiate this class. */
-	private Reflects() {}
+	private Reflections() {}
 
 	public static Object def(Class<?> type) {
 		if (type == boolean.class || type == Boolean.class) return false;
@@ -65,12 +59,12 @@ public final class Reflects {
 		};
 	}
 
-	public static FieldAccessor newFieldAccessor(Class<?> type, String name) {
-		return newFieldAccessor(ClassHandler.getField(type, name));
+	public static FieldAccessor getFieldAccessor(Class<?> type, String name) {
+		return getFieldAccessor(ClassHandler.getField(type, name));
 	}
 
-	public static FieldAccessor newFieldAccessor(Class<?> type, Boolf<Field> filler) {
-		return newFieldAccessor(ClassHandler.getField(type, filler));
+	public static FieldAccessor getFieldAccessor(Class<?> type, Boolf<Field> filler) {
+		return getFieldAccessor(ClassHandler.getField(type, filler));
 	}
 
 	/**
@@ -81,11 +75,11 @@ public final class Reflects {
 	 * @return New field accessor
 	 * @throws NullPointerException If the field is null
 	 */
-	public static FieldAccessor newFieldAccessor(Field field) {
+	public static FieldAccessor getFieldAccessor(Field field) {
 		return platformImpl.fieldAccessor(field);
 	}
 
-	public static MethodAccessor newMethodAccessor(Class<?> type, String name, Class<?>... parameterTypes) {
+	public static MethodAccessor getMethodAccessor(Class<?> type, String name, Class<?>... parameterTypes) {
 		return platformImpl.methodAccessor(ClassHandler.getMethod(type, name, parameterTypes));
 	}
 
@@ -96,7 +90,7 @@ public final class Reflects {
 	 * @return New method accessor
 	 * @throws NullPointerException If the method is null
 	 */
-	public static MethodAccessor newMethodAccessor(Method method) {
+	public static MethodAccessor getMethodAccessor(Method method) {
 		return platformImpl.methodAccessor(method);
 	}
 
@@ -107,16 +101,24 @@ public final class Reflects {
 	 * @return New constructor accessor
 	 * @throws NullPointerException If the constructor is null
 	 */
-	public static <T> ConstructorAccessor<T> newConstructorAccessor(Constructor<T> constructor) {
+	public static <T> ConstructorAccessor<T> getConstructorAccessor(Constructor<T> constructor) {
 		return platformImpl.constructorAccessor(constructor);
 	}
 
-	public static MethodInvoker newMethodInvoker(Method method) {
+	public static MethodInvoker getMethodInvoker(Method method) {
 		return platformImpl.methodInvoker(method);
 	}
 
-	public static MethodInvoker MethodHandleInvoker(Constructor<?> constructor) {
+	public static MethodInvoker getMethodInvoker(Constructor<?> constructor) {
 		return platformImpl.methodInvoker(constructor);
+	}
+
+	public static MethodInvoker getMethodInvoker(Class<?> type, String name, Class<?>... parameterTypes) {
+		return platformImpl.methodInvoker(ClassHandler.getMethod(type, name, parameterTypes));
+	}
+
+	public static MethodInvoker getMethodInvoker(Class<?> type, Class<?>... parameterTypes) {
+		return platformImpl.methodInvoker(ClassHandler.getConstructor(type, parameterTypes));
 	}
 
 	/**
@@ -124,7 +126,7 @@ public final class Reflects {
 	 */
 	public static <T> Prov<T> supply(Class<T> type, String name, Class<?>[] parameterTypes, T object, Object... args) {
 		Method method = ClassHandler.getMethod(type, name, parameterTypes);
-		MethodAccessor accessor = newMethodAccessor(method);
+		MethodAccessor accessor = getMethodAccessor(method);
 
 		if (!match(parameterTypes, args))
 			throw new IllegalArgumentException(Arrays.toString(toTypes(args)) + " cannot be assigned to " + Arrays.toString(parameterTypes));
@@ -139,7 +141,7 @@ public final class Reflects {
 	 */
 	public static <T> Prov<T> supply(Class<T> type, Class<?>[] parameterTypes, Object... args) {
 		Constructor<T> constructor = ClassHandler.getConstructor(type, parameterTypes);
-		ConstructorAccessor<T> accessor = newConstructorAccessor(constructor);
+		ConstructorAccessor<T> accessor = getConstructorAccessor(constructor);
 
 		if (!match(parameterTypes, args))
 			throw new IllegalArgumentException(Arrays.toString(toTypes(args)) + " cannot be assigned to " + Arrays.toString(parameterTypes));
@@ -164,6 +166,8 @@ public final class Reflects {
 
 	/**
 	 * Reflect to call the clone method of Object.
+	 * <p><strong>Note: Regardless of whether the object type has overridden the 'clone' method, it is always
+	 * shallow copy.</strong>
 	 *
 	 * @throws NullPointerException If the object is null
 	 */
@@ -398,30 +402,6 @@ public final class Reflects {
 		}
 
 		return clazz;
-	}
-
-	/**
-	 * <pre>{@code
-	 * MethodHandle icons = Reflects.lookup(Block.class).findVirtual(Block.class, "icons", MethodType.methodType(TextureRegion[].class));
-	 * }</pre>
-	 * <pre>{@code
-	 * Method method = Block.class.getDeclaredMethod("icons");
-	 * MethodHandle icons = Reflects.lookup(method.getDeclaringClass()).unreflect(method);
-	 * }</pre>
-	 *
-	 * @return Retrieve a {@code lookup} that can access all members within a given {@code class}.
-	 */
-	public static Lookup lookup(Class<?> clazz) {
-		return platformImpl.lookup(clazz);
-	}
-
-	// Only Desktop
-	public static Lookup lookup() {
-		return platformImpl.lookup();
-	}
-
-	public static MethodHandle findSpecial(Class<?> refc, String name, Class<?> rtype, Class<?>... ptypes) {
-		return ReflectsKt.findSpecial(refc, name, MethodType.methodType(rtype, ptypes));
 	}
 
 	// --------------------- kotlin only -------------------------

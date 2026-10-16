@@ -1,8 +1,6 @@
 package endfield.desktop;
 
-import arc.util.Log;
 import endfield.core.EndFieldMod;
-import endfield.util.CollectionObjectMap;
 import endfield.util.ConstructorAccessor;
 import endfield.util.FieldAccessor;
 import endfield.util.MethodAccessor;
@@ -11,12 +9,7 @@ import endfield.util.MethodHandleInvoker;
 import endfield.util.MethodHandleStaticMethodAccessor;
 import endfield.util.MethodHandleVirtualMethodAccessor;
 import endfield.util.MethodInvoker;
-import endfield.util.MockAccessibleHelper;
-import endfield.util.MockClassHelper;
 import endfield.util.PlatformImpl;
-import endfield.util.ReflectionFieldAccessHelper;
-import endfield.util.ReflectionMethodInvokeHelper;
-import endfield.util.Reflects;
 import endfield.util.aspector.accesses.PackageAccessHandler;
 import endfield.util.aspector.classes.ClassAccessor;
 import endfield.util.handler.ObjectHandler;
@@ -25,24 +18,23 @@ import sun.reflect.ReflectionFactory;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
-import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Objects;
-import java.util.function.Function;
 
 import static endfield.Vars2.accessibleHelper;
 import static endfield.Vars2.classHelper;
 import static endfield.Vars2.fieldAccessHelper;
 import static endfield.Vars2.imageHandle;
+import static endfield.Vars2.invokers;
 import static endfield.Vars2.methodInvokeHelper;
 import static endfield.desktop.Unsafer.unsafe;
 import static endfield.util.GetKt.sneakyThrow;
 
 public class DesktopImpl implements PlatformImpl {
-	static Lookup lookup;
+	static final Lookup lookup;
 
 	static {
 		try {
@@ -52,40 +44,23 @@ public class DesktopImpl implements PlatformImpl {
 
 			Demodulator.openModules();
 			Demodulator.ensureFieldOpen();
-
-			classHelper = new DesktopClassHelper();
-			fieldAccessHelper = new UnsafeFieldAccessHelper();
-			methodInvokeHelper = new MethodHandleMethodInvokeHelper();
-			accessibleHelper = new DesktopAccessibleHelper();
 		} catch (Throwable e) {
-			Log.err("It seems you platform is special. (But don't worry)", e);
-
-			lookup = Reflects.publicLookup;
-
-			classHelper = new MockClassHelper();
-			fieldAccessHelper = new ReflectionFieldAccessHelper();
-			methodInvokeHelper = new ReflectionMethodInvokeHelper();
-			accessibleHelper = new MockAccessibleHelper() {
-				@Override
-				public void makeAccessible(AccessibleObject object) {
-					object.trySetAccessible();
-				}
-			};
+			throw sneakyThrow(e);
 		}
+	}
+
+	public DesktopImpl() {
+		init();
+	}
+
+	void init() {
+		invokers = new DesktopInvokers();
+		classHelper = new DesktopClassHelper();
+		fieldAccessHelper = new UnsafeFieldAccessHelper();
+		methodInvokeHelper = new MethodHandleMethodInvokeHelper();
+		accessibleHelper = new DesktopAccessibleHelper();
 
 		imageHandle = new DesktopImageHandle();
-	}
-
-	public DesktopImpl() {}
-
-	@Override
-	public Lookup lookup(Class<?> clazz) {
-		return LookupHelper.lookupMap.computeIfAbsent(clazz, LookupHelper.lookupBuilder);
-	}
-
-	@Override
-	public Lookup lookup() {
-		return lookup;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -94,11 +69,11 @@ public class DesktopImpl implements PlatformImpl {
 		try {
 			// If the object implements the Cloneable interface, call Object.clone() directly, which is faster than copyField().
 			if (object instanceof Cloneable) {
-				return (T) CloneHelper.clone.invokeExact(object);
+				return (T) Companion.cloneMethod.invokeExact(object);
 			}
 
 			Class<?> type = object.getClass();
-
+			// These types cannot be cloned
 			if (type == Class.class || type == Field.class || type == Method.class || type == Constructor.class) return object;
 
 			T result = (T) unsafe.allocateInstance(type);
@@ -136,7 +111,7 @@ public class DesktopImpl implements PlatformImpl {
 
 	@Override
 	public MethodInvoker methodInvoker(Constructor<?> constructor) {
-		return MethodHandleInvoker.unreflect(constructor);
+		return MethodHandleInvoker.unreflectConstructor(constructor);
 	}
 
 	@Override
@@ -167,47 +142,17 @@ public class DesktopImpl implements PlatformImpl {
 		return unsafe.arrayIndexScale(arrayClass);
 	}
 
-	@Override
-	public <T> Class<T> ensureInitialized(Class<T> targetClass) {
-		unsafe.ensureClassInitialized(targetClass);
-		return targetClass;
-	}
-
-	static final class CloneHelper {
-		static final MethodHandle clone;
+	public static final class Companion {
+		static final MethodHandle cloneMethod;
 
 		static {
 			try {
-				clone = lookup.findVirtual(Object.class, "clone", MethodType.methodType(Object.class));
+				cloneMethod = lookup.findSpecial(Object.class, "clone", MethodType.methodType(Object.class), Object.class);
 			} catch (NoSuchMethodException | IllegalAccessException e) {
 				throw sneakyThrow(e);
 			}
 		}
 
-		private CloneHelper() {}
-	}
-
-	static final class LookupHelper {
-		static final MethodHandle lookupCtor;
-		static final CollectionObjectMap<Class<?>, Lookup> lookupMap;
-		static final Function<Class<?>, Lookup> lookupBuilder;
-
-		static {
-			try {
-				lookupCtor = lookup.findConstructor(Lookup.class, MethodType.methodType(void.class, Class.class, Class.class, int.class));
-				lookupMap = new CollectionObjectMap<>(Class.class, Lookup.class);
-				lookupBuilder = clazz -> {
-					try {
-						return (Lookup) lookupCtor.invokeExact(clazz, (Class<?>) null, 95);
-					} catch (Throwable e) {
-						throw sneakyThrow(e);
-					}
-				};
-			} catch (NoSuchMethodException | IllegalAccessException e) {
-				throw sneakyThrow(e);
-			}
-		}
-
-		private LookupHelper() {}
+		private Companion() {}
 	}
 }

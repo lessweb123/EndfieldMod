@@ -53,7 +53,7 @@ public class FunctionType implements Poolable {
 	}
 
 	public static FunctionType inst(Object... param) {
-		return inst(Reflects.unwrapped(Reflects.toTypes(param)));
+		return inst(Reflections.unwrapped(Reflections.toTypes(param)));
 	}
 
 	public static FunctionType from(MethodType type) {
@@ -82,16 +82,20 @@ public class FunctionType implements Poolable {
 		return name + type;
 	}
 
+	public static void free(FunctionType type) {
+		recyclePool.free(type);
+	}
+
 	public boolean match(Object... args) {
-		return Reflects.match(paramType, args);
+		return Reflections.match(paramType, args);
 	}
 
 	public boolean match(Class<?>... types) {
-		return Reflects.match(paramType, types);
+		return Reflections.match(paramType, types);
 	}
 
 	public boolean match(FunctionType type) {
-		return Reflects.match(paramType, type.paramType);
+		return Reflections.match(paramType, type.paramType);
 	}
 
 	public Class<?>[] paramType() {
@@ -99,7 +103,7 @@ public class FunctionType implements Poolable {
 	}
 
 	public void recycle() {
-		Pools.free(this);
+		recyclePool.free(this);
 	}
 
 	@Override

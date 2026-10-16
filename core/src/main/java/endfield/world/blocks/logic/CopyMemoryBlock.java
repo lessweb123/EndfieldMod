@@ -1,7 +1,7 @@
 package endfield.world.blocks.logic;
 
 import endfield.util.FieldAccessor;
-import endfield.util.Reflects;
+import endfield.util.Reflections;
 import mindustry.world.blocks.logic.MemoryBlock;
 
 import static endfield.util.GetKt.sneakyThrow;
@@ -11,8 +11,8 @@ public class CopyMemoryBlock extends MemoryBlock {
 
 	static {
 		try {
-			numberMemoryAccessor = Reflects.newFieldAccessor(MemoryBuild.class.getDeclaredField("numberMemory"));
-			objectMemoryAccessor = Reflects.newFieldAccessor(MemoryBuild.class.getDeclaredField("objectMemory"));
+			numberMemoryAccessor = Reflections.getFieldAccessor(MemoryBuild.class.getDeclaredField("numberMemory"));
+			objectMemoryAccessor = Reflections.getFieldAccessor(MemoryBuild.class.getDeclaredField("objectMemory"));
 		} catch (NoSuchFieldException e) {
 			throw sneakyThrow(e);
 		}

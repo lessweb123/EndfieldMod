@@ -3,7 +3,6 @@ package endfield.util;
 import endfield.util.aspector.accesses.PackageAccessHandler;
 import endfield.util.aspector.classes.ClassAccessor;
 
-import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -17,12 +16,6 @@ import static endfield.util.GetKt.sneakyThrow;
  * @since 1.0.9
  */
 public interface PlatformImpl {
-	Lookup lookup(Class<?> clazz);
-
-	default Lookup lookup() {
-		throw new UnsupportedOperationException();
-	}
-
 	<T> T clone(T object);
 
 	default FieldAccessor fieldAccessor(Field field) {
@@ -58,13 +51,4 @@ public interface PlatformImpl {
 	int arrayBaseOffset(Class<?> arrayClass);
 
 	int arrayIndexScale(Class<?> arrayClass);
-
-	default <T> Class<T> ensureInitialized(Class<T> targetClass) {
-		try {
-			Class.forName(targetClass.getName(), true, targetClass.getClassLoader());
-			return targetClass;
-		} catch (ClassNotFoundException e) {
-			throw sneakyThrow(e);
-		}
-	}
 }

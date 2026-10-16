@@ -4,7 +4,7 @@ import java.lang.reflect.Field
 
 class ReflectionFieldAccessor(field: Field) : AbstractFieldAccessor(field) {
 	init {
-		require(Reflects.setAccessible(field)) { "Unable to access field: $field" }
+		require(Reflections.setAccessible(field)) { "Unable to access field: $field" }
 	}
 
 	@Suppress("UNCHECKED_CAST")

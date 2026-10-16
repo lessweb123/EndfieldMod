@@ -28,6 +28,7 @@ public final class Unsafer2 {
 			if (field == null) field = Unsafe.class.getDeclaredField("theUnsafe");
 
 			field.setAccessible(true);
+
 			internalUnsafe = (Unsafe) field.get(null);
 		} catch (NoSuchFieldException | IllegalAccessException e) {
 			throw sneakyThrow(e);

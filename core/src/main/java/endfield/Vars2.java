@@ -18,6 +18,7 @@ import endfield.mod.ModInfo;
 import endfield.util.AccessibleHelper;
 import endfield.util.ClassHelper;
 import endfield.util.FieldAccessHelper;
+import endfield.util.Invokers;
 import endfield.util.MethodInvokeHelper;
 import endfield.util.PlatformImpl;
 import mindustry.Vars;
@@ -52,6 +53,7 @@ public final class Vars2 {
 	public static ClassHelper classHelper;
 	public static FieldAccessHelper fieldAccessHelper;
 	public static MethodInvokeHelper methodInvokeHelper;
+	public static Invokers invokers;
 
 	public static ImageHandle imageHandle;
 

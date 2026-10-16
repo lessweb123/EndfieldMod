@@ -2,7 +2,7 @@ package endfield.content;
 
 import endfield.ai.NullAI;
 import endfield.util.FieldAccessor;
-import endfield.util.Reflects;
+import endfield.util.Reflections;
 import mindustry.ai.UnitCommand;
 import mindustry.ai.types.CommandAI;
 
@@ -15,7 +15,7 @@ public final class UnitCommands2 {
 
 	static {
 		try {
-			commandControllerAccessor = Reflects.newFieldAccessor(CommandAI.class.getDeclaredField("commandController"));
+			commandControllerAccessor = Reflections.getFieldAccessor(CommandAI.class.getDeclaredField("commandController"));
 		} catch (NoSuchFieldException e) {
 			throw sneakyThrow(e);
 		}

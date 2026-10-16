@@ -243,6 +243,13 @@ public class CollectionObjectMap<K, V> extends AbstractMap<K, V> implements Iter
 	}
 
 	@Override
+	public V getOrDefault(Object key, V defaultValue) {
+		if (key == null) return null;
+		int i = locateKey(key);
+		return i < 0 ? defaultValue : valueTable[i];
+	}
+
+	@Override
 	public V remove(Object key) {
 		if (key == null) return null;
 		int i = locateKey(key);
