@@ -24,5 +24,6 @@ class SpecialMethodAccessor(method: Method) : AbstractMethodAccessor(method) {
 		spread = spreader.asType(newType)
 	}
 
+	@Suppress("UNCHECKED_CAST")
 	override fun <T> invoke(obj: Any, vararg args: Any?): T = spread.invokeExact(obj, args) as T
 }

@@ -1,6 +1,6 @@
 plugins {
-	id "java"
-	id "com.gradleup.shadow" version "9.4.0"
+	id("java")
+	id("com.gradleup.shadow") version "9.4.0"
 }
 
 repositories {
@@ -14,20 +14,20 @@ ext {
 }
 
 dependencies {
-	implementation project(":core")
+	implementation(project(":core"))
 
-	compileOnly project(":android")
-	compileOnly project(":desktop")
+	compileOnly(project(":android"))
+	compileOnly(project(":desktop"))
 }
 
 shadowJar {
-	dependsOn project(":android").getTasksByName("shadowJar", true)
-	dependsOn project(":desktop").getTasksByName("shadowJar", true)
+	dependsOn(project(":android").getTasksByName("shadowJar", true))
+	dependsOn(project(":desktop").getTasksByName("shadowJar", true))
 	archiveFileName = "${rootProject.name}-base.jar"
 }
 
 tasks.register("jarAndroid", Jar) {
-	dependsOn shadowJar
+	dependsOn(shadowJar)
 
 	archiveFileName = "${rootProject.name}-android.jar"
 
@@ -54,7 +54,7 @@ tasks.register("jarAndroid", Jar) {
 }
 
 tasks.register("jarDesktop", Jar) {
-	dependsOn shadowJar
+	dependsOn(shadowJar)
 
 	archiveFileName = "${rootProject.name}-desktop.jar"
 
@@ -64,8 +64,8 @@ tasks.register("jarDesktop", Jar) {
 }
 
 tasks.register("deploy", Jar) {
-	dependsOn "jarAndroid"
-	dependsOn "jarDesktop"
+	dependsOn("jarAndroid")
+	dependsOn("jarDesktop")
 
 	archiveFileName = "${rootProject.name}-build.jar"
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE

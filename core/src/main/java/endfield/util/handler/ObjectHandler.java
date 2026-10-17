@@ -10,6 +10,7 @@ import endfield.util.Reflections;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.function.Function;
 
 /**
  * A set of practical tools for copying field properties of an object to another.
@@ -17,7 +18,10 @@ import java.lang.reflect.Modifier;
  * @since 1.0.9
  */
 public final class ObjectHandler {
+	static final CollectionObjectMap<Class<?>, Field[]> fields = new CollectionObjectMap<>(Class.class, Field[].class);
 	static final CollectionObjectMap<Class<?>, FieldAccessor[]> accessors = new CollectionObjectMap<>(Class.class, FieldAccessor[].class);
+
+	static final Function<Class<?>, Field[]> getFields = ClassHandler::getFields;
 
 	private ObjectHandler() {}
 
@@ -37,22 +41,26 @@ public final class ObjectHandler {
 		}*/
 
 		// Cache fields to improve performance.
-		for (FieldAccessor accessor : accessors.computeIfAbsent(source.getClass(), c -> {
-			Seq<FieldAccessor> fields = new Seq<>(FieldAccessor.class);
-			Class<?> current = c;
+		for (FieldAccessor accessor : accessors.computeIfAbsent(source.getClass(), type -> {
+			Seq<FieldAccessor> result = new Seq<>(FieldAccessor.class);
+			Class<?> current = type;
 			while (current != Object.class) {
-				for (Field field : ClassHandler.getFields(current)) {
+				for (Field field : fields.computeIfAbsent(current, getFields)) {
 					if ((field.getModifiers() & Modifier.STATIC) != 0) continue;
 
-					fields.add(Reflections.getFieldAccessor(field));
+					result.add(Reflections.getFieldAccessor(field));
 				}
 
 				current = current.getSuperclass();
 			}
-			return fields.toArray(FieldAccessor.class);
+			return result.toArray(FieldAccessor.class);
 		})) {
 			accessor.set(target, accessor.get(source));
 		}
+	}
+
+	public static <S, T extends S> void copyFieldAsBlack(S source, T target, String... blacks) {
+		copyFieldAsBlack(source, target, ObjectSet.with(blacks));
 	}
 
 	/**
@@ -63,13 +71,21 @@ public final class ObjectHandler {
 	 * @param target Copy the attribute to the target object
 	 * @param blacks Field blacklist
 	 */
-	public static <S, T extends S> void copyFieldAsBlack(S source, T target, String... blacks) {
-		ObjectSet<String> black = ObjectSet.with(blacks);
-		Seq<Field> fields = getFields(source, field -> !black.contains(field.getName()));
+	public static <S, T extends S> void copyFieldAsBlack(S source, T target, ObjectSet<String> blacks) {
+		Class<?> current = source.getClass();
+		while (current != Object.class) {
+			for (Field field : fields.computeIfAbsent(current, getFields)) {
+				if ((field.getModifiers() & Modifier.STATIC) != 0 || blacks.contains(field.getName())) continue;
 
-		for (Field field : fields) {
-			FieldHandler.set(target, field, FieldHandler.get(source, field));
+				FieldHandler.set(target, field, FieldHandler.get(source, field));
+			}
+
+			current = current.getSuperclass();
 		}
+	}
+
+	public static <S, T extends S> void copyFieldAsWhite(S source, T target, String... whites) {
+		copyFieldAsWhite(source, target, ObjectSet.with(whites));
 	}
 
 	/**
@@ -80,28 +96,32 @@ public final class ObjectHandler {
 	 * @param target Copy the attribute to the target object
 	 * @param whites Field whitelist
 	 */
-	public static <S, T extends S> void copyFieldAsWhite(S source, T target, String... whites) {
-		ObjectSet<String> black = ObjectSet.with(whites);
-		Seq<Field> fields = getFields(source, field -> black.contains(field.getName()));
-
-		for (Field field : fields) {
-			FieldHandler.set(target, field, FieldHandler.get(source, field));
-		}
-	}
-
-	public static Seq<Field> getFields(Object object, @Nullable Boolf<Field> filler) {
-		Seq<Field> fields = new Seq<>(Field.class);
-
-		Class<?> current = object.getClass();
+	public static <S, T extends S> void copyFieldAsWhite(S source, T target, ObjectSet<String> whites) {
+		Class<?> current = source.getClass();
 		while (current != Object.class) {
-			for (Field field : ClassHandler.getFields(current)) {
-				if ((field.getModifiers() & Modifier.STATIC) != 0 || filler != null && !filler.get(field)) continue;
+			for (Field field : fields.computeIfAbsent(current, getFields)) {
+				if ((field.getModifiers() & Modifier.STATIC) != 0 || !whites.contains(field.getName())) continue;
 
-				fields.add(field);
+				FieldHandler.set(target, field, FieldHandler.get(source, field));
 			}
 
 			current = current.getSuperclass();
 		}
-		return fields;
+	}
+
+	public static Seq<Field> getFields(Object object, @Nullable Boolf<Field> filler) {
+		Seq<Field> result = new Seq<>(Field.class);
+
+		Class<?> current = object.getClass();
+		while (current != Object.class) {
+			for (Field field : fields.computeIfAbsent(current, getFields)) {
+				if ((field.getModifiers() & Modifier.STATIC) != 0 || filler != null && !filler.get(field)) continue;
+
+				result.add(field);
+			}
+
+			current = current.getSuperclass();
+		}
+		return result;
 	}
 }

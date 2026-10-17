@@ -99,7 +99,7 @@ public final class RuntimeAspector {
 			}
 
 			public T instance(Object... args) {
-				return MethodHandler.newInstanceDefault(aspectClass(), args);
+				return MethodHandler.newInstance(aspectClass(), args);
 			}
 		}
 	}

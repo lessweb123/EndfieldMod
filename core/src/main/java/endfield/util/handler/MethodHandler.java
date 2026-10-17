@@ -10,50 +10,56 @@ import static endfield.Vars2.methodInvokeHelper;
  *
  * @since 1.0.9
  */
-public class MethodHandler<T> {
-	public final Class<T> clazz;
-
-	public MethodHandler(Class<T> c) {
-		clazz = c;
-	}
+public final class MethodHandler {
+	private MethodHandler() {}
 
 	/**
-	 * Create a method handler using default guidelines and cache it for method invocation operations.
+	 * Call a method on an object with its given name and parameter type, which is not affected by access
+	 * modifiers. The null in the parameter will be treated as a universal bit, that is, the null bit can be
+	 * matched with any type.
 	 *
-	 * @see #invoke(Object, String, Object...)
+	 * @param object Call the target object executed by the method
+	 * @param name   method name
+	 * @param args   List of parameters passed to method
+	 * @return Return value of the target method
 	 */
-	public static <T, R> R invokeDefault(T object, String name, Object... args) {
+	public static <T> T invoke(Object object, String name, Object... args) {
 		return methodInvokeHelper.invoke(object, name, args);
 	}
 
 	/**
-	 * Create a method handler using default guidelines and cache it for static method invocation
-	 * operations.
+	 * Call a static method with a specified name and parameter type in the type specified by the
+	 * processor, which is not affected by access modifiers. The null in the parameter will be treated as a
+	 * generic bit, meaning that any type can be matched with a null bit.
 	 *
-	 * @see #invokeStatic(String, Object...)
+	 * @param name method name
+	 * @param args List of parameters passed to method
+	 * @return Return value of the target method
 	 */
-	public static <T, R> R invokeDefault(Class<T> clazz, String name, Object... args) {
+	public static <T> T invokeStatic(Class<?> clazz, String name, Object... args) {
 		return methodInvokeHelper.invokeStatic(clazz, name, args);
 	}
 
 	/**
-	 * Create a method handler using default guidelines and cache it for constructor calls.
+	 * Instantiate the class specified by this processor to obtain an instance of that type. The null in the
+	 * passed parameters will be treated as a universal bit, meaning that any type can be matched with a
+	 * null bit.
 	 *
-	 * @see #newInstance(Object...)
+	 * @param args List of parameters passed to constructor
 	 */
-	public static <T> T newInstanceDefault(Class<T> clazz, Object... args) {
+	public static <T> T newInstance(Class<T> clazz, Object... args) {
 		return methodInvokeHelper.newInstance(clazz, args);
 	}
 
-	public static <T, R> R invokeTypedDefault(T object, String name, Class<?>[] parameterTypes, Object... args) {
+	public static <T> T invokeTyped(Object object, String name, Class<?>[] parameterTypes, Object... args) {
 		return methodInvokeHelper.invokeTyped(object, name, parameterTypes, args);
 	}
 
-	public static <T, R> R invokeTypedDefault(Class<T> clazz, String name, Class<?>[] parameterTypes, Object... args) {
+	public static <T> T invokeStaticTyped(Class<?> clazz, String name, Class<?>[] parameterTypes, Object... args) {
 		return methodInvokeHelper.invokeStaticTyped(clazz, name, parameterTypes, args);
 	}
 
-	public static <T> T newInstanceTypedDefault(Class<T> clazz, Class<?>[] parameterTypes, Object... args) {
+	public static <T> T newInstanceTyped(Class<T> clazz, Class<?>[] parameterTypes, Object... args) {
 		return methodInvokeHelper.newInstanceTyped(clazz, parameterTypes, args);
 	}
 
@@ -76,51 +82,5 @@ public class MethodHandler<T> {
 	 */
 	public static <T> T newInstance(Constructor<T> constructor, Object... args) {
 		return methodInvokeHelper.newInstance(constructor, args);
-	}
-
-	/**
-	 * Call a method on an object with its given name and parameter type, which is not affected by access
-	 * modifiers. The null in the parameter will be treated as a universal bit, that is, the null bit can be
-	 * matched with any type.
-	 *
-	 * @param object Call the target object executed by the method
-	 * @param name   method name
-	 * @param args   List of parameters passed to method
-	 * @return Return value of the target method
-	 */
-	public <R> R invoke(T object, String name, Object... args) {
-		return methodInvokeHelper.invoke(object, name, args);
-	}
-
-	/**
-	 * Call a static method with a specified name and parameter type in the type specified by the
-	 * processor, which is not affected by access modifiers. The null in the parameter will be treated as a
-	 * generic bit, meaning that any type can be matched with a null bit.
-	 *
-	 * @param name method name
-	 * @param args List of parameters passed to method
-	 * @return Return value of the target method
-	 */
-	public <R> R invokeStatic(String name, Object... args) {
-		return methodInvokeHelper.invokeStatic(clazz, name, args);
-	}
-
-	/**
-	 * Instantiate the class specified by this processor to obtain an instance of that type. The null in the
-	 * passed parameters will be treated as a universal bit, meaning that any type can be matched with a
-	 * null bit.
-	 *
-	 * @param args List of parameters passed to constructor
-	 */
-	public T newInstance(Object... args) {
-		return methodInvokeHelper.newInstance(clazz, args);
-	}
-
-	public <R> R invokeTyped(String name, Class<?>[] parameterTypes, Object... args) {
-		return methodInvokeHelper.invokeStaticTyped(clazz, name, parameterTypes, args);
-	}
-
-	public T newInstanceTyped(Class<?>[] parameterTypes, Object... args) {
-		return methodInvokeHelper.newInstanceTyped(clazz, parameterTypes, args);
 	}
 }

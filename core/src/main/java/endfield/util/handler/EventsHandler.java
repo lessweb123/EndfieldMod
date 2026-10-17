@@ -6,6 +6,7 @@ import arc.func.Cons;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.OS;
+import arc.util.Reflect;
 
 import java.lang.reflect.Field;
 
@@ -16,7 +17,7 @@ import java.lang.reflect.Field;
  */
 public final class EventsHandler {
 	static final Seq<Cons<?>> consumers = new Seq<>(true, 0, Cons.class);
-	static final ObjectMap<Object, Seq<Cons<?>>> events = FieldHandler.getObjectDefault(Events.class, "events");
+	static final ObjectMap<Object, Seq<Cons<?>>> events = Reflect.get(Events.class, "events");
 
 	static final String lambdaKey = OS.isAndroid ? "ExternalSyntheticLambda" : "Lambda";
 

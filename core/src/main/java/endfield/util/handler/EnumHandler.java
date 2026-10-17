@@ -66,7 +66,7 @@ public class EnumHandler<T extends Enum<T>> {
 
 		System.arraycopy(param, 0, params, 2, param.length);
 
-		return MethodHandler.newInstanceDefault(clazz, params);
+		return MethodHandler.newInstance(clazz, params);
 	}
 
 	/**

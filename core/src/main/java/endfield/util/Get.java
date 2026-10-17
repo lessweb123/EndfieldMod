@@ -15,7 +15,6 @@ import arc.math.geom.Position;
 import arc.math.geom.Rect;
 import arc.math.geom.Vec2;
 import arc.struct.IntMap;
-import arc.struct.IntSeq;
 import arc.struct.IntSet;
 import arc.struct.IntSet.IntSetIterator;
 import arc.struct.Seq;
@@ -82,11 +81,6 @@ public final class Get {
 
 	static final FieldAccessor consumeBuilderAccessor;
 	static final MethodInvoker iconsAccessor, initAccessor;
-
-	static final Seq<ItemStack> itemStacks = new Seq<>(ItemStack.class);
-	static final Seq<Item> items = new Seq<>(Item.class);
-
-	static final IntSeq amounts = new IntSeq();
 
 	static {
 		try {
@@ -282,28 +276,6 @@ public final class Get {
 		}
 
 		return out;
-	}
-
-	/** Adds ItemStack arrays together. Combines duplicate items into one stack. */
-	public static ItemStack[] addItemStacks(Seq<ItemStack[]> stacks) {
-		itemStacks.clear();
-		items.clear();
-		amounts.clear();
-		for (ItemStack[] ss : stacks) itemStacks.addAll(ss);
-		itemStacks.sort(s -> s.item.id);
-		for (ItemStack s : itemStacks) {
-			if (!items.contains(s.item)) {
-				items.add(s.item);
-				amounts.add(s.amount);
-			} else {
-				amounts.incr(items.indexOf(s.item), s.amount);
-			}
-		}
-		ItemStack[] result = new ItemStack[items.size];
-		for (int i = 0; i < items.size; i++) {
-			result[i] = new ItemStack(items.get(i), amounts.get(i));
-		}
-		return result;
 	}
 
 	public static Position pos(float x, float y) {

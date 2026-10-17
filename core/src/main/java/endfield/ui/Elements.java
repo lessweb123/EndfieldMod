@@ -710,7 +710,7 @@ public final class Elements {
 	public static void replaceClickListener(Button button, ClickListener newListener) {
 		button.removeListener(button.getClickListener());
 
-		FieldHandler.setDefault(button, "clickListener", newListener);
+		FieldHandler.set(button, "clickListener", newListener);
 		button.addListener(newListener);
 	}
 

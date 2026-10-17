@@ -7,13 +7,13 @@ buildscript {
 	}
 
 	dependencies {
-		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
 	}
 }
 
 plugins {
-	id "org.jetbrains.kotlin.jvm" version "$kotlinVersion"
-	id "java"
+	id("org.jetbrains.kotlin.jvm") version "$kotlinVersion"
+	id("java")
 }
 
 repositories {
@@ -66,21 +66,24 @@ tasks.withType(KotlinCompile).configureEach {
 }
 
 dependencies {
-	compileOnly mindustryVersion == "be" ? "Anuken:MindustryBuilds:latest" : "Anuken:Mindustry:$mindustryVersion"
+	compileOnly(mindustryVersion == "be" ? "Anuken:MindustryBuilds:latest" : "Anuken:Mindustry:$mindustryVersion")
 
-	implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-	implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
-	implementation "org.jetbrains.kotlin:kotlin-metadata-jvm:$kotlinVersion"
+	implementation("org.jetbrains:annotations:26.1.0")
+	implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion") {
+		exclude group: "org.jetbrains", module: "annotations"
+	}
+	implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
+	implementation("org.jetbrains.kotlin:kotlin-metadata-jvm:$kotlinVersion")
 
-	implementation "org.ow2.asm:asm:$asmVersion"
-	implementation "org.ow2.asm:asm-tree:$asmVersion"
-	implementation "org.ow2.asm:asm-commons:$asmVersion"
+	implementation("org.ow2.asm:asm:$asmVersion")
+	implementation("org.ow2.asm:asm-tree:$asmVersion")
+	implementation("org.ow2.asm:asm-commons:$asmVersion")
 
-	implementation "org.commonmark:commonmark:$commonmarkVersion"
-	implementation "org.commonmark:commonmark-ext-gfm-tables:$commonmarkVersion"
-	implementation "org.commonmark:commonmark-ext-gfm-strikethrough:$commonmarkVersion"
-	implementation "org.commonmark:commonmark-ext-ins:$commonmarkVersion"
-	implementation "org.commonmark:commonmark-ext-image-attributes:$commonmarkVersion"
+	implementation("org.commonmark:commonmark:$commonmarkVersion")
+	implementation("org.commonmark:commonmark-ext-gfm-tables:$commonmarkVersion")
+	implementation("org.commonmark:commonmark-ext-gfm-strikethrough:$commonmarkVersion")
+	implementation("org.commonmark:commonmark-ext-ins:$commonmarkVersion")
+	implementation("org.commonmark:commonmark-ext-image-attributes:$commonmarkVersion")
 }
 
 jar {

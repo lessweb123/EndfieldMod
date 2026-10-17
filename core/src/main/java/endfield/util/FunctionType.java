@@ -18,13 +18,6 @@ import java.util.List;
  * @author EBwilson
  */
 public class FunctionType implements Poolable {
-	/**
-	 * Reuse the recycling area capacity, changing the value usually does not require setting, but if you
-	 * may need large-scale recursion or a large number of concurrent calls, you may need to set this limit
-	 * to a higher value.
-	 */
-	public static int maxRecycle = 4096;
-
 	static final Pool<FunctionType> recyclePool = Pools.get(FunctionType.class, FunctionType::new);
 
 	Class<?>[] paramType;

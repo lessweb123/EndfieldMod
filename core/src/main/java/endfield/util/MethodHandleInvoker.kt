@@ -64,7 +64,7 @@ open class MethodHandleInvoker(@JvmField val handle: MethodHandle) : MethodInvok
 			val paramCount = target.type().parameterCount()
 			val genericType = generics.get(paramCount, Prov { MethodType.genericMethodType(paramCount) })
 
-			return MethodHandleInvoker0(target.asType(genericType))
+			return InternalMethodHandleInvoker(target.asType(genericType))
 		}
 	}
 
@@ -156,7 +156,7 @@ open class MethodHandleInvoker(@JvmField val handle: MethodHandle) : MethodInvok
 		handle.invoke(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22) as T
 }
 
-internal class MethodHandleInvoker0(method: MethodHandle) : MethodHandleInvoker(method) {
+internal class InternalMethodHandleInvoker(method: MethodHandle) : MethodHandleInvoker(method) {
 	override fun <T> invoke(): T = handle.invokeExact() as T
 
 	override fun <T, P0> invoke(p0: P0): T = handle.invokeExact(p0) as T

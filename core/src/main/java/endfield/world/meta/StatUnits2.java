@@ -19,7 +19,7 @@ public final class StatUnits2 {
 		all.insert(index, res);
 
 		for (int i = 0; i < all.size; i++) {
-			FieldHandler.setIntDefault(all.get(i), "id", i);
+			FieldHandler.setInt(all.get(i), "id", i);
 		}
 
 		return res;

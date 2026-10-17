@@ -7,14 +7,14 @@ buildscript {
 	}
 
 	dependencies {
-		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
 	}
 }
 
 plugins {
-	id "org.jetbrains.kotlin.jvm" version "$kotlinVersion"
-	id "java"
-	id "com.github.johnrengelman.shadow"
+	id("org.jetbrains.kotlin.jvm") version "$kotlinVersion"
+	id("java")
+	id("com.github.johnrengelman.shadow")
 }
 
 repositories {
@@ -69,13 +69,15 @@ tasks.withType(KotlinCompile).configureEach {
 }
 
 dependencies {
-	compileOnly mindustryVersion == "be" ? "Anuken:MindustryBuilds:latest" : "Anuken:Mindustry:$mindustryVersion"
+	compileOnly(mindustryVersion == "be" ? "Anuken:MindustryBuilds:latest" : "Anuken:Mindustry:$mindustryVersion")
 
-	compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-	compileOnly "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
-	compileOnly "org.jetbrains.kotlin:kotlin-metadata-jvm:$kotlinVersion"
+	compileOnly("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion") {
+		exclude group: "org.jetbrains", module: "annotations"
+	}
+	compileOnly("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
+	compileOnly("org.jetbrains.kotlin:kotlin-metadata-jvm:$kotlinVersion")
 
-	compileOnly project(":core")
+	compileOnly(project(":core"))
 }
 
 jar {

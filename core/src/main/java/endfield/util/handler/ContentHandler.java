@@ -4,11 +4,16 @@ import arc.Core;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Log;
+import endfield.util.FieldAccessor;
+import endfield.util.Reflections;
 import mindustry.Vars;
+import mindustry.core.ContentLoader;
 import mindustry.ctype.Content;
 import mindustry.ctype.ContentType;
 import mindustry.ctype.MappableContent;
 import mindustry.ctype.UnlockableContent;
+
+import static endfield.util.GetKt.sneakyThrow;
 
 /**
  * Static toolset for manipulating content.
@@ -16,14 +21,27 @@ import mindustry.ctype.UnlockableContent;
  * @since 1.0.9
  */
 public final class ContentHandler {
+	static FieldAccessor contentMapAccessor, contentNameMapAccessor, nameAccessor, unlockedAccessor;
+
 	static Seq<Content>[] contentMap;
 	static ObjectMap<String, MappableContent>[] contentNameMap;
+
+	static {
+		try {
+			contentMapAccessor = Reflections.getFieldAccessor(ContentLoader.class.getDeclaredField("contentMap"));
+			contentNameMapAccessor = Reflections.getFieldAccessor(ContentLoader.class.getDeclaredField("contentNameMap"));
+			nameAccessor = Reflections.getFieldAccessor(MappableContent.class.getDeclaredField("name"));
+			unlockedAccessor = Reflections.getFieldAccessor(UnlockableContent.class.getDeclaredField("unlocked"));
+		} catch (NoSuchFieldException e) {
+			throw sneakyThrow(e);
+		}
+	}
 
 	private ContentHandler() {}
 
 	static void updateContainer() {
-		contentMap = FieldHandler.getObjectDefault(Vars.content, "contentMap");
-		contentNameMap = FieldHandler.getObjectDefault(Vars.content, "contentNameMap");
+		contentMap = contentMapAccessor.getObject(Vars.content);
+		contentNameMap = contentNameMapAccessor.getObject(Vars.content);
 	}
 
 	public static void removeContent(Content content) {
@@ -60,7 +78,7 @@ public final class ContentHandler {
 		String oldName = oldContent.name;
 		String newName = newContent.name;
 
-		FieldHandler.setDefault(newContent, "name", oldName);
+		nameAccessor.set(newContent, oldName);
 
 		if (oldContent.getContentType() != newContent.getContentType())
 			throw new IllegalArgumentException("The old content cannot override by new content, because the content type are different");
@@ -70,7 +88,7 @@ public final class ContentHandler {
 			unlContent.description = Core.bundle.getOrNull(type + "." + oldName + ".description");
 			unlContent.details = Core.bundle.getOrNull(type + "." + oldName + ".details");
 
-			FieldHandler.setBooleanDefault(unlContent, "unlocked", Core.settings != null && Core.settings.getBool(oldName + "-unlocked", false));
+			unlockedAccessor.setBoolean(unlContent, Core.settings != null && Core.settings.getBool(oldName + "-unlocked", false));
 		}
 
 		if (contentNameMap != null) {
