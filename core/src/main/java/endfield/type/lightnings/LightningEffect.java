@@ -155,7 +155,6 @@ public class LightningEffect implements Poolable {
 	 * @param y Draw the origin y-coordinate of lightning
 	 *
 	 */
-	@SuppressWarnings("DuplicatedCode")
 	public void draw(float x, float y) {
 		float lerp = Mathf.clamp(this.lerp.apply(Mathf.clamp((lifeTime - (Time.time - startTime)) / fadeTime)));
 		float del = backFade ? (1 - lerp) * vertices.size : 0;

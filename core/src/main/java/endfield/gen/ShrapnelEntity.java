@@ -8,12 +8,12 @@ import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.struct.IntSet;
 import arc.util.Time;
+import arc.util.Tmp;
 import arc.util.pooling.Pool.Poolable;
 import arc.util.pooling.Pools;
 import endfield.entities.Entities;
 import endfield.graphics.Drawn;
 import endfield.math.Mathm;
-import endfield.util.Get;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.Sized;
@@ -50,7 +50,7 @@ public class ShrapnelEntity extends BaseEntity implements Poolable {
 		float rangeY = Mathf.range((region.height / 2f) / 2f);
 
 		for (int i = 0; i < 4; i++) {
-			Vec2 v = Get.v.trns(i * 90f + Mathf.range(45f), (s.hitSize += size * Mathf.random(0.5f, 1f)));
+			Vec2 v = Tmp.v1.trns(i * 90f + Mathf.range(45f), (s.hitSize += size * Mathf.random(0.5f, 1f)));
 			float tu = v.x / Draw.scl;
 			float tv = v.y / Draw.scl;
 

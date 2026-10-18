@@ -12,7 +12,6 @@ import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.Rand;
 import arc.math.geom.Position;
-import arc.math.geom.Rect;
 import arc.math.geom.Vec2;
 import arc.struct.IntMap;
 import arc.struct.IntSet;
@@ -69,12 +68,6 @@ import static endfield.util.GetKt.sneakyThrow;
  * @author LessWeb
  */
 public final class Get {
-	public static final Color c1 = new Color(), c2 = new Color(), c3 = new Color(), c4 = new Color(), c5 = new Color();
-	public static final Color c6 = new Color(), c7 = new Color(), c8 = new Color(), c9 = new Color(), c10 = new Color();
-
-	public static final Rect r = new Rect(), r2 = new Rect();
-	public static final Vec2 v = new Vec2(), vv = new Vec2();
-
 	public static final Rand rand = new Rand(), rand2 = new Rand();
 
 	public static final Team[] baseTeams = {Team.derelict, Team.sharded, Team.crux, Team.green, Team.malis, Team.blue};

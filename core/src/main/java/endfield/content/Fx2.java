@@ -3874,7 +3874,7 @@ public final class Fx2 {
 	public static Effect fireworksShoot(float r) {
 		return new Effect(30, e -> {
 			Draw.z(Layer.effect - 0.1f);
-			Draw.color(Get.c7.set(Pal2.rainBowRed).shiftHue(Time.time * 2f));
+			Draw.color(Tmp.c1.set(Pal2.rainBowRed).shiftHue(Time.time * 2f));
 			Angles.randLenVectors(e.id, 1, e.fin() * 20f, e.rotation + r, 0, (x, y) -> {
 				Fill.circle(e.x + x, e.y + y, 2 * e.fout());
 			});

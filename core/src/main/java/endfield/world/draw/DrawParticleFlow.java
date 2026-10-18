@@ -21,7 +21,6 @@ public class DrawParticleFlow extends DrawBlock {
 
 	@Override
 	public void draw(Building build) {
-
 		if (build.warmup() > 0f && color.a > 0.001f) {
 			Lines.stroke(stroke * build.warmup());
 			float ang = Angles.angle(startX, startY, endX, endY);

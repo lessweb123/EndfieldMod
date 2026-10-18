@@ -71,6 +71,13 @@ public final class Vars2 {
 
 	public static final float boardTimeTotal = 60 * 6;
 
+	public static final String ARK = "Arknights";
+
+	public static final short ZC = 325;
+
+	public static final String KAL = "Kal'tsit", KAL_ESP = "Kal'tsit Esperanta";
+	public static final String KAL_SN = "B003", KAL_ESP_SN = "R002";
+
 	public static float pressTimer = 30f;
 	public static float longPress = 30f;
 	public static float iconSize = 40f, buttonSize = 24f, sliderWidth = 140f, fieldWidth = 80f;

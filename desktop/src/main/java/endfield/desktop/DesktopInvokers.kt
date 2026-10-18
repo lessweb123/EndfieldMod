@@ -38,7 +38,15 @@ class DesktopInvokers : Invokers {
 
 	override fun unreflectGetter(field: Field): MethodHandle = lookup.unreflectGetter(field)
 
-	override fun unreflectSetter(field: Field): MethodHandle = if ((field.modifiers and Modifier.STATIC) != 0) lookup.findStaticSetter(field.declaringClass, field.name, field.type) else lookup.findSetter(field.declaringClass, field.name, field.type)
+	override fun unreflectSetter(field: Field): MethodHandle {
+		val modifiers = field.modifiers
+		if ((modifiers and Modifier.FINAL) == 0) return lookup.unreflectSetter(field)
+		if ((modifiers and Modifier.STATIC) != 0) {
+			return lookup.findStaticSetter(field.declaringClass, field.name, field.type)
+		} else {
+			return lookup.findSetter(field.declaringClass, field.name, field.type)
+		}
+	}
 
 	companion object {
 		@JvmField

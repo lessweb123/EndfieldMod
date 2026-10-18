@@ -4,7 +4,7 @@ import java.lang.invoke.MethodHandle
 import java.lang.invoke.MethodType
 import java.lang.reflect.Method
 
-class MethodHandleStaticMethodAccessor(method: Method) : AbstractMethodAccessor(method) {
+open class MethodHandleStaticMethodAccessor(method: Method) : AbstractMethodAccessor(method) {
 	@JvmField
 	val spread: MethodHandle
 

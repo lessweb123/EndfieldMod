@@ -68,7 +68,7 @@ public class EndCreepLaserBulletType extends ContinuousBulletType implements Las
 		b.fdata = baseLength;
 		CreepLaserData data = new CreepLaserData();
 
-		Vec2 v = Get.v.trns(b.rotation(), baseLength).add(b.x, b.y);
+		Vec2 v = Tmp.v1.trns(b.rotation(), baseLength).add(b.x, b.y);
 		Fx2.desGroundHitMain.at(v.x, v.y, b.rotation());
 
 		data.lastX = v.x;
@@ -89,7 +89,7 @@ public class EndCreepLaserBulletType extends ContinuousBulletType implements Las
 		float scl = (1f + Mathm.clamp(1f - (b.time / 16f)) * 1.1f) * grnd;
 
 		if (Mathf.chanceDelta(0.75f) && grnd > 0) {
-			Vec2 v = Get.v.trns(b.rotation(), len).add(b.x, b.y).lerp(data.lastX, data.lastY, Mathf.random());
+			Vec2 v = Tmp.v1.trns(b.rotation(), len).add(b.x, b.y).lerp(data.lastX, data.lastY, Mathf.random());
 
 			Tile ground = Vars.world.tileWorld(v.x, v.y);
 			if (ground != null) {
@@ -103,7 +103,7 @@ public class EndCreepLaserBulletType extends ContinuousBulletType implements Las
 			}
 		}
 
-		Vec2 v = Get.v.trns(b.rotation(), len).add(b.x, b.y);
+		Vec2 v = Tmp.v1.trns(b.rotation(), len).add(b.x, b.y);
 
 		if (scl > 0) {
 			float dst = Mathf.dst(b.x, b.y, data.lastX, data.lastY);
@@ -147,7 +147,7 @@ public class EndCreepLaserBulletType extends ContinuousBulletType implements Las
 		if (!(b.data instanceof CreepLaserData data)) return;
 
 		float len = getLength(b.time);
-		Vec2 v = Get.v.trns(b.rotation(), len).add(b.x, b.y), v2 = Get.vv.trns(b.rotation(), length + 100f).add(b.x, b.y);
+		Vec2 v = Tmp.v1.trns(b.rotation(), len).add(b.x, b.y), v2 = Tmp.v1.trns(b.rotation(), length + 100f).add(b.x, b.y);
 		float vx = v.x, vy = v.y;
 		//float v2x = v2.x, v2y = v2.y;
 		float bx = b.x, by = b.y;
@@ -201,7 +201,7 @@ public class EndCreepLaserBulletType extends ContinuousBulletType implements Las
 		float range = 230f * scl;
 		Fx2.desCreepHeavyHit.at(x, y, b.rotation(), scl);
 
-		Rect rect = Get.r.setCentered(x, y, range * 2f);
+		Rect rect = Tmp.r1.setCentered(x, y, range * 2f);
 
 		buildings.clear();
 		Groups.unit.intersect(rect.x, rect.y, rect.width, rect.height, unit -> {

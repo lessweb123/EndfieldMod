@@ -4,7 +4,7 @@ import java.lang.invoke.MethodHandle
 import java.lang.invoke.MethodType
 import java.lang.reflect.Constructor
 
-class MethodHandleConstructorAccessor<T>(constructor: Constructor<T>) : AbstractConstructorAccessor<T>(constructor) {
+open class MethodHandleConstructorAccessor<T>(constructor: Constructor<T>) : AbstractConstructorAccessor<T>(constructor) {
 	@JvmField
 	val target: MethodHandle
 	@JvmField

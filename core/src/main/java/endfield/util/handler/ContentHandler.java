@@ -21,7 +21,7 @@ import static endfield.util.GetKt.sneakyThrow;
  * @since 1.0.9
  */
 public final class ContentHandler {
-	static FieldAccessor contentMapAccessor, contentNameMapAccessor, nameAccessor, unlockedAccessor;
+	static final FieldAccessor contentMapAccessor, contentNameMapAccessor, nameAccessor, unlockedAccessor;
 
 	static Seq<Content>[] contentMap;
 	static ObjectMap<String, MappableContent>[] contentNameMap;

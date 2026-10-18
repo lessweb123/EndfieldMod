@@ -919,15 +919,15 @@ public final class Draws {
 			dataTarget[taskCounter++] = dataAcceptor;
 		}
 
-		@SuppressWarnings({"unchecked", "rawtypes"})
+		@SuppressWarnings("unchecked")
 		public void flush() {
-			if (defaultFirstTask != null) ((DrawAcceptor) defaultFirstTask).draw(defaultTarget);
+			if (defaultFirstTask != null) ((DrawAcceptor<Object>) defaultFirstTask).draw(defaultTarget);
 
 			for (int i = 0; i < taskCounter; i++) {
-				((DrawAcceptor) tasks[i]).draw(dataTarget[i]);
+				((DrawAcceptor<Object>) tasks[i]).draw(dataTarget[i]);
 			}
 
-			if (defaultLastTask != null) ((DrawAcceptor) defaultLastTask).draw(defaultTarget);
+			if (defaultLastTask != null) ((DrawAcceptor<Object>) defaultLastTask).draw(defaultTarget);
 
 			taskCounter = 0;
 			init = false;

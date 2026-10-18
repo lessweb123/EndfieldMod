@@ -3,7 +3,7 @@ package endfield.util
 import java.lang.invoke.MethodHandle
 import java.lang.reflect.Method
 
-class MethodHandleVirtualMethodAccessor(method: Method) : AbstractMethodAccessor(method) {
+open class MethodHandleVirtualMethodAccessor(method: Method) : AbstractMethodAccessor(method) {
 	@JvmField
 	val spread: MethodHandle
 

@@ -2,7 +2,7 @@ package endfield.util
 
 import java.lang.reflect.Field
 
-class ReflectionFieldAccessor(field: Field) : AbstractFieldAccessor(field) {
+open class ReflectionFieldAccessor(field: Field) : AbstractFieldAccessor(field) {
 	init {
 		require(Reflections.setAccessible(field)) { "Unable to access field: $field" }
 	}

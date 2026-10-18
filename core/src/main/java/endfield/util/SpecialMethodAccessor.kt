@@ -6,7 +6,7 @@ import java.lang.reflect.Method
 /**
  * @since 1.0.10
  */
-class SpecialMethodAccessor(method: Method) : AbstractMethodAccessor(method) {
+open class SpecialMethodAccessor(method: Method) : AbstractMethodAccessor(method) {
 	@JvmField
 	val target: MethodHandle
 	@JvmField

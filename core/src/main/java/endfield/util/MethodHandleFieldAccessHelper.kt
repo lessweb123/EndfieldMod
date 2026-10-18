@@ -1,18 +1,15 @@
-@file:Suppress("UNCHECKED_CAST")
+package endfield.util
 
-package endfield.desktop
-
-import endfield.desktop.DesktopClassHelper.getFields
-import endfield.desktop.DesktopImpl.lookup
-import endfield.util.AbstractFieldAccessorHelper
-import endfield.util.CollectionObjectMap
+import endfield.util.handler.ClassHandler
 import java.lang.invoke.MethodHandle
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 
-class MethodHandleFieldAccessHelper : AbstractFieldAccessorHelper() {
+open class MethodHandleFieldAccessHelper : AbstractFieldAccessorHelper() {
 	companion object {
+		@JvmField
 		val getters = CollectionObjectMap<Field, MethodHandle>(Field::class.java, MethodHandle::class.java)
+		@JvmField
 		val setters = CollectionObjectMap<Field, MethodHandle>(Field::class.java, MethodHandle::class.java)
 	}
 
@@ -44,20 +41,16 @@ class MethodHandleFieldAccessHelper : AbstractFieldAccessorHelper() {
 	}
 
 	override fun findField(clazz: Class<*>, name: String): Field? {
-		val field = fieldsMap.getOrPut(clazz) { getFields.invokeExact(clazz, false) as Array<Field> }
+		val field = fieldsMap.getOrPut(clazz) { ClassHandler.getFields(clazz) }
 		for (field in field) {
 			if (field.name == name) return field
 		}
 		return null
 	}
 
-	fun getter(field: Field): MethodHandle = getters.getOrPut(field) {
-		if ((field.modifiers and Modifier.STATIC) != 0) lookup.findStaticGetter(field.declaringClass, field.name, field.type) else lookup.findGetter(field.declaringClass, field.name, field.type)
-	}
+	open fun getter(field: Field): MethodHandle = getters.getOrPut(field) { HandleSupport.unreflectGetter(field) }
 
-	fun setter(field: Field): MethodHandle = setters.getOrPut(field) {
-		if ((field.modifiers and Modifier.STATIC) != 0) lookup.findStaticSetter(field.declaringClass, field.name, field.type) else lookup.findSetter(field.declaringClass, field.name, field.type)
-	}
+	open fun setter(field: Field): MethodHandle = setters.getOrPut(field) { HandleSupport.unreflectSetter(field) }
 
 	override fun setByte(any: Any, name: String, value: Byte) {
 		setter(getField(any.javaClass, name, false)).invoke(any, value)
@@ -163,8 +156,10 @@ class MethodHandleFieldAccessHelper : AbstractFieldAccessorHelper() {
 		setter(getField(clazz, name, true)).invoke(value)
 	}
 
+	@Suppress("UNCHECKED_CAST")
 	override fun <T> getObject(any: Any, name: String): T = getter(getField(any.javaClass, name, false)).invoke(any) as T
 
+	@Suppress("UNCHECKED_CAST")
 	override fun <T> getObjectStatic(clazz: Class<*>, name: String): T = getter(getField(clazz, name, true)).invoke() as T
 
 	override fun set(any: Any, name: String, value: Any?) {
@@ -175,8 +170,10 @@ class MethodHandleFieldAccessHelper : AbstractFieldAccessorHelper() {
 		setter(getField(clazz, name, true)).invoke(value)
 	}
 
+	@Suppress("UNCHECKED_CAST")
 	override fun <T> get(any: Any, name: String): T = getter(getField(any.javaClass, name, false)).invoke(any) as T
 
+	@Suppress("UNCHECKED_CAST")
 	override fun <T> getStatic(clazz: Class<*>, name: String): T = getter(getField(clazz, name, true)).invoke() as T
 
 	override fun setByte(any: Any, field: Field, value: Byte) {
@@ -283,8 +280,10 @@ class MethodHandleFieldAccessHelper : AbstractFieldAccessorHelper() {
 		setter(field).invoke(value)
 	}
 
+	@Suppress("UNCHECKED_CAST")
 	override fun <T> getObject(any: Any, field: Field): T = getter(field).invoke(any) as T
 
+	@Suppress("UNCHECKED_CAST")
 	override fun <T> getObjectStatic(field: Field): T = getter(field).invoke() as T
 
 	override fun set(any: Any, field: Field, value: Any?) {
@@ -295,7 +294,9 @@ class MethodHandleFieldAccessHelper : AbstractFieldAccessorHelper() {
 		setter(field).invoke(value)
 	}
 
+	@Suppress("UNCHECKED_CAST")
 	override fun <T> get(any: Any, field: Field): T = getter(field).invoke(any) as T
 
+	@Suppress("UNCHECKED_CAST")
 	override fun <T> getStatic(field: Field): T = getter(field).invoke() as T
 }
