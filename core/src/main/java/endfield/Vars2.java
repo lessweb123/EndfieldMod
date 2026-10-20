@@ -73,6 +73,8 @@ public final class Vars2 {
 
 	public static final String ARK = "Arknights";
 
+	public static final String ARK_END = "Arknights: Endfield";
+
 	public static final short ZC = 325;
 
 	public static final String KAL = "Kal'tsit", KAL_ESP = "Kal'tsit Esperanta";

@@ -12,6 +12,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.function.Function;
 
+import static endfield.Vars2.platformImpl;
+
 /**
  * A set of practical tools for copying field properties of an object to another.
  *
@@ -24,6 +26,17 @@ public final class ObjectHandler {
 	static final Function<Class<?>, Field[]> getFields = ClassHandler::getFields;
 
 	private ObjectHandler() {}
+
+	/**
+	 * Reflect to call the clone method of Object.
+	 * <p><strong>Note: Regardless of whether the object type has overridden the 'clone' method, it is always
+	 * shallow copy.</strong>
+	 *
+	 * @throws NullPointerException If the object is null
+	 */
+	public static <T> T clone(T object) {
+		return platformImpl.clone(object);
+	}
 
 	/**
 	 * Copy all attribute values of the source object completely to the target object, which must be the

@@ -3,6 +3,7 @@ package endfield.android;
 import arc.util.OS;
 import dalvik.system.VMRuntime;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import static endfield.android.Unsafer.unsafe;

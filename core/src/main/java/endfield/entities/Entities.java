@@ -55,6 +55,7 @@ import mindustry.type.StatusEffect;
 import mindustry.type.UnitType;
 import mindustry.world.Tile;
 import mindustry.world.blocks.defense.turrets.Turret.TurretBuild;
+import org.jetbrains.annotations.ApiStatus.Obsolete;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -628,7 +629,7 @@ public final class Entities {
 	}
 
 	/** Please use {@link #getObjects(QuadTree, Class)} */
-	@Deprecated(since = "1.0.8")
+	@Obsolete(since = "1.0.8")
 	public static <T extends QuadTreeObject> Seq<T> getObjects(QuadTree<T> tree) {
 		Seq<T> seq = new Seq<>();
 

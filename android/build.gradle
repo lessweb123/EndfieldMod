@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -64,6 +65,7 @@ tasks.withType(KotlinCompile).configureEach {
 			"-Xno-receiver-assertions",
 			"-Xno-param-assertions"
 	])
+	compilerOptions.jvmDefault.set(JvmDefaultMode.NO_COMPATIBILITY)
 }
 
 dependencies {

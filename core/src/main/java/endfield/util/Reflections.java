@@ -164,17 +164,6 @@ public final class Reflections {
 		}
 	}
 
-	/**
-	 * Reflect to call the clone method of Object.
-	 * <p><strong>Note: Regardless of whether the object type has overridden the 'clone' method, it is always
-	 * shallow copy.</strong>
-	 *
-	 * @throws NullPointerException If the object is null
-	 */
-	public static <T> T clone(T object) {
-		return platformImpl.clone(object);
-	}
-
 	public static String methodToString(Class<?> type, String name, Class<?>... parameterTypes) {
 		StringBuilder buf = new StringBuilder();
 		buf.append(type.getName()).append('.').append(name);

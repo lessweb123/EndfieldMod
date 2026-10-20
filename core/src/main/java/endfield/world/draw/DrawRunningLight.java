@@ -12,17 +12,17 @@ import mindustry.world.Block;
 import mindustry.world.blocks.defense.turrets.Turret.TurretBuild;
 import mindustry.world.draw.DrawBlock;
 
-public class RunningLight extends DrawBlock {
+public class DrawRunningLight extends DrawBlock {
 	public int size;
 	public TextureRegion[] regions;
 	public Color color = Pal.accent;
 	public boolean contrary = true;
 
-	public RunningLight(int size) {
+	public DrawRunningLight(int size) {
 		this.size = size;
 	}
 
-	public RunningLight() {}
+	public DrawRunningLight() {}
 
 	@Override
 	public void load(Block block) {

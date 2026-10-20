@@ -3,6 +3,7 @@ package endfield.util
 import java.lang.invoke.MethodHandle
 import java.lang.invoke.MethodHandles.Lookup
 import java.lang.invoke.MethodType
+import java.lang.invoke.VarHandle
 import java.lang.reflect.Constructor
 import java.lang.reflect.Field
 import java.lang.reflect.Method
@@ -26,6 +27,10 @@ interface Invokers {
 
 	fun findStaticSetter(refc: Class<*>, name: String, type: Class<*>): MethodHandle = lookup(refc).findStaticSetter(refc, name, type)
 
+	fun findVarHandle(recv: Class<*>, name: String, type: Class<*>): VarHandle = lookup(recv).findVarHandle(recv, name, type)
+
+	fun findStaticVarHandle(recv: Class<*>, name: String, type: Class<*>): VarHandle = lookup(recv).findStaticVarHandle(recv, name, type)
+
 	fun unreflect(method: Method): MethodHandle = lookup(method.declaringClass).unreflect(method)
 
 	fun unreflectSpecial(method: Method): MethodHandle = lookup(method.declaringClass).unreflectSpecial(method, method.declaringClass)
@@ -35,4 +40,6 @@ interface Invokers {
 	fun unreflectGetter(field: Field): MethodHandle = lookup(field.declaringClass).unreflectGetter(field)
 
 	fun unreflectSetter(field: Field): MethodHandle = lookup(field.declaringClass).unreflectSetter(field)
+
+	fun unreflectVarHandle(field: Field): VarHandle = lookup(field.declaringClass).unreflectVarHandle(field)
 }

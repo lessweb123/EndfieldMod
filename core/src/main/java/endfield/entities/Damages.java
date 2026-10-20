@@ -9,7 +9,6 @@ import arc.func.Floatc;
 import arc.func.Floatc2;
 import arc.func.Floatf;
 import arc.func.Intc2;
-import arc.func.Prov;
 import arc.graphics.Color;
 import arc.math.Angles;
 import arc.math.Mathf;

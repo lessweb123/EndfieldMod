@@ -19,6 +19,7 @@ public class RenderGroupEntity extends BaseEntity implements Poolable {
 	public float bounds = 0f;
 	public Seq<DrawnRegion> regions = new Seq<>(DrawnRegion.class);
 
+	public static Pool<RenderGroupEntity> activePool = Pools.get(RenderGroupEntity.class, RenderGroupEntity::new);
 	public static RenderGroupEntity active;
 	public static float minX, minY, maxX, maxY;
 	public static float[] tmpVert = new float[4 * 6];
@@ -32,7 +33,7 @@ public class RenderGroupEntity extends BaseEntity implements Poolable {
 		maxX = -114514.191981f;
 		maxY = -114514.191981f;
 
-		active = Pools.obtain(RenderGroupEntity.class, RenderGroupEntity::new);
+		active = activePool.obtain();
 	}
 
 	public static void end() {

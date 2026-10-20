@@ -20,6 +20,7 @@ import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Objects;
@@ -36,11 +37,15 @@ import static endfield.util.GetKt.sneakyThrow;
 public class DesktopImpl implements PlatformImpl {
 	static final Lookup lookup;
 
+	static final MethodHandle cloneMethod;
+
 	static {
 		try {
 			lookup = (Lookup) ReflectionFactory.getReflectionFactory()
 					.newConstructorForSerialization(Lookup.class, Lookup.class.getDeclaredConstructor(Class.class, Class.class, int.class))
 					.newInstance(EndFieldMod.class, null, -1);
+
+			cloneMethod = lookup.findSpecial(Object.class, "clone", MethodType.methodType(Object.class), Object.class);
 
 			Demodulator.openModules();
 			Demodulator.ensureFieldOpen();
@@ -69,7 +74,7 @@ public class DesktopImpl implements PlatformImpl {
 		try {
 			// If the object implements the Cloneable interface, call Object.clone() directly, which is faster than copyField().
 			if (object instanceof Cloneable) {
-				return (T) Companion.cloneMethod.invokeExact(object);
+				return (T) cloneMethod.invokeExact(object);
 			}
 
 			Class<?> type = object.getClass();
@@ -140,19 +145,5 @@ public class DesktopImpl implements PlatformImpl {
 	@Override
 	public int arrayIndexScale(Class<?> arrayClass) {
 		return unsafe.arrayIndexScale(arrayClass);
-	}
-
-	public static final class Companion {
-		static final MethodHandle cloneMethod;
-
-		static {
-			try {
-				cloneMethod = lookup.findSpecial(Object.class, "clone", MethodType.methodType(Object.class), Object.class);
-			} catch (NoSuchMethodException | IllegalAccessException e) {
-				throw sneakyThrow(e);
-			}
-		}
-
-		private Companion() {}
 	}
 }

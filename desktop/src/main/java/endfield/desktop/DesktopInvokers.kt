@@ -6,12 +6,13 @@ import endfield.util.Invokers
 import java.lang.invoke.MethodHandle
 import java.lang.invoke.MethodHandles.Lookup
 import java.lang.invoke.MethodType
+import java.lang.invoke.VarHandle
 import java.lang.reflect.Constructor
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 
-class DesktopInvokers : Invokers {
+open class DesktopInvokers : Invokers {
 	override fun lookup(refc: Class<*>): Lookup = lookupMap.getOrPut(refc) { lookupCtor.invokeExact(refc, null as Class<*>?, 95) as Lookup }
 
 	override fun findVirtual(refc: Class<*>, name: String, type: MethodType): MethodHandle = lookup.findVirtual(refc, name, type)
@@ -30,6 +31,10 @@ class DesktopInvokers : Invokers {
 
 	override fun findStaticSetter(refc: Class<*>, name: String, type: Class<*>): MethodHandle = lookup.findStaticSetter(refc, name, type)
 
+	override fun findVarHandle(recv: Class<*>, name: String, type: Class<*>): VarHandle = lookup.findVarHandle(recv, name, type)
+
+	override fun findStaticVarHandle(recv: Class<*>, name: String, type: Class<*>): VarHandle = lookup.findStaticVarHandle(recv, name, type)
+
 	override fun unreflect(method: Method): MethodHandle = lookup.unreflect(method)
 
 	override fun unreflectSpecial(method: Method): MethodHandle = lookup.unreflectSpecial(method, method.declaringClass)
@@ -38,15 +43,9 @@ class DesktopInvokers : Invokers {
 
 	override fun unreflectGetter(field: Field): MethodHandle = lookup.unreflectGetter(field)
 
-	override fun unreflectSetter(field: Field): MethodHandle {
-		val modifiers = field.modifiers
-		if ((modifiers and Modifier.FINAL) == 0) return lookup.unreflectSetter(field)
-		if ((modifiers and Modifier.STATIC) != 0) {
-			return lookup.findStaticSetter(field.declaringClass, field.name, field.type)
-		} else {
-			return lookup.findSetter(field.declaringClass, field.name, field.type)
-		}
-	}
+	override fun unreflectSetter(field: Field): MethodHandle = lookup.unreflectSetter(field)
+
+	override fun unreflectVarHandle(field: Field): VarHandle = lookup.unreflectVarHandle(field)
 
 	companion object {
 		@JvmField

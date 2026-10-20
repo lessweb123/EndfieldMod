@@ -17,9 +17,9 @@ open class MethodHandleFieldAccessor internal constructor(field: Field) : Abstra
 				if (type.isPrimitive) {
 					if (type === Boolean::class.javaPrimitiveType) MethodHandleStaticBooleanFieldAccessor(field)
 					else if (type === Byte::class.javaPrimitiveType) MethodHandleStaticByteFieldAccessor(field)
-					else if (type === Character.TYPE) MethodHandleStaticCharFieldAccessor(field)
+					else if (type === Char::class.javaPrimitiveType) MethodHandleStaticCharFieldAccessor(field)
 					else if (type === Short::class.javaPrimitiveType) MethodHandleStaticShortFieldAccessor(field)
-					else if (type === Integer.TYPE) MethodHandleStaticIntFieldAccessor(field)
+					else if (type === Int::class.javaPrimitiveType) MethodHandleStaticIntFieldAccessor(field)
 					else if (type === Long::class.javaPrimitiveType) MethodHandleStaticLongFieldAccessor(field)
 					else if (type === Float::class.javaPrimitiveType) MethodHandleStaticFloatFieldAccessor(field)
 					else if (type === Double::class.javaPrimitiveType) MethodHandleStaticDoubleFieldAccessor(field)
@@ -31,9 +31,9 @@ open class MethodHandleFieldAccessor internal constructor(field: Field) : Abstra
 				if (type.isPrimitive) {
 					if (type === Boolean::class.javaPrimitiveType) MethodHandleBooleanFieldAccessor(field)
 					else if (type === Byte::class.javaPrimitiveType) MethodHandleByteFieldAccessor(field)
-					else if (type === Character.TYPE) MethodHandleCharFieldAccessor(field)
+					else if (type === Char::class.javaPrimitiveType) MethodHandleCharFieldAccessor(field)
 					else if (type === Short::class.javaPrimitiveType) MethodHandleShortFieldAccessor(field)
-					else if (type === Integer.TYPE) MethodHandleIntFieldAccessor(field)
+					else if (type === Int::class.javaPrimitiveType) MethodHandleIntFieldAccessor(field)
 					else if (type === Long::class.javaPrimitiveType) MethodHandleLongFieldAccessor(field)
 					else if (type === Float::class.javaPrimitiveType) MethodHandleFloatFieldAccessor(field)
 					else if (type === Double::class.javaPrimitiveType) MethodHandleDoubleFieldAccessor(field)

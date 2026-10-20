@@ -8,6 +8,7 @@ import endfield.entities.effect.VapourizeEffect.VapourizeEffectState;
 import mindustry.ctype.Content;
 import mindustry.gen.EntityMapping;
 import mindustry.gen.Entityc;
+import org.jetbrains.annotations.ApiStatus.Obsolete;
 
 /**
  * Each Entity class requires an independent {@link Entityc#classId()} in order to be saved properly in the map.
@@ -30,7 +31,7 @@ public final class EntityRegister {
 		return needIdMap.get(name);
 	}
 
-	@Deprecated(since = "1.0.8")
+	@Obsolete(since = "1.0.8")
 	public static <T extends Entityc> void register(String name, Class<T> type, Prov<T> prov) {
 		needIdMap.put(name, prov);
 		classIdMap.put(type, EntityMapping.register(name, prov));
@@ -48,11 +49,8 @@ public final class EntityRegister {
 
 		if (content.minfo.mod != null) name = content.minfo.mod.name + "-" + name;
 
-		if (type.getName().startsWith("mindustry.gen.")) {
-			EntityMapping.nameMap.put(name, EntityMapping.map(type.getSimpleName()));
-		} else {
-			EntityMapping.nameMap.put(name, needIdMap.get(type.getSimpleName()));
-		}
+		EntityMapping.nameMap.put(name, EntityMapping.nameMap.get(type.getSimpleName()));
+
 		return content;
 	}
 

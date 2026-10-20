@@ -3,6 +3,7 @@ package endfield.util;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
+import java.lang.invoke.VarHandle;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -48,6 +49,14 @@ public final class HandleSupport {
 		return invokers.findStaticSetter(refc, name, type);
 	}
 
+	public static VarHandle findVarHandle(Class<?> recv, String name, Class<?> type) {
+		return invokers.findVarHandle(recv, name, type);
+	}
+
+	public static VarHandle findStaticVarHandle(Class<?> recv, String name, Class<?> type) {
+		return invokers.findStaticVarHandle(recv, name, type);
+	}
+
 	public static MethodHandle unreflect(Method method) {
 		return invokers.unreflect(method);
 	}
@@ -66,5 +75,9 @@ public final class HandleSupport {
 
 	public static MethodHandle unreflectSetter(Field field) {
 		return invokers.unreflectSetter(field);
+	}
+
+	public static VarHandle unreflectVarHandle(Field field) {
+		return invokers.unreflectVarHandle(field);
 	}
 }

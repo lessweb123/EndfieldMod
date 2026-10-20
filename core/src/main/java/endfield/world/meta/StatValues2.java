@@ -44,6 +44,7 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValue;
 import mindustry.world.meta.StatValues;
+import org.jetbrains.annotations.ApiStatus.Obsolete;
 
 import static endfield.Vars2.modName;
 import static mindustry.Vars.content;
@@ -895,13 +896,13 @@ public final class StatValues2 {
 		};
 	}
 
-	@Deprecated(since = "1.0.8")
+	@Obsolete(since = "1.0.8")
 	public static Cell<Label> sep(Table table, String text) {
 		table.row();
 		return table.add(text);
 	}
 
-	@Deprecated(since = "1.0.8")
+	@Obsolete(since = "1.0.8")
 	public static TextureRegion icon(@Nullable UnlockableContent content) {
 		return content == null ? Regions2.white : content.uiIcon;
 	}

@@ -74,6 +74,7 @@ public final class Demodulator {
 		Module base = Object.class.getModule(), main = EndFieldMod.class.getModule();
 
 		openModule(base, "java.lang", main);
+		openModule(base, "java.lang.invoke", main);
 		openModule(base, "java.lang.reflect", main);
 		openModule(base, "jdk.internal.loader", main);
 		openModule(base, "jdk.internal.misc", main);

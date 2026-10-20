@@ -40,6 +40,7 @@ import endfield.graphics.g2d.FragmentationBatch;
 import endfield.graphics.g2d.RangeExtractor;
 import endfield.graphics.g2d.VaporizeBatch;
 import endfield.mod.AdaptiveCoreDatabase;
+import endfield.mod.ClassMap2;
 import endfield.mod.Mods2;
 import endfield.net.Call2;
 import endfield.ui.Elements;

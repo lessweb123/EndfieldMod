@@ -1,6 +1,7 @@
 package endfield.core;
 
 import arc.util.Log;
+import endfield.util.HandleSupport;
 import endfield.util.MethodHandleInvoker;
 import endfield.util.MethodInvoker;
 import endfield.util.SpecialMethodAccessor;
@@ -30,8 +31,12 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class Test extends @Stub Random {
+	public static final String sstr = "";
+
+	public final String str = "";
+
 	public @TestAnno(
-			str = "test text",
+			text = "test text",
 			type = Aspect.class,
 			arrayTypes = {Aspect.class, AccessStub.class},
 			arrayEnum = {Using.AFTER_RETURN, Using.OVERRIDE},
@@ -64,7 +69,15 @@ public class Test extends @Stub Random {
 			ASMClassAccessor accessor = new ASMClassAccessor();
 
 			ClassDecl<Test> classDecl = accessor.getClassDecl(ClassName.byClass(LoaderAspect.class));
+
+			classDecl.superClass();
 			classDecl.annotatedSuperClass();
+			classDecl.interfaces();
+			classDecl.annotatedInterfaces();
+			classDecl.fields();
+			classDecl.methods();
+			classDecl.constructors();
+			classDecl.annotations();
 		} catch (Throwable e) {
 			Log.err(e);
 		}
@@ -116,6 +129,14 @@ public class Test extends @Stub Random {
 		}
 	}
 
+	public static void test7() {
+		try {
+			Log.info(HandleSupport.findStaticVarHandle(Test.class, "ft", String.class).getClass());
+		} catch (Throwable e) {
+			Log.err(e);
+		}
+	}
+
 	public static void print() {
 		Log.info("test print");
 	}
@@ -140,7 +161,7 @@ public class Test extends @Stub Random {
 		}
 	}
 
-	public enum TestEnum {
+	public enum TestEnum implements Cloneable {
 		A, B, C
 	}
 
@@ -166,7 +187,7 @@ public class Test extends @Stub Random {
 	@Target(ElementType.TYPE_USE)
 	@Retention(RetentionPolicy.RUNTIME)
 	public @interface TestAnno {
-		String str();
+		String text();
 
 		Class<?> type();
 
