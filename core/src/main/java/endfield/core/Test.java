@@ -21,6 +21,7 @@ import endfield.util.handler.ClassHandler;
 import endfield.util.handler.EnumHandler;
 import endfield.util.handler.ObjectHandler;
 import kotlin.NotImplementedError;
+import org.jetbrains.annotations.TestOnly;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -30,7 +31,10 @@ import java.lang.invoke.MethodType;
 import java.util.Arrays;
 import java.util.Random;
 
+/** Call the test on the console. */
+@TestOnly
 public class Test extends @Stub Random {
+	public static final boolean debug = false;
 	public static final String sstr = "";
 
 	public final String str = "";

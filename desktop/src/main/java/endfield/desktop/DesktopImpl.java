@@ -59,7 +59,7 @@ public class DesktopImpl implements PlatformImpl {
 	}
 
 	void init() {
-		invokers = new DesktopInvokers();
+		invokers = DesktopInvokers2.init() ? new DesktopInvokers2() : new DesktopInvokers();
 		classHelper = new DesktopClassHelper();
 		fieldAccessHelper = new UnsafeFieldAccessHelper();
 		methodInvokeHelper = new MethodHandleMethodInvokeHelper();

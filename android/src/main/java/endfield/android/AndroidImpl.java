@@ -36,7 +36,7 @@ public class AndroidImpl implements PlatformImpl {
 	}
 
 	void init() {
-		invokers = new AndroidInvokers();
+		invokers = AndroidInvokers2.init() ? new AndroidInvokers2() : new AndroidInvokers();
 		accessibleHelper = new AndroidAccessibleHelper();
 		classHelper = new AndroidClassHelper();
 		fieldAccessHelper = new UnsafeFieldAccessHelper();

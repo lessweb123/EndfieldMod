@@ -21,8 +21,6 @@ public class DesktopInvokers2 extends DesktopInvokers {
 	static Method makeFieldHandle;
 	static Method makeRefc;
 
-	private DesktopInvokers2() {}
-
 	@Override
 	public VarHandle findVarHandle(Class<?> recv, String name, Class<?> type) {
 		try {
@@ -70,7 +68,7 @@ public class DesktopInvokers2 extends DesktopInvokers {
 		}
 	}
 
-	public static boolean init() {
+	static boolean init() {
 		try {
 			memberNameClass = Class.forName("java.lang.invoke.MemberName", false, null);
 			Class<?> varHandlesClass = Class.forName("java.lang.invoke.VarHandles", false, null);

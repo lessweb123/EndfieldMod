@@ -22,7 +22,7 @@ public class AndroidImpl2 extends AndroidImpl {
 
 	@Override
 	void init() {
-		invokers = new AndroidInvokers();
+		invokers = AndroidInvokers2.init() ? new AndroidInvokers2() : new AndroidInvokers();
 		accessibleHelper = new AndroidAccessibleHelper();
 		classHelper = new AndroidClassHelper2();
 		fieldAccessHelper = new UnsafeFieldAccessHelper2();
