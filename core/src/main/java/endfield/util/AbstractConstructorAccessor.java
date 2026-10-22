@@ -27,8 +27,8 @@ public abstract class AbstractConstructorAccessor<T> implements ConstructorAcces
 		int hc = hash;
 
 		if (hc == 0) {
-			hc = hash = getClass().getName().hashCode() ^
-					constructor.getDeclaringClass().getName().hashCode() ^
+			hc = hash = getClass().hashCode() ^
+					constructor.getDeclaringClass().hashCode() ^
 					Arrays.hashCode(constructor.getParameterTypes());
 		}
 

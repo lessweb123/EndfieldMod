@@ -27,8 +27,8 @@ public abstract class AbstractMethodAccessor implements MethodAccessor {
 		int hc = hash;
 
 		if (hc == 0) {
-			hc = hash = getClass().getName().hashCode() ^
-					method.getDeclaringClass().getName().hashCode() ^
+			hc = hash = getClass().hashCode() ^
+					method.getDeclaringClass().hashCode() ^
 					method.getName().hashCode() ^
 					Arrays.hashCode(method.getParameterTypes());
 		}

@@ -28,6 +28,7 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.IntFunction;
 import java.util.function.UnaryOperator;
 
 /**
@@ -1006,6 +1007,13 @@ public class CollectionList<E> extends AbstractList<E> implements Eachable<E>, C
 	}
 
 	@Override
+	public <T> T[] toArray(IntFunction<T[]> generator) {
+		T[] a = generator.apply(size);
+		System.arraycopy(items, 0, a, 0, size);
+		return a;
+	}
+
+	@Override
 	public int hashCode() {
 		if (!ordered) return System.identityHashCode(this);
 		E[] es = items;
@@ -1061,7 +1069,15 @@ public class CollectionList<E> extends AbstractList<E> implements Eachable<E>, C
 	}
 
 	public String toString(String separator) {
-		return toString(separator, String::valueOf);
+		if (size == 0) return "";
+		E[] es = items;
+		StringBuilder buffer = new StringBuilder(32);
+		buffer.append(es[0]);
+		for (int i = 1; i < size; i++) {
+			buffer.append(separator);
+			buffer.append(es[i]);
+		}
+		return buffer.toString();
 	}
 
 	@Override

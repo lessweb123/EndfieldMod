@@ -97,7 +97,7 @@ open class MethodHandleFieldAccessor internal constructor(field: Field) : Abstra
 	}
 
 	override fun setByte(any: Any?, value: Byte) {
-		throw IllegalArgumentException(Reflections.getSetMessage(field, "byte", value.toInt().toString()))
+		throw IllegalArgumentException(Reflections.getSetMessage(field, "byte", value.toString()))
 	}
 
 	override fun getChar(any: Any?): Char {
@@ -113,7 +113,7 @@ open class MethodHandleFieldAccessor internal constructor(field: Field) : Abstra
 	}
 
 	override fun setShort(any: Any?, value: Short) {
-		throw IllegalArgumentException(Reflections.getSetMessage(field, "short", value.toInt().toString()))
+		throw IllegalArgumentException(Reflections.getSetMessage(field, "short", value.toString()))
 	}
 
 	override fun getInt(any: Any?): Int {

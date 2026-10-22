@@ -295,13 +295,13 @@ public class ASMClassAccessor implements ClassAccessor {
 				@Override
 				public String pn() {
 					Value<String> value = ktMetadata.getValue("pn");
-					return value == null ? "" : value.value;
+					return value == null ? "" : value.value();
 				}
 
 				@Override
 				public String xs() {
 					Value<String> value = ktMetadata.getValue("xs");
-					return value == null ? "" : value.value;
+					return value == null ? "" : value.value();
 				}
 
 				@Override
@@ -325,13 +325,13 @@ public class ASMClassAccessor implements ClassAccessor {
 				@Override
 				public int[] mv() {
 					Value<int[]> value = ktMetadata.getValue("mv");
-					return value == null ? new int[0] : value.value;
+					return value == null ? new int[0] : value.value();
 				}
 
 				@Override
 				public int k() {
 					Value<Integer> value = ktMetadata.getValue("k");
-					return value == null ? 1 : value.value;
+					return value == null ? 1 : value.value();
 				}
 			};
 			KmClass kmClass = null;

@@ -1,16 +1,11 @@
 package endfield.util.aspector.classes;
 
+import endfield.util.Reflections;
+
 import java.lang.reflect.Modifier;
 import java.util.List;
 
 public abstract class ClassDecl<T> {
-	public static final int BRIDGE = 0x00000040;
-	public static final int VARARGS = 0x00000080;
-	public static final int SYNTHETIC = 0x00001000;
-	public static final int ANNOTATION = 0x00002000;
-	public static final int ENUM = 0x00004000;
-	public static final int MANDATED = 0x00008000;
-
 	public final ClassName name;
 
 	public ClassDecl(ClassName className) {
@@ -75,7 +70,7 @@ public abstract class ClassDecl<T> {
 	}
 
 	public boolean isEnum() {
-		if ((flags() & ENUM) == 0) return false;
+		if ((flags() & Reflections.ENUM) == 0) return false;
 
 		ClassDecl<?> superClass = superClass();
 		return superClass != null && superClass.name.equals(ClassName.jEnum);

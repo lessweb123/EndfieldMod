@@ -9,22 +9,18 @@ import static endfield.desktop.DesktopImpl.lookup;
 import static endfield.util.GetKt.sneakyThrow;
 
 public class DesktopAccessibleHelper implements AccessibleHelper {
-	@Override
-	public void makeAccessible(AccessibleObject object) {
-		Companion.override.set(object, true);
+	static final VarHandle override;
+
+	static {
+		try {
+			override = lookup.findVarHandle(AccessibleObject.class, "override", boolean.class);
+		} catch (NoSuchFieldException | IllegalAccessException e) {
+			throw sneakyThrow(e);
+		}
 	}
 
-	public static final class Companion {
-		static VarHandle override;
-
-		static {
-			try {
-				override = lookup.findVarHandle(AccessibleObject.class, "override", boolean.class);
-			} catch (NoSuchFieldException | IllegalAccessException e) {
-				throw sneakyThrow(e);
-			}
-		}
-
-		private Companion() {}
+	@Override
+	public void makeAccessible(AccessibleObject object) {
+		override.set(object, true);
 	}
 }

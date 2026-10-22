@@ -14,9 +14,9 @@ static jclass lookup_class;
 static jfieldID impl_lookup_field;
 
 static jclass reflects_class;
-static jmethodID get_field_exception_method;
-static jmethodID get_method_exception_method;
-static jmethodID get_constructor_exception_method;
+static jmethodID thr_field_exception_method;
+static jmethodID thr_method_exception_method;
+static jmethodID thr_constructor_exception_method;
 static jmethodID check_alloc_type_method;
 
 static bool initGlobalClassRef(JNIEnv* env, const char* name, jclass* out) {
@@ -64,13 +64,13 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void*)
         && initFieldID(env, accessible_object_class, "override", "Z", &override_field)
 
         && initGlobalClassRef(env, "java/lang/invoke/MethodHandles$Lookup", &lookup_class)
-        && initStaticFieldID(env, lookup_class, "IMPL_LOOKUP", "Ljava/lang/invoke/MethodHandles$Lookup;",&impl_lookup_field)
+        && initStaticFieldID(env, lookup_class, "IMPL_LOOKUP", "Ljava/lang/invoke/MethodHandles$Lookup;", &impl_lookup_field)
 
-        && initGlobalClassRef(env, "endfield/util/Reflects", &reflects_class)
-        && initStaticMethodID(env, reflects_class, "getFieldException","(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/NoSuchFieldException;",&get_field_exception_method)
-        && initStaticMethodID(env, reflects_class, "getMethodException","(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/NoSuchMethodException;",&get_method_exception_method)
-        && initStaticMethodID(env, reflects_class, "getConstructorException","(Ljava/lang/Class;Ljava/lang/String;)Ljava/lang/NoSuchMethodException;",&get_constructor_exception_method)
-        && initStaticMethodID(env, reflects_class, "checkAllocType", "(Ljava/lang/Class;)Ljava/lang/RuntimeException;", &check_alloc_type_method);
+        && initGlobalClassRef(env, "endfield/util/Reflections", &reflects_class)
+        && initStaticMethodID(env, reflects_class, "thrFieldException","(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/String;)V", &thr_field_exception_method)
+        && initStaticMethodID(env, reflects_class, "thrMethodException","(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/String;)V", &thr_method_exception_method)
+        && initStaticMethodID(env, reflects_class, "thrConstructorException","(Ljava/lang/Class;Ljava/lang/String;)V", &thr_constructor_exception_method)
+        && initStaticMethodID(env, reflects_class, "checkAllocType", "(Ljava/lang/Class;)V", &check_alloc_type_method);
 
     if (!ok)
     {
@@ -109,10 +109,26 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void*)
     override_field = nullptr;
     impl_lookup_field = nullptr;
 
-    get_field_exception_method = nullptr;
-    get_method_exception_method = nullptr;
-    get_constructor_exception_method = nullptr;
+    thr_field_exception_method = nullptr;
+    thr_method_exception_method = nullptr;
+    thr_constructor_exception_method = nullptr;
     check_alloc_type_method = nullptr;
+}
+
+JNIEXPORT jclass JNICALL Java_endfield_desktop_DesktopNativeHelper_classForName(JNIEnv* env, jclass, jstring signature)
+{
+    if (signature == nullptr)
+    {
+        env->ThrowNew(npe_class, "signature must not be null");
+        return nullptr;
+    }
+
+    const char* csignature = env->GetStringUTFChars(signature, nullptr);
+
+    if (csignature == nullptr)
+        return nullptr;
+
+    return env->FindClass(csignature);
 }
 
 JNIEXPORT jobject JNICALL Java_endfield_desktop_DesktopNativeHelper_getLookup(JNIEnv* env, jclass)
@@ -122,12 +138,9 @@ JNIEXPORT jobject JNICALL Java_endfield_desktop_DesktopNativeHelper_getLookup(JN
 
 JNIEXPORT jobject JNICALL Java_endfield_desktop_DesktopNativeHelper_allocObject(JNIEnv* env, jclass, jclass type)
 {
-    jobject throwable = env->CallStaticObjectMethod(reflects_class, check_alloc_type_method, type);
-    if (throwable != nullptr)
-    {
-        env->Throw((jthrowable)throwable);
+    env->CallStaticVoidMethod(reflects_class, check_alloc_type_method, type);
+    if (env->ExceptionCheck())
         return nullptr;
-    }
 
     if (env->IsSameObject(type, string_class))
     {
@@ -180,7 +193,7 @@ JNIEXPORT jobject JNICALL Java_endfield_desktop_DesktopNativeHelper_getField(JNI
         if (env->ExceptionCheck())
             env->ExceptionClear();
 
-        env->Throw((jthrowable)env->CallStaticObjectMethod(reflects_class, get_field_exception_method, clazz, name, signature));
+        env->CallStaticVoidMethod(reflects_class, thr_field_exception_method, clazz, name, signature);
 
         return nullptr;
     }
@@ -205,21 +218,20 @@ JNIEXPORT jobject JNICALL Java_endfield_desktop_DesktopNativeHelper_getMethod(JN
     if (cname == nullptr)
         return nullptr;
 
+    if (strcmp(cname, "<init>") == 0)
+    {
+        env->ReleaseStringUTFChars(name, cname);
+
+        env->ThrowNew(iae_class, "Not supporting finding '<init>' method");
+
+        return nullptr;
+    }
+
     const char* csignature = env->GetStringUTFChars(signature, nullptr);
 
     if (csignature == nullptr)
     {
         env->ReleaseStringUTFChars(name, cname);
-
-        return nullptr;
-    }
-
-    if (strcmp(cname, "<init>") == 0)
-    {
-        env->ReleaseStringUTFChars(name, cname);
-        env->ReleaseStringUTFChars(signature, csignature);
-
-        env->ThrowNew(iae_class, "Not supporting finding '<init>' method");
 
         return nullptr;
     }
@@ -234,7 +246,7 @@ JNIEXPORT jobject JNICALL Java_endfield_desktop_DesktopNativeHelper_getMethod(JN
         if (env->ExceptionCheck())
             env->ExceptionClear();
 
-        env->Throw((jthrowable)env->CallStaticObjectMethod(reflects_class, get_method_exception_method, clazz, name, signature));
+        env->CallStaticVoidMethod(reflects_class, thr_method_exception_method, clazz, name, signature);
 
         return nullptr;
     }
@@ -268,7 +280,7 @@ JNIEXPORT jobject JNICALL Java_endfield_desktop_DesktopNativeHelper_getConstruct
         if (env->ExceptionCheck())
             env->ExceptionClear();
 
-        env->Throw((jthrowable)env->CallStaticObjectMethod(reflects_class, get_constructor_exception_method, clazz, signature));
+        env->CallStaticVoidMethod(reflects_class, thr_constructor_exception_method, clazz, signature);
 
         return nullptr;
     }

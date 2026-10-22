@@ -4,9 +4,10 @@ import arc.util.Log;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles.Lookup;
+import java.lang.invoke.MethodType;
 import java.lang.invoke.VarHandle;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
@@ -15,10 +16,12 @@ import static endfield.android.Unsafer.unsafe;
 @SuppressWarnings("removal")
 public class AndroidInvokers2 extends AndroidInvokers {
 	public static Method findFieldOfType;
-	public static Method findAccessor;
 
 	public static Method fieldVarHandle;
 	public static Method staticFieldVarHandle;
+
+	public static Constructor<?> addressMethodHandleImpl;
+	public static Constructor<?> fieldMethodHandleImpl;
 
 	public static long varHandleMaskOffset;
 
@@ -27,7 +30,7 @@ public class AndroidInvokers2 extends AndroidInvokers {
 		try {
 			Lookup lookup = lookup(refc);
 			Field field = (Field) findFieldOfType.invoke(lookup, refc, name, type);
-			return (MethodHandle) findAccessor.invoke(lookup, field, refc, type, 8, false);
+			return (MethodHandle) fieldMethodHandleImpl.newInstance(field, 8, MethodType.methodType(type, refc));
 		} catch (Exception e) {
 			Log.err(e);
 			return super.findGetter(refc, name, type);
@@ -39,7 +42,7 @@ public class AndroidInvokers2 extends AndroidInvokers {
 		try {
 			Lookup lookup = lookup(refc);
 			Field field = (Field) findFieldOfType.invoke(lookup, refc, name, type);
-			return (MethodHandle) findAccessor.invoke(lookup, field, refc, type, 9, false);
+			return (MethodHandle) fieldMethodHandleImpl.newInstance(field, 9, MethodType.methodType(void.class, refc, type));
 		} catch (Exception e) {
 			Log.err(e);
 			return super.findSetter(refc, name, type);
@@ -51,7 +54,7 @@ public class AndroidInvokers2 extends AndroidInvokers {
 		try {
 			Lookup lookup = lookup(refc);
 			Field field = (Field) findFieldOfType.invoke(lookup, refc, name, type);
-			return (MethodHandle) findAccessor.invoke(lookup, field, refc, type, 10, false);
+			return (MethodHandle) fieldMethodHandleImpl.newInstance(field, 10, MethodType.methodType(type));
 		} catch (Exception e) {
 			Log.err(e);
 			return super.findStaticGetter(refc, name, type);
@@ -63,7 +66,7 @@ public class AndroidInvokers2 extends AndroidInvokers {
 		try {
 			Lookup lookup = lookup(refc);
 			Field field = (Field) findFieldOfType.invoke(lookup, refc, name, type);
-			return (MethodHandle) findAccessor.invoke(lookup, field, refc, type, 11, false);
+			return (MethodHandle) fieldMethodHandleImpl.newInstance(field, 11, MethodType.methodType(void.class, type));
 		} catch (Exception e) {
 			Log.err(e);
 			return super.findStaticSetter(refc, name, type);
@@ -108,15 +111,61 @@ public class AndroidInvokers2 extends AndroidInvokers {
 		}
 	}
 
+	@Override
+	public MethodHandle unreflectGetter(Field field) {
+		try {
+			boolean isStatic = (field.getModifiers() & Modifier.STATIC) != 0;
+			Class<?> type = field.getType();
+			Class<?> refc = field.getDeclaringClass();
+
+			return (MethodHandle) fieldMethodHandleImpl.newInstance(field, isStatic ? 10 : 8, isStatic ? MethodType.methodType(type) : MethodType.methodType(type, refc));
+		} catch (Exception e) {
+			Log.err(e);
+			return super.unreflectGetter(field);
+		}
+	}
+
+	@Override
+	public MethodHandle unreflectSetter(Field field) {
+		try {
+			boolean isStatic = (field.getModifiers() & Modifier.STATIC) != 0;
+			Class<?> type = field.getType();
+			Class<?> refc = field.getDeclaringClass();
+
+			return (MethodHandle) fieldMethodHandleImpl.newInstance(field, isStatic ? 11 : 9, isStatic ? MethodType.methodType(void.class, type) : MethodType.methodType(void.class, refc, type));
+		} catch (Exception e) {
+			Log.err(e);
+			return super.unreflectSetter(field);
+		}
+	}
+
+	@Override
+	public VarHandle unreflectVarHandle(Field field) {
+		try {
+			VarHandle varHandle = (VarHandle) ((field.getModifiers() & Modifier.STATIC) != 0 ? staticFieldVarHandle : fieldVarHandle).invoke(null, field);
+
+			if ((field.getModifiers() & Modifier.FINAL) != 0) unsafe.putInt(varHandle, varHandleMaskOffset, alignedAccessModesBitMask(field.getType(), false));
+
+			return varHandle;
+		} catch (Exception e) {
+			Log.err(e);
+			return super.unreflectVarHandle(field);
+		}
+	}
+
 	static boolean init() {
 		try {
 			findFieldOfType = Lookup.class.getDeclaredMethod("findFieldOfType", Class.class, String.class, Class.class);
 			findFieldOfType.setAccessible(true);
-			findAccessor = Lookup.class.getDeclaredMethod("findAccessor", Field.class, Class.class, Class.class, int.class, boolean.class);
-			findAccessor.setAccessible(true);
 
+			Class<?> methodHandleImpl = Class.forName("java.lang.invoke.MethodHandleImpl", false, Object.class.getClassLoader());
 			Class<?> fieldVarHandleClass = Class.forName("java.lang.invoke.FieldVarHandle", false, Object.class.getClassLoader());
 			Class<?> staticFieldVarHandleClass = Class.forName("java.lang.invoke.StaticFieldVarHandle", false, Object.class.getClassLoader());
+
+			addressMethodHandleImpl = methodHandleImpl.getDeclaredConstructor(long.class, int.class, MethodType.class);
+			addressMethodHandleImpl.setAccessible(true);
+			fieldMethodHandleImpl = methodHandleImpl.getDeclaredConstructor(Field.class, int.class, MethodType.class);
+			fieldMethodHandleImpl.setAccessible(true);
 
 			fieldVarHandle = fieldVarHandleClass.getDeclaredMethod("create", Field.class);
 			fieldVarHandle.setAccessible(true);
@@ -157,8 +206,7 @@ public class AndroidInvokers2 extends AndroidInvokers {
 			alignedMask.setAccessible(true);
 
 			for (Class<?> type : new Class<?>[]{boolean.class, char.class, byte.class, short.class, int.class, long.class, float.class, double.class, Object.class, String.class, Class.class}) {
-				Log.info("VarHandle: @ @", type, Integer.toHexString((int) alignedMask.invoke(null, type, false)));
-				Log.info("AndroidInvokers2: @ @", type, Integer.toHexString(alignedAccessModesBitMask(type, false)));
+				Log.info("alignedAccessModesBitMask: @ - @ @", type, Integer.toHexString((int) alignedMask.invoke(null, type, false)), Integer.toHexString(alignedAccessModesBitMask(type, false)));
 			}
 		} catch (Exception e) {
 			Log.err(e);

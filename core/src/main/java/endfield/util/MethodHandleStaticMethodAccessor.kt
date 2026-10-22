@@ -6,10 +6,12 @@ import java.lang.reflect.Method
 
 open class MethodHandleStaticMethodAccessor(method: Method) : AbstractMethodAccessor(method) {
 	@JvmField
+	val target: MethodHandle
+	@JvmField
 	val spread: MethodHandle
 
 	init {
-		val target = HandleSupport.unreflect(method).asFixedArity()
+		target = HandleSupport.unreflect(method).asFixedArity()
 
 		val paramCount = target.type().parameterCount()
 

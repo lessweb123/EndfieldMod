@@ -452,7 +452,7 @@ public class CharSeq implements CharSequence, Appendable, Cloneable {
 	@Override
 	public String toString() {
 		// We need to implement the requirements of the CharSequence interface.
-		return String.valueOf(Arrays.copyOfRange(items, 0, size));
+		return String.valueOf(items, 0, size);
 	}
 
 	public String asString() {

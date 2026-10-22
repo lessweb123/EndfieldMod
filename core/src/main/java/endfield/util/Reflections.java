@@ -12,6 +12,7 @@ import mindustry.Vars;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InaccessibleObjectException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
@@ -28,36 +29,15 @@ import static endfield.Vars2.platformImpl;
  * @since 1.0.6
  */
 public final class Reflections {
+	public static final int BRIDGE = 0x00000040;
+	public static final int VARARGS = 0x00000080;
+	public static final int SYNTHETIC = 0x00001000;
+	public static final int ANNOTATION = 0x00002000;
+	public static final int ENUM = 0x00004000;
+	public static final int MANDATED = 0x00008000;
+
 	/** Don't let anyone instantiate this class. */
 	private Reflections() {}
-
-	public static Object def(Class<?> type) {
-		if (type == boolean.class || type == Boolean.class) return false;
-		if (type == int.class || type == Integer.class) return 0;
-		if (type == float.class || type == Float.class) return 0f;
-		if (type == long.class || type == Long.class) return 0l;
-		if (type == byte.class || type == Byte.class) return (byte) 0;
-		if (type == short.class || type == Short.class) return (short) 0;
-		if (type == double.class || type == Double.class) return 0d;
-		if (type == char.class || type == Character.class) return '\u0000';
-		//if (type == void.class || type == Void.class) return null;
-		return null;
-	}
-
-	public static Object def(String name) {
-		return switch (name) {
-			case "boolean", "java.lang.Boolean" -> false;
-			case "int", "java.lang.Integer" -> 0;
-			case "float", "java.lang.Float" -> 0f;
-			case "long", "java.lang.Long" -> 0l;
-			case "byte", "java.lang.Byte" -> (byte) 0;
-			case "short", "java.lang.Short" -> (short) 0;
-			case "double", "java.lang.Double" -> 0d;
-			case "char", "java.lang.Character" -> '\u0000';
-			//case "void", "java.lang.Void" -> null;
-			default -> null;
-		};
-	}
 
 	public static FieldAccessor getFieldAccessor(Class<?> type, String name) {
 		return getFieldAccessor(ClassHandler.getField(type, name));
@@ -372,18 +352,16 @@ public final class Reflections {
 	public static <T extends AccessibleObject & Member> boolean setAccessible(T object) {
 		if (object.isAccessible()) return true;
 
-		if (object instanceof Constructor<?>) {
-			Class<?> dec = object.getDeclaringClass();
-			if (dec == Class.class || dec == Field.class || dec == Method.class || dec == Constructor.class)
-				return false;
+		try {
+			accessibleHelper.makeAccessible(object);
+		} catch (InaccessibleObjectException e) {
+			return false;
 		}
-
-		accessibleHelper.makeAccessible(object);
 
 		return true;
 	}
 
-	// Only on Android.
+	// android only
 	public static <T> Class<T> setClassAccessible(Class<T> clazz) {
 		int modifiers = clazz.getModifiers();
 		if ((modifiers & Modifier.PUBLIC) == 0 || (modifiers & Modifier.FINAL) != 0) {
@@ -436,19 +414,19 @@ public final class Reflections {
 
 	// ------------------ jni only ---------------------
 
-	public static NoSuchFieldException getFieldException(Class<?> type, String name, String signature) {
-		return new NoSuchFieldException(getMessage(type, name, signature, false));
+	public static void thrFieldException(Class<?> type, String name, String signature) throws NoSuchFieldException {
+		throw new NoSuchFieldException(buildMessage(type, name, signature, false));
 	}
 
-	public static NoSuchMethodException getMethodException(Class<?> type, String name, String signature) {
-		return new NoSuchMethodException(getMessage(type, name, signature, true));
+	public static void thrMethodException(Class<?> type, String name, String signature) throws NoSuchMethodException {
+		throw new NoSuchMethodException(buildMessage(type, name, signature, true));
 	}
 
-	public static NoSuchMethodException getConstructorException(Class<?> type, String signature) {
-		return new NoSuchMethodException(getMessage(type, "<init>", signature, true));
+	public static void thrConstructorException(Class<?> type, String signature) throws NoSuchMethodException {
+		throw new NoSuchMethodException(buildMessage(type, "<init>", signature, true));
 	}
 
-	static String getMessage(Class<?> type, String name, String signature, boolean isMethod) {
+	static String buildMessage(Class<?> type, String name, String signature, boolean isMethod) {
 		String className = type.getName();
 
 		StringBuilder sb = new StringBuilder(className.length() + name.length() + 32);
@@ -463,21 +441,19 @@ public final class Reflections {
 		return sb.toString();
 	}
 
-	public static RuntimeException checkAllocType(Class<?> type) {
-		if (type == null) return new NullPointerException("type is null");
+	public static void checkAllocType(Class<?> type) {
+		if (type == null) throw new NullPointerException("type is null");
 
-		if (type.isPrimitive()) return new IllegalArgumentException("Cannot instantiate primitive type");
-		if (type.isArray()) return new IllegalArgumentException("Cannot instantiate array type (use Array.newInstance instead)");
+		if (type.isPrimitive()) throw new IllegalArgumentException("Cannot instantiate primitive type");
+		if (type.isArray()) throw new IllegalArgumentException("Cannot instantiate array type (use Array.newInstance instead)");
 
-		if (type == Class.class) return new IllegalArgumentException("Cannot instantiate class type");
-		if (type == Field.class) return new IllegalArgumentException("Cannot instantiate field type");
-		if (type == Method.class) return new IllegalArgumentException("Cannot instantiate method type");
-		if (type == Constructor.class) return new IllegalArgumentException("Cannot instantiate constructor type");
+		if (type == Class.class) throw new IllegalArgumentException("Cannot instantiate class type");
+		if (type == Field.class) throw new IllegalArgumentException("Cannot instantiate field type");
+		if (type == Method.class) throw new IllegalArgumentException("Cannot instantiate method type");
+		if (type == Constructor.class) throw new IllegalArgumentException("Cannot instantiate constructor type");
 
 		int modifiers = type.getModifiers();
 
-		if ((modifiers & (Modifier.ABSTRACT | Modifier.INTERFACE)) != 0) return new IllegalArgumentException("Cannot instantiate abstract class or interface");
-
-		return null;
+		if ((modifiers & (Modifier.ABSTRACT | Modifier.INTERFACE)) != 0) throw new IllegalArgumentException("Cannot instantiate abstract class or interface");
 	}
 }
