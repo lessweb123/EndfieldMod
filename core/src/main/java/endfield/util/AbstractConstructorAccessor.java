@@ -1,12 +1,9 @@
 package endfield.util;
 
 import java.lang.reflect.Constructor;
-import java.util.Arrays;
 
 public abstract class AbstractConstructorAccessor<T> implements ConstructorAccessor<T> {
 	protected final Constructor<T> constructor;
-
-	protected int hash;
 
 	protected AbstractConstructorAccessor(Constructor<T> cons) {
 		constructor = cons;
@@ -15,24 +12,6 @@ public abstract class AbstractConstructorAccessor<T> implements ConstructorAcces
 	@Override
 	public Constructor<T> getConstructor() {
 		return constructor;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		return obj == this || obj.getClass() == getClass() && ((ConstructorAccessor<?>) obj).getConstructor().equals(constructor);
-	}
-
-	@Override
-	public int hashCode() {
-		int hc = hash;
-
-		if (hc == 0) {
-			hc = hash = getClass().hashCode() ^
-					constructor.getDeclaringClass().hashCode() ^
-					Arrays.hashCode(constructor.getParameterTypes());
-		}
-
-		return hc;
 	}
 
 	@Override

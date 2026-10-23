@@ -1,7 +1,6 @@
 package endfield.util;
 
 import arc.func.Prov;
-import endfield.util.holder.ObjectHolder;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -11,27 +10,26 @@ import java.util.function.Function;
 import static endfield.util.GetKt.sneakyThrow;
 
 public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
-	protected static final CollectionObjectMap<Class<?>, CollectionObjectMap<String, CollectionObjectMap<FunctionType, Method>>> methodPool = new CollectionObjectMap<>(Class.class, CollectionObjectMap.class);
-	protected static final CollectionObjectMap<Class<?>, CollectionObjectMap<FunctionType, Constructor<?>>> constructorPool = new CollectionObjectMap<>(Class.class, CollectionObjectMap.class);
+	protected static final CollectionObjectMap<Class<?>, CollectionOrderedMap<FunctionType, Method>> methodPool = new CollectionObjectMap<>(Class.class, CollectionOrderedMap.class);
+	protected static final CollectionObjectMap<Class<?>, CollectionOrderedMap<FunctionType, Constructor<?>>> constructorPool = new CollectionObjectMap<>(Class.class, CollectionOrderedMap.class);
 
 	protected static final CollectionObjectMap<Class<?>, Method[]> methodsMap = new CollectionObjectMap<>(Class.class, Method[].class);
 	protected static final CollectionObjectMap<Class<?>, Constructor<?>[]> constructorsMap = new CollectionObjectMap<>(Class.class, Constructor[].class);
 
-	protected static final Prov<CollectionObjectMap<String, CollectionObjectMap<FunctionType, Method>>> prov2 = () -> new CollectionObjectMap<>(String.class, CollectionObjectMap.class);
-	protected static final Prov<CollectionObjectMap<FunctionType, Method>> prov3 = () -> new CollectionObjectMap<>(FunctionType.class, Method.class);
-	protected static final Prov<CollectionObjectMap<FunctionType, Constructor<?>>> prov4 = () -> new CollectionObjectMap<>(FunctionType.class, Constructor.class);
+	protected static final Prov<CollectionOrderedMap<FunctionType, Method>> prov2 = () -> new CollectionOrderedMap<>(FunctionType.class, Method.class);
+	protected static final Prov<CollectionOrderedMap<FunctionType, Constructor<?>>> prov3 = () -> new CollectionOrderedMap<>(FunctionType.class, Constructor.class);
 
 	protected static final Function<Class<?>, Method[]> function2 = Class::getDeclaredMethods;
 	protected static final Function<Class<?>, Constructor<?>[]> function3 = Class::getDeclaredConstructors;
 
-	protected Method getMethod(Class<?> clazz, String name, FunctionType functionType) {
-		CollectionObjectMap<FunctionType, Method> map = methodPool.get(clazz, prov2).get(name, prov3);
+	protected Method getMethod(Class<?> clazz, FunctionType functionType) {
+		CollectionOrderedMap<FunctionType, Method> map = methodPool.get(clazz, prov2);
 
 		Method res = map.get(functionType);
 
 		if (res != null) return res;
 
-		for (ObjectHolder<FunctionType, Method> entry : map) {
+		for (var entry : map) {
 			if (entry.key.match(functionType)) return entry.value;
 		}
 
@@ -39,11 +37,11 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 
 		while (current != null) {
 			try {
-				res = current.getDeclaredMethod(name, functionType.paramType());
+				res = current.getDeclaredMethod(functionType.name(), functionType.paramType());
 				res.setAccessible(true);
 				map.put(FunctionType.from(res), res);
 				return res;
-			} catch (Throwable ignored) {}
+			} catch (NoSuchMethodException ignored) {}
 
 			current = current.getSuperclass();
 		}
@@ -52,7 +50,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 
 		while (current != null) {
 			for (Method method : methodsMap.computeIfAbsent(current, function2)) {
-				if (!method.getName().equals(name)) continue;
+				if (!method.getName().equals(functionType.name())) continue;
 
 				FunctionType type;
 				if ((type = FunctionType.from(method)).match(functionType)) {
@@ -66,17 +64,17 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 			current = current.getSuperclass();
 		}
 
-		throw sneakyThrow(new NoSuchMethodException("no such method " + name + " in class: " + clazz + " with assignable parameter: " + functionType));
+		throw sneakyThrow(new NoSuchMethodException("no such method " + functionType + " in class: " + clazz));
 	}
 
 	@SuppressWarnings("unchecked")
 	protected <T> Constructor<T> getConstructor(Class<T> clazz, FunctionType functionType) {
-		CollectionObjectMap<FunctionType, Constructor<?>> map = constructorPool.get(clazz, prov4);
+		CollectionOrderedMap<FunctionType, Constructor<?>> map = constructorPool.get(clazz, prov3);
 
 		Constructor<T> res = (Constructor<T>) map.get(functionType);
 		if (res != null) return res;
 
-		for (ObjectHolder<FunctionType, Constructor<?>> entry : map) {
+		for (var entry : map) {
 			if (entry.key.match(functionType)) return (Constructor<T>) entry.value;
 		}
 
@@ -101,7 +99,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 
 		if (res != null) return res;
 
-		throw sneakyThrow(new NoSuchMethodException("no such constructor in class: " + clazz + " with assignable parameter: " + functionType));
+		throw sneakyThrow(new NoSuchMethodException("no such constructor " + functionType + " in class: " + clazz));
 	}
 
 	@Override
@@ -119,9 +117,9 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T invoke(Object object, String name, Object... args) {
-		FunctionType type = FunctionType.inst(args);
+		FunctionType type = FunctionType.inst(name, args);
 		try {
-			return (T) getMethod(object.getClass(), name, type).invoke(object, args);
+			return (T) getMethod(object.getClass(), type).invoke(object, args);
 		} catch (IllegalAccessException | InvocationTargetException e) {
 			throw sneakyThrow(e);
 		} finally {
@@ -132,9 +130,9 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T invokeStatic(Class<?> clazz, String name, Object... args) {
-		FunctionType type = FunctionType.inst(args);
+		FunctionType type = FunctionType.inst(name, args);
 		try {
-			return (T) getMethod(clazz, name, type).invoke(null, args);
+			return (T) getMethod(clazz, type).invoke(null, args);
 		} catch (IllegalAccessException | InvocationTargetException e) {
 			throw sneakyThrow(e);
 		} finally {
@@ -144,7 +142,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 
 	@Override
 	public <T> T newInstance(Class<T> clazz, Object... args) {
-		FunctionType funcType = FunctionType.inst(args);
+		FunctionType funcType = FunctionType.inst("<init>", args);
 		try {
 			return getConstructor(clazz, funcType).newInstance(args);
 		} catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
@@ -157,9 +155,9 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T invokeTyped(Object object, String name, Class<?>[] parameterTypes, Object... args) {
-		FunctionType type = FunctionType.inst(parameterTypes);
+		FunctionType type = FunctionType.inst(name, parameterTypes);
 		try {
-			return (T) getMethod(object.getClass(), name, type).invoke(object, args);
+			return (T) getMethod(object.getClass(), type).invoke(object, args);
 		} catch (IllegalAccessException | InvocationTargetException e) {
 			throw sneakyThrow(e);
 		} finally {
@@ -170,9 +168,9 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T invokeStaticTyped(Class<?> clazz, String name, Class<?>[] parameterTypes, Object... args) {
-		FunctionType type = FunctionType.inst(parameterTypes);
+		FunctionType type = FunctionType.inst(name, parameterTypes);
 		try {
-			return (T) getMethod(clazz, name, type).invoke(null, args);
+			return (T) getMethod(clazz, type).invoke(null, args);
 		} catch (IllegalAccessException | InvocationTargetException e) {
 			throw sneakyThrow(e);
 		} finally {
@@ -182,7 +180,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 
 	@Override
 	public <T> T newInstanceTyped(Class<T> clazz, Class<?>[] parameterTypes, Object... args) {
-		FunctionType funcType = FunctionType.inst(parameterTypes);
+		FunctionType funcType = FunctionType.inst("<init>", parameterTypes);
 		try {
 			return getConstructor(clazz, funcType).newInstance(args);
 		} catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {

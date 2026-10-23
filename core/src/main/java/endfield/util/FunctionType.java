@@ -6,7 +6,7 @@ import arc.util.pooling.Pool.Poolable;
 import arc.util.pooling.Pools;
 
 import java.lang.invoke.MethodType;
-import java.lang.reflect.Executable;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
@@ -16,79 +16,82 @@ import java.util.List;
  * search.
  *
  * @author EBwilson
+ * @author LessWeb
  */
 public class FunctionType implements Poolable {
 	static final Pool<FunctionType> recyclePool = Pools.get(FunctionType.class, FunctionType::new);
 
+	String name;
 	Class<?>[] paramType;
 	int hash;
 
-	FunctionType() {}
+	FunctionType() {
+		name = "";
+		paramType = Constant.EMPTY_CLASS;
+	}
 
-	FunctionType(Class<?>[] types) {
+	FunctionType(String key, Class<?>[] types) {
+		name = key;
 		paramType = types;
-		hash = Arrays.hashCode(types);
+		hash = 31 * key.hashCode() + Arrays.hashCode(types);
 	}
 
-	public static FunctionType inst(Seq<Class<?>> paramType) {
-		return inst(paramType.toArray(Class.class));
+	public static FunctionType inst(String name, Seq<Class<?>> paramType) {
+		return inst(name, paramType.toArray(Class.class));
 	}
 
-	public static FunctionType inst(List<Class<?>> paramType) {
-		return inst(paramType.toArray(Constant.EMPTY_CLASS));
+	public static FunctionType inst(String name, List<Class<?>> paramType) {
+		return inst(name, paramType.toArray(Constant.EMPTY_CLASS));
 	}
 
-	public static FunctionType inst(Class<?>... paramType) {
+	public static FunctionType inst(String name, Class<?>... paramType) {
 		FunctionType res = recyclePool.obtain();
+		res.name = name;
 		res.paramType = paramType;
-		res.hash = Arrays.hashCode(paramType);
+		res.hash = 31 * name.hashCode() + Arrays.hashCode(paramType);
 		return res;
 	}
 
-	public static FunctionType inst(Object... param) {
-		return inst(Reflections.unwrapped(Reflections.toTypes(param)));
+	public static FunctionType inst(String name, Object... param) {
+		return inst(name, Reflections.unwrapped(Reflections.toTypes(param)));
 	}
 
-	public static FunctionType from(MethodType type) {
-		return inst(type.parameterArray());
+	public static FunctionType from(String name, MethodType type) {
+		return inst(name, type.parameterArray());
 	}
 
-	public static FunctionType from(Executable method) {
-		return inst(method.getParameterTypes());
+	public static FunctionType from(Method method) {
+		return inst(method.getName(), method.getParameterTypes());
 	}
 
-	public static FunctionType generic(int argCount) {
+	public static FunctionType from(Constructor<?> method) {
+		return inst("<init>", method.getParameterTypes());
+	}
+
+	public static FunctionType generic(String name, int argCount) {
 		Class<?>[] types = new Class[argCount];
 		Arrays.fill(types, void.class);
-		return inst(types);
+		return inst(name, types);
 	}
 
-	public static String signature(Method method) {
-		return method.getName() + from(method);
-	}
-
-	public static String signature(String name, Class<?>... types) {
-		return name + inst(types);
-	}
-
-	public static String signature(String name, FunctionType type) {
-		return name + type;
-	}
-
-	public static void free(FunctionType type) {
+	public static void recycle(FunctionType type) {
 		recyclePool.free(type);
 	}
 
-	public boolean match(Object... args) {
-		return Reflections.match(paramType, args);
+	public boolean match(String key, Object... args) {
+		return name.equals(key) && Reflections.match(paramType, args);
 	}
 
-	public boolean match(Class<?>... types) {
-		return Reflections.match(paramType, types);
+	public boolean match(String key, Class<?>... types) {
+		return name.equals(key) && Reflections.match(paramType, types);
 	}
 
 	public boolean match(FunctionType type) {
-		return Reflections.match(paramType, type.paramType);
+		return name.equals(type.name) && Reflections.match(paramType, type.paramType);
+	}
+
+	public String name() {
+		return name;
 	}
 
 	public Class<?>[] paramType() {
@@ -101,13 +104,14 @@ public class FunctionType implements Poolable {
 
 	@Override
 	public void reset() {
+		name = "";
 		paramType = Constant.EMPTY_CLASS;
 		hash = 0;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		return this == obj || obj instanceof FunctionType that && paramType.length == that.paramType.length && hashCode() == obj.hashCode();
+		return this == obj || obj instanceof FunctionType that && name.equals(that.name) && Arrays.equals(paramType, that.paramType);
 	}
 
 	@Override
@@ -121,7 +125,7 @@ public class FunctionType implements Poolable {
 
 		int max = paramType.length;
 
-		buf.append('(');
+		buf.append(name).append('(');
 		int i = 0;
 		while (true) {
 			buf.append(paramType[i++].getName());

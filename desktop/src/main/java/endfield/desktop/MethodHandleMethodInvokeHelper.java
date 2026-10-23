@@ -3,6 +3,7 @@ package endfield.desktop;
 import arc.func.Prov;
 import arc.util.Nullable;
 import endfield.util.CollectionObjectMap;
+import endfield.util.CollectionOrderedMap;
 import endfield.util.FunctionType;
 import endfield.util.MethodInvokeHelper;
 
@@ -22,15 +23,14 @@ import static endfield.desktop.DesktopImpl.lookup;
 import static endfield.util.GetKt.sneakyThrow;
 
 public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
-	protected static final CollectionObjectMap<Class<?>, CollectionObjectMap<String, CollectionObjectMap<FunctionType, MethodHandle>>> methodPool = new CollectionObjectMap<>(Class.class, CollectionObjectMap.class);
+	protected static final CollectionObjectMap<Class<?>, CollectionOrderedMap<FunctionType, MethodHandle>> methodPool = new CollectionObjectMap<>(Class.class, CollectionOrderedMap.class);
 	protected static final CollectionObjectMap<Class<?>, Method[]> methodsMap = new CollectionObjectMap<>(Class.class, Method[].class);
 	protected static final CollectionObjectMap<Class<?>, Constructor<?>[]> constructorsMap = new CollectionObjectMap<>(Class.class, Constructor[].class);
 
-	protected static final Prov<CollectionObjectMap<String, CollectionObjectMap<FunctionType, MethodHandle>>> prov6 = () -> new CollectionObjectMap<>(String.class, CollectionObjectMap.class);
-	protected static final Prov<CollectionObjectMap<FunctionType, MethodHandle>> prov7 = () -> new CollectionObjectMap<>(FunctionType.class, MethodHandle.class);
+	protected static final Prov<CollectionOrderedMap<FunctionType, MethodHandle>> prov6 = () -> new CollectionOrderedMap<>(FunctionType.class, MethodHandle.class);
 
-	protected MethodHandle getMethod(Class<?> clazz, String name, FunctionType functionType) throws IllegalAccessException {
-		CollectionObjectMap<FunctionType, MethodHandle> map = methodPool.get(clazz, prov6).get(name, prov7);
+	protected MethodHandle getMethod(Class<?> clazz, FunctionType functionType) throws IllegalAccessException {
+		CollectionOrderedMap<FunctionType, MethodHandle> map = methodPool.get(clazz, prov6);
 
 		MethodHandle res = map.get(functionType);
 
@@ -43,7 +43,7 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 		Class<?> current = clazz;
 
 		while (current != null) {
-			Method method = findMethod(current, name, functionType.paramType());
+			Method method = findMethod(current, functionType.name(), functionType.paramType());
 
 			if (method != null) {
 				res = asSpreader(method);
@@ -58,7 +58,7 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 
 		while (current != null) {
 			for (Method method : methodsMap.computeIfAbsent(current, function5)) {
-				if (!method.getName().equals(name)) continue;
+				if (!method.getName().equals(functionType.name())) continue;
 
 				FunctionType type;
 				if ((type = from(method)).match(functionType)) {
@@ -72,11 +72,11 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 			current = current.getSuperclass();
 		}
 
-		throw sneakyThrow(new NoSuchMethodException("no such method " + name + " in class: " + clazz + " with assignable parameter: " + functionType));
+		throw sneakyThrow(new NoSuchMethodException("no such method " + functionType + " in class: " + clazz));
 	}
 
 	protected MethodHandle getConstructor(Class<?> clazz, FunctionType functionType) throws IllegalAccessException {
-		CollectionObjectMap<FunctionType, MethodHandle> map = methodPool.get(clazz, prov6).get("<init>", prov7);
+		CollectionOrderedMap<FunctionType, MethodHandle> map = methodPool.get(clazz, prov6);
 
 		MethodHandle res = map.get(functionType);
 		if (res != null) return res;
@@ -97,15 +97,12 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 			if ((type = from(constructor)).match(functionType)) {
 				res = asSpreader(constructor);
 				map.put(type, res);
-
-				break;
+				return res;
 			}
 			type.recycle();
 		}
 
-		if (res != null) return res;
-
-		throw sneakyThrow(new NoSuchMethodException("no such constructor in class: " + clazz + " with assignable parameter: " + functionType));
+		throw sneakyThrow(new NoSuchMethodException("no such constructor " + functionType + " in class: " + clazz));
 	}
 
 	protected @Nullable Method findMethod(Class<?> type, String name, Class<?>[] paramType) {
@@ -166,9 +163,9 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T invoke(Object object, String name, Object... args) {
-		FunctionType type = FunctionType.inst(args);
+		FunctionType type = FunctionType.inst(name, args);
 		try {
-			return (T) getMethod(object.getClass(), name, type).invokeExact(object, args);
+			return (T) getMethod(object.getClass(), type).invokeExact(object, args);
 		} catch (Throwable e) {
 			throw sneakyThrow(e);
 		} finally {
@@ -179,9 +176,9 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T invokeStatic(Class<?> clazz, String name, Object... args) {
-		FunctionType type = FunctionType.inst(args);
+		FunctionType type = FunctionType.inst(name, args);
 		try {
-			return (T) getMethod(clazz, name, type).invokeExact(args);
+			return (T) getMethod(clazz, type).invokeExact(args);
 		} catch (Throwable e) {
 			throw sneakyThrow(e);
 		} finally {
@@ -192,7 +189,7 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T newInstance(Class<T> clazz, Object... args) {
-		FunctionType type = FunctionType.inst(args);
+		FunctionType type = FunctionType.inst("<init>", args);
 		try {
 			return (T) getConstructor(clazz, type).invokeExact(args);
 		} catch (Throwable e) {
@@ -205,9 +202,9 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T invokeTyped(Object object, String name, Class<?>[] parameterTypes, Object... args) {
-		FunctionType type = FunctionType.inst(parameterTypes);
+		FunctionType type = FunctionType.inst(name, parameterTypes);
 		try {
-			return (T) getMethod(object.getClass(), name, type).invokeExact(object, args);
+			return (T) getMethod(object.getClass(), type).invokeExact(object, args);
 		} catch (Throwable e) {
 			throw sneakyThrow(e);
 		} finally {
@@ -218,9 +215,9 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T invokeStaticTyped(Class<?> clazz, String name, Class<?>[] parameterTypes, Object... args) {
-		FunctionType type = FunctionType.inst(parameterTypes);
+		FunctionType type = FunctionType.inst("<init>", parameterTypes);
 		try {
-			return (T) getMethod(clazz, name, type).invokeExact(args);
+			return (T) getMethod(clazz, type).invokeExact(args);
 		} catch (Throwable e) {
 			throw sneakyThrow(e);
 		} finally {
@@ -231,7 +228,7 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T newInstanceTyped(Class<T> clazz, Class<?>[] parameterTypes, Object... args) {
-		FunctionType type = FunctionType.inst(parameterTypes);
+		FunctionType type = FunctionType.inst("<init>", parameterTypes);
 		try {
 			return (T) getConstructor(clazz, type).invokeExact(args);
 		} catch (Throwable e) {
@@ -242,7 +239,7 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 	}
 
 	protected MethodHandle getMethod(Method method, FunctionType functionType) throws IllegalAccessException {
-		CollectionObjectMap<FunctionType, MethodHandle> map = methodPool.get(method.getDeclaringClass(), prov6).get(method.getName(), prov7);
+		CollectionOrderedMap<FunctionType, MethodHandle> map = methodPool.get(method.getDeclaringClass(), prov6);
 
 		MethodHandle res = map.get(functionType);
 
@@ -254,13 +251,13 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 
 		res = asSpreader(method);
 
-		map.put(inst(res.type()), res);
+		map.put(from(method), res);
 
 		return res;
 	}
 
 	protected MethodHandle getConstructor(Constructor<?> constructor, FunctionType functionType) throws IllegalAccessException {
-		CollectionObjectMap<FunctionType, MethodHandle> map = methodPool.get(constructor.getDeclaringClass(), prov6).get("<init>", prov7);
+		CollectionOrderedMap<FunctionType, MethodHandle> map = methodPool.get(constructor.getDeclaringClass(), prov6);
 
 		MethodHandle res = map.get(functionType);
 		if (res != null) return res;
@@ -271,7 +268,7 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 
 		res = asSpreader(constructor);
 
-		map.put(functionType, res);
+		map.put(from(constructor), res);
 
 		return res;
 	}
@@ -315,15 +312,15 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 		}
 	}
 
-	public static FunctionType inst(MethodType methodType) {
-		return FunctionType.inst((Class<?>[]) ptypes.get(methodType));
+	public static FunctionType inst(String name, MethodType methodType) {
+		return FunctionType.inst(name, (Class<?>[]) ptypes.get(methodType));
 	}
 
 	public static FunctionType from(Method method) {
-		return FunctionType.inst((Class<?>[]) mtypes.get(method));
+		return FunctionType.inst(method.getName(), (Class<?>[]) mtypes.get(method));
 	}
 
 	public static FunctionType from(Constructor<?> constructor) {
-		return FunctionType.inst((Class<?>[]) ctypes.get(constructor));
+		return FunctionType.inst("<init>", (Class<?>[]) ctypes.get(constructor));
 	}
 }

@@ -114,11 +114,11 @@ public class AndroidInvokers2 extends AndroidInvokers {
 	@Override
 	public MethodHandle unreflectGetter(Field field) {
 		try {
-			boolean isStatic = (field.getModifiers() & Modifier.STATIC) != 0;
-			Class<?> type = field.getType();
-			Class<?> refc = field.getDeclaringClass();
-
-			return (MethodHandle) fieldMethodHandleImpl.newInstance(field, isStatic ? 10 : 8, isStatic ? MethodType.methodType(type) : MethodType.methodType(type, refc));
+			if ((field.getModifiers() & Modifier.STATIC) != 0) {
+				return (MethodHandle) fieldMethodHandleImpl.newInstance(field, 10, MethodType.methodType(field.getType()));
+			} else {
+				return (MethodHandle) fieldMethodHandleImpl.newInstance(field, 8, MethodType.methodType(field.getType(), field.getDeclaringClass()));
+			}
 		} catch (Exception e) {
 			Log.err(e);
 			return super.unreflectGetter(field);
@@ -128,11 +128,11 @@ public class AndroidInvokers2 extends AndroidInvokers {
 	@Override
 	public MethodHandle unreflectSetter(Field field) {
 		try {
-			boolean isStatic = (field.getModifiers() & Modifier.STATIC) != 0;
-			Class<?> type = field.getType();
-			Class<?> refc = field.getDeclaringClass();
-
-			return (MethodHandle) fieldMethodHandleImpl.newInstance(field, isStatic ? 11 : 9, isStatic ? MethodType.methodType(void.class, type) : MethodType.methodType(void.class, refc, type));
+			if ((field.getModifiers() & Modifier.STATIC) != 0) {
+				return (MethodHandle) fieldMethodHandleImpl.newInstance(field, 11, MethodType.methodType(void.class, field.getType()));
+			} else {
+				return (MethodHandle) fieldMethodHandleImpl.newInstance(field, 9, MethodType.methodType(void.class, field.getDeclaringClass(), field.getType()));
+			}
 		} catch (Exception e) {
 			Log.err(e);
 			return super.unreflectSetter(field);
@@ -229,7 +229,7 @@ public class AndroidInvokers2 extends AndroidInvokers {
 		return bitMask;
 	}
 
-	public static class Helper {
+	public static class Helper implements Cloneable {
 		public static final String sj = "";
 
 		public final String j = "";

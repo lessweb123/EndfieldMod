@@ -1,10 +1,11 @@
 package endfield.type;
 
 import endfield.util.handler.EnumHandler;
+import endfield.util.handler.FieldHandler;
 import mindustry.type.Category;
 
 public final class Categories {
-	public static final EnumHandler<Category> HANDLER = new EnumHandler<>(Category.class);
+	static final EnumHandler<Category> handler = EnumHandler.of(Category.class);
 
 	public static Category environment;
 
@@ -15,6 +16,8 @@ public final class Categories {
 	}
 
 	public static Category addCategory(String name) {
-		return HANDLER.addEnumItemTail(name);
+		Category category = handler.addEnumItemTail(name);
+		FieldHandler.setObjectStatic(Category.class, "all", Category.values());
+		return category;
 	}
 }

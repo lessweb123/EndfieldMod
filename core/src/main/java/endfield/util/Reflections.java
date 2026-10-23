@@ -304,17 +304,6 @@ public final class Reflections {
 		return types;
 	}
 
-	public static int typeNameHash(Class<?>[] types) {
-		int result = 1;
-
-		for (Class<?> type : types) {
-			result = 31 * result + type.getName().hashCode();
-		}
-
-		return result;
-		//return Arrays.hashCode(Arrays.stream(types).map(Class::getName).toArray());
-	}
-
 	public static boolean match(Class<?>[] sourceTypes, Object... args) {
 		return match(sourceTypes, unwrapped(toTypes(args)));
 	}

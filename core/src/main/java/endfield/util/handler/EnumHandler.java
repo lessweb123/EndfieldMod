@@ -1,8 +1,11 @@
 package endfield.util.handler;
 
 import arc.struct.Seq;
+import endfield.util.CollectionObjectMap;
 import endfield.util.FieldAccessor;
 import endfield.util.Reflections;
+
+import static endfield.util.GetKt.sneakyThrow;
 
 /**
  * The enumeration processor provides some operation methods for enum, which can create enumeration
@@ -21,16 +24,29 @@ import endfield.util.Reflections;
  * @since 1.0.9
  */
 public class EnumHandler<T extends Enum<T>> {
-	public static final Class<?>[] enumBaseParameterTypes = {String.class, int.class};
 	public static final FieldAccessor ordinalAccessor, nameAccessor;
+
+	static final CollectionObjectMap<Class<?>, EnumHandler<?>> handles = new CollectionObjectMap<>(Class.class, EnumHandler.class);
 
 	final FieldAccessor valuesAccessor;
 
 	public final Class<T> clazz;
 
 	static {
-		ordinalAccessor = Reflections.getFieldAccessor(Enum.class, "ordinal");
-		nameAccessor = Reflections.getFieldAccessor(Enum.class, "name");
+		try {
+			ordinalAccessor = Reflections.getFieldAccessor(Enum.class.getDeclaredField("ordinal"));
+			nameAccessor = Reflections.getFieldAccessor(Enum.class.getDeclaredField("name"));
+		} catch (NoSuchFieldException e) {
+			throw sneakyThrow(e);
+		}
+	}
+
+	/** Use {@link #of(Class)} */
+	EnumHandler(Class<T> c) {
+		if (!c.isEnum()) throw new IllegalArgumentException(c + " is not an enum class");
+
+		clazz = c;
+		valuesAccessor = Reflections.getFieldAccessor(clazz, field -> field.isSynthetic() && field.getName().contains("$VALUES"));
 	}
 
 	/**
@@ -39,12 +55,11 @@ public class EnumHandler<T extends Enum<T>> {
 	 * <p>If the enumeration has a constructor implementation, you must provide an external implementation
 	 * of the constructor, otherwise unexpected errors may occur.
 	 *
-	 * @param c The target enumeration types processed by the processor
+	 * @param clazz The target enumeration types processed by the processor
 	 */
-	public EnumHandler(Class<T> c) {
-		clazz = c;
-
-		valuesAccessor = Reflections.getFieldAccessor(clazz, field -> field.getName().contains("$VALUES"));
+	@SuppressWarnings("unchecked")
+	public static <T extends Enum<T>> EnumHandler<T> of(Class<T> clazz) {
+		return (EnumHandler<T>) handles.computeIfAbsent(clazz, t -> new EnumHandler<>((Class<T>) t));
 	}
 
 	/**
@@ -123,7 +138,27 @@ public class EnumHandler<T extends Enum<T>> {
 		valuesAccessor.setObject(null, values.toArray(clazz));
 	}
 
+	public void swap(int fromOrdinal, int toOrdinal) {
+		T[] values = valuesAccessor.getObject(null);
+
+		if (fromOrdinal >= values.length)
+			throw new IndexOutOfBoundsException("fromOrdinal can't be >= values.length: " + fromOrdinal + " >= " + values.length);
+		if (toOrdinal >= values.length)
+			throw new IndexOutOfBoundsException("toOrdinal can't be >= values.length: " + toOrdinal + " >= " + values.length);
+
+		T from = values[fromOrdinal], to = values[toOrdinal];
+
+		ordinalAccessor.setInt(from, toOrdinal);
+		ordinalAccessor.setInt(to, fromOrdinal);
+
+		values[fromOrdinal] = to;
+		values[toOrdinal] = from;
+	}
+
 	public void swap(T from, T to) {
+		if (!clazz.isInstance(from)) throw new IllegalArgumentException(from + " must be an instance of " + clazz);
+		if (!clazz.isInstance(to)) throw new IllegalArgumentException(to + " must be an instance of " + clazz);
+
 		int fromOrdinal = from.ordinal(), toOrdinal = to.ordinal();
 
 		ordinalAccessor.setInt(from, toOrdinal);
@@ -135,13 +170,13 @@ public class EnumHandler<T extends Enum<T>> {
 		values[toOrdinal] = from;
 	}
 
-	public void rename(T instance, String newName) {
+	public void rename(T instance, String name) {
 		T[] arr = valuesAccessor.getObject(null);
 		for (T t : arr) {
-			if (t.name().equals(newName)) return;
+			if (t != instance && t.name().equals(name)) return;
 		}
 
-		nameAccessor.set(instance, newName);
+		nameAccessor.set(instance, name);
 	}
 
 	/** Directly return the shared array of {@code values()}, do not easily change its contents. */

@@ -19,6 +19,7 @@ import endfield.util.aspector.classes.ClassName;
 import endfield.util.aspector.generate.ProxyAspectFactory;
 import endfield.util.handler.ClassHandler;
 import endfield.util.handler.EnumHandler;
+import endfield.util.handler.MethodHandler;
 import endfield.util.handler.ObjectHandler;
 import kotlin.NotImplementedError;
 import org.jetbrains.annotations.TestOnly;
@@ -100,7 +101,7 @@ public class Test extends @Stub Random {
 	public static void test4() {
 		try {
 			// Before using Unsafe to read and write fields, it is necessary to ensure that the class is initialized.
-			EnumHandler<TestEnum> handler = new EnumHandler<>(ClassHandler.ensureInitialized(TestEnum.class));
+			EnumHandler<TestEnum> handler = EnumHandler.of(ClassHandler.ensureInitialized(TestEnum.class));
 
 			handler.addEnumItemTail("D");
 			Log.info(Arrays.toString(TestEnum.values()));
@@ -135,14 +136,28 @@ public class Test extends @Stub Random {
 
 	public static void test7() {
 		try {
-			Log.info(HandleSupport.findStaticVarHandle(Test.class, "ft", String.class).getClass());
+			Log.info(HandleSupport.findStaticVarHandle(Test.class, "sstr", String.class).getClass());
 		} catch (Throwable e) {
+			Log.err(e);
+		}
+	}
+
+	public static void test8() {
+		try {
+			MethodHandler.invokeStatic(Test.class, "print");
+			Log.info(MethodHandler.<String>invokeStatic(Test.class, "match", false, '\u0000', (byte) 1, (short) 1, 1, 1l, 1f, 1d));
+		} catch (Exception e) {
 			Log.err(e);
 		}
 	}
 
 	public static void print() {
 		Log.info("test print");
+	}
+
+	public static String match(boolean bool, char c, byte b, short s, int i, long l, float f, double d) {
+		StringBuilder builder = new StringBuilder();
+		return builder.append(bool).append(c).append(b).append(s).append(i).append(l).append(f).append(d).toString();
 	}
 
 	public static class A {

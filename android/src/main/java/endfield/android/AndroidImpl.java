@@ -1,6 +1,7 @@
 package endfield.android;
 
 import arc.util.Log;
+import dalvik.system.VMStack;
 import endfield.util.FieldAccessor;
 import endfield.util.PlatformImpl;
 import endfield.util.ReflectionMethodInvokeHelper;
@@ -85,6 +86,11 @@ public class AndroidImpl implements PlatformImpl {
 	@Override
 	public int arrayIndexScale(Class<?> arrayClass) {
 		return unsafe.arrayIndexScale(arrayClass);
+	}
+
+	@Override
+	public Class<?> callerClass() {
+		return VMStack.getStackClass2();
 	}
 
 	public static final class Companion {

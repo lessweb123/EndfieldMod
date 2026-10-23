@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
 public final class DesktopNativeHelper {
 	private DesktopNativeHelper() {}
 
-	public static native Class<?> classForName(String signature);
+	public static native <T> Class<T> classForName(String signature);
 
 	/**
 	 * @return {@code Lookup} object with trust permission.

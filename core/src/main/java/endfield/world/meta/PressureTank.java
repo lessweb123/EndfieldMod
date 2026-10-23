@@ -77,6 +77,8 @@ public class PressureTank {
 		drills,
 		pumps,
 		production,
-		transportation
+		transportation;
+
+		public static final TankGroup[] all = values();
 	}
 }

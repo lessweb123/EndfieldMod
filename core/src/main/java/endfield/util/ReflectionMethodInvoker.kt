@@ -6,27 +6,7 @@ import java.lang.invoke.WrongMethodTypeException
 import java.lang.reflect.Constructor
 import java.lang.reflect.Method
 
-abstract class ReflectionMethodInvoker(@JvmField val method: Method) : MethodInvoker {
-	@JvmField
-	internal var hash = 0
-
-	override fun equals(other: Any?): Boolean {
-		return other === this || other?.javaClass == javaClass && (other as ReflectionMethodInvoker).method == method
-	}
-
-	override fun hashCode(): Int {
-		var hc = hash
-
-		if (hc == 0) {
-			hash = javaClass.hashCode() xor
-					method.declaringClass.hashCode() xor
-					method.name.hashCode() xor method.parameterTypes.contentHashCode()
-			hc = hash
-		}
-
-		return hc
-	}
-}
+abstract class ReflectionMethodInvoker(@JvmField val method: Method) : MethodInvoker
 
 /**
  * Wrap the [Method] or [Constructor], no need to forcefully handle thrown exceptions, automatically convert types.
@@ -215,9 +195,6 @@ class ReflectionStaticMethodInvoker(method: Method) : ReflectionMethodInvoker(me
 }
 
 open class ReflectionConstructorInvoker(@JvmField val constructor: Constructor<*>) : MethodInvoker {
-	@JvmField
-	internal var hash = 0
-
 	override fun <T> invoke(): T = constructor.newInstance() as T
 
 	override fun <T, P0> invoke(p0: P0): T = constructor.newInstance(p0) as T
@@ -304,20 +281,4 @@ open class ReflectionConstructorInvoker(@JvmField val constructor: Constructor<*
 	override fun <T, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15, P16, P17, P18, P19, P20, P21, P22>
 			invoke(p0: P0, p1: P1, p2: P2, p3: P3, p4: P4, p5: P5, p6: P6, p7: P7, p8: P8, p9: P9, p10: P10, p11: P11, p12: P12, p13: P13, p14: P14, p15: P15, p16: P16, p17: P17, p18: P18, p19: P19, p20: P20, p21: P21, p22: P22): T =
 		constructor.newInstance(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22) as T
-
-	override fun equals(other: Any?): Boolean {
-		return other === this || other?.javaClass == javaClass && (other as ReflectionConstructorInvoker).constructor == constructor
-	}
-
-	override fun hashCode(): Int {
-		var hc = hash
-
-		if (hc == 0) {
-			hash = javaClass.hashCode() xor
-					constructor.declaringClass.hashCode() xor constructor.parameterTypes.contentHashCode()
-			hc = hash
-		}
-
-		return hc
-	}
 }

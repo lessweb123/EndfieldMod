@@ -14,6 +14,7 @@ import arc.struct.Seq;
 import arc.util.Eachable;
 import endfield.func.BoolBoolf;
 import endfield.func.ByteBytef;
+import endfield.func.Intg;
 import endfield.util.Collections2.IntTBiConsume;
 import endfield.util.holder.ObjectHolder;
 
@@ -22,6 +23,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 
 public final class Arrays2 {
@@ -749,7 +751,7 @@ public final class Arrays2 {
 		return resize(array, size -> (T[]) Array.newInstance(array.getClass().getComponentType(), newSize), newSize, fill);
 	}
 
-	public static <T> T[] resize(T[] array, ArrayCreator<T> create, int newSize, T fill) {
+	public static <T> T[] resize(T[] array, Intg<T[]> create, int newSize, T fill) {
 		if (array.length == newSize) return array;
 
 		T[] out = create.get(newSize);
@@ -765,6 +767,23 @@ public final class Arrays2 {
 			if (!equals.get(first[i], second[i])) return false;
 		}
 		return true;
+	}
+
+	public static int hashCode(Object[] objects, int initialValue) {
+		int result = initialValue;
+		for (Object object : objects) {
+			result = 31 * result + Objects.hashCode(object);
+		}
+		return result;
+	}
+
+	public static int hashCode(Object[] objects, int fromIndex, int length, int initialValue) {
+		int result = initialValue;
+		int end = fromIndex + length;
+		for (int i = fromIndex; i < end; i++) {
+			result = 31 * result + Objects.hashCode(objects[i]);
+		}
+		return result;
 	}
 
 	/**
@@ -1146,15 +1165,13 @@ public final class Arrays2 {
 		}
 	}
 
+	@FunctionalInterface
 	public interface ReduceInt<T> {
 		int get(T item, int accum);
 	}
 
+	@FunctionalInterface
 	public interface ReduceFloat<T> {
 		float get(T item, float accum);
-	}
-
-	public interface ArrayCreator<T> {
-		T[] get(int size);
 	}
 }

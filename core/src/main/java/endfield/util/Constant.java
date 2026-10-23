@@ -47,6 +47,15 @@ public final class Constant {
 	public static final Floatc2 FLOATC2_NOTHING = (a, b) -> {};
 	public static final Prov<Building> PROV_BUILDING = Building::create;
 
+	public static final String ARK = "Arknights";
+
+	public static final String ARK_END = "Arknights: Endfield";
+
+	public static final short ZC = 325;
+
+	public static final String KAL = "Kal'tsit", KAL_ESP = "Kal'tsit Esperanta";
+	public static final String KAL_SN = "B003", KAL_ESP_SN = "R002";
+
 	// ----------- Collection FIELD -------------
 
 	public static final int INDEX_ILLEGAL = -2;

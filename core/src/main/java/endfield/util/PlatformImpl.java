@@ -2,13 +2,12 @@ package endfield.util;
 
 import endfield.util.aspector.accesses.PackageAccessHandler;
 import endfield.util.aspector.classes.ClassAccessor;
+import mindustry.Vars;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-
-import static endfield.util.GetKt.sneakyThrow;
 
 /**
  * Handling APIs for different implementations of Desktop and Android.
@@ -51,4 +50,14 @@ public interface PlatformImpl {
 	int arrayBaseOffset(Class<?> arrayClass);
 
 	int arrayIndexScale(Class<?> arrayClass);
+
+	default Class<?> callerClass() {
+		Thread thread = Thread.currentThread();
+		StackTraceElement[] trace = thread.getStackTrace();
+		try {
+			return Class.forName(trace[3].getClassName(), false, Vars.mods.mainLoader());
+		} catch (ClassNotFoundException e) {
+			return null;
+		}
+	}
 }
