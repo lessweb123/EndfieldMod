@@ -312,7 +312,7 @@ public final class Blocks2 {
 	public static Floor metalBankFloor, damagedPlates1, damagedPlates2, damagedPlates3, damagedPlated4, metalPlates6, metalPlates, metalPlates2, metalPlates3, metalPlates4, metalGrating;
 	public static StaticWall metalWall, metalWall1, metalWall3, metalWall4, metalWall5, metalWall6, metalWall7;
 	public static TiledFloor metalVent;
-	public static Floor lineMarkingFloor1;
+	public static LineMarkingOverlay lineMarkingFloor1, lineMarkingFloor2;
 	public static Floor asphalt;
 	public static ConnectedFloor asphaltTiles;
 	public static Floor siliceoustone;
@@ -842,6 +842,9 @@ public final class Blocks2 {
 			attributes.set(Attribute.steam, 1f);
 		}};
 		lineMarkingFloor1 = new LineMarkingOverlay("line-marking-floor-1");
+		lineMarkingFloor2 = new LineMarkingOverlay("line-marking-floor-2") {{
+			color = Color.valueOf("3f4049");
+		}};
 		asphalt = new Floor("asphalt", 0) {{
 			drawEdgeOut = false;
 			drawEdgeIn = false;

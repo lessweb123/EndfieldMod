@@ -3,7 +3,6 @@ package endfield.core;
 import arc.Core;
 import arc.Events;
 import arc.flabel.FLabel;
-import arc.math.Mathf;
 import arc.util.Align;
 import arc.util.Log;
 import arc.util.OS;
@@ -61,6 +60,7 @@ import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.game.EventType.DisposeEvent;
 import mindustry.game.EventType.FileTreeInitEvent;
 import mindustry.game.EventType.MusicRegisterEvent;
+import mindustry.game.EventType.WorldLoadEvent;
 import mindustry.graphics.MenuRenderer;
 import mindustry.mod.Mod;
 import mindustry.mod.Mods.LoadedMod;
@@ -181,6 +181,10 @@ public final class EndFieldMod extends Mod {
 			}
 		});
 
+		Events.on(WorldLoadEvent.class, event -> {
+			if (floatingText != null) floatingText.update();
+		});
+
 		Events.on(DisposeEvent.class, event -> {
 			if (!Vars.headless) {
 				Shaders2.dispose();
@@ -282,15 +286,14 @@ public final class EndFieldMod extends Mod {
 						}
 					});
 					table.checkPref("override-background", false);
-					table.textPref("override-background-path", "", EndFieldMod::updateBackgroundPath);
+					table.textPref("override-background-path", "", this::updateBackgroundPath);
 				});
 			}
 
-			if (!Vars.headless && !Mods2.isEnabled("extra-utilities") && !Mods2.isX() && Core.settings.getBool("floating-text")) {
-				String[] massages = Core.bundle.get("text.random-massage").split("@");
-
-				floatingText = new FloatingText(massages[Mathf.random(massages.length - 1)]);
+			if (!Vars.headless) {
+				floatingText = new FloatingText(Core.bundle.get("text.random-massage").split("@"));
 				floatingText.build(Vars.ui.menuGroup);
+				floatingText.update();
 			}
 		}
 
@@ -314,7 +317,7 @@ public final class EndFieldMod extends Mod {
 		}
 	}
 
-	public static void updateBackgroundPath(String path) {
+	void updateBackgroundPath(String path) {
 		if (path == null || path.isEmpty()) return;
 
 		try {

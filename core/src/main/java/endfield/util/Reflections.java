@@ -291,21 +291,24 @@ public final class Reflections {
 		return types;
 	}
 
-	public static Class<?>[] toTypes(Seq<?> args) {
-		if (args == null) return Constant.EMPTY_CLASS;
-
-		Class<?>[] types = new Class[args.size];
-
-		for (int i = 0; i < types.length; i++) {
-			Object object = args.get(i);
-			types[i] = object == null ? void.class : object.getClass();
-		}
-
-		return types;
-	}
-
 	public static boolean match(Class<?>[] sourceTypes, Object... args) {
-		return match(sourceTypes, unwrapped(toTypes(args)));
+		if (sourceTypes.length != args.length) return false;
+		for (int i = 0; i < sourceTypes.length; ++i) {
+			Class<?> sourceType = sourceTypes[i];
+			Object arg = args[i];
+
+			if (sourceType.isPrimitive()) {
+				if (sourceType == int.class && !(arg instanceof Integer)) return false;
+				else if (sourceType == byte.class && !(arg instanceof Byte)) return false;
+				else if (sourceType == char.class && !(arg instanceof Character)) return false;
+				else if (sourceType == boolean.class && !(arg instanceof Boolean)) return false;
+				else if (sourceType == double.class && !(arg instanceof Double)) return false;
+				else if (sourceType == float.class && !(arg instanceof Float)) return false;
+				else if (sourceType == long.class && !(arg instanceof Long)) return false;
+				else if (sourceType == short.class && !(arg instanceof Short)) return false;
+			} else if (arg != null && !sourceType.isInstance(arg)) return false;
+		}
+		return true;
 	}
 
 	/**

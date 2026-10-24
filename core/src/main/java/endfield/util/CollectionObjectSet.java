@@ -37,6 +37,10 @@ public class CollectionObjectSet<E> extends AbstractSet<E> implements Eachable<E
 		this(Object.class);
 	}
 
+	public CollectionObjectSet(int initialCapacity) {
+		this(Object.class, initialCapacity);
+	}
+
 	public CollectionObjectSet(Class<?> type) {
 		this(type, 51, 0.8f);
 	}
@@ -73,13 +77,13 @@ public class CollectionObjectSet<E> extends AbstractSet<E> implements Eachable<E
 
 	@SafeVarargs
 	public static <T> CollectionObjectSet<T> with(T... array) {
-		CollectionObjectSet<T> set = new CollectionObjectSet<>(array.getClass().getComponentType());
+		CollectionObjectSet<T> set = new CollectionObjectSet<>(array.getClass().getComponentType(), array.length);
 		set.addAll(array);
 		return set;
 	}
 
-	public static <T> CollectionObjectSet<T> with(CollectionList<T> list) {
-		CollectionObjectSet<T> set = new CollectionObjectSet<>(list.componentType);
+	public static <T> CollectionObjectSet<T> with(Collection<T> list) {
+		CollectionObjectSet<T> set = new CollectionObjectSet<>(list.size());
 		set.addAll(list);
 		return set;
 	}
@@ -151,33 +155,26 @@ public class CollectionObjectSet<E> extends AbstractSet<E> implements Eachable<E
 		return true;
 	}
 
-	public void addAll(CollectionList<? extends E> array) {
-		addAll(array.items, 0, array.size);
-	}
-
-	public void addAll(CollectionList<? extends E> array, int offset, int length) {
-		if (offset + length > array.size)
-			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
-		addAll(array.items, offset, length);
-	}
-
 	@SuppressWarnings("unchecked")
-	public void addAll(E... array) {
-		addAll(array, 0, array.length);
+	public boolean addAll(E... array) {
+		boolean modified = false;
+		for (E value : array) {
+			if (add(value))
+				modified = true;
+		}
+		return modified;
 	}
 
-	public void addAll(E[] array, int offset, int length) {
+	public boolean addAll(E[] array, int offset, int length) {
 		ensureCapacity(length);
+
+		boolean modified = false;
 		for (int i = offset, n = i + length; i < n; i++) {
 			E value = array[i];
-			if (value != null) add(value);
+			if (add(value))
+				modified = true;
 		}
-	}
-
-	public void addAll(Set<? extends E> set) {
-		ensureCapacity(set.size());
-		for (E key : set)
-			add(key);
+		return modified;
 	}
 
 	protected void addResize(E key) {
@@ -190,19 +187,21 @@ public class CollectionObjectSet<E> extends AbstractSet<E> implements Eachable<E
 		}
 	}
 
-	public void removeAll(E[] array, int offset, int length) {
+	public boolean removeAll(E[] array, int offset, int length) {
+		boolean modified = false;
 		for (int i = offset, n = i + length; i < n; i++)
-			remove(array[i]);
+			if (remove(array[i]))
+				modified = true;
+		return modified;
 	}
 
-	public void removeAll(E[] array) {
+	public boolean removeAll(E[] array) {
+		boolean modified = false;
 		for (E e : array) {
-			remove(e);
+			if (remove(e))
+				modified = true;
 		}
-	}
-
-	public void removeAll(CollectionList<? extends E> array) {
-		removeAll(array.items, 0, array.size);
+		return modified;
 	}
 
 	@Override

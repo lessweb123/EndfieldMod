@@ -51,14 +51,29 @@ public final class MethodHandler {
 		return methodInvokeHelper.newInstance(clazz, args);
 	}
 
+	/**
+	 * Explicitly specify the type call. It can avoid some type matching problems.
+	 *
+	 * @param parameterTypes the parameter array
+	 */
 	public static <T> T invokeTyped(Object object, String name, Class<?>[] parameterTypes, Object... args) {
 		return methodInvokeHelper.invokeTyped(object, name, parameterTypes, args);
 	}
 
+	/**
+	 * Explicitly specify the type call. It can avoid some type matching problems.
+	 *
+	 * @param parameterTypes the parameter array
+	 */
 	public static <T> T invokeStaticTyped(Class<?> clazz, String name, Class<?>[] parameterTypes, Object... args) {
 		return methodInvokeHelper.invokeStaticTyped(clazz, name, parameterTypes, args);
 	}
 
+	/**
+	 * Explicitly specify the type call. It can avoid some type matching problems.
+	 *
+	 * @param parameterTypes the parameter array
+	 */
 	public static <T> T newInstanceTyped(Class<T> clazz, Class<?>[] parameterTypes, Object... args) {
 		return methodInvokeHelper.newInstanceTyped(clazz, parameterTypes, args);
 	}

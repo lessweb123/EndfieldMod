@@ -1,6 +1,5 @@
 package endfield.util;
 
-import arc.struct.Seq;
 import arc.util.pooling.Pool;
 import arc.util.pooling.Pool.Poolable;
 import arc.util.pooling.Pools;
@@ -9,7 +8,6 @@ import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Function type encapsulates objects, recording the parameter types of functions for comparison and
@@ -34,14 +32,6 @@ public class FunctionType implements Poolable {
 		name = key;
 		paramType = types;
 		hash = 31 * key.hashCode() + Arrays.hashCode(types);
-	}
-
-	public static FunctionType inst(String name, Seq<Class<?>> paramType) {
-		return inst(name, paramType.toArray(Class.class));
-	}
-
-	public static FunctionType inst(String name, List<Class<?>> paramType) {
-		return inst(name, paramType.toArray(Constant.EMPTY_CLASS));
 	}
 
 	public static FunctionType inst(String name, Class<?>... paramType) {

@@ -20,14 +20,18 @@ public class FloatingText {
 	protected static final Mat setMat = new Mat(), reMat = new Mat();
 	protected static final Vec2 vec2 = new Vec2();
 
-	protected final String title;
+	protected final String[] titles;
 
-	protected FloatingText(String str) {
-		title = str;
+	protected int index;
+
+	protected FloatingText(String[] ts) {
+		titles = ts;
 	}
 
 	public void build(Group parent) {
 		parent.fill((x, y, w, h) -> {
+			if (!Core.settings.getBool("floating-text", true)) return;
+
 			TextureRegion logo = Core.atlas.find("logo");
 			float width = Core.graphics.getWidth(), height = Core.graphics.getHeight() - Core.scene.marginTop;
 			float logoScl = Scl.scl(1) * logo.scale;
@@ -51,10 +55,14 @@ public class FloatingText {
 			reMat.set(Draw.trans());
 
 			Draw.trans(setMat.setToTranslation(ex - dx, ey - dy).rotate(ang));
-			Fonts.outline.draw(title, ex, ey, Color.yellow, Math.min(30f / title.length(), 1.5f) + Mathf.sin(Time.time, 8, 0.2f), false, Align.center);
+			Fonts.outline.draw(titles[index], ex, ey, Color.yellow, Math.min(30f / titles[index].length(), 1.5f) + Mathf.sin(Time.time, 8, 0.2f), false, Align.center);
 
 			Draw.trans(reMat);
 			Draw.reset();
 		}).touchable = Touchable.disabled;
+	}
+
+	public void update() {
+		index = Mathf.random(titles.length - 1);
 	}
 }
