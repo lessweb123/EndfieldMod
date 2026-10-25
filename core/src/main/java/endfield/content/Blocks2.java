@@ -843,7 +843,7 @@ public final class Blocks2 {
 		}};
 		lineMarkingFloor1 = new LineMarkingOverlay("line-marking-floor-1");
 		lineMarkingFloor2 = new LineMarkingOverlay("line-marking-floor-2") {{
-			color = Color.valueOf("3f4049");
+			color = new Color(0x3f4049ff);
 		}};
 		asphalt = new Floor("asphalt", 0) {{
 			drawEdgeOut = false;

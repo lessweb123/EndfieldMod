@@ -91,13 +91,10 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 				map.put(type, constructor);
 				res = (Constructor<T>) constructor;
 				res.setAccessible(true);
-
-				break;
+				return res;
 			}
 			type.recycle();
 		}
-
-		if (res != null) return res;
 
 		throw sneakyThrow(new NoSuchMethodException("no such constructor " + functionType + " in class: " + clazz));
 	}
@@ -142,13 +139,13 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 
 	@Override
 	public <T> T newInstance(Class<T> clazz, Object... args) {
-		FunctionType funcType = FunctionType.inst("<init>", args);
+		FunctionType type = FunctionType.inst("<init>", args);
 		try {
-			return getConstructor(clazz, funcType).newInstance(args);
+			return getConstructor(clazz, type).newInstance(args);
 		} catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
 			throw sneakyThrow(e);
 		} finally {
-			funcType.recycle();
+			type.recycle();
 		}
 	}
 
@@ -180,13 +177,13 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 
 	@Override
 	public <T> T newInstanceTyped(Class<T> clazz, Class<?>[] parameterTypes, Object... args) {
-		FunctionType funcType = FunctionType.inst("<init>", parameterTypes);
+		FunctionType type = FunctionType.inst("<init>", parameterTypes);
 		try {
-			return getConstructor(clazz, funcType).newInstance(args);
+			return getConstructor(clazz, type).newInstance(args);
 		} catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
 			throw sneakyThrow(e);
 		} finally {
-			funcType.recycle();
+			type.recycle();
 		}
 	}
 

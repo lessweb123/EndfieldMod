@@ -23,8 +23,9 @@ public final class Mods2 {
 
 	/** Safely obtain the {@code LoadedMod} for this mod. */
 	public static LoadedMod loaded() {
-		if (loaded == null) loaded = Vars.mods.getMod(modName);
-		return loaded;
+		LoadedMod mod = loaded;
+		if (mod == null) mod = loaded = Vars.mods.getMod(modName);
+		return mod;
 	}
 
 	/**

@@ -13,35 +13,35 @@ open class MethodHandleFieldAccessor internal constructor(field: Field) : Abstra
 		fun getMethodHandleFieldAccessor(field: Field): FieldAccessor {
 			val type = field.type
 
-			return if ((field.modifiers and Modifier.STATIC) != 0) {
+			if ((field.modifiers and Modifier.STATIC) != 0) {
 				if (type.isPrimitive) {
-					if (type === Boolean::class.javaPrimitiveType) MethodHandleStaticBooleanFieldAccessor(field)
-					else if (type === Byte::class.javaPrimitiveType) MethodHandleStaticByteFieldAccessor(field)
-					else if (type === Char::class.javaPrimitiveType) MethodHandleStaticCharFieldAccessor(field)
-					else if (type === Short::class.javaPrimitiveType) MethodHandleStaticShortFieldAccessor(field)
-					else if (type === Int::class.javaPrimitiveType) MethodHandleStaticIntFieldAccessor(field)
-					else if (type === Long::class.javaPrimitiveType) MethodHandleStaticLongFieldAccessor(field)
-					else if (type === Float::class.javaPrimitiveType) MethodHandleStaticFloatFieldAccessor(field)
-					else if (type === Double::class.javaPrimitiveType) MethodHandleStaticDoubleFieldAccessor(field)
-					else throw IllegalArgumentException("unknown type of field $field")
+					if (type === Boolean::class.javaPrimitiveType) return MethodHandleStaticBooleanFieldAccessor(field)
+					if (type === Byte::class.javaPrimitiveType) return MethodHandleStaticByteFieldAccessor(field)
+					if (type === Char::class.javaPrimitiveType) return MethodHandleStaticCharFieldAccessor(field)
+					if (type === Short::class.javaPrimitiveType) return MethodHandleStaticShortFieldAccessor(field)
+					if (type === Int::class.javaPrimitiveType) return MethodHandleStaticIntFieldAccessor(field)
+					if (type === Long::class.javaPrimitiveType) return MethodHandleStaticLongFieldAccessor(field)
+					if (type === Float::class.javaPrimitiveType) return MethodHandleStaticFloatFieldAccessor(field)
+					if (type === Double::class.javaPrimitiveType) return MethodHandleStaticDoubleFieldAccessor(field)
 				} else {
-					MethodHandleStaticObjectFieldAccessor(field)
+					return MethodHandleStaticObjectFieldAccessor(field)
 				}
 			} else {
 				if (type.isPrimitive) {
-					if (type === Boolean::class.javaPrimitiveType) MethodHandleBooleanFieldAccessor(field)
-					else if (type === Byte::class.javaPrimitiveType) MethodHandleByteFieldAccessor(field)
-					else if (type === Char::class.javaPrimitiveType) MethodHandleCharFieldAccessor(field)
-					else if (type === Short::class.javaPrimitiveType) MethodHandleShortFieldAccessor(field)
-					else if (type === Int::class.javaPrimitiveType) MethodHandleIntFieldAccessor(field)
-					else if (type === Long::class.javaPrimitiveType) MethodHandleLongFieldAccessor(field)
-					else if (type === Float::class.javaPrimitiveType) MethodHandleFloatFieldAccessor(field)
-					else if (type === Double::class.javaPrimitiveType) MethodHandleDoubleFieldAccessor(field)
-					else throw IllegalArgumentException("unknown type of field $field")
+					if (type === Boolean::class.javaPrimitiveType) return MethodHandleBooleanFieldAccessor(field)
+					if (type === Byte::class.javaPrimitiveType) return MethodHandleByteFieldAccessor(field)
+					if (type === Char::class.javaPrimitiveType) return MethodHandleCharFieldAccessor(field)
+					if (type === Short::class.javaPrimitiveType) return MethodHandleShortFieldAccessor(field)
+					if (type === Int::class.javaPrimitiveType) return MethodHandleIntFieldAccessor(field)
+					if (type === Long::class.javaPrimitiveType) return MethodHandleLongFieldAccessor(field)
+					if (type === Float::class.javaPrimitiveType) return MethodHandleFloatFieldAccessor(field)
+					if (type === Double::class.javaPrimitiveType) return MethodHandleDoubleFieldAccessor(field)
 				} else {
-					MethodHandleObjectFieldAccessor(field)
+					return MethodHandleObjectFieldAccessor(field)
 				}
 			}
+
+			throw AssertionError("unknown type of field $field")
 		}
 	}
 
@@ -51,20 +51,16 @@ open class MethodHandleFieldAccessor internal constructor(field: Field) : Abstra
 	protected val setter: MethodHandle
 
 	init {
-		val refc = field.declaringClass
-		val name = field.name
 		val type = field.type
 		val returnType = if (type.isPrimitive) type else Any::class.java
 		val modifiers = field.modifiers
 
-		Reflections.setAccessible(field)
-
 		if ((modifiers and Modifier.STATIC) != 0) {
-			getter = HandleSupport.findStaticGetter(refc, name, type).asType(MethodType.methodType(returnType))
-			setter = HandleSupport.findStaticSetter(refc, name, type).asType(MethodType.methodType(Void.TYPE, returnType))
+			getter = HandleSupport.unreflectGetter(field).asType(MethodType.methodType(returnType))
+			setter = HandleSupport.unreflectSetter(field).asType(MethodType.methodType(Void.TYPE, returnType))
 		} else {
-			getter = HandleSupport.findGetter(refc, name, type).asType(MethodType.methodType(returnType, Any::class.java))
-			setter = HandleSupport.findSetter(refc, name, type).asType(MethodType.methodType(Void.TYPE, arrayOf(Any::class.java, returnType)))
+			getter = HandleSupport.unreflectGetter(field).asType(MethodType.methodType(returnType, Any::class.java))
+			setter = HandleSupport.unreflectSetter(field).asType(MethodType.methodType(Void.TYPE, arrayOf(Any::class.java, returnType)))
 		}
 	}
 

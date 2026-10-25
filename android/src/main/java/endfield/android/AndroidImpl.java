@@ -79,16 +79,6 @@ public class AndroidImpl implements PlatformImpl {
 	}
 
 	@Override
-	public int arrayBaseOffset(Class<?> arrayClass) {
-		return unsafe.arrayBaseOffset(arrayClass);
-	}
-
-	@Override
-	public int arrayIndexScale(Class<?> arrayClass) {
-		return unsafe.arrayIndexScale(arrayClass);
-	}
-
-	@Override
 	public Class<?> callerClass() {
 		return VMStack.getStackClass2();
 	}

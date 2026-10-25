@@ -13,14 +13,13 @@ import java.lang.reflect.Method;
 import static endfield.desktop.DesktopImpl.lookup;
 
 public class DesktopInvokers2 extends DesktopInvokers {
-	static Class<?> memberNameClass;
-
 	static Method resolveOrFail;
 	static Constructor<?> fieldMemberName;
 
 	static Method makeFieldHandle;
 	static Method makeRefc;
 
+	@SuppressWarnings("unused")
 	@Override
 	public VarHandle findVarHandle(Class<?> recv, String name, Class<?> type) {
 		try {
@@ -33,6 +32,7 @@ public class DesktopInvokers2 extends DesktopInvokers {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	public VarHandle findStaticVarHandle(Class<?> recv, String name, Class<?> type) {
 		try {
@@ -42,6 +42,17 @@ public class DesktopInvokers2 extends DesktopInvokers {
 		} catch (Exception e) {
 			Log.err(e);
 			return super.findVarHandle(recv, name, type);
+		}
+	}
+
+	@Override
+	public MethodHandle unreflectGetter(Field field) {
+		try {
+			Object putField = fieldMemberName.newInstance(field, false);
+			return (MethodHandle) makeRefc.invoke(null, field.getDeclaringClass(), putField);
+		} catch (Exception e) {
+			Log.err(e);
+			return super.unreflectGetter(field);
 		}
 	}
 
@@ -56,6 +67,7 @@ public class DesktopInvokers2 extends DesktopInvokers {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	public VarHandle unreflectVarHandle(Field field) {
 		try {
@@ -70,9 +82,10 @@ public class DesktopInvokers2 extends DesktopInvokers {
 
 	static boolean init() {
 		try {
-			memberNameClass = Class.forName("java.lang.invoke.MemberName", false, null);
+			Class<?> memberNameClass = Class.forName("java.lang.invoke.MemberName", false, null);
 			Class<?> varHandlesClass = Class.forName("java.lang.invoke.VarHandles", false, null);
 			Class<?> directMethodHandleClass = Class.forName("java.lang.invoke.DirectMethodHandle", false, null);
+
 			resolveOrFail = Lookup.class.getDeclaredMethod("resolveOrFail", byte.class, Class.class, String.class, Class.class);
 			resolveOrFail.setAccessible(true);
 			fieldMemberName = memberNameClass.getDeclaredConstructor(Field.class, boolean.class);

@@ -47,10 +47,6 @@ public interface PlatformImpl {
 
 	void put(Object src, int srcOffset, Object dst, int dstOffset, long bytes);
 
-	int arrayBaseOffset(Class<?> arrayClass);
-
-	int arrayIndexScale(Class<?> arrayClass);
-
 	default Class<?> callerClass() {
 		Thread thread = Thread.currentThread();
 		StackTraceElement[] trace = thread.getStackTrace();

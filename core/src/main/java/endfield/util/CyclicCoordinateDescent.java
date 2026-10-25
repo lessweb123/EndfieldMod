@@ -1,8 +1,10 @@
 package endfield.util;
 
 import arc.math.Mathf;
+import arc.struct.Seq;
 import arc.util.Time;
 import endfield.math.Mathm;
+import endfield.util.Get.Pos;
 
 /**
  * Cyclic Coordinate Descent.
@@ -14,7 +16,7 @@ import endfield.math.Mathm;
 public final class CyclicCoordinateDescent {
 	public static final float epsilon = 0.0001f;
 
-	static final CollectionList<WorldBone> worldBones = new CollectionList<>(WorldBone.class);
+	static final Seq<WorldBone> worldBones = new Seq<>(WorldBone.class);
 
 	private CyclicCoordinateDescent() {}
 
@@ -103,8 +105,8 @@ public final class CyclicCoordinateDescent {
 		}
 	}
 
-	public static class DefaultBone {
-		public float angle, x, y;
+	public static class DefaultBone extends Pos {
+		public float angle;
 	}
 
 	public static class WorldBone extends DefaultBone {

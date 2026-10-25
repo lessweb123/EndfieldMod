@@ -20,7 +20,6 @@ import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Objects;
@@ -92,9 +91,7 @@ public class DesktopImpl implements PlatformImpl {
 
 	@Override
 	public FieldAccessor fieldAccessor(Field field) {
-		return (field.getModifiers() & Modifier.FINAL) == 0 ?
-				VarHandleFieldAccessor.getVarHandleFieldAccessor(field) :
-				UnsafeFieldAccessor.getUnsafeFieldAccessor(field);
+		return UnsafeFieldAccessor.getUnsafeFieldAccessor(field);
 	}
 
 	@Override
@@ -135,15 +132,5 @@ public class DesktopImpl implements PlatformImpl {
 		Objects.requireNonNull(dst);
 
 		unsafe.copyMemory(src, srcOffset, dst, dstOffset, bytes);
-	}
-
-	@Override
-	public int arrayBaseOffset(Class<?> arrayClass) {
-		return (int) unsafe.arrayBaseOffset(arrayClass);
-	}
-
-	@Override
-	public int arrayIndexScale(Class<?> arrayClass) {
-		return unsafe.arrayIndexScale(arrayClass);
 	}
 }

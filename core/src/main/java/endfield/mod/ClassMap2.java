@@ -143,7 +143,9 @@ public final class ClassMap2 {
 		classes.put("Pattern", endfield.world.patterns.Pattern.class);
 		classes.put("PressureConfig", endfield.world.meta.PressureConfig.class);
 		//blocks
+		classes.put("ConnectedFloor", endfield.world.blocks.environment.ConnectedFloor.class);
 		classes.put("ConnectedStaticWall", endfield.world.blocks.environment.ConnectedStaticWall.class);
+		classes.put("TiledFloor2", endfield.world.blocks.environment.TiledFloor2.class);
 		classes.put("RotatedProp", endfield.world.blocks.environment.RotatedProp.class);
 		classes.put("SizedVent", endfield.world.blocks.environment.SizedVent.class);
 		classes.put("EdgeFloor", endfield.world.blocks.environment.EdgeFloor.class);

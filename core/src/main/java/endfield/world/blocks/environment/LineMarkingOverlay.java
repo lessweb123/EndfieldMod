@@ -14,6 +14,7 @@ import mindustry.gen.Unit;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.RuneOverlay;
 
+import static endfield.Vars2.modName;
 import static mindustry.Vars.tilesize;
 
 public class LineMarkingOverlay extends RuneOverlay {
@@ -36,7 +37,7 @@ public class LineMarkingOverlay extends RuneOverlay {
 			teamRegions[team.id] = teamRegion.found() && team.hasPalette ? Core.atlas.find(name + "-team-" + team.name, teamRegion) : teamRegion;
 		}
 
-		variantRegions = new TextureRegion[]{Core.atlas.find(name)};
+		variantRegions = new TextureRegion[]{Core.atlas.find(name, modName + "-line-marking-floor-1")};
 		variantRegions[0] = region;
 
 		if (Core.atlas.has(name + "-edge")) {
@@ -54,8 +55,8 @@ public class LineMarkingOverlay extends RuneOverlay {
 		region = variantRegions[0];
 		edgeRegion = Core.atlas.find("edge");
 
-		letterRegions = Sprites.splitArray(Core.atlas.find(name + "-0"), 32);
-		letterRegions2 = Sprites.splitArray(Core.atlas.find(name + "-1"), 32);
+		letterRegions = Sprites.splitArray(Core.atlas.find(name + "-0", modName + "-line-marking-floor-1-0"), 32);
+		letterRegions2 = Sprites.splitArray(Core.atlas.find(name + "-1", modName + "-line-marking-floor-1-1"), 32);
 	}
 
 	@Override

@@ -30,14 +30,4 @@ public class MockPlatformImpl implements PlatformImpl {
 	public void put(Object src, int srcOffset, Object dst, int dstOffset, long bytes) {
 		throw new UnsupportedOperationException();
 	}
-
-	@Override
-	public int arrayBaseOffset(Class<?> arrayClass) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public int arrayIndexScale(Class<?> arrayClass) {
-		throw new UnsupportedOperationException();
-	}
 }
