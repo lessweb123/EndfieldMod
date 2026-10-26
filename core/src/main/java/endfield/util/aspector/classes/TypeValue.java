@@ -9,7 +9,7 @@ public class TypeValue extends AnnotationValue<Class<?>, ClassName> {
 
 	@Override
 	public ClassName getType() {
-		return ClassName.ASPECT_ELEMENT;
+		return ClassName.CLASS_NAME;
 	}
 
 	@Override
