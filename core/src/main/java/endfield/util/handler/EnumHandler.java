@@ -159,6 +159,8 @@ public class EnumHandler<T extends Enum<T>> {
 		if (!clazz.isInstance(from)) throw new IllegalArgumentException(from + " must be an instance of " + clazz);
 		if (!clazz.isInstance(to)) throw new IllegalArgumentException(to + " must be an instance of " + clazz);
 
+		if (from == to) return;
+
 		int fromOrdinal = from.ordinal(), toOrdinal = to.ordinal();
 
 		ordinalAccessor.setInt(from, toOrdinal);
@@ -182,5 +184,20 @@ public class EnumHandler<T extends Enum<T>> {
 	/** Directly return the shared array of {@code values()}, do not easily change its contents. */
 	public T[] values() {
 		return valuesAccessor.getObject(null);
+	}
+
+	@Override
+	public String toString() {
+		return clazz.getName();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return obj == this || obj instanceof EnumHandler<?> that && clazz == that.clazz;
+	}
+
+	@Override
+	public int hashCode() {
+		return clazz.hashCode();
 	}
 }

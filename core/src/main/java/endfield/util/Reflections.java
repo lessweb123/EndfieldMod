@@ -279,7 +279,7 @@ public final class Reflections {
 	}
 
 	public static Class<?>[] toTypes(Object... args) {
-		if (args == null) return Constant.EMPTY_CLASS;
+		if (args == null || args.length == 0) return Constant.EMPTY_CLASS;
 
 		Class<?>[] types = new Class[args.length];
 
@@ -293,6 +293,7 @@ public final class Reflections {
 
 	public static boolean match(Class<?>[] sourceTypes, Object... args) {
 		if (sourceTypes.length != args.length) return false;
+
 		for (int i = 0; i < sourceTypes.length; ++i) {
 			Class<?> sourceType = sourceTypes[i];
 			Object arg = args[i];

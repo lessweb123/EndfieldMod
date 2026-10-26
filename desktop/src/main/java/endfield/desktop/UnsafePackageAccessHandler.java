@@ -19,8 +19,6 @@ import java.util.List;
 import static endfield.desktop.Unsafer.unsafe;
 
 public class UnsafePackageAccessHandler extends PackageAccessHandler {
-	static ClassName packageAccessorT = ClassName.byClass(PackageAccessor.class);
-
 	public UnsafePackageAccessHandler(ClassAccessor accessor) {
 		super(accessor);
 	}
@@ -52,7 +50,7 @@ public class UnsafePackageAccessHandler extends PackageAccessHandler {
 				null
 		);
 		classWriter.visitAnnotation(
-				packageAccessorT.descriptor(),
+				ClassName.byClass(PackageAccessor.class).descriptor(),
 				true
 		).visitEnd();
 

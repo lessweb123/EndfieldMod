@@ -361,7 +361,7 @@ public class ASMClassAccessor implements ClassAccessor {
 			}
 
 			flags = classRoot.access;
-			superClass = classRoot.superName == null ? accessor.getClassDecl(ClassName.jObject) : accessor.getClassDecl(ClassName.byInternalName(classRoot.superName));
+			superClass = classRoot.superName == null ? accessor.getClassDecl(ClassName.OBJECT) : accessor.getClassDecl(ClassName.byInternalName(classRoot.superName));
 			annotatedSuperClass = new EAnnotatedType<>(
 					superClass,
 					typeRefAnnoMap.get(TypeReference.newSuperTypeReference(-1).getValue(), prov1)

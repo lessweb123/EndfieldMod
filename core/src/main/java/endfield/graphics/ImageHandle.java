@@ -4,9 +4,15 @@ import arc.files.Fi;
 import arc.graphics.Pixmap;
 
 public interface ImageHandle {
-	Pixmap decode(Fi file);
+	default Pixmap decode(Fi file) {
+		return new Pixmap(file);
+	}
 
-	Pixmap decode(byte[] data);
+	default Pixmap decode(byte[] data) {
+		return new Pixmap(data);
+	}
 
-	boolean isSupported(String mimeType);
+	default boolean isSupported(String mimeType) {
+		return "image/png".equals(mimeType);
+	}
 }

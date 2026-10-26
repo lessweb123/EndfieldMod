@@ -435,7 +435,7 @@ public class ProxyAspectFactory extends AspectFactory {
 
 				if (opcode == Opcodes.INVOKESPECIAL || opcode == Opcodes.INVOKESTATIC) {
 					ClassName attache = stubAttaches.get(realOwner);
-					ClassName stubAttache = attache == null ? null : attache.equals(ClassName.jNothing) ? superClass : attache;
+					ClassName stubAttache = attache == null ? null : attache.equals(ClassName.NOTHING) ? superClass : attache;
 					if (stubAttache != null) {
 						realOwner = stubAttache;
 						realInterface = false;
@@ -462,7 +462,7 @@ public class ProxyAspectFactory extends AspectFactory {
 				String realField = name;
 
 				ClassName attache = stubAttaches.get(realOwner);
-				ClassName stubAttache = attache == null ? null : attache.equals(ClassName.jNothing) ? superClass : attache;
+				ClassName stubAttache = attache == null ? null : attache.equals(ClassName.NOTHING) ? superClass : attache;
 				if (stubAttache != null) {
 					realOwner = stubAttache;
 				}

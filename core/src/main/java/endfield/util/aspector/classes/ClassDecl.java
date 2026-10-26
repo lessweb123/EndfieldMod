@@ -73,6 +73,6 @@ public abstract class ClassDecl<T> {
 		if ((flags() & Reflections.ENUM) == 0) return false;
 
 		ClassDecl<?> superClass = superClass();
-		return superClass != null && superClass.name.equals(ClassName.jEnum);
+		return superClass != null && superClass.name.equals(ClassName.ENUM);
 	}
 }

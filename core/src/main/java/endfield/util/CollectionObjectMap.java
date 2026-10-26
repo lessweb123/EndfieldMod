@@ -221,6 +221,15 @@ public class CollectionObjectMap<K, V> extends AbstractMap<K, V> implements Iter
 	}
 
 	@Override
+	public V putIfAbsent(K key, V value) {
+		V v = get(key);
+		if (v == null) {
+			v = put(key, value);
+		}
+		return v;
+	}
+
+	@Override
 	public V computeIfAbsent(K key, Function<? super K, ? extends V> mappingFunction) {
 		V value = get(key);
 		if (value == null) {

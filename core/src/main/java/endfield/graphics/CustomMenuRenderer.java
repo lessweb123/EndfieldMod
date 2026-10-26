@@ -11,7 +11,6 @@ import arc.graphics.g2d.TextureRegion;
 import arc.graphics.gl.FrameBuffer;
 import arc.math.Mat;
 import arc.util.Log;
-import arc.util.OS;
 import arc.util.Reflect;
 import endfield.Vars2;
 import mindustry.graphics.MenuRenderer;
@@ -43,11 +42,7 @@ public class CustomMenuRenderer extends MenuRenderer {
 			return;
 		}
 
-		if (OS.isAndroid) {
-			backgroundRegion = new TextureRegion(new Texture(Pixmaps2.load(file)));
-		} else {
-			backgroundRegion = new TextureRegion(new Texture(file));
-		}
+		backgroundRegion = new TextureRegion(new Texture(Pixmaps2.load(file)));
 	}
 
 	public static void init() {

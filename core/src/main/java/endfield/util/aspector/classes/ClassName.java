@@ -1,5 +1,6 @@
 package endfield.util.aspector.classes;
 
+import endfield.util.CollectionObjectMap;
 import endfield.util.Strings2;
 import kotlin.jvm.JvmClassMappingKt;
 import kotlin.reflect.KClass;
@@ -7,6 +8,8 @@ import kotlin.text.StringsKt;
 import org.objectweb.asm.Type;
 
 public class ClassName {
+	static final CollectionObjectMap<String, ClassName> nameMap = new CollectionObjectMap<>(String.class, ClassName.class);
+
 	public static final ClassName V = new ClassName("V");
 	public static final ClassName Z = new ClassName("Z");
 	public static final ClassName C = new ClassName("C");
@@ -17,16 +20,37 @@ public class ClassName {
 	public static final ClassName F = new ClassName("F");
 	public static final ClassName D = new ClassName("D");
 
-	public static final ClassName jObject = byClass(Object.class);
-	public static final ClassName jNothing = byClass(void.class);
-	public static final ClassName jClass = byClass(Class.class);
-	public static final ClassName jString = byClass(String.class);
-	public static final ClassName jEnum = byClass(Enum.class);
-	public static final ClassName jClassName = byClass(ClassName.class);
+	public static final ClassName OBJECT = byClass(Object.class);
+	public static final ClassName BOOLEAN = byClass(Boolean.class);
+	public static final ClassName CHARACTER = byClass(Character.class);
+	public static final ClassName BYTE = byClass(Byte.class);
+	public static final ClassName SHORT = byClass(Short.class);
+	public static final ClassName INTEGER = byClass(Integer.class);
+	public static final ClassName LONG = byClass(Long.class);
+	public static final ClassName FLOAT = byClass(Float.class);
+	public static final ClassName DOUBLE = byClass(Double.class);
+	public static final ClassName NOTHING = byClass(Void.class);
+	public static final ClassName CLASS = byClass(Class.class);
+	public static final ClassName STRING = byClass(String.class);
+	public static final ClassName ENUM = byClass(Enum.class);
 
-	final String descriptor;
+	public static final ClassName CLASS_NAME = byClass(ClassName.class);
 
-	public ClassName(String des) {
+	public final String descriptor;
+
+	static {
+		nameMap.put("V", V);
+		nameMap.put("Z", Z);
+		nameMap.put("C", C);
+		nameMap.put("B", B);
+		nameMap.put("S", S);
+		nameMap.put("I", I);
+		nameMap.put("J", J);
+		nameMap.put("F", F);
+		nameMap.put("D", D);
+	}
+
+	ClassName(String des) {
 		descriptor = des;
 	}
 
@@ -67,19 +91,19 @@ public class ClassName {
 	}
 
 	public static ClassName byClass(Class<?> clazz) {
-		return new ClassName(Type.getDescriptor(clazz));
+		return byDescriptor(Type.getDescriptor(clazz));
 	}
 
 	public static ClassName byDescriptor(String descriptor) {
-		return new ClassName(descriptor);
+		return nameMap.computeIfAbsent(descriptor, ClassName::new);
 	}
 
 	public static ClassName byInternalName(String internalName) {
-		return new ClassName(internalToDesc(internalName));
+		return byDescriptor(internalToDesc(internalName));
 	}
 
 	public static ClassName byName(String name) {
-		return new ClassName(internalToDesc(name.replace(".", "/")));
+		return byDescriptor(internalToDesc(name.replace(".", "/")));
 	}
 
 	public String descriptor() {
@@ -111,11 +135,11 @@ public class ClassName {
 	}
 
 	public ClassName componentName() {
-		return new ClassName(Strings2.substringAfter(descriptor, "["));
+		return byDescriptor(Strings2.substringAfter(descriptor, "["));
 	}
 
 	public ClassName arrayName() {
-		return new ClassName("[" + descriptor);
+		return byDescriptor("[" + descriptor);
 	}
 
 	@Override
@@ -130,9 +154,6 @@ public class ClassName {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) return true;
-		if (!(obj instanceof ClassName cn)) return false;
-
-		return descriptor.equals(cn.descriptor);
+		return this == obj || obj instanceof ClassName n && descriptor.equals(n.descriptor);
 	}
 }

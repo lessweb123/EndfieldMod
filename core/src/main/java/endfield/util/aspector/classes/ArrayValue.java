@@ -13,7 +13,7 @@ public class ArrayValue<V, T extends AnnotationValue<V, ?>> extends AnnotationVa
 
 	@Override
 	public ClassName getType() {
-		return ClassName.jClassName.arrayName();
+		return ClassName.ASPECT_ELEMENT.arrayName();
 	}
 
 	@Override

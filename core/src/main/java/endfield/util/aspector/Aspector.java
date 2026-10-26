@@ -26,11 +26,6 @@ import java.util.Map;
 import java.util.Set;
 
 public class Aspector {
-	public static final ClassName aspectExtendsT = ClassName.byClass(AspectExtends.class);
-	public static final ClassName aspectElementT = ClassName.byClass(AspectElement.class);
-	public static final ClassName stubT = ClassName.byClass(Stub.class);
-	public static final ClassName sharedT = ClassName.byClass(Shared.class);
-
 	AspectFactory aspectFactory;
 
 	public Aspector(AspectFactory factory) {
@@ -52,7 +47,7 @@ public class Aspector {
 				while (aspectLayers.size() <= depth) aspectLayers.add(new ArrayList<>());
 				aspectLayers.get(depth).add(clazz);
 
-				EAnnotation annotation = clazz.getAnnotation(aspectExtendsT);
+				EAnnotation annotation = clazz.getAnnotation(ClassName.byClass(AspectExtends.class));
 				ArrayValue<Class<?>, TypeValue> value = annotation == null ? null : annotation.getValue("extend");
 				List<ClassName> extensions = value == null ? null : CollectionsKt.map(value.rawValue(), it -> it.rawValue());
 
@@ -71,10 +66,10 @@ public class Aspector {
 
 		AspectResult<T> aspectDecl = aspectFactory.makeClass(targetClass, b -> {
 			Map<ClassDecl<?>, EAnnotation> stub = MapsKt.toMap(CollectionsKt.flatMap(flat, i -> CollectionsKt.mapNotNull(CollectionsKt.plus(CollectionsKt.listOfNotNull(i.annotatedSuperClass()), i.annotatedInterfaces()), it -> {
-				EAnnotation stub1 = CollectionsKt.firstOrNull(it.annotations(), a -> a.type.equals(stubT));
+				EAnnotation stub1 = CollectionsKt.firstOrNull(it.annotations(), a -> a.type.equals(ClassName.byClass(Stub.class)));
 				return stub1 == null ? null : new Pair<>(it.type(), stub1);
 			})));
-			Set<ClassDecl<?>> nonStubInterfaces = CollectionsKt.toSet(CollectionsKt.flatMap(flat, i -> CollectionsKt.map(CollectionsKt.filter(i.annotatedInterfaces(), it -> it.getAnnotation(stubT) == null), it -> it.type())));
+			Set<ClassDecl<?>> nonStubInterfaces = CollectionsKt.toSet(CollectionsKt.flatMap(flat, i -> CollectionsKt.map(CollectionsKt.filter(i.annotatedInterfaces(), it -> it.getAnnotation(ClassName.byClass(Stub.class)) == null), it -> it.type())));
 
 			for (var entry : stub.entrySet()) {
 				b.registerStubSpec(
@@ -89,7 +84,7 @@ public class Aspector {
 
 			for (ClassDecl<?> decl : flat) {
 				for (EField field : decl.fields()) {
-					if (field.getAnnotation(sharedT) != null) {
+					if (field.getAnnotation(ClassName.byClass(Shared.class)) != null) {
 						b.registerSharedField(field);
 					} else {
 						b.registerDeclField(field);
@@ -114,7 +109,7 @@ public class Aspector {
 					for (Pair<EMethod, Using> entry : CollectionsKt.map(CollectionsKt.filter(decl.methods(), it -> !Modifier.isPrivate(it.flags)
 							&& !Modifier.isStatic(it.flags)
 							&& !Modifier.isFinal(it.flags)), it -> {
-						EAnnotation anno = it.getAnnotation(aspectElementT);
+						EAnnotation anno = it.getAnnotation(ClassName.byClass(AspectElement.class));
 
 						if (anno != null) {
 							EnumValue<Using> using = anno.getValue("using");
@@ -145,7 +140,7 @@ public class Aspector {
 				throw new IllegalArgumentException("Aspect implement class " + decl.name + " must be a normal class");
 
 			EAnnotatedType<?> superClass = decl.annotatedSuperClass();
-			if (superClass != null && superClass.type().name.equals(ClassName.jObject) && !CollectionsKt.any(superClass.annotations(), a -> a.type.equals(stubT)))
+			if (superClass != null && superClass.type().name.equals(ClassName.OBJECT) && !CollectionsKt.any(superClass.annotations(), a -> a.type.equals(ClassName.byClass(Stub.class))))
 				throw new IllegalArgumentException("Super class of aspect implement must be annotated by @Stub");
 		}
 	}
