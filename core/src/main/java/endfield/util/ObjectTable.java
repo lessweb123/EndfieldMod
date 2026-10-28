@@ -7,6 +7,8 @@ import endfield.util.holder.ObjectHolder;
 
 import java.util.Iterator;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 public class ObjectTable<K, V> implements Iterable<ObjectHolder<K, V>>, Eachable<ObjectHolder<K, V>>, Cloneable {
 	public final Class<K> keyComponentType;
 	public final Class<V> valueComponentType;
@@ -31,7 +33,7 @@ public class ObjectTable<K, V> implements Iterable<ObjectHolder<K, V>>, Eachable
 			out.map21 = map21.copy();
 			return out;
 		} catch (CloneNotSupportedException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 

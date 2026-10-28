@@ -43,7 +43,7 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 		Class<?> current = clazz;
 
 		while (current != null) {
-			Method method = findMethod(current, functionType.name(), functionType.paramType());
+			Method method = findMethod(current, functionType.name(), functionType.parameterTypes());
 
 			if (method != null) {
 				res = asSpreader(method);
@@ -85,7 +85,7 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 			if (entry.key.match(functionType)) return entry.value;
 		}
 
-		Constructor<?> cons = findConstructor(clazz, functionType.paramType());
+		Constructor<?> cons = findConstructor(clazz, functionType.parameterTypes());
 		if (cons != null) {
 			res = asSpreader(cons);
 			map.put(from(cons), res);

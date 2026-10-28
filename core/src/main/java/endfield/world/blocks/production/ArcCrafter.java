@@ -39,7 +39,7 @@ public class ArcCrafter extends AttributeCrafter {
 	public ItemStack[] withoutBoost, withBoost; //automatically set
 	public Color midColor = new Color();
 
-	public @Nullable ItemStack boostItem = null;
+	public @Nullable ItemStack boostItem;
 	public float boostAmount = 1f;
 
 	public float flashChance = 0.01f;

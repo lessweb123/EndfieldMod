@@ -33,7 +33,7 @@ interface Invokers {
 
 	fun unreflect(method: Method): MethodHandle = lookup(method.declaringClass).unreflect(method)
 
-	fun unreflectSpecial(method: Method): MethodHandle = lookup(method.declaringClass).unreflectSpecial(method, method.declaringClass)
+	fun unreflectSpecial(method: Method): MethodHandle = method.declaringClass.let { lookup(it).unreflectSpecial(method, it) }
 
 	fun unreflectConstructor(constructor: Constructor<*>): MethodHandle = lookup(constructor.declaringClass).unreflectConstructor(constructor)
 

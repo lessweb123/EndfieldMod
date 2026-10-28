@@ -37,7 +37,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 
 		while (current != null) {
 			try {
-				res = current.getDeclaredMethod(functionType.name(), functionType.paramType());
+				res = current.getDeclaredMethod(functionType.name(), functionType.parameterTypes());
 				res.setAccessible(true);
 				map.put(FunctionType.from(res), res);
 				return res;
@@ -79,7 +79,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 		}
 
 		try {
-			res = clazz.getConstructor(functionType.paramType());
+			res = clazz.getConstructor(functionType.parameterTypes());
 			res.setAccessible(true);
 			map.put(FunctionType.from(res), res);
 			return res;

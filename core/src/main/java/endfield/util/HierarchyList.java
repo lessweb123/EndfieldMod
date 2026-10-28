@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 public class HierarchyList<E> extends AbstractList<E> implements Eachable<E>, Cloneable {
 	public final Class<?> componentType;
 
@@ -43,7 +45,7 @@ public class HierarchyList<E> extends AbstractList<E> implements Eachable<E>, Cl
 
 			return out;
 		} catch (CloneNotSupportedException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 

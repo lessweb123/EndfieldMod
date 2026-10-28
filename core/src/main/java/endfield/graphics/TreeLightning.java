@@ -96,7 +96,7 @@ public final class TreeLightning {
 	public static void create(Bullet bullet, float x, float y, Team team, Color roofColor, Color leafColor, float damage, int amount, float range, float rotation, float angle) {
 		for (int i = 0; i < amount; i++) {
 			float rotation1 = (float) 360 / amount * i + rotation;
-			Seq<Vec2> points = createLightningInternal(bullet, bullet.id + i, team, roofColor,
+			Seq<Vec2> points = createLightning(bullet, bullet.id + i, team, roofColor,
 					damage, x, y, rotation1, (int) range, 0.85f);
 
 			for (Vec2 vec2 : points) {
@@ -106,7 +106,7 @@ public final class TreeLightning {
 
 						float angle1 = Mathf.angle(vec2.x - x, vec2.y - y);
 
-						createLightningInternal(bullet, bullet.id, team, leafColor, damage, vec2.x, vec2.y,
+						createLightning(bullet, bullet.id, team, leafColor, damage, vec2.x, vec2.y,
 								angle1 + (Mathf.range(angle) + angle) * Mathf.num(Mathf.chance(0.5f)),
 								Math.round(range * (1 - indexFin)), 0.95f);
 					}
@@ -115,7 +115,7 @@ public final class TreeLightning {
 		}
 	}
 
-	private static Seq<Vec2> createLightningInternal(Bullet hitter, int seed, Team team, Color color, float damage, float x, float y, float rotation, int length, float offset) {
+	static Seq<Vec2> createLightning(Bullet hitter, int seed, Team team, Color color, float damage, float x, float y, float rotation, int length, float offset) {
 		float lightX = x, lightY = y;
 		float rot = rotation;
 

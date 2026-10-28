@@ -103,8 +103,14 @@ public final class Strings2 {
 		return randomString(printableChars, length);
 	}
 
-	public static String randomString(String keys, int length) {
-		return randomString(keys.toCharArray(), length);
+	public static String randomString(CharSequence keys, int length) {
+		char[] result = new char[length];
+		int range = keys.length() - 1;
+
+		for (int i = 0; i < length; i++) {
+			result[i] = keys.charAt(Mathf.random(range));
+		}
+		return String.valueOf(result);
 	}
 
 	/**
@@ -141,12 +147,26 @@ public final class Strings2 {
 			base *= 1024;
 		}
 
-		String[] arr = Double.toString(number / base).split("\\.");
-		int realRetain = Math.min(retain, arr[1].length());
+		String str = Double.toString(number / base);
+		int dotIndex = str.indexOf('.');
 
-		String end = repeat('0', Math.max(0, retain - realRetain));
+		String integerPart = str.substring(0, dotIndex);
+		String fractionalPart = str.substring(dotIndex + 1);
 
-		return (isNegative ? "-" : "") + arr[0] + (retain == 0 ? "" : "." + arr[1].substring(0, realRetain) + end);
+		int realRetain = Math.min(retain, fractionalPart.length());
+
+		StringBuilder builder = new StringBuilder();
+		if (isNegative) {
+			builder.append('-');
+		}
+		builder.append(integerPart);
+		if (retain != 0) {
+			builder.append('.').append(fractionalPart, 0, realRetain);
+			for (int i = 1; i < Math.max(0, retain - realRetain); i++) {
+				builder.append('0');
+			}
+		}
+		return builder.toString();
 	}
 
 	/**
@@ -162,12 +182,14 @@ public final class Strings2 {
 			isNegative = true;
 		}
 
+		int index = 0;
 		double base = 1d;
 		for (int i = 0; i < byteUnit.length; i++) {
 			if (base * 1024 > number) {
 				break;
 			}
 			base *= 1024;
+			index++;
 		}
 
 		String str = Double.toString(number / base);
@@ -190,6 +212,7 @@ public final class Strings2 {
 				builder.append('0');
 			}
 		}
+		builder.append(byteUnit[index]);
 		return builder.toString();
 	}
 

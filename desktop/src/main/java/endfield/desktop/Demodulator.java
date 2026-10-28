@@ -83,7 +83,7 @@ public final class Demodulator {
 		openModule(base, "sun.nio.ch", main);
 	}
 
-	public static void ensureFieldOpen() {
+	static void ensureFieldOpen() {
 		try {
 			fieldFilterMap = lookup.findStaticVarHandle(Reflection.class, "fieldFilterMap", Map.class);
 			methodFilterMap = lookup.findStaticVarHandle(Reflection.class, "methodFilterMap", Map.class);

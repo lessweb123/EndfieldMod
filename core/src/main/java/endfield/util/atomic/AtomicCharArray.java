@@ -23,6 +23,10 @@ public class AtomicCharArray implements CharSequence, Serializable {
 		this.array = array.clone();
 	}
 
+	public AtomicCharArray(String keys) {
+		array = keys.toCharArray();
+	}
+
 	@Override
 	public final int length() {
 		return array.length;
@@ -34,7 +38,7 @@ public class AtomicCharArray implements CharSequence, Serializable {
 	}
 
 	@Override
-	public CharSequence subSequence(int start, int end) {
+	public AtomicCharArray subSequence(int start, int end) {
 		int length = end - start;
 
 		if (start < 0 || start > end || end > length())
@@ -45,6 +49,16 @@ public class AtomicCharArray implements CharSequence, Serializable {
 		System.arraycopy(array, start, result, 0, length);
 
 		return new AtomicCharArray(result);
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return array.length == 0;
+	}
+
+	public void getChars(int srcBegin, int srcEnd, char[] dst, int dstBegin) {
+		while (srcBegin < srcEnd)
+			dst[dstBegin++] = array[srcBegin++];
 	}
 
 	public final char get(int i) {

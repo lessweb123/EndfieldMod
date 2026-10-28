@@ -29,6 +29,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.invoke.MethodType;
+import java.lang.invoke.VarHandle.AccessMode;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -136,7 +137,7 @@ public class Test extends @Stub Random {
 
 	public static void test7() {
 		try {
-			Log.info(HandleSupport.findStaticVarHandle(Test.class, "sstr", String.class).getClass());
+			Log.info(HandleSupport.findStaticVarHandle(Test.class, "sstr", String.class).isAccessModeSupported(AccessMode.SET));
 		} catch (Throwable e) {
 			Log.err(e);
 		}

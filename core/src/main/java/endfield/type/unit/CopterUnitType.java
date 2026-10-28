@@ -11,6 +11,8 @@ import mindustry.gen.Unit;
 import mindustry.graphics.MultiPacker;
 import mindustry.graphics.MultiPacker.PageType;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 public class CopterUnitType extends UnitType2 {
 	public final Seq<Rotor> rotors = new Seq<>(true, 2, Rotor.class);
 	public float rotorDeathSlowdown = 0.01f;
@@ -158,7 +160,7 @@ public class CopterUnitType extends UnitType2 {
 			try {
 				return (Rotor) super.clone();
 			} catch (CloneNotSupportedException e) {
-				throw new RuntimeException("java sucks", e);
+				throw sneakyThrow(e);
 			}
 		}
 	}

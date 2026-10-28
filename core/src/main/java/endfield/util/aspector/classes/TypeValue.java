@@ -1,5 +1,7 @@
 package endfield.util.aspector.classes;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 public class TypeValue extends AnnotationValue<Class<?>, ClassName> {
 	public final ClassName className;
 
@@ -17,7 +19,7 @@ public class TypeValue extends AnnotationValue<Class<?>, ClassName> {
 		try {
 			return Class.forName(className.name());
 		} catch (ClassNotFoundException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 

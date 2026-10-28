@@ -101,17 +101,4 @@ public class DesktopInvokers2 extends DesktopInvokers {
 			return false;
 		}
 	}
-
-	public static void test() {
-		try {
-			DesktopInvokers2 test = new DesktopInvokers2();
-
-			Log.info(test.findVarHandle(Test.class, "str", String.class).getClass());
-			Log.info(test.findStaticVarHandle(Test.class, "sstr", String.class).getClass());
-			Log.info(test.unreflectVarHandle(Test.class.getDeclaredField("sstr")).getClass());
-			Log.info(test.unreflectSetter(Test.class.getDeclaredField("sstr")).getClass());
-		} catch (Throwable e) {
-			Log.err(e);
-		}
-	}
 }

@@ -20,30 +20,41 @@ public class FunctionType implements Poolable {
 	static final Pool<FunctionType> recyclePool = Pools.get(FunctionType.class, FunctionType::new);
 
 	String name;
-	Class<?>[] paramType;
+	Class<?>[] ptypes;
 	int hash;
 
 	FunctionType() {
 		name = "";
-		paramType = Constant.EMPTY_CLASS;
+		ptypes = Constant.EMPTY_CLASS;
 	}
 
 	FunctionType(String key, Class<?>[] types) {
 		name = key;
-		paramType = types;
-		hash = 31 * key.hashCode() + Arrays.hashCode(types);
+		ptypes = types;
+
+		int h = 31 * key.hashCode();
+		for (Class<?> type : types)
+			h = 31 * h + type.hashCode();
+
+		hash = h;
 	}
 
-	public static FunctionType inst(String name, Class<?>... paramType) {
+	public static FunctionType inst(String name, Class<?>... types) {
 		FunctionType res = recyclePool.obtain();
 		res.name = name;
-		res.paramType = paramType;
-		res.hash = 31 * name.hashCode() + Arrays.hashCode(paramType);
+		res.ptypes = types;
+
+		int h = 31 * name.hashCode();
+		for (Class<?> type : types)
+			h = 31 * h + type.hashCode();
+
+		res.hash = h;
+
 		return res;
 	}
 
 	public static FunctionType inst(String name, Object... param) {
-		return inst(name, Reflections.unwrapped(Reflections.toTypes(param)));
+		return inst(name, Reflections.toTypesUnwrapped(param));
 	}
 
 	public static FunctionType from(String name, MethodType type) {
@@ -69,25 +80,27 @@ public class FunctionType implements Poolable {
 	}
 
 	public boolean match(String key, Object... args) {
-		return name.equals(key) && Reflections.match(paramType, args);
+		return name.equals(key) && Reflections.match(ptypes, args);
 	}
 
 	public boolean match(String key, Class<?>... types) {
-		return name.equals(key) && Reflections.match(paramType, types);
+		return name.equals(key) && Reflections.match(ptypes, types);
 	}
 
 	public boolean match(FunctionType type) {
-		return name.equals(type.name) && Reflections.match(paramType, type.paramType);
+		return name.equals(type.name) && Reflections.match(ptypes, type.ptypes);
 	}
 
 	public String name() {
 		return name;
 	}
 
-	public Class<?>[] paramType() {
-		return paramType;
+	/** Parameter class array, do not modify it. */
+	public Class<?>[] parameterTypes() {
+		return ptypes;
 	}
 
+	/** Recycle the object when no longer referenced. */
 	public void recycle() {
 		recyclePool.free(this);
 	}
@@ -95,13 +108,13 @@ public class FunctionType implements Poolable {
 	@Override
 	public void reset() {
 		name = "";
-		paramType = Constant.EMPTY_CLASS;
+		ptypes = Constant.EMPTY_CLASS;
 		hash = 0;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		return this == obj || obj instanceof FunctionType that && name.equals(that.name) && Arrays.equals(paramType, that.paramType);
+		return this == obj || obj instanceof FunctionType that && name.equals(that.name) && Arrays.equals(ptypes, that.ptypes);
 	}
 
 	@Override
@@ -113,12 +126,12 @@ public class FunctionType implements Poolable {
 	public String toString() {
 		StringBuilder buf = new StringBuilder();
 
-		int max = paramType.length;
+		int max = ptypes.length;
 
 		buf.append(name).append('(');
 		int i = 0;
 		while (true) {
-			buf.append(paramType[i++].getName());
+			buf.append(ptypes[i++].getName());
 			if (i == max) return buf.append(')').toString();
 			buf.append(',');
 		}

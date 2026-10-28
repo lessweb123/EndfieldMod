@@ -3,6 +3,8 @@ package endfield.util;
 import java.util.Iterator;
 import java.util.function.Consumer;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 public class ValueList extends ValueMap implements Iterable<ValueMap> {
 	protected CollectionList<ValueMap> list = new CollectionList<>(ValueMap.class);
 
@@ -65,7 +67,7 @@ public class ValueList extends ValueMap implements Iterable<ValueMap> {
 			out.list = list.copy();
 			return out;
 		} catch (CloneNotSupportedException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 }

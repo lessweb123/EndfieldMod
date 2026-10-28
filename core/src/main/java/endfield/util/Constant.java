@@ -9,6 +9,7 @@ import arc.func.Floatc;
 import arc.func.Floatc2;
 import arc.func.Floatp;
 import arc.func.Func;
+import arc.func.Intp;
 import arc.func.Prov;
 import endfield.func.Doublep;
 import mindustry.gen.Building;
@@ -64,6 +65,18 @@ public final class Constant {
 	private Constant() {}
 
 	public static <T> Prov<T> prov(T value) {
+		return () -> value;
+	}
+
+	public static Intp intp(int value) {
+		return () -> value;
+	}
+
+	public static Floatp floatp(float value) {
+		return () -> value;
+	}
+
+	public static Doublep doublep(double value) {
 		return () -> value;
 	}
 

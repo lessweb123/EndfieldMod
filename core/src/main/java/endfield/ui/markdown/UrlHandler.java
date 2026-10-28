@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 public interface UrlHandler {
 	List<String> matchedSchemes();
 
@@ -63,7 +65,7 @@ public interface UrlHandler {
 			try {
 				return new FileInputStream(file);
 			} catch (FileNotFoundException e) {
-				throw new RuntimeException(e);
+				throw sneakyThrow(e);
 			}
 		}
 	}

@@ -11,6 +11,8 @@ import mindustry.gen.Building;
 import mindustry.graphics.Pal;
 import mindustry.world.draw.DrawBlock;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 public class DrawScanLine extends DrawBlock implements Cloneable {
 	//public float lineLength = 12;
 	public float lineStroke = 0.786f;
@@ -60,8 +62,7 @@ public class DrawScanLine extends DrawBlock implements Cloneable {
 		try {
 			return (DrawScanLine) super.clone();
 		} catch (CloneNotSupportedException e) {
-			//I am disgusted
-			throw new RuntimeException("java sucks", e);
+			throw sneakyThrow(e);
 		}
 	}
 }

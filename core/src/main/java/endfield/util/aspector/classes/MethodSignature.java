@@ -2,6 +2,7 @@ package endfield.util.aspector.classes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class MethodSignature {
@@ -11,7 +12,7 @@ public class MethodSignature {
 	public final List<ClassName> paramTypes;
 	public final ClassName returnType;
 
-	int hash = -1;
+	int hash;
 
 	public MethodSignature(String metName, List<ClassName> parTypes, ClassName retType) {
 		methodName = metName;
@@ -105,25 +106,21 @@ public class MethodSignature {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) return true;
-
-		if (!(obj instanceof MethodSignature other)) return false;
-
-		if (!methodName.equals(other.methodName)) return false;
-		if (!paramTypes.equals(other.paramTypes)) return false;
-		return returnType.equals(other.returnType);
+		return this == obj || obj instanceof MethodSignature that &&
+				methodName.equals(that.methodName) &&
+				paramTypes.equals(that.paramTypes) &&
+				returnType.equals(that.returnType);
 	}
 
 	@Override
 	public int hashCode() {
-		if (hash != -1) return hash;
+		int h = hash;
 
-		int result = methodName.hashCode();
-		result = 31 * result + paramTypes.hashCode();
-		result = 31 * result + returnType.hashCode();
-		hash = result;
+		if (h == 0) {
+			h = hash = Objects.hash(methodName, paramTypes, returnType);
+		}
 
-		return result;
+		return h;
 	}
 
 	public String jvmDescriptor() {

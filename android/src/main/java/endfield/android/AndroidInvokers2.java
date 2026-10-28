@@ -181,38 +181,6 @@ public class AndroidInvokers2 extends AndroidInvokers {
 		}
 	}
 
-	public static void test() {
-		try {
-			AndroidInvokers2 invokers = new AndroidInvokers2();
-
-			Helper helper = new Helper();
-
-			VarHandle sj = invokers.findStaticVarHandle(Helper.class, "sj", String.class);
-			VarHandle j = invokers.findVarHandle(Helper.class, "j", String.class);
-
-			sj.set("sj");
-			j.set(helper, "j");
-
-			Log.info((String) sj.get());
-			Log.info((String) j.get(helper));
-		} catch (Exception e) {
-			Log.err(e);
-		}
-	}
-
-	public static void test2() {
-		try {
-			Method alignedMask = VarHandle.class.getDeclaredMethod("alignedAccessModesBitMask", Class.class, boolean.class);
-			alignedMask.setAccessible(true);
-
-			for (Class<?> type : new Class<?>[]{boolean.class, char.class, byte.class, short.class, int.class, long.class, float.class, double.class, Object.class, String.class, Class.class}) {
-				Log.info("alignedAccessModesBitMask: @ - @ @", type, Integer.toHexString((int) alignedMask.invoke(null, type, false)), Integer.toHexString(alignedAccessModesBitMask(type, false)));
-			}
-		} catch (Exception e) {
-			Log.err(e);
-		}
-	}
-
 	public static int alignedAccessModesBitMask(Class<?> varType, boolean isFinal) {
 		int bitMask = 2147483647;
 
@@ -227,11 +195,5 @@ public class AndroidInvokers2 extends AndroidInvokers {
 			bitMask &= ~2143289344;
 		}
 		return bitMask;
-	}
-
-	public static class Helper implements Cloneable {
-		public static final String sj = "";
-
-		public final String j = "";
 	}
 }

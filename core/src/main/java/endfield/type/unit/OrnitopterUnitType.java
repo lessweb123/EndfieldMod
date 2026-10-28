@@ -15,6 +15,8 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.MultiPacker;
 import mindustry.world.meta.Env;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 public class OrnitopterUnitType extends UnitType2 {
 	public final Seq<Blade> blades = new Seq<>(Blade.class);
 
@@ -151,7 +153,7 @@ public class OrnitopterUnitType extends UnitType2 {
 			try {
 				return (Blade) super.clone();
 			} catch (CloneNotSupportedException e) {
-				throw new RuntimeException("java sucks", e);
+				throw sneakyThrow(e);
 			}
 		}
 	}

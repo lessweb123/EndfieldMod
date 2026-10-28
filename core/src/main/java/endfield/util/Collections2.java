@@ -27,21 +27,32 @@ public final class Collections2 {
 		}
 	}
 
-	public static <T> List<T> plus(Collection<T> ca, Collection<T> cb) {
-		ArrayList<T> result = new ArrayList<>((ca == null ? 0 : ca.size()) + (cb == null ? 0 : cb.size()));
+	public static <T> List<T> plus(Collection<T> c1, Collection<T> c2) {
+		ArrayList<T> result = new ArrayList<>((c1 == null ? 0 : c1.size()) + (c2 == null ? 0 : c2.size()));
 
-		if (ca != null) result.addAll(ca);
-		if (cb != null) result.addAll(cb);
+		if (c1 != null) result.addAll(c1);
+		if (c2 != null) result.addAll(c2);
 
 		return result;
 	}
 
-	public static <T> List<T> plus(Collection<T> ca, Collection<T> cb, Collection<T> cc) {
-		ArrayList<T> result = new ArrayList<>((ca == null ? 0 : ca.size()) + (cb == null ? 0 : cb.size()) + (cc == null ? 0 : cc.size()));
+	public static <T> List<T> plus(Collection<T> c1, Collection<T> c2, Collection<T> c3) {
+		ArrayList<T> result = new ArrayList<>((c1 == null ? 0 : c1.size()) + (c2 == null ? 0 : c2.size()) + (c3 == null ? 0 : c3.size()));
 
-		if (ca != null) result.addAll(ca);
-		if (cb != null) result.addAll(cb);
-		if (cc != null) result.addAll(cc);
+		if (c1 != null) result.addAll(c1);
+		if (c2 != null) result.addAll(c2);
+		if (c3 != null) result.addAll(c3);
+
+		return result;
+	}
+
+	public static <T> List<T> plus(Collection<T> c1, Collection<T> c2, Collection<T> c3, Collection<T> c4) {
+		ArrayList<T> result = new ArrayList<>((c1 == null ? 0 : c1.size()) + (c2 == null ? 0 : c2.size()) + (c3 == null ? 0 : c3.size()) + (c4 == null ? 0 : c4.size()));
+
+		if (c1 != null) result.addAll(c1);
+		if (c2 != null) result.addAll(c2);
+		if (c3 != null) result.addAll(c3);
+		if (c4 != null) result.addAll(c4);
 
 		return result;
 	}

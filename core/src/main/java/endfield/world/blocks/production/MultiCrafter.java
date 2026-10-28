@@ -60,6 +60,8 @@ import mindustry.world.meta.Stats;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 /**
  * MultiCrafter. You can freely choose to change the production formula.
  *
@@ -882,7 +884,7 @@ public class MultiCrafter extends Block {
 			try {
 				return (CraftPlan) super.clone();
 			} catch (CloneNotSupportedException e) {
-				throw new RuntimeException(e);
+				throw sneakyThrow(e);
 			}
 		}
 	}

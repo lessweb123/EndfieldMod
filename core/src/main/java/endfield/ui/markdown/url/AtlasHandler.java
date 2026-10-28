@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.List;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 public class AtlasHandler implements UrlHandler {
 	Shader shader = new Shader(
 			"""
@@ -86,7 +88,7 @@ public class AtlasHandler implements UrlHandler {
 
 			return new ByteArrayHandle(res.toByteArray());
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 }

@@ -471,9 +471,9 @@ public class CollectionList<E> extends AbstractList<E> implements Eachable<E>, C
 
 		if (c instanceof CollectionList<? extends E> list) {
 			return addAll(list.items, 0, list.size);
+		} else {
+			return super.addAll(c);
 		}
-
-		return super.addAll(c);
 	}
 
 	public boolean addAll(Iterable<? extends E> items) {
@@ -559,7 +559,17 @@ public class CollectionList<E> extends AbstractList<E> implements Eachable<E>, C
 
 	@Override
 	public boolean containsAll(Collection<?> c) {
-		return containsAll(c, false);
+		if (c instanceof CollectionList<?> list) {
+			Object[] others = list.items;
+
+			for (int i = 0; i < list.size; i++) {
+				if (!contains(others[i])) {
+					return false;
+				}
+			}
+			return true;
+		}
+		return super.containsAll(c);
 	}
 
 	public boolean containsAll(Collection<?> c, boolean identity) {
@@ -578,7 +588,16 @@ public class CollectionList<E> extends AbstractList<E> implements Eachable<E>, C
 
 	@Override
 	public boolean contains(Object o) {
-		return contains(o, false);
+		E[] es = items;
+		int i = size - 1;
+		if (o == null) {
+			while (i >= 0)
+				if (es[i--] == null) return true;
+		} else {
+			while (i >= 0)
+				if (o.equals(es[i--])) return true;
+		}
+		return false;
 	}
 
 	public boolean contains(Object o, boolean identity) {

@@ -1,5 +1,7 @@
 package endfield.util;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 public class ValueMap implements Cloneable {
 	protected float floatValue;
 	protected int intValue;
@@ -26,7 +28,7 @@ public class ValueMap implements Cloneable {
 			out.map = map.copy();
 			return out;
 		} catch (CloneNotSupportedException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 

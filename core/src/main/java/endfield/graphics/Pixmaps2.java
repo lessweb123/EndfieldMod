@@ -11,8 +11,6 @@ import arc.math.Mathf;
 import endfield.func.IntBoolf;
 import endfield.func.Intf2;
 
-import java.io.File;
-
 import static endfield.Vars2.imageHandle;
 
 public final class Pixmaps2 {
@@ -160,7 +158,31 @@ public final class Pixmaps2 {
 		return imageHandle.decode(data);
 	}
 
-	public static boolean isSupported(String mimeType) {
+	public static boolean isSupported(Fi file) {
+		return file.exists() && isSupported(file.extension());
+	}
+
+	public static boolean isSupported(String extension) {
+		if (extension == null) return false;
+
+		String mimeType;
+
+		switch (extension.toLowerCase()) {
+			case "jpg", "jpeg" -> mimeType = "image/jpeg";
+			case "png" -> mimeType = "image/png";
+			case "gif" -> mimeType = "image/gif";
+			case "webp" -> mimeType = "image/webp";
+			case "heic" -> mimeType = "image/heic";
+			case "bmp" -> mimeType = "image/bmp";
+			case "tiff" -> mimeType = "image/tiff";
+			case "svg" -> mimeType = "image/svg+xml";
+			case "ico" -> mimeType = "image/x-icon";
+			case "avif" -> mimeType = "image/avif";
+			default -> {
+				return false;
+			}
+		};
+
 		return imageHandle.isSupported(mimeType);
 	}
 }

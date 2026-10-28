@@ -47,11 +47,11 @@ public class CombinedKeys implements Serializable {
 
 	@Override
 	public int hashCode() {
-		int res = key.hashCode();
-		res = res * 31 + Boolean.hashCode(isShift);
-		res = res * 31 + Boolean.hashCode(isAlt);
-		res = res * 31 + Boolean.hashCode(isCtrl);
-		return res;
+		int hash = key.hashCode();
+		hash = hash * 31 + Boolean.hashCode(isShift);
+		hash = hash * 31 + Boolean.hashCode(isAlt);
+		hash = hash * 31 + Boolean.hashCode(isCtrl);
+		return hash;
 	}
 
 	@Override

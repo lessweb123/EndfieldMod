@@ -5,6 +5,8 @@ import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.type.PayloadStack;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 public class Recipe implements Cloneable {
 	public static final Recipe empty = new Recipe();
 
@@ -40,7 +42,7 @@ public class Recipe implements Cloneable {
 		try {
 			return (Recipe) super.clone();
 		} catch (CloneNotSupportedException e) {
-			throw new RuntimeException(e);
+			throw sneakyThrow(e);
 		}
 	}
 }

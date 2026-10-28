@@ -34,6 +34,12 @@ public class CharSeq implements CharSequence, Appendable, Cloneable {
 		this(true, array, 0, array.length);
 	}
 
+	public CharSeq(String keys) {
+		ordered = true;
+		size = keys.length();
+		items = keys.toCharArray();
+	}
+
 	public CharSeq(boolean ordered, char[] array, int startIndex, int count) {
 		this(ordered, count);
 		size = count;
@@ -303,8 +309,10 @@ public class CharSeq implements CharSequence, Appendable, Cloneable {
 			throw new StringIndexOutOfBoundsException(Strings.format("start @, end @, size @", start, end, size));
 		if (start == end) return new CharSeq(0);
 
-		CharSeq out = new CharSeq( end - start);
-		System.arraycopy(items, start, out.items, 0, end - start);
+		int length = end - start;
+		CharSeq out = new CharSeq(length);
+		out.size = length;
+		System.arraycopy(items, start, out.items, 0, length);
 		return out;
 	}
 

@@ -19,6 +19,8 @@ import mindustry.gen.Tex;
 import mindustry.ui.Bar;
 import mindustry.ui.Fonts;
 
+import static endfield.util.GetKt.sneakyThrow;
+
 public class MultiBar extends Bar {
 	static final Rect scissor = new Rect();
 
@@ -182,7 +184,7 @@ public class MultiBar extends Bar {
 			try {
 				return (BarPart) super.clone();
 			} catch (CloneNotSupportedException e) {
-				throw new RuntimeException(e);
+				throw sneakyThrow(e);
 			}
 		}
 	}

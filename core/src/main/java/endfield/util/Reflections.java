@@ -291,6 +291,32 @@ public final class Reflections {
 		return types;
 	}
 
+	public static Class<?>[] toTypesUnwrapped(Object... args) {
+		if (args == null || args.length == 0) return Constant.EMPTY_CLASS;
+
+		Class<?>[] types = new Class[args.length];
+
+		for (int i = 0; i < types.length; i++) {
+			Object object = args[i];
+			types[i] = object == null ? void.class : unwrapped(object.getClass());
+		}
+
+		return types;
+	}
+
+	public static Class<?>[] toTypesWrapper(Object... args) {
+		if (args == null || args.length == 0) return Constant.EMPTY_CLASS;
+
+		Class<?>[] types = new Class[args.length];
+
+		for (int i = 0; i < types.length; i++) {
+			Object object = args[i];
+			types[i] = object == null ? void.class : wrapper(object.getClass());
+		}
+
+		return types;
+	}
+
 	public static boolean match(Class<?>[] sourceTypes, Object... args) {
 		if (sourceTypes.length != args.length) return false;
 
