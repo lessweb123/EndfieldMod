@@ -82,7 +82,7 @@ public class ClassName {
 			case "long" -> "J";
 			case "float" -> "F";
 			case "double" -> "D";
-			default -> internalName.startsWith("[") ? internalName : "L" + internalName + ";";
+			default -> internalName.startsWith("[") ? internalName : 'L' + internalName + ';';
 		};
 	}
 
@@ -103,7 +103,7 @@ public class ClassName {
 	}
 
 	public static ClassName byName(String name) {
-		return byDescriptor(internalToDesc(name.replace(".", "/")));
+		return byDescriptor(internalToDesc(name.replace('.', '/')));
 	}
 
 	public String descriptor() {
@@ -115,15 +115,15 @@ public class ClassName {
 	}
 
 	public String name() {
-		return descToInternal(descriptor).replace("/", ".");
+		return descToInternal(descriptor).replace('/', '.');
 	}
 
 	public String simpleName() {
-		return Strings2.substringAfterLast(name(), ".");
+		return Strings2.substringAfterLast(name(), '.');
 	}
 
 	public String packageName() {
-		return Strings2.substringBeforeLast(name(), ".");
+		return Strings2.substringBeforeLast(name(), '.');
 	}
 
 	public boolean isPrimitive() {
@@ -135,7 +135,7 @@ public class ClassName {
 	}
 
 	public ClassName componentName() {
-		return byDescriptor(Strings2.substringAfter(descriptor, "["));
+		return byDescriptor(Strings2.substringAfter(descriptor, '['));
 	}
 
 	public ClassName arrayName() {

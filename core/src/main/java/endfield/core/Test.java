@@ -31,6 +31,7 @@ import java.lang.annotation.Target;
 import java.lang.invoke.MethodType;
 import java.lang.invoke.VarHandle.AccessMode;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Random;
 
 /** Call the test on the console. */
@@ -145,8 +146,10 @@ public class Test extends @Stub Random {
 
 	public static void test8() {
 		try {
+			Class<?>[] matchParamTypes = {boolean.class, char.class, byte.class, short.class, int.class, long.class, float.class, double.class};
 			MethodHandler.invokeStatic(Test.class, "print");
 			Log.info(MethodHandler.<String>invokeStatic(Test.class, "match", false, '\u0000', (byte) 1, (short) 1, 1, 1l, 1f, 1d));
+			Log.info(MethodHandler.<String>invokeStaticTyped(Test.class, "match", matchParamTypes, false, '\u0000', (byte) 1, (short) 1, 1, 1l, 1f, 1d));
 		} catch (Exception e) {
 			Log.err(e);
 		}
@@ -201,6 +204,16 @@ public class Test extends @Stub Random {
 		@Override
 		public String toString() {
 			return "TestData{intValue=" + intValue + ", floatValue=" + floatValue + ", stringValue=" + stringValue + "}";
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			return obj == this || obj instanceof TestData d && intValue == d.intValue && floatValue == d.floatValue && Objects.equals(stringValue, d.stringValue);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(intValue, floatValue, stringValue);
 		}
 	}
 

@@ -105,11 +105,11 @@ public final class Reflections {
 	 * @throws RuntimeException Any exception that occurs in reflection
 	 */
 	public static <T> Prov<T> supply(Class<T> type, String name, Class<?>[] parameterTypes, T object, Object... args) {
-		Method method = ClassHandler.getMethod(type, name, parameterTypes);
-		MethodAccessor accessor = getMethodAccessor(method);
-
 		if (!match(parameterTypes, args))
 			throw new IllegalArgumentException(Arrays.toString(toTypes(args)) + " cannot be assigned to " + Arrays.toString(parameterTypes));
+
+		Method method = ClassHandler.getMethod(type, name, parameterTypes);
+		MethodAccessor accessor = getMethodAccessor(method);
 
 		return () -> accessor.invoke(object, args);
 	}
@@ -120,11 +120,11 @@ public final class Reflections {
 	 * @throws RuntimeException Any exception that occurs in reflection
 	 */
 	public static <T> Prov<T> supply(Class<T> type, Class<?>[] parameterTypes, Object... args) {
-		Constructor<T> constructor = ClassHandler.getConstructor(type, parameterTypes);
-		ConstructorAccessor<T> accessor = getConstructorAccessor(constructor);
-
 		if (!match(parameterTypes, args))
 			throw new IllegalArgumentException(Arrays.toString(toTypes(args)) + " cannot be assigned to " + Arrays.toString(parameterTypes));
+
+		Constructor<T> constructor = ClassHandler.getConstructor(type, parameterTypes);
+		ConstructorAccessor<T> accessor = getConstructorAccessor(constructor);
 
 		return () -> accessor.newInstance(args);
 	}

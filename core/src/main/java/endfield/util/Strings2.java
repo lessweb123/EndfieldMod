@@ -3,7 +3,6 @@ package endfield.util;
 import arc.Core;
 import arc.math.Mathf;
 import arc.util.Strings;
-import kotlin.text.StringsKt;
 
 import java.util.Arrays;
 import java.util.regex.MatchResult;
@@ -36,6 +35,7 @@ public final class Strings2 {
 	 */
 	public static String repeat(char key, int count) {
 		if (count < 0) throw new IllegalArgumentException("Count must be non-negative, but was " + count + ".");
+		if (count == 0) return "";
 
 		char[] data = new char[count];
 		Arrays.fill(data, key);
@@ -45,6 +45,7 @@ public final class Strings2 {
 
 	public static String repeat(String key, int count) {
 		if (count < 0) throw new IllegalArgumentException("Count must be non-negative, but was " + count + ".");
+		if (count == 0) return "";
 
 		StringBuilder buf = new StringBuilder(key.length() * count);
 		for (int i = 0; i < count; i++) buf.append(key);
@@ -52,16 +53,34 @@ public final class Strings2 {
 		return buf.toString();
 	}
 
+	public static String substringAfter(String str, char delimiter) {
+		int index = str.indexOf(delimiter);
+		return index == -1 ? str : str.substring(index + 1);
+	}
+
 	public static String substringAfter(String str, String delimiter) {
-		return StringsKt.substringAfter(str, delimiter, str);
+		int index = str.indexOf(delimiter);
+		return index == -1 ? str : str.substring(index + delimiter.length());
+	}
+
+	public static String substringAfterLast(String str, char delimiter) {
+		int index = str.lastIndexOf(delimiter);
+		return index == -1 ? str : str.substring(index + 1);
 	}
 
 	public static String substringAfterLast(String str, String delimiter) {
-		return StringsKt.substringAfterLast(str, delimiter, str);
+		int index = str.lastIndexOf(delimiter);
+		return index == -1 ? str : str.substring(index + delimiter.length());
+	}
+
+	public static String substringBeforeLast(String str, char delimiter) {
+		int index = str.lastIndexOf(delimiter);
+		return index == -1 ? str : str.substring(0, index);
 	}
 
 	public static String substringBeforeLast(String str, String delimiter) {
-		return StringsKt.substringBeforeLast(str, delimiter, str);
+		int index = str.lastIndexOf(delimiter);
+		return index == -1 ? str : str.substring(0, index);
 	}
 
 	public static MatchResult matchAt(Pattern pattern, String input, int index) {
