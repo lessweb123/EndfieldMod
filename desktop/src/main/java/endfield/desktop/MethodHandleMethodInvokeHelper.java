@@ -163,7 +163,7 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T invoke(Object object, String name, Object... args) {
-		FunctionType type = FunctionType.inst(name, args);
+		FunctionType type = FunctionType.args(name, args);
 		try {
 			return (T) getMethod(object.getClass(), type).invokeExact(object, args);
 		} catch (Throwable e) {
@@ -176,7 +176,7 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T invokeStatic(Class<?> clazz, String name, Object... args) {
-		FunctionType type = FunctionType.inst(name, args);
+		FunctionType type = FunctionType.args(name, args);
 		try {
 			return (T) getMethod(clazz, type).invokeExact(args);
 		} catch (Throwable e) {
@@ -189,7 +189,7 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T newInstance(Class<T> clazz, Object... args) {
-		FunctionType type = FunctionType.inst("<init>", args);
+		FunctionType type = FunctionType.args("<init>", args);
 		try {
 			return (T) getConstructor(clazz, type).invokeExact(args);
 		} catch (Throwable e) {
@@ -215,7 +215,7 @@ public class MethodHandleMethodInvokeHelper implements MethodInvokeHelper {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T invokeStaticTyped(Class<?> clazz, String name, Class<?>[] parameterTypes, Object... args) {
-		FunctionType type = FunctionType.inst("<init>", parameterTypes);
+		FunctionType type = FunctionType.inst(name, parameterTypes);
 		try {
 			return (T) getMethod(clazz, type).invokeExact(args);
 		} catch (Throwable e) {

@@ -1,6 +1,7 @@
 package endfield.core;
 
 import arc.util.Log;
+import endfield.util.Constant;
 import endfield.util.HandleSupport;
 import endfield.util.MethodHandleInvoker;
 import endfield.util.MethodInvoker;
@@ -147,9 +148,10 @@ public class Test extends @Stub Random {
 	public static void test8() {
 		try {
 			Class<?>[] matchParamTypes = {boolean.class, char.class, byte.class, short.class, int.class, long.class, float.class, double.class};
-			MethodHandler.invokeStatic(Test.class, "print");
-			Log.info(MethodHandler.<String>invokeStatic(Test.class, "match", false, '\u0000', (byte) 1, (short) 1, 1, 1l, 1f, 1d));
+			Class<?>[] matchesParamTypes = {Object[].class};
+			Log.info(MethodHandler.invokeStaticTyped(Test.class, "print", Constant.EMPTY_CLASS));
 			Log.info(MethodHandler.<String>invokeStaticTyped(Test.class, "match", matchParamTypes, false, '\u0000', (byte) 1, (short) 1, 1, 1l, 1f, 1d));
+			Log.info(MethodHandler.<String>invokeStaticTyped(Test.class, "matches", matchesParamTypes, (Object) new Object[]{false, '\u0000', (byte) 1, (short) 1, 1, 1l, 1f, 1d}));
 		} catch (Exception e) {
 			Log.err(e);
 		}
@@ -162,6 +164,14 @@ public class Test extends @Stub Random {
 	public static String match(boolean bool, char c, byte b, short s, int i, long l, float f, double d) {
 		StringBuilder builder = new StringBuilder();
 		return builder.append(bool).append(c).append(b).append(s).append(i).append(l).append(f).append(d).toString();
+	}
+
+	public static String matches(Object... args) {
+		StringBuilder builder = new StringBuilder();
+		for (Object arg : args) {
+			builder.append(arg);
+		}
+		return builder.toString();
 	}
 
 	public static class A {
@@ -188,7 +198,7 @@ public class Test extends @Stub Random {
 		A, B, C
 	}
 
-	public static class TestData {
+	public static class TestData implements Cloneable {
 		public int intValue;
 		public float floatValue;
 		public String stringValue;

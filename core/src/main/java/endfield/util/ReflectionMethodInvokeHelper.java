@@ -114,7 +114,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T invoke(Object object, String name, Object... args) {
-		FunctionType type = FunctionType.inst(name, args);
+		FunctionType type = FunctionType.args(name, args);
 		try {
 			return (T) getMethod(object.getClass(), type).invoke(object, args);
 		} catch (IllegalAccessException | InvocationTargetException e) {
@@ -127,7 +127,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T invokeStatic(Class<?> clazz, String name, Object... args) {
-		FunctionType type = FunctionType.inst(name, args);
+		FunctionType type = FunctionType.args(name, args);
 		try {
 			return (T) getMethod(clazz, type).invoke(null, args);
 		} catch (IllegalAccessException | InvocationTargetException e) {
@@ -139,7 +139,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 
 	@Override
 	public <T> T newInstance(Class<T> clazz, Object... args) {
-		FunctionType type = FunctionType.inst("<init>", args);
+		FunctionType type = FunctionType.args("<init>", args);
 		try {
 			return getConstructor(clazz, type).newInstance(args);
 		} catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {

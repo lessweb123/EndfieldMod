@@ -13,7 +13,7 @@ abstract class ReflectionMethodInvoker(@JvmField val method: Method) : MethodInv
  *
  * @since 1.0.10
  */
-class ReflectionVirtualMethodInvoker(method: Method) : ReflectionMethodInvoker(method) {
+open class ReflectionVirtualMethodInvoker(method: Method) : ReflectionMethodInvoker(method) {
 	override fun <T> invoke(): T {
 		// The virtual method must have an object parameter
 		throw WrongMethodTypeException("wrong number of arguments")
@@ -105,7 +105,7 @@ class ReflectionVirtualMethodInvoker(method: Method) : ReflectionMethodInvoker(m
 		method.invoke(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22) as T
 }
 
-class ReflectionStaticMethodInvoker(method: Method) : ReflectionMethodInvoker(method) {
+open class ReflectionStaticMethodInvoker(method: Method) : ReflectionMethodInvoker(method) {
 	override fun <T> invoke(): T = method.invoke(null) as T
 
 	override fun <T, P0> invoke(p0: P0): T = method.invoke(null, p0) as T

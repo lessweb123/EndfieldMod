@@ -53,7 +53,7 @@ public class FunctionType implements Poolable {
 		return res;
 	}
 
-	public static FunctionType inst(String name, Object... param) {
+	public static FunctionType args(String name, Object... param) {
 		return inst(name, Reflections.toTypesUnwrapped(param));
 	}
 
@@ -65,8 +65,8 @@ public class FunctionType implements Poolable {
 		return inst(method.getName(), method.getParameterTypes());
 	}
 
-	public static FunctionType from(Constructor<?> method) {
-		return inst("<init>", method.getParameterTypes());
+	public static FunctionType from(Constructor<?> constructor) {
+		return inst("<init>", constructor.getParameterTypes());
 	}
 
 	public static FunctionType generic(String name, int argCount) {
@@ -124,16 +124,13 @@ public class FunctionType implements Poolable {
 
 	@Override
 	public String toString() {
+		if (ptypes.length == 0) return name + "()";
+
 		StringBuilder buf = new StringBuilder();
-
-		int max = ptypes.length;
-
-		buf.append(name).append('(');
-		int i = 0;
-		while (true) {
-			buf.append(ptypes[i++].getName());
-			if (i == max) return buf.append(')').toString();
-			buf.append(',');
+		buf.append(name).append('(').append(ptypes[0].getName());
+		for (int i = 1; i < ptypes.length; i++) {
+			buf.append(',').append(ptypes[i].getName());
 		}
+		return buf.append(')').toString();
 	}
 }

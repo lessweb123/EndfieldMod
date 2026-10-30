@@ -244,7 +244,7 @@ public final class Strings2 {
 			n++;
 		}
 
-		return Strings.fixed(v, 2) + "[lightgray]" + byteUnit[n];
+		return Strings.fixedBuilder(v, 2).append("[lightgray]").append(byteUnit[n]).toString();
 	}
 
 	public interface Selector {
