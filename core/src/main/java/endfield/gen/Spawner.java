@@ -9,6 +9,7 @@ import arc.math.Mathf;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 import arc.util.Interval;
+import arc.util.Nullable;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
@@ -66,7 +67,7 @@ public class Spawner extends BaseEntity implements Syncc, Timedc, IScaled, Rotc 
 
 	public float trailProgress = Mathf.random(360);
 	public long lastUpdated, updateSpacing;
-	public SoundLoop soundLoop;
+	public @Nullable SoundLoop soundLoop;
 	public Unit toSpawn;
 	public Vec2 commandPos = new Vec2(Float.NaN, Float.NaN);
 	public float trailWidth = 3f;

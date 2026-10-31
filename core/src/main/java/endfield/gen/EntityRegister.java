@@ -44,6 +44,7 @@ public final class EntityRegister {
 		classIdMap.put(type, EntityMapping.register(name, prov));
 	}
 
+	@Obsolete(since = "1.0.10")
 	public static <T extends Content> T content(String name, Class<? extends Entityc> type, Func<String, ? extends T> create) {
 		T content = create.get(name);
 

@@ -4,9 +4,8 @@ import arc.Core;
 import arc.input.KeyCode;
 import arc.scene.event.InputEvent;
 import arc.scene.event.InputListener;
+import arc.struct.ObjectMap;
 import arc.struct.Seq;
-
-import java.util.Map;
 
 import static endfield.input.CombinedKeys.isControllerKey;
 
@@ -29,7 +28,7 @@ public class CombineKeyListener<T> extends InputListener {
 		if (isControllerKey(keycode)) return true;
 
 		if (!fuzzed) {
-			Map<CombinedKeys, T> map = keysTree.getTargetBindings(Core.input);
+			ObjectMap<CombinedKeys, T> map = keysTree.getTargetBindings(Core.input);
 			if (map.isEmpty()) return false;
 
 			CombinedKeys keys = new CombinedKeys(keysDown.toArray());
@@ -54,7 +53,7 @@ public class CombineKeyListener<T> extends InputListener {
 		}
 
 		if (!fuzzed) {
-			Map<CombinedKeys, T> map = keysTree.getTargetBindings(Core.input);
+			ObjectMap<CombinedKeys, T> map = keysTree.getTargetBindings(Core.input);
 			if (map.isEmpty()) return false;
 
 			keysDown.add(keycode); // When the button is lifted, it will inevitably listen to the last button that is lifted

@@ -23,13 +23,28 @@ public class CombinedKeys implements Serializable {
 		isAlt = Structs.contains(keys, CombinedKeys::isAlt);
 		isShift = Structs.contains(keys, CombinedKeys::isShift);
 
-		key = Objects.requireNonNull(Structs.find(keys, k -> !isCtrl(k) && !isAlt(k) && !isShift(k)));
+		key = Objects.requireNonNull(Structs.find(keys, k -> !isCtrl(k) && !isAlt(k) && !isShift(k)), "No key specified");
 	}
 
-	boolean filter(Input input) {
+	public final boolean isDown(Input input) {
 		if ((isCtrl && !input.ctrl()) || (!isCtrl && input.alt())) return false;
 		if ((isAlt && !input.alt()) || (!isAlt && input.alt())) return false;
-		return (!isShift || input.shift()) && (isShift || !input.shift());
+		if ((isShift && !input.shift()) || (!isShift && input.shift())) return false;
+		return input.keyDown(key);
+	}
+
+	public final boolean isReleased(Input input) {
+		if ((isCtrl && !input.ctrl()) || (!isCtrl && input.alt())) return false;
+		if ((isAlt && !input.alt()) || (!isAlt && input.alt())) return false;
+		if ((isShift && !input.shift()) || (!isShift && input.shift())) return false;
+		return input.keyRelease(key);
+	}
+
+	public final boolean isTap(Input input) {
+		if ((isCtrl && !input.ctrl()) || (!isCtrl && input.alt())) return false;
+		if ((isAlt && !input.alt()) || (!isAlt && input.alt())) return false;
+		if ((isShift && !input.shift()) || (!isShift && input.shift())) return false;
+		return input.keyTap(key);
 	}
 
 	@Override

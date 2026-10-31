@@ -3,7 +3,7 @@ package endfield.util;
 import java.util.NoSuchElementException;
 
 /** Queue for booleans. */
-public class BoolQueue {
+public class BoolQueue implements Cloneable {
 	/** Number of elements in the queue. */
 	public int size = 0;
 	/** Contains the values in the queue. Head and tail indices go in a circle around this array, wrapping at the end. */
@@ -24,6 +24,17 @@ public class BoolQueue {
 	/** Creates a new Queue which can hold the specified number of values without needing to resize backing array. */
 	public BoolQueue(int initialSize) {
 		values = new boolean[initialSize];
+	}
+
+	public BoolQueue copy() {
+		try {
+			BoolQueue out = (BoolQueue) super.clone();
+
+			out.values = values.clone();
+			return out;
+		} catch (CloneNotSupportedException e) {
+			throw new AssertionError(e);
+		}
 	}
 
 	/**

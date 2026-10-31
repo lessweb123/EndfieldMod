@@ -3,7 +3,7 @@ package endfield.util;
 import java.util.NoSuchElementException;
 
 /** Queue for chars. */
-public class CharQueue {
+public class CharQueue implements Cloneable {
 	/** Number of elements in the queue. */
 	public int size = 0;
 	/** Contains the values in the queue. Head and tail indices go in a circle around this array, wrapping at the end. */
@@ -24,6 +24,17 @@ public class CharQueue {
 	/** Creates a new Queue which can hold the specified number of values without needing to resize backing array. */
 	public CharQueue(int initialSize) {
 		values = new char[initialSize];
+	}
+
+	public CharQueue copy() {
+		try {
+			CharQueue out = (CharQueue) super.clone();
+
+			out.values = values.clone();
+			return out;
+		} catch (CloneNotSupportedException e) {
+			throw new AssertionError(e);
+		}
 	}
 
 	/**

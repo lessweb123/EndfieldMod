@@ -118,6 +118,13 @@ public final class Arrays2 {
 		return null;
 	}
 
+	public static <T> boolean any(Iterable<T> iterable, Boolf<? super T> boolf) {
+		for (T t : iterable) {
+			if (boolf.get(t)) return true;
+		}
+		return false;
+	}
+
 	public static <T> void forEachIndexed(T[] array, IntTBiConsume<? super T> action) {
 		int i = 0;
 		for (T t : array) {

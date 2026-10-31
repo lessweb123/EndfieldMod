@@ -3,7 +3,7 @@ package endfield.util;
 import java.util.NoSuchElementException;
 
 /** Queue for bytes. */
-public class ByteQueue {
+public class ByteQueue implements Cloneable {
 	/** Number of elements in the queue. */
 	public int size = 0;
 	/** Contains the values in the queue. Head and tail indices go in a circle around this array, wrapping at the end. */
@@ -24,6 +24,17 @@ public class ByteQueue {
 	/** Creates a new Queue which can hold the specified number of values without needing to resize backing array. */
 	public ByteQueue(int initialSize) {
 		values = new byte[initialSize];
+	}
+
+	public ByteQueue copy() {
+		try {
+			ByteQueue out = (ByteQueue) super.clone();
+
+			out.values = values.clone();
+			return out;
+		} catch (CloneNotSupportedException e) {
+			throw new AssertionError(e);
+		}
 	}
 
 	/**

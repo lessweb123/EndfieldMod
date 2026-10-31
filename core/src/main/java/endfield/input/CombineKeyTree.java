@@ -1,31 +1,28 @@
 package endfield.input;
 
 import arc.Input;
+import arc.func.Boolf;
 import arc.func.Cons;
 import arc.func.Cons2;
 import arc.input.KeyCode;
+import arc.struct.ObjectMap;
 import arc.util.Nullable;
+import endfield.util.Arrays2;
 import kotlin.Pair;
-import kotlin.collections.MapsKt;
-import kotlin.jvm.functions.Function1;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class CombineKeyTree<T> {
-	final Map<CombinedKeys, T> tempMap = new HashMap<>();
+	final ObjectMap<CombinedKeys, T> tempMap = new ObjectMap<>();
 
-	final Map<CombinedKeys, T> normalBindings = new HashMap<>();
-	final Map<CombinedKeys, T> ctrlBindings = new HashMap<>();
-	final Map<CombinedKeys, T> altBindings = new HashMap<>();
-	final Map<CombinedKeys, T> shiftBindings = new HashMap<>();
-	final Map<CombinedKeys, T> altCtrlBindings = new HashMap<>();
-	final Map<CombinedKeys, T> ctrlShiftBindings = new HashMap<>();
-	final Map<CombinedKeys, T> altShiftBindings = new HashMap<>();
-	final Map<CombinedKeys, T> altCtrlShiftBindings = new HashMap<>();
+	final ObjectMap<CombinedKeys, T> normalBindings = new ObjectMap<>();
+	final ObjectMap<CombinedKeys, T> ctrlBindings = new ObjectMap<>();
+	final ObjectMap<CombinedKeys, T> altBindings = new ObjectMap<>();
+	final ObjectMap<CombinedKeys, T> shiftBindings = new ObjectMap<>();
+	final ObjectMap<CombinedKeys, T> altCtrlBindings = new ObjectMap<>();
+	final ObjectMap<CombinedKeys, T> ctrlShiftBindings = new ObjectMap<>();
+	final ObjectMap<CombinedKeys, T> altShiftBindings = new ObjectMap<>();
+	final ObjectMap<CombinedKeys, T> altCtrlShiftBindings = new ObjectMap<>();
 
-	public void putKeyBinding(CombinedKeys binding, T rec) {
+	public final void putKeyBinding(CombinedKeys binding, T rec) {
 		if (binding.isShift) {
 			if (binding.isAlt && binding.isCtrl) altCtrlShiftBindings.put(binding, rec);
 			else if (binding.isAlt) altShiftBindings.put(binding, rec);
@@ -40,13 +37,13 @@ public class CombineKeyTree<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void putKeyBinds(Pair<CombinedKeys, T>... bindings) {
+	public final void putKeyBinds(Pair<CombinedKeys, T>... bindings) {
 		for (Pair<CombinedKeys, T> binding : bindings) {
 			putKeyBinding(binding.getFirst(), binding.getSecond());
 		}
 	}
 
-	public void clear() {
+	public final void clear() {
 		normalBindings.clear();
 		altBindings.clear();
 		ctrlBindings.clear();
@@ -57,17 +54,17 @@ public class CombineKeyTree<T> {
 		altCtrlShiftBindings.clear();
 	}
 
-	public void each(Cons2<CombinedKeys, T> block) {
-		normalBindings.forEach(block::get);
-		ctrlBindings.forEach(block::get);
-		altBindings.forEach(block::get);
-		altCtrlBindings.forEach(block::get);
-		ctrlShiftBindings.forEach(block::get);
-		altShiftBindings.forEach(block::get);
-		altCtrlShiftBindings.forEach(block::get);
+	public final void each(Cons2<CombinedKeys, T> block) {
+		normalBindings.each(block);
+		ctrlBindings.each(block);
+		altBindings.each(block);
+		altCtrlBindings.each(block);
+		ctrlShiftBindings.each(block);
+		altShiftBindings.each(block);
+		altCtrlShiftBindings.each(block);
 	}
 
-	public boolean containsKeyCode(KeyCode key) {
+	public final boolean containsKeyCode(KeyCode key) {
 		if (key == null) return false;
 
 		if (CombinedKeys.isCtrl(key))
@@ -77,39 +74,39 @@ public class CombineKeyTree<T> {
 		if (CombinedKeys.isShift(key))
 			return !shiftBindings.isEmpty() || !ctrlShiftBindings.isEmpty() || !altShiftBindings.isEmpty() || !altCtrlShiftBindings.isEmpty();
 
-		Function1<Map.Entry<? extends CombinedKeys, ? extends T>, Boolean> func = k -> k.getKey().key == key;
+		Boolf<ObjectMap.Entry<CombinedKeys, T>> func = k -> k.key.key == key;
 
-		return MapsKt.any(normalBindings, func)
-				|| MapsKt.any(ctrlBindings, func)
-				|| MapsKt.any(altBindings, func)
-				|| MapsKt.any(shiftBindings, func)
-				|| MapsKt.any(altCtrlBindings, func)
-				|| MapsKt.any(ctrlShiftBindings, func)
-				|| MapsKt.any(altShiftBindings, func)
-				|| MapsKt.any(altCtrlShiftBindings, func);
+		return Arrays2.any(normalBindings, func)
+				|| Arrays2.any(ctrlBindings, func)
+				|| Arrays2.any(altBindings, func)
+				|| Arrays2.any(shiftBindings, func)
+				|| Arrays2.any(altCtrlBindings, func)
+				|| Arrays2.any(ctrlShiftBindings, func)
+				|| Arrays2.any(altShiftBindings, func)
+				|| Arrays2.any(altCtrlShiftBindings, func);
 	}
 
-	public Map<CombinedKeys, T> getTargetBindings(Input input) {
+	public final ObjectMap<CombinedKeys, T> getTargetBindings(Input input) {
 		return getTargetBindings(input, false);
 	}
 
-	public Map<CombinedKeys, T> getTargetBindings(Input input, boolean fuzzyMatch) {
+	public final ObjectMap<CombinedKeys, T> getTargetBindings(Input input, boolean fuzzyMatch) {
 		return getTargetBindings(input.ctrl(), input.alt(), input.shift(), fuzzyMatch);
 	}
 
-	public Map<CombinedKeys, T> getTargetBindings(CombinedKeys input, boolean fuzzyMatch) {
+	public final ObjectMap<CombinedKeys, T> getTargetBindings(CombinedKeys input, boolean fuzzyMatch) {
 		return getTargetBindings(input.isCtrl, input.isAlt, input.isShift, fuzzyMatch);
 	}
 
-	public Map<CombinedKeys, T> getTargetBindings(CombinedKeys input) {
+	public final ObjectMap<CombinedKeys, T> getTargetBindings(CombinedKeys input) {
 		return getTargetBindings(input, false);
 	}
 
-	public Map<CombinedKeys, T> getTargetBindings(boolean ctrlDown, boolean altDown, boolean shiftDown) {
+	public final ObjectMap<CombinedKeys, T> getTargetBindings(boolean ctrlDown, boolean altDown, boolean shiftDown) {
 		return getTargetBindings(ctrlDown, altDown, shiftDown, false);
 	}
 
-	public Map<CombinedKeys, T> getTargetBindings(boolean ctrlDown, boolean altDown, boolean shiftDown, boolean fuzzyMatch) {
+	public final ObjectMap<CombinedKeys, T> getTargetBindings(boolean ctrlDown, boolean altDown, boolean shiftDown, boolean fuzzyMatch) {
 		tempMap.clear();
 		if (fuzzyMatch) {
 			tempMap.putAll(normalBindings);
@@ -136,60 +133,57 @@ public class CombineKeyTree<T> {
 		}
 	}
 
-	public void eachTargetBindings(Input input, boolean fuzzyMatch, Cons2<CombinedKeys, T> cons) {
-		for (var entry : getTargetBindings(input, fuzzyMatch).entrySet()) cons.get(entry.getKey(), entry.getValue());
+	public final void eachTargetBindings(Input input, boolean fuzzyMatch, Cons2<CombinedKeys, T> cons) {
+		for (var entry : getTargetBindings(input, fuzzyMatch).entries()) cons.get(entry.key, entry.value);
 	}
 
-	public void eachTargetBindings(Input input, Cons2<CombinedKeys, T> cons) {
+	public final void eachTargetBindings(Input input, Cons2<CombinedKeys, T> cons) {
 		eachTargetBindings(input, false, cons);
 	}
 
-	public void eachDown(Input input, boolean fuzzyMatch, Cons<T> cons) {
-		eachTargetBindings(input, fuzzyMatch, (k, r) -> {
-			if (input.keyDown(k.key)) cons.get(r);
-		});
+	public final void eachDown(Input input, boolean fuzzyMatch, Cons<T> cons) {
+		for (var entry : getTargetBindings(input, fuzzyMatch).entries()) {
+			if (input.keyDown(entry.key.key)) cons.get(entry.value);
+		}
 	}
 
-	public void eachRelease(Input input, boolean fuzzyMatch, Cons<T> cons) {
-		eachTargetBindings(input, fuzzyMatch, (k, r) -> {
-			if (input.keyRelease(k.key)) cons.get(r);
-		});
+	public final void eachRelease(Input input, boolean fuzzyMatch, Cons<T> cons) {
+		for (var entry : getTargetBindings(input, fuzzyMatch).entries()) {
+			if (input.keyRelease(entry.key.key)) cons.get(entry.value);
+		}
 	}
 
-	public void eachTap(Input input, boolean fuzzyMatch, Cons<T> cons) {
-		eachTargetBindings(input, fuzzyMatch, (k, r) -> {
-			if (input.keyTap(k.key)) cons.get(r);
-		});
+	public final void eachTap(Input input, boolean fuzzyMatch, Cons<T> cons) {
+		for (var entry : getTargetBindings(input, fuzzyMatch).entries()) {
+			if (input.keyTap(entry.key.key)) cons.get(entry.value);
+		}
 	}
 
-	public @Nullable T checkDown(Input input) {
-		AtomicReference<T> ref = new AtomicReference<>();
-		eachTargetBindings(input, (k, r) -> {
-			if (input.keyDown(k.key)) ref.set(r);
-		});
-		return ref.get();
+	public final @Nullable T checkDown(Input input) {
+		for (var entry : getTargetBindings(input, false).entries()) {
+			if (input.keyDown(entry.key.key)) return entry.value;
+		}
+		return null;
 	}
 
-	public @Nullable T checkRelease(Input input) {
-		AtomicReference<T> ref = new AtomicReference<>();
-		eachTargetBindings(input, (k, r) -> {
-			if (input.keyRelease(k.key)) ref.set(r);
-		});
-		return ref.get();
+	public final @Nullable T checkRelease(Input input) {
+		for (var entry : getTargetBindings(input, false).entries()) {
+			if (input.keyRelease(entry.key.key)) return entry.value;
+		}
+		return null;
 	}
 
-	public @Nullable T checkTap(Input input) {
-		AtomicReference<T> ref = new AtomicReference<>();
-		eachTargetBindings(input, (k, r) -> {
-			if (input.keyTap(k.key)) ref.set(r);
-		});
-		return ref.get();
+	public final @Nullable T checkTap(Input input) {
+		for (var entry : getTargetBindings(input, false).entries()) {
+			if (input.keyTap(entry.key.key)) return entry.value;
+		}
+		return null;
 	}
 
 	@Override
 	public String toString() {
-		var stringBuilder = new StringBuilder();
-		each((keys, rec) -> stringBuilder.append(keys).append(" -> ").append(rec).append(",\n"));
-		return stringBuilder.toString();
+		StringBuilder buf = new StringBuilder();
+		each((keys, rec) -> buf.append(keys).append(" -> ").append(rec).append(",\n"));
+		return buf.toString();
 	}
 }

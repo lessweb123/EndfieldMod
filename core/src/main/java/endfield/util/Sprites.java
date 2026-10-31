@@ -105,7 +105,10 @@ public final class Sprites {
 	 * @throws NegativeArraySizeException If {@code size} or {@code layerCount} is negative.
 	 */
 	public static TextureRegion[][] splitLayers(String name, int size, int width, int height) {
-		TextureRegion region = Core.atlas.find(name);
+		return splitLayers(Core.atlas.find(name), size, width, height);
+	}
+
+	public static TextureRegion[][] splitLayers(TextureRegion region, int size, int width, int height) {
 
 		TextureRegion[][] layers = new TextureRegion[height][width];
 
@@ -130,7 +133,10 @@ public final class Sprites {
 	 * @throws IllegalArgumentException If {@code size} or {@code width} is negative.
 	 */
 	public static TextureRegion[] splitLayer(String name, int size, int width) {
-		TextureRegion region = Core.atlas.find(name);
+		return splitLayer(Core.atlas.find(name), size, width);
+	}
+
+	public static TextureRegion[] splitLayer(TextureRegion region, int size, int width) {
 		TextureRegion[] tiles = new TextureRegion[width];
 
 		for (int i = 0; i < width; i++) {
@@ -140,7 +146,10 @@ public final class Sprites {
 	}
 
 	public static TextureRegion[] splitWidth(String name, int width) {
-		TextureRegion region = Core.atlas.find(name);
+		return splitWidth(Core.atlas.find(name), width);
+	}
+
+	public static TextureRegion[] splitWidth(TextureRegion region, int width) {
 		TextureRegion[] tiles = new TextureRegion[width];
 
 		int size = region.width / width;
@@ -151,7 +160,10 @@ public final class Sprites {
 	}
 
 	public static TextureRegion[] splitLayer(String name, int size) {
-		TextureRegion region = Core.atlas.find(name);
+		return splitLayer(Core.atlas.find(name), size);
+	}
+
+	public static TextureRegion[] splitLayer(TextureRegion region, int size) {
 		int countX = region.width / size;
 		TextureRegion[] tiles = new TextureRegion[countX];
 		for (int i = 0; i < countX; i++) {
@@ -295,6 +307,15 @@ public final class Sprites {
 		TextureRegion[] tiles = new TextureRegion[length];
 		TextureRegion tile = Core.atlas.find("env-error");
 		Arrays.fill(tiles, tile);
+		return tiles;
+	}
+
+	public static TextureRegion[][] errors(int width, int height) {
+		TextureRegion[][] tiles = new TextureRegion[width][height];
+		TextureRegion tile = Core.atlas.find("env-error");
+
+		for (TextureRegion[] t : tiles) Arrays.fill(t, tile);
+
 		return tiles;
 	}
 }

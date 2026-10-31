@@ -2,13 +2,13 @@ package endfield.util;
 
 import java.lang.reflect.Array;
 
-public class CircularQueue<T> {
+public class CircularQueue<T> implements Cloneable {
 	public final Class<?> componentType;
 
-	protected final T[] queue;
+	protected T[] queue;
 	protected int head;
 	protected int tail;
-	protected final int capacity;
+	protected int capacity;
 
 	@SuppressWarnings("unchecked")
 	public CircularQueue(int cap, Class<?> type) {
@@ -17,6 +17,18 @@ public class CircularQueue<T> {
 		queue = (T[]) Array.newInstance(type, cap);
 		head = -1;
 		tail = -1;
+	}
+
+	@SuppressWarnings("unchecked")
+	public CircularQueue<T> copy() {
+		try {
+			CircularQueue<T> out = (CircularQueue<T>) super.clone();
+
+			out.queue = queue.clone();
+			return out;
+		} catch (CloneNotSupportedException e) {
+			throw new AssertionError(e);
+		}
 	}
 
 	public boolean isEmpty() {
