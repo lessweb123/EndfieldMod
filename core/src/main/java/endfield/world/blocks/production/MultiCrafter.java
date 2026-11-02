@@ -759,7 +759,7 @@ public class MultiCrafter extends Block {
 		public ObjectBoolMap<Item> itemFilter = new ObjectBoolMap<>(Item.class);
 		public ObjectBoolMap<Liquid> liquidFilter = new ObjectBoolMap<>(Liquid.class);
 
-		public MultiCrafter owner = null;
+		public MultiCrafter owner;
 
 		/** List for building-up consumption before init(). */
 		public Seq<Consume> consumeBuilder = new Seq<>(Consume.class);

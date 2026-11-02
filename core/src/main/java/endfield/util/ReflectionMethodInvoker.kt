@@ -6,7 +6,11 @@ import java.lang.invoke.WrongMethodTypeException
 import java.lang.reflect.Constructor
 import java.lang.reflect.Method
 
-abstract class ReflectionMethodInvoker(@JvmField val method: Method) : MethodInvoker
+abstract class ReflectionMethodInvoker(@JvmField val method: Method) : MethodInvoker {
+	override fun toString(): String {
+		return method.toString()
+	}
+}
 
 /**
  * Wrap the [Method] or [Constructor], no need to forcefully handle thrown exceptions, automatically convert types.

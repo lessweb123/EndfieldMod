@@ -101,6 +101,10 @@ public final class RuntimeAspector {
 			public T instance(Object... args) {
 				return MethodHandler.newInstance(aspectClass(), args);
 			}
+
+			public T instanceTyped(Class<?>[] parameterTypes, Object... args) {
+				return MethodHandler.newInstanceTyped(aspectClass(), parameterTypes, args);
+			}
 		}
 	}
 }

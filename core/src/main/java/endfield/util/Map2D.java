@@ -6,7 +6,7 @@ import arc.func.Prov;
 import arc.math.geom.Point2;
 import arc.util.Eachable;
 import arc.util.Nullable;
-import endfield.func.Intg2;
+import endfield.func.Intt2;
 import endfield.math.Mathm;
 
 import java.lang.reflect.Array;
@@ -42,7 +42,7 @@ public class Map2D<T> implements Iterable<T>, Eachable<T> {
 		}
 	}
 
-	public void fill(Intg2<T> constructor) {
+	public void fill(Intt2<T> constructor) {
 		for (int i = 0; i < array.length; i++) {
 			array[i] = constructor.get(i % width, i / width);
 		}

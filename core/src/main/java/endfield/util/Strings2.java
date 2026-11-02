@@ -3,6 +3,8 @@ package endfield.util;
 import arc.Core;
 import arc.math.Mathf;
 import arc.util.Strings;
+import endfield.func.CharFloatf;
+import endfield.func.CharIntf;
 
 import java.util.Arrays;
 import java.util.regex.MatchResult;
@@ -88,8 +90,16 @@ public final class Strings2 {
 		return matcher.lookingAt() ? matcher.toMatchResult() : null;
 	}
 
-	public static int sumOf(CharSequence cs, Selector selector) {
-		var sum = 0;
+	public static int sum(CharSequence cs, CharIntf selector) {
+		int sum = 0;
+		for (int i = 0; i < cs.length(); i++) {
+			sum += selector.get(cs.charAt(i));
+		}
+		return sum;
+	}
+
+	public static float sumf(CharSequence cs, CharFloatf selector) {
+		float sum = 0f;
 		for (int i = 0; i < cs.length(); i++) {
 			sum += selector.get(cs.charAt(i));
 		}
@@ -245,9 +255,5 @@ public final class Strings2 {
 		}
 
 		return Strings.fixedBuilder(v, 2).append("[lightgray]").append(byteUnit[n]).toString();
-	}
-
-	public interface Selector {
-		int get(char c);
 	}
 }

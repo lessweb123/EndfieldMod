@@ -43,25 +43,27 @@ public final class Drawm {
 	}
 
 	/** Generates all team regions for this block. Call {@link #getTeamRegion(Block)} afterward to get the region. */
-	public static void generateTeamRegion(MultiPacker packer, Block b) {
-		PixmapRegion teamr = Core.atlas.getPixmap(b.name + "-team");
+	public static void generateTeamRegion(MultiPacker packer, Block block) {
+		PixmapRegion teamRegion = Core.atlas.getPixmap(block.name + "-team");
 
 		for (Team team : Team.all) {
 			if (team.hasPalette) {
-				Pixmap out = new Pixmap(teamr.width, teamr.height);
-				for (int x = 0; x < teamr.width; x++) {
-					for (int y = 0; y < teamr.height; y++) {
-						int color = teamr.getRaw(x, y);
-						int index = color == 0xffffffff ? 0 : color == 0xdcc6c6ff ? 1 : color == 0x9d7f7fff ? 2 : -1;
-						out.setRaw(x, y, index == -1 ? teamr.getRaw(x, y) : team.palettei[index]);
+				Pixmap out = new Pixmap(teamRegion.width, teamRegion.height);
+				for (int x = 0; x < teamRegion.width; x++) {
+					for (int y = 0; y < teamRegion.height; y++) {
+						int color = teamRegion.getRaw(x, y);
+						int index = switch (color) {
+							case 0xffffffff -> 0;
+							case 0xdcc6c6ff -> 1;
+							case 0x9d7f7fff -> 2;
+							default -> -1;
+						};
+						out.setRaw(x, y, index == -1 ? teamRegion.getRaw(x, y) : team.palettei[index]);
 					}
 				}
-				packer.add(PageType.main, b.name + "-team-" + team.name, out);
+				packer.add(PageType.main, block.name + "-team-" + team.name, out);
 			}
 		}
-
-		//force reload of team region
-		b.load();
 	}
 
 	/**
@@ -90,8 +92,8 @@ public final class Drawm {
 	/**
 	 * @return the sharded team texture region for this block
 	 */
-	public static TextureRegion getTeamRegion(Block b) {
-		return Core.atlas.find(b.name + "-team-sharded");
+	public static TextureRegion getTeamRegion(Block block) {
+		return Core.atlas.find(block.name + "-team-sharded");
 	}
 
 	/** Loads the custom team regions. */
@@ -105,13 +107,13 @@ public final class Drawm {
 	}
 
 	/** Draws a sprite that should be lightwise correct, using 4 sprites each colored with a different lighting angle. */
-	public static void spinSprite(TextureRegion[] sprites, float x, float y, float r) {
+	public static void spinSprite(TextureRegion[] regions, float x, float y, float r) {
 		r = Mathf.mod(r, 360f);
 		int now = (((int) (r + 45f)) / 90) % 4;
 
-		Draw.rect(sprites[now], x, y, r);
+		Draw.rect(regions[now], x, y, r);
 		Draw.alpha(((r + 45f) % 90f) / 90f);
-		Draw.rect(sprites[(now + 1) % 4], x, y, r);
+		Draw.rect(regions[(now + 1) % 4], x, y, r);
 		Draw.alpha(1f);
 	}
 

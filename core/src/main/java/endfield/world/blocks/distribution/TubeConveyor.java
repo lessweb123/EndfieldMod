@@ -162,8 +162,10 @@ public class TubeConveyor extends Conveyor2 {
 
 		@Override
 		public int acceptStack(Item item, int amount, Teamc source) {
-			if (isEnd(Get.reverse(rotation)) && items.total() >= 2) return 0;
-			if (isEnd(Get.reverse(rotation)) && isEnd(rotation) && items.total() >= 1) return 0;
+			if (isEnd(Get.reverse(rotation))) {
+				if (items.total() >= 2) return 0;
+				if (isEnd(rotation) && items.total() >= 1) return 0;
+			}
 			return Math.min((int) (minitem / itemSpace), amount);
 		}
 

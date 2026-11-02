@@ -16,6 +16,6 @@ public abstract class AbstractFieldAccessor implements FieldAccessor {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + ": " + field.toString();
+		return field.toString();
 	}
 }

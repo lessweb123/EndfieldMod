@@ -14,7 +14,7 @@ import arc.struct.Seq;
 import arc.util.Eachable;
 import endfield.func.BoolBoolf;
 import endfield.func.ByteBytef;
-import endfield.func.Intg;
+import endfield.func.Intt;
 import endfield.util.Collections2.IntTBiConsume;
 import endfield.util.holder.ObjectHolder;
 
@@ -758,7 +758,7 @@ public final class Arrays2 {
 		return resize(array, size -> (T[]) Array.newInstance(array.getClass().getComponentType(), newSize), newSize, fill);
 	}
 
-	public static <T> T[] resize(T[] array, Intg<T[]> create, int newSize, T fill) {
+	public static <T> T[] resize(T[] array, Intt<T[]> create, int newSize, T fill) {
 		if (array.length == newSize) return array;
 
 		T[] out = create.get(newSize);

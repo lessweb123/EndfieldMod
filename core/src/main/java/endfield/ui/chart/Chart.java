@@ -12,7 +12,7 @@ import arc.struct.Seq;
 import arc.util.Align;
 import arc.util.Nullable;
 import arc.util.pooling.Pools;
-import endfield.func.Intg;
+import endfield.func.Intt;
 import endfield.ui.chart.Chart.StatGroup;
 import mindustry.ui.Fonts;
 
@@ -36,7 +36,7 @@ public abstract class Chart<T extends StatGroup> extends Element {
 	public float valueBound;
 	public float valueStep;
 
-	public Intg<String> horizonScaleMapping;
+	public Intt<String> horizonScaleMapping;
 
 	public boolean displayValuesScale = true;
 	public float lerpTime = 1;

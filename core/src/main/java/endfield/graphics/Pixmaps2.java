@@ -9,7 +9,7 @@ import arc.graphics.Pixmaps;
 import arc.graphics.g2d.PixmapRegion;
 import arc.math.Mathf;
 import endfield.func.IntBoolf;
-import endfield.func.Intf2;
+import endfield.func.Intt2;
 
 import static endfield.Vars2.imageHandle;
 
@@ -135,7 +135,7 @@ public final class Pixmaps2 {
 		}
 	}
 
-	public static PixmapRegion color(PixmapRegion region, IntBoolf cond, Intf2<Color> to) {
+	public static PixmapRegion color(PixmapRegion region, IntBoolf cond, Intt2<Color> to) {
 		for (int y = 0; y < region.pixmap.height; y++) {
 			for (int x = 0; x < region.pixmap.width; x++) {
 				if (x >= region.x && x < region.x + region.width && y >= region.y && y < region.y + region.height && cond.get(region.pixmap.get(x, y))) {

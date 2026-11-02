@@ -16,6 +16,6 @@ public abstract class AbstractMethodAccessor implements MethodAccessor {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + ": " + method.toString();
+		return method.toString();
 	}
 }

@@ -10,12 +10,12 @@ import static endfield.util.GetKt.sneakyThrow;
 public class Recipe implements Cloneable {
 	public static final Recipe empty = new Recipe();
 
-	public ItemStack[] inputItem = {};
-	public LiquidStack[] inputLiquid = {};
+	public ItemStack[] inputItem = ItemStack.empty;
+	public LiquidStack[] inputLiquid = LiquidStack.empty;
 	public PayloadStack[] inputPayload = {};
 
-	public ItemStack[] outputItem = {};
-	public LiquidStack[] outputLiquid = {};
+	public ItemStack[] outputItem = ItemStack.empty;
+	public LiquidStack[] outputLiquid = LiquidStack.empty;
 	public PayloadStack[] outputPayload = {};
 
 	public float craftTime = 60f;

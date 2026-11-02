@@ -1,6 +1,6 @@
 package endfield.func;
 
 @FunctionalInterface
-public interface Intg<R> {
+public interface Intt<R> {
 	R get(int param);
 }

@@ -5,7 +5,7 @@ import arc.math.geom.Point2;
 import arc.util.Nullable;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import endfield.func.Intg;
+import endfield.func.Intt;
 import mindustry.Vars;
 import mindustry.content.TechTree.TechNode;
 import mindustry.ctype.ContentType;
@@ -63,7 +63,7 @@ public final class ETypeIO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T extends Enum<T>> T[] readEnums(Reads read, Intg<T> prov, Class<T> type) {
+	public static <T extends Enum<T>> T[] readEnums(Reads read, Intt<T> prov, Class<T> type) {
 		int size = read.i();
 		T[] out = (T[]) Array.newInstance(type, size);
 

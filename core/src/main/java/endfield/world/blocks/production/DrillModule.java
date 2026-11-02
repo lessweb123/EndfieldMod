@@ -121,7 +121,7 @@ public class DrillModule extends Block {
 
 			drawer(this);
 
-			targetWarmup = (drillBuild != null && drillBuild.modules.contains(this)) ? drillBuild.warmup : 0;
+			targetWarmup = drillBuild != null && drillBuild.modules().contains(this) ? drillBuild.warmup : 0f;
 			smoothWarmup = Mathf.lerp(smoothWarmup, targetWarmup, 0.02f);
 		}
 
@@ -133,7 +133,7 @@ public class DrillModule extends Block {
 					return false;
 				}
 			}
-			return drill.modules.size < drill.maxModules();
+			return drill.modules().size < drill.maxModules();
 		}
 
 		public void apply(ModuleDrillBuild drill) {}

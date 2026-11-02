@@ -28,6 +28,10 @@ public class ModuleDrill extends Drill {
 	public class ModuleDrillBuild extends DrillBuild {
 		public Seq<DrillModuleBuild> modules = new Seq<>(DrillModuleBuild.class);
 
+		public Seq<DrillModuleBuild> modules() {
+			return modules;
+		}
+
 		public float maxModules() {
 			return maxModules;
 		}

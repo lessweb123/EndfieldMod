@@ -16,6 +16,6 @@ public abstract class AbstractConstructorAccessor<T> implements ConstructorAcces
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + ": " + constructor.toString();
+		return constructor.toString();
 	}
 }
