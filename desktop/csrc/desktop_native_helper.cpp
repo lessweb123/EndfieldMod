@@ -115,6 +115,40 @@ JNIEXPORT void JNICALL JNI_OnUnload(JavaVM* vm, void*)
     check_alloc_type_method = nullptr;
 }
 
+JNIEXPORT void JNICALL Java_endfield_desktop_DesktopNativeHelper_memcpy(JNIEnv* env, jclass, jobject src, jint srcOffset, jobject dst, jint dstOffset, jint numBytes)
+{
+    if (src == nullptr)
+    {
+        env->ThrowNew(npe_class, "src must not be null");
+        return;
+    }
+
+    if (dst == nullptr)
+    {
+        env->ThrowNew(npe_class, "dst must not be null");
+        return;
+    }
+
+    memcpy(dst + dstOffset, src + srcOffset, numBytes);
+}
+
+JNIEXPORT void JNICALL Java_endfield_desktop_DesktopNativeHelper_memmove(JNIEnv* env, jclass, jobject src, jint srcOffset, jobject dst, jint dstOffset, jint numBytes)
+{
+    if (src == nullptr)
+    {
+        env->ThrowNew(npe_class, "src must not be null");
+        return;
+    }
+
+    if (dst == nullptr)
+    {
+        env->ThrowNew(npe_class, "dst must not be null");
+        return;
+    }
+
+    memmove(dst + dstOffset, src + srcOffset, numBytes);
+}
+
 JNIEXPORT jclass JNICALL Java_endfield_desktop_DesktopNativeHelper_classForName(JNIEnv* env, jclass, jstring signature)
 {
     if (signature == nullptr)

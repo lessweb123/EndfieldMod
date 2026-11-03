@@ -6,7 +6,6 @@ import arc.func.Floatp;
 import arc.func.Func;
 import arc.func.IntIntf;
 import arc.func.Intp;
-import arc.func.Prov;
 import endfield.func.BoolBoolf;
 import endfield.func.CharCharf;
 import endfield.func.Charp;
@@ -23,6 +22,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
 
 /**
  * The appended variable interface is used to provide dynamic append variables for types,
@@ -59,8 +59,7 @@ public interface ExtraVariable {
 	 */
 	@SuppressWarnings("unchecked")
 	default <T> T getVar(String field, T def) {
-		Object o = extra().get(field);
-		return o != null || extra().containsKey(field) ? (T) o : def;
+		return (T) extra().getOrDefault(field, def);
 	}
 
 	/**
@@ -73,17 +72,8 @@ public interface ExtraVariable {
 	 * @param initial Initial value function
 	 */
 	@SuppressWarnings("unchecked")
-	default <T> T getVar(String field, Prov<? extends T> initial) {
-		Object o = extra().get(field);
-		if (o == null) {
-			T newValue;
-			if ((newValue = initial.get()) != null) {
-				extra().put(field, newValue);
-				return newValue;
-			}
-		}
-
-		return (T) o;
+	default <T> T getVar(String field, Function<? super String, ? extends T> initial) {
+		return (T) extra().computeIfAbsent(field, initial);
 	}
 
 	/**
@@ -147,15 +137,15 @@ public interface ExtraVariable {
 
 		if (res instanceof AtomicBoolean b) {
 			return b.getAndSet(value);
-		} else if (res instanceof Boolean n) {
+		} else if (res instanceof Boolean b) {
 			extra().put(field, new AtomicBoolean(value));
-			return n;
+			return b;
 		} else if (res == null) {
 			extra().put(field, new AtomicBoolean(value));
 			return false;
 		}
 
-		throw new ClassCastException(res.getClass().getSimpleName() + " is not a boolean value or atomic boolean");
+		throw new ClassCastException(res.getClass().getName() + " is not a boolean value or atomic boolean");
 	}
 
 	/**
@@ -169,10 +159,10 @@ public interface ExtraVariable {
 		Object res = getVar(field);
 		if (res == null) return def;
 
-		if (res instanceof AtomicBoolean r) return r.get();
+		if (res instanceof AtomicBoolean b) return b.get();
 		else if (res instanceof Boolean b) return b;
 
-		throw new ClassCastException(res.getClass().getSimpleName() + " is not a boolean value or atomic boolean");
+		throw new ClassCastException(res.getClass().getName() + " is not a boolean value or atomic boolean");
 	}
 
 	/**
@@ -180,7 +170,7 @@ public interface ExtraVariable {
 	 *
 	 * @throws ClassCastException If the variable already exists and is not a boolean wrapper type or
 	 *                            atomic boolean
-	 * @see #getVar(String, Prov)
+	 * @see #getVar(String, Function)
 	 */
 	default boolean getVar(String field, Boolp initial) {
 		Object res = getVar(field);
@@ -190,10 +180,10 @@ public interface ExtraVariable {
 			return b;
 		}
 
-		if (res instanceof AtomicBoolean r) return r.get();
+		if (res instanceof AtomicBoolean b) return b.get();
 		else if (res instanceof Boolean b) return b;
 
-		throw new ClassCastException(res.getClass().getSimpleName() + " is not a boolean value or atomic boolean");
+		throw new ClassCastException(res.getClass().getName() + " is not a boolean value or atomic boolean");
 	}
 
 	/**
@@ -230,7 +220,7 @@ public interface ExtraVariable {
 			return 0;
 		}
 
-		throw new ClassCastException(res.getClass().getSimpleName() + " is not a character value or atomic character");
+		throw new ClassCastException(res.getClass().getName() + " is not a character value or atomic character");
 	}
 
 	/**
@@ -244,10 +234,10 @@ public interface ExtraVariable {
 		Object res = getVar(field);
 		if (res == null) return def;
 
-		if (res instanceof AtomicChar r) return r.get();
+		if (res instanceof AtomicChar c) return c.get();
 		else if (res instanceof Character c) return c;
 
-		throw new ClassCastException(res.getClass().getSimpleName() + " is not a character value or atomic character");
+		throw new ClassCastException(res.getClass().getName() + " is not a character value or atomic character");
 	}
 
 	/**
@@ -255,7 +245,7 @@ public interface ExtraVariable {
 	 *
 	 * @throws ClassCastException If the variable already exists and is not an character wrapper type
 	 *                            or atomic character
-	 * @see #getVar(String, Prov)
+	 * @see #getVar(String, Function)
 	 */
 	default char getVar(String field, Charp initial) {
 		Object res = getVar(field);
@@ -268,7 +258,7 @@ public interface ExtraVariable {
 		if (res instanceof AtomicChar c) return c.get();
 		else if (res instanceof Character c) return c;
 
-		throw new ClassCastException(res.getClass().getSimpleName() + " is not a character or atomic character");
+		throw new ClassCastException(res.getClass().getName() + " is not a character or atomic character");
 	}
 
 	/**
@@ -306,7 +296,7 @@ public interface ExtraVariable {
 			return 0;
 		}
 
-		throw new ClassCastException(res.getClass().getSimpleName() + " is not a number or atomic integer");
+		throw new ClassCastException(res.getClass().getName() + " is not a number or atomic integer");
 	}
 
 	/**
@@ -323,7 +313,7 @@ public interface ExtraVariable {
 		if (res instanceof AtomicInteger i) return i.get();
 		else if (res instanceof Number n) return n.intValue();
 
-		throw new ClassCastException(res.getClass().getSimpleName() + " is not a number or atomic integer");
+		throw new ClassCastException(res.getClass().getName() + " is not a number or atomic integer");
 	}
 
 	/**
@@ -331,7 +321,7 @@ public interface ExtraVariable {
 	 *
 	 * @throws ClassCastException If the variable already exists and is not an int wrapper type or
 	 *                            atomic int
-	 * @see #getVar(String, Prov)
+	 * @see #getVar(String, Function)
 	 */
 	default int getVar(String field, Intp initial) {
 		Object res = getVar(field);
@@ -344,7 +334,7 @@ public interface ExtraVariable {
 		if (res instanceof AtomicInteger i) return i.get();
 		else if (res instanceof Number n) return n.intValue();
 
-		throw new ClassCastException(res.getClass().getSimpleName() + " is not a number or atomic integer");
+		throw new ClassCastException(res.getClass().getName() + " is not a number or atomic integer");
 	}
 
 	/**
@@ -381,7 +371,7 @@ public interface ExtraVariable {
 			return 0;
 		}
 
-		throw new ClassCastException(res.getClass().getSimpleName() + " is not a number or atomic long");
+		throw new ClassCastException(res.getClass().getName() + " is not a number or atomic long");
 	}
 
 	/**
@@ -398,7 +388,7 @@ public interface ExtraVariable {
 		if (res instanceof AtomicLong l) return l.get();
 		else if (res instanceof Number n) return n.longValue();
 
-		throw new ClassCastException(res.getClass().getSimpleName() + " is not a number or atomic long");
+		throw new ClassCastException(res.getClass().getName() + " is not a number or atomic long");
 	}
 
 	/**
@@ -406,7 +396,7 @@ public interface ExtraVariable {
 	 *
 	 * @throws ClassCastException If the variable already exists and is not a long wrapper type or
 	 *                            atomic long
-	 * @see #getVar(String, Prov)
+	 * @see #getVar(String, Function)
 	 */
 	default long getVar(String field, Longp initial) {
 		Object res = getVar(field);
@@ -419,7 +409,7 @@ public interface ExtraVariable {
 		if (res instanceof AtomicLong l) return l.get();
 		else if (res instanceof Number n) return n.longValue();
 
-		throw new ClassCastException(res.getClass().getSimpleName() + " is not a number or atomic long");
+		throw new ClassCastException(res.getClass().getName() + " is not a number or atomic long");
 	}
 
 	/**
@@ -457,7 +447,7 @@ public interface ExtraVariable {
 			return 0f;
 		}
 
-		throw new ClassCastException(res.getClass().getSimpleName() + " is not a number or atomic float");
+		throw new ClassCastException(res.getClass().getName() + " is not a number or atomic float");
 	}
 
 	/**
@@ -474,7 +464,7 @@ public interface ExtraVariable {
 		if (res instanceof AtomicFloat f) return f.get();
 		else if (res instanceof Number n) return n.floatValue();
 
-		throw new ClassCastException(res.getClass().getSimpleName() + " is not a number or atomic float");
+		throw new ClassCastException(res.getClass().getName() + " is not a number or atomic float");
 	}
 
 	/**
@@ -482,7 +472,7 @@ public interface ExtraVariable {
 	 *
 	 * @throws ClassCastException If the variable already exists and is not a float wrapper type or
 	 *                            atomic float
-	 * @see #getVar(String, Prov)
+	 * @see #getVar(String, Function)
 	 */
 	default float getVar(String field, Floatp initial) {
 		Object res = getVar(field);
@@ -495,7 +485,7 @@ public interface ExtraVariable {
 		if (res instanceof AtomicFloat f) return f.get();
 		else if (res instanceof Number n) return n.longValue();
 
-		throw new ClassCastException(res.getClass().getSimpleName() + " is not a number or atomic float");
+		throw new ClassCastException(res.getClass().getName() + " is not a number or atomic float");
 	}
 
 	/**
@@ -533,7 +523,7 @@ public interface ExtraVariable {
 			return 0;
 		}
 
-		throw new ClassCastException(res.getClass().getSimpleName() + " is not a number or atomic double");
+		throw new ClassCastException(res.getClass().getName() + " is not a number or atomic double");
 	}
 
 	/**
@@ -550,7 +540,7 @@ public interface ExtraVariable {
 		if (res instanceof AtomicDouble d) return d.get();
 		else if (res instanceof Number n) return n.doubleValue();
 
-		throw new ClassCastException(res.getClass().getSimpleName() + " is not a number or atomic double");
+		throw new ClassCastException(res.getClass().getName() + " is not a number or atomic double");
 	}
 
 	/**
@@ -558,7 +548,7 @@ public interface ExtraVariable {
 	 *
 	 * @throws ClassCastException If the variable already exists and is not a double wrapper type or
 	 *                            atomic double
-	 * @see #getVar(String, Prov)
+	 * @see #getVar(String, Function)
 	 */
 	default double getVar(String field, Doublep initial) {
 		Object res = getVar(field);
@@ -571,7 +561,7 @@ public interface ExtraVariable {
 		if (res instanceof AtomicDouble d) return d.get();
 		else if (res instanceof Number n) return n.doubleValue();
 
-		throw new ClassCastException(res.getClass().getSimpleName() + " is not a number or atomic double");
+		throw new ClassCastException(res.getClass().getName() + " is not a number or atomic double");
 	}
 
 	/**

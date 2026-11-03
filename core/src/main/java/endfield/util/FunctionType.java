@@ -124,13 +124,17 @@ public class FunctionType implements Poolable {
 
 	@Override
 	public String toString() {
-		if (ptypes.length == 0) return name + "()";
+		int max = ptypes.length - 1;
+		if (max == -1)
+			return name + "()";
 
-		StringBuilder buf = new StringBuilder();
-		buf.append(name).append('(').append(ptypes[0].getName());
-		for (int i = 1; i < ptypes.length; i++) {
-			buf.append(',').append(ptypes[i].getName());
+		StringBuilder b = new StringBuilder();
+		b.append(name).append('(');
+		for (int i = 0; ; i++) {
+			b.append(ptypes[i].getName());
+			if (i == max)
+				return b.append(')').toString();
+			b.append(",").append(' ');
 		}
-		return buf.append(')').toString();
 	}
 }

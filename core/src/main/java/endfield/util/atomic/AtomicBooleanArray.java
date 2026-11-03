@@ -45,15 +45,15 @@ public class AtomicBooleanArray implements Serializable {
 
 	@Override
 	public String toString() {
-		int iMax = array.length - 1;
-		if (iMax == -1)
+		int max = array.length - 1;
+		if (max == -1)
 			return "[]";
 
 		StringBuilder b = new StringBuilder();
 		b.append('[');
 		for (int i = 0; ; i++) {
 			b.append(get(i));
-			if (i == iMax)
+			if (i == max)
 				return b.append(']').toString();
 			b.append(',').append(' ');
 		}

@@ -87,7 +87,7 @@ public class AtomicDouble extends Number {
 		for (boolean haveNext = false; ; ) {
 			if (!haveNext)
 				next = updateFunction.get(prev);
-			if (weakCompareAndSetVolatile(prev, next))
+			if (Double.isNaN(prev) || weakCompareAndSetVolatile(prev, next))
 				return prev;
 			haveNext = (prev == (prev = get()));
 		}
@@ -98,7 +98,7 @@ public class AtomicDouble extends Number {
 		for (boolean haveNext = false; ; ) {
 			if (!haveNext)
 				next = updateFunction.get(prev);
-			if (weakCompareAndSetVolatile(prev, next))
+			if (Double.isNaN(prev) || weakCompareAndSetVolatile(prev, next))
 				return next;
 			haveNext = (prev == (prev = get()));
 		}
@@ -109,7 +109,7 @@ public class AtomicDouble extends Number {
 		for (boolean haveNext = false; ; ) {
 			if (!haveNext)
 				next = accumulatorFunction.get(prev, x);
-			if (weakCompareAndSetVolatile(prev, next))
+			if (Double.isNaN(prev) || weakCompareAndSetVolatile(prev, next))
 				return prev;
 			haveNext = (prev == (prev = get()));
 		}
@@ -120,7 +120,7 @@ public class AtomicDouble extends Number {
 		for (boolean haveNext = false; ; ) {
 			if (!haveNext)
 				next = accumulatorFunction.get(prev, x);
-			if (weakCompareAndSetVolatile(prev, next))
+			if (Double.isNaN(prev) || weakCompareAndSetVolatile(prev, next))
 				return next;
 			haveNext = (prev == (prev = get()));
 		}

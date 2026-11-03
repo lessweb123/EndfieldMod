@@ -41,8 +41,6 @@ public class Test extends @Stub Random {
 	public static final boolean debug = false;
 	public static final String sstr = "";
 
-	public static int[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] ojasidfjoasdifjoqioqhweioqhlaksdf;
-
 	public final String str = "";
 
 	public @TestAnno(
@@ -53,14 +51,6 @@ public class Test extends @Stub Random {
 			intArray = {12, 25, 74, 1}
 	) String test(String a) {
 		return a;
-	}
-
-	public static void test0() {
-		try {
-			Log.info(Test.class.getDeclaredField("ojasidfjoasdifjoqioqhweioqhlaksdf"));
-		} catch (NoSuchFieldException e) {
-			Log.err(e);
-		}
 	}
 
 	public static void test1() {

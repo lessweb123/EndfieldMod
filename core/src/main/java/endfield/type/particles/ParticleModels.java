@@ -118,7 +118,7 @@ public final class ParticleModels {
 		public void updateTrail(ParticleEffect p, ParticleEffect.Cloud c) {
 			c.size -= 0.03f * Time.delta;
 
-			if (p.getVar(BULLET) instanceof Bullet b && b.isAdded() && p.getVar(TIMER, () -> new Interval()).get(5) && c.nextCloud != null) {
+			if (p.getVar(BULLET) instanceof Bullet b && b.isAdded() && p.getVar(TIMER, t -> new Interval()).get(5) && c.nextCloud != null) {
 				float dx = c.nextCloud.x - c.x;
 				float dy = c.nextCloud.y - c.y;
 

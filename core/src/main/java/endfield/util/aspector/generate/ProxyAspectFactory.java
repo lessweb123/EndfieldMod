@@ -74,12 +74,13 @@ public class ProxyAspectFactory extends AspectFactory {
 		List<MethodNode> superConstructors = CollectionsKt.filter(superNode.methods, it -> it.name.equals("<init>") && (it.access & Opcodes.ACC_PRIVATE) == 0);
 
 		Map<ClassName, byte[]> declBytes = CollectionsKt.associateWith(aspectDecl, it -> classAccessor.getBytes(it));
-		Map<ClassName, ClassNode> declNodes = MapsKt.toMap(MapsKt.map(declBytes, (e) -> {
-			ClassReader cr2 = new ClassReader(e.getValue());
+		Map<ClassName, ClassNode> declNodes = new HashMap<>(declBytes.size());
+		for (var e : declBytes.entrySet()) {
+			ClassReader read = new ClassReader(e.getValue());
 			ClassNode implRoot = new ClassNode(Opcodes.ASM9);
-			cr2.accept(implRoot, ClassReader.SKIP_DEBUG);
-			return new Pair<>(e.getKey(), implRoot);
-		}));
+			read.accept(implRoot, ClassReader.SKIP_DEBUG);
+			declNodes.put(e.getKey(), implRoot);
+		}
 		Map<ClassName, Map<MethodSignature, MethodNode>> declMethods = MapsKt.toMap(MapsKt.map(declNodes, e -> new Pair<>(e.getKey(), CollectionsKt.associateBy(e.getValue().methods, m -> MethodSignature.parse(m.name, m.desc)))));
 
 		Map<MethodSignature, List<AspectFactory.MethodUsing>> aspectElements = builder.aspectMethods;
@@ -99,13 +100,18 @@ public class ProxyAspectFactory extends AspectFactory {
 			return get == null ? new ArrayList<>() : get;
 		});
 
-		Map<MethodSignature, Map<ClassName, MethodSignature>> methodMapping = MapsKt.toMutableMap(MapsKt.toMap(MapsKt.map(methods, it -> new Pair<>(it.getKey(), MapsKt.toMutableMap(MapsKt.toMap(CollectionsKt.associate(it.getValue(), method -> {
-			MethodSignature methodSignature = MethodSignature.parse(
-					method.name + "$" + Integer.toHexString(method.declaring.name.hashCode()),
-					method.signature().jvmDescriptor()
-			);
-			return new Pair<>(method.declaring.name, methodSignature);
-		})))))));
+		Map<MethodSignature, Map<ClassName, MethodSignature>> methodMapping = new HashMap<>(methods.size());
+		for (var e : methods.entrySet()) {
+			Map<ClassName, MethodSignature> map = new HashMap<>();
+			for (EMethod method : e.getValue()) {
+				MethodSignature methodSignature = MethodSignature.parse(
+						method.name + "$" + Integer.toHexString(method.declaring.name.hashCode()),
+						method.signature().jvmDescriptor()
+				);
+				map.put(method.declaring.name, methodSignature);
+			}
+			methodMapping.put(e.getKey(), map);
+		}
 
 		for (var e : aspectElements.entrySet()) {
 			Map<ClassName, MethodSignature> map = methodMapping.computeIfAbsent(e.getKey(), it -> new HashMap<>());

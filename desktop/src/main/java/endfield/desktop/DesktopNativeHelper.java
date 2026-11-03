@@ -14,6 +14,10 @@ import java.lang.reflect.Method;
 public final class DesktopNativeHelper {
 	private DesktopNativeHelper() {}
 
+	public static native void memcpy(Object src, int srcOffset, Object dst, int dstOffset, int numBytes);
+
+	public static native void memmove(Object src, int srcOffset, Object dst, int dstOffset, int numBytes);
+
 	public static native <T> Class<T> classForName(String signature);
 
 	/**
