@@ -56,7 +56,7 @@ public class StackBridge extends ItemBridge {
 		public boolean acceptItem(Building source, Item item) {
 			if (this == source && items.total() < block.itemCapacity) return true;
 			Tile other = world.tile(link);
-			return (!((items.any() && !items.has(item)) || (items.total() >= getMaximumAccepted(item)))) && other != null && linkValid(tile, other);
+			return (!((items.any() && items.get(item) == 0) || (items.total() >= getMaximumAccepted(item)))) && other != null && linkValid(tile, other);
 		}
 	}
 }

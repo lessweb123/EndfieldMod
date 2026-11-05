@@ -53,10 +53,10 @@ public class Conveyor3 extends Conveyor {
 			teamRegions[team.id] = teamRegion.found() && team.hasPalette ? Core.atlas.find(name + "-team-" + team.name, teamRegion) : teamRegion;
 		}
 
-		edgeRegions = Sprites.splitArray(Core.atlas.find(name + "-edge"), 32, 0, Sprites.index4x4);
-		lightRegions = Sprites.splitArray(Core.atlas.find(name + "-light"), 32, 0, Sprites.index4x4);
-		pulseRegions = Sprites.splitArray(Core.atlas.find(name + "-pulse"), 32, 0, Sprites.index4x4);
-		arrowRegions = Sprites.splitArray(Core.atlas.find(name + "-arrow"), 32, 1);
+		edgeRegions = Sprites.splitArray(name + "-edge", 32, 0, Sprites.index4x4);
+		lightRegions = Sprites.splitArray(name + "-light", 32, 0, Sprites.index4x4);
+		pulseRegions = Sprites.splitArray(name + "-pulse", 32, 0, Sprites.index4x4);
+		arrowRegions = Sprites.splitArray(name + "-arrow", 32, 1);
 	}
 
 	@Override

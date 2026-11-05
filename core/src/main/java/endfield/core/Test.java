@@ -162,16 +162,16 @@ public class Test extends @Stub Random {
 	}
 
 	public static String match(boolean bool, char c, byte b, short s, int i, long l, float f, double d) {
-		StringBuilder builder = new StringBuilder();
-		return builder.append(bool).append(c).append(b).append(s).append(i).append(l).append(f).append(d).toString();
+		StringBuilder buf = new StringBuilder();
+		return buf.append(bool).append(c).append(b).append(s).append(i).append(l).append(f).append(d).toString();
 	}
 
 	public static String matches(Object... args) {
-		StringBuilder builder = new StringBuilder();
+		StringBuilder buf = new StringBuilder();
 		for (Object arg : args) {
-			builder.append(arg);
+			buf.append(arg);
 		}
-		return builder.toString();
+		return buf.toString();
 	}
 
 	public static class A {

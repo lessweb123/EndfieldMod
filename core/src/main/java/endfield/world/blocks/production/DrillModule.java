@@ -69,7 +69,7 @@ public class DrillModule extends Block {
 	public void load() {
 		super.load();
 		baseRegion = Core.atlas.find(name + "-base");
-		topRegion = Sprites.splitArray(Core.atlas.find(name + "-top"), 64, 1);
+		topRegion = Sprites.splitArray(name + "-top", 64, 1);
 	}
 
 	@Override

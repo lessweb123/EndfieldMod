@@ -18,6 +18,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.Set;
 
 import static endfield.Vars2.accessibleHelper;
 import static endfield.Vars2.platformImpl;
@@ -359,6 +360,10 @@ public final class Reflections {
 		}
 
 		return true;
+	}
+
+	public static Set<String> getSystemPackages() {
+		return platformImpl.getSystemPackages(new CollectionObjectSet<>(String.class));
 	}
 
 	/**

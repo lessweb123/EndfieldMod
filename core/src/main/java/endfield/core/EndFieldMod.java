@@ -63,7 +63,6 @@ import mindustry.game.EventType.MusicRegisterEvent;
 import mindustry.game.EventType.WorldLoadEvent;
 import mindustry.graphics.MenuRenderer;
 import mindustry.mod.Mod;
-import mindustry.mod.Mods.LoadedMod;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable;
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.Setting;
@@ -84,9 +83,6 @@ import static endfield.Vars2.platformImpl;
  * @see Vars2
  */
 public final class EndFieldMod extends Mod {
-	public static Mod mod;
-	public static LoadedMod loadedMod;
-
 	public static FloatingText floatingText;
 
 	static {
@@ -105,8 +101,6 @@ public final class EndFieldMod extends Mod {
 	}
 
 	public EndFieldMod() {
-		mod = this;
-
 		ClassMap2.load();
 
 		Events.on(ClientLoadEvent.class, event -> {
@@ -141,11 +135,9 @@ public final class EndFieldMod extends Mod {
 
 		Events.on(FileTreeInitEvent.class, event -> {
 			Core.app.post(() -> {
-				loadedMod = Vars.mods.getMod(EndFieldMod.class);
-
-				if (!Vars.headless && !Mods2.isEnabled("omaloon") && loadedMod != null && Core.settings.getBool("splash-drawer", false)) {
+				if (!Vars.headless && !Mods2.isEnabled("omaloon") && Mods2.getLoader() != null && Core.settings.getBool("splash-drawer", false)) {
 					try {
-						SplashDrawer.add(loadedMod);
+						SplashDrawer.add(Mods2.getLoader());
 					} catch (Exception e) {
 						Log.err(e);
 					}

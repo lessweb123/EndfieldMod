@@ -237,6 +237,10 @@ public final class Sprites {
 		return regions;
 	}
 
+	public static TextureRegion[][] splitTiles(String name, int size, int pad) {
+		return splitTiles(Core.atlas.find(name), size, pad);
+	}
+
 	public static TextureRegion[][] splitTiles(TextureRegion region, int size, int pad) {
 		Texture texture = region.texture;
 
@@ -262,6 +266,18 @@ public final class Sprites {
 		}
 
 		return tiles;
+	}
+
+	public static TextureRegion[] splitArray(String name, int size) {
+		return splitArray(Core.atlas.find(name), size);
+	}
+
+	public static TextureRegion[] splitArray(String name, int size, int pad) {
+		return splitArray(Core.atlas.find(name), size, pad);
+	}
+
+	public static TextureRegion[] splitArray(String name, int size, int pad, @Nullable int[] indexMap) {
+		return splitArray(Core.atlas.find(name), size, pad, indexMap);
 	}
 
 	public static TextureRegion[] splitArray(TextureRegion region, int size) {
@@ -311,11 +327,11 @@ public final class Sprites {
 	}
 
 	public static TextureRegion[][] errors(int width, int height) {
-		TextureRegion[][] tiles = new TextureRegion[width][height];
+		TextureRegion[][] map = new TextureRegion[width][height];
 		TextureRegion tile = Core.atlas.find("env-error");
 
-		for (TextureRegion[] t : tiles) Arrays.fill(t, tile);
+		for (TextureRegion[] tiles : map) Arrays.fill(tiles, tile);
 
-		return tiles;
+		return map;
 	}
 }

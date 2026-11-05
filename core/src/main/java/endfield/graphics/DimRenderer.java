@@ -13,6 +13,7 @@ import arc.math.geom.Vec2;
 import arc.struct.Seq;
 import arc.util.Tmp;
 import endfield.math.Mathm;
+import endfield.util.Get.Pos;
 import mindustry.game.EventType.ResetEvent;
 
 /** Based on LightRenderer. Dims the entire screen. */
@@ -223,8 +224,8 @@ public final class DimRenderer {
 		dimAlpha = 0;
 	}
 
-	static class FadeCircle {
-		float x, y, radius, alpha;
+	static class FadeCircle extends Pos {
+		float radius, alpha;
 
 		void set(float cx, float cy, float rad, float alp) {
 			x = cx;

@@ -8,6 +8,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Collection;
 
 /**
  * Handling APIs for different implementations of Desktop and Android.
@@ -55,5 +56,9 @@ public interface PlatformImpl {
 		} catch (ClassNotFoundException e) {
 			return null;
 		}
+	}
+
+	default <T extends Collection<? super String>> T getSystemPackages(T packages) {
+		return packages;
 	}
 }

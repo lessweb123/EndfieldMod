@@ -7,7 +7,7 @@ import mindustry.mod.Mods.LoadedMod;
 import static endfield.Vars2.modName;
 
 public final class Mods2 {
-	/** If needed, please call {@link #loaded()} for the LoadedMod of this mod. */
+	/** If needed, please call {@link #getLoader()} for the LoadedMod of this mod. */
 	static LoadedMod loaded;
 
 	/** Don't let anyone instantiate this class. */
@@ -18,11 +18,11 @@ public final class Mods2 {
 	}
 
 	public static boolean isEndField(LoadedMod mod) {
-		return mod != null && mod == loaded();
+		return mod != null && mod == getLoader();
 	}
 
 	/** Safely obtain the {@code LoadedMod} for this mod. */
-	public static LoadedMod loaded() {
+	public static LoadedMod getLoader() {
 		LoadedMod mod = loaded;
 		if (mod == null) mod = loaded = Vars.mods.getMod(modName);
 		return mod;

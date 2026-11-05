@@ -240,6 +240,8 @@ public final class ClassMap2 {
 		classes.put("DirectionalMergerBuild", endfield.world.blocks.distribution.DirectionalMerger.RailDirectionalMergerBuild.class);
 		classes.put("DirectionalRouter", endfield.world.blocks.distribution.DirectionalRouter.class);
 		classes.put("DirectionalRouterBuild", endfield.world.blocks.distribution.DirectionalRouter.RailDirectionalRouterBuild.class);
+		classes.put("DirectionalUnloader2", endfield.world.blocks.distribution.DirectionalUnloader2.class);
+		classes.put("DirectionalUnloaderBuild2", endfield.world.blocks.distribution.DirectionalUnloader2.DirectionalUnloaderBuild2.class);
 		classes.put("RailDirectionalUnloader", endfield.world.blocks.distribution.RailDirectionalUnloader.class);
 		classes.put("RailDirectionalUnloaderBuild", endfield.world.blocks.distribution.RailDirectionalUnloader.RailDirectionalUnloaderBuild.class);
 		classes.put("RailItemBridge", endfield.world.blocks.distribution.RailItemBridge.class);

@@ -65,6 +65,7 @@ import endfield.world.blocks.defense.turrets.TeslaTurret;
 import endfield.world.blocks.distribution.Conveyor2;
 import endfield.world.blocks.distribution.Conveyor3;
 import endfield.world.blocks.distribution.CoveredRouter;
+import endfield.world.blocks.distribution.DirectionalUnloader2;
 import endfield.world.blocks.distribution.InvertedJunction;
 import endfield.world.blocks.distribution.MultiJunction;
 import endfield.world.blocks.distribution.MultiRouter;
@@ -592,6 +593,7 @@ public final class Blocks2 {
 	public static LiquidSource reinforcedLiquidSource;
 	public static PowerSource reinforcedPowerSource;
 	public static PayloadSource2 reinforcedPayloadSource;
+	public static HeatProducer reinforcedHeatSource;
 	public static AdaptiveSource adaptiveSource;
 	public static RandomSource randomSource;
 	public static Drill staticDrill;
@@ -1986,7 +1988,7 @@ public final class Blocks2 {
 			consumeLiquid(Liquids.nitrogen, 7.5f / 60f).optional(true, true);
 		}};
 		unitMinerPoint = new UnitMinerPoint("unit-miner-point") {{
-			requirements(Category.production, BuildVisibility.sandboxOnly, ItemStack.with(Items.beryllium, 220, Items.graphite, 220, Items.silicon, 200, Items.tungsten, 180));
+			requirements(Category.production, ItemStack.with(Items.beryllium, 220, Items.graphite, 220, Items.silicon, 200, Items.tungsten, 180));
 			blockedItems.add(Items.thorium);
 			droneConstructTime = 60 * 10f;
 			tier = 5;
@@ -1996,7 +1998,7 @@ public final class Blocks2 {
 			squareSprite = false;
 		}};
 		unitMinerCenter = new UnitMinerPoint("unit-miner-center") {{
-			requirements(Category.production, BuildVisibility.sandboxOnly, ItemStack.with(Items.beryllium, 600, Items.tungsten, 500, Items.oxide, 150, Items.carbide, 120, Items.surgeAlloy, 150));
+			requirements(Category.production, ItemStack.with(Items.beryllium, 600, Items.tungsten, 500, Items.oxide, 150, Items.carbide, 120, Items.surgeAlloy, 150));
 			range = 18;
 			dronesCreated = 6;
 			droneConstructTime = 60 * 7f;
@@ -2010,7 +2012,7 @@ public final class Blocks2 {
 			squareSprite = false;
 		}};
 		unitMinerDepot = new UnitMinerDepot("unit-miner-depot") {{
-			requirements(Category.production, BuildVisibility.sandboxOnly, ItemStack.with(Items.beryllium, 120, Items.graphite, 120, Items.silicon, 100, Items.tungsten, 80, Items.oxide, 20));
+			requirements(Category.production, ItemStack.with(Items.beryllium, 120, Items.graphite, 120, Items.silicon, 100, Items.tungsten, 80, Items.oxide, 20));
 			size = 3;
 			buildTime = 60f * 8f;
 			blockedItems.add(Items.thorium);
@@ -2171,7 +2173,7 @@ public final class Blocks2 {
 			speed = 1f;
 			group = BlockGroup.transportation;
 		}};
-		rapidDirectionalUnloader = new DirectionalUnloader("rapid-directional-unloader") {{
+		rapidDirectionalUnloader = new DirectionalUnloader2("rapid-directional-unloader") {{
 			requirements(Category.distribution, ItemStack.with(Items.silicon, 40, Items.plastanium, 25, Items2.chromium, 15, Items.phaseFabric, 5));
 			speed = 1f;
 			squareSprite = false;
@@ -2203,7 +2205,7 @@ public final class Blocks2 {
 			speed = 4;
 			buildCostMultiplier = 2;
 		}};
-		rapidDuctUnloader = new DirectionalUnloader("rapid-duct-unloader") {{
+		rapidDuctUnloader = new DirectionalUnloader2("rapid-duct-unloader") {{
 			requirements(Category.distribution, ItemStack.with(Items.graphite, 25, Items.silicon, 30, Items.tungsten, 20, Items.oxide, 15));
 			health = 240;
 			speed = 2f;
@@ -6658,17 +6660,22 @@ public final class Blocks2 {
 			buildCostMultiplier = 0.7f;
 		}};
 		//sandbox
-		unitIniter = new UnitIniter("unit-initer");
+		unitIniter = new UnitIniter("unit-initer") {{
+			requirements(Category.units, BuildVisibility.editorOnly, ItemStack.empty);
+			alwaysUnlocked = true;
+		}};
 		spawnEgg = new SpawnEgg("spawn-egg") {{
 			requirements(Category.units, BuildVisibility.sandboxOnly, ItemStack.empty);
 			health = 1000;
 			armor = 10f;
+			alwaysUnlocked = true;
 		}};
 		spawnerBlock = new SpawnerBlock("spawner-block") {{
 			requirements(Category.units, BuildVisibility.sandboxOnly, ItemStack.empty);
 			size = 3;
 			health = 1000;
 			armor = 10f;
+			alwaysUnlocked = true;
 		}};
 		reinforcedItemSource = new ItemSource("reinforced-item-source") {{
 			requirements(Category.distribution, BuildVisibility.sandboxOnly, ItemStack.empty);
@@ -6676,17 +6683,20 @@ public final class Blocks2 {
 			armor = 10f;
 			itemsPerSecond = 1000;
 			hideDetails = false;
+			alwaysUnlocked = true;
 		}};
 		reinforcedLiquidSource = new LiquidSource("reinforced-liquid-source") {{
 			requirements(Category.liquid, BuildVisibility.sandboxOnly, ItemStack.empty);
 			health = 1000;
 			armor = 10f;
+			alwaysUnlocked = true;
 		}};
 		reinforcedPowerSource = new PowerSource("reinforced-power-source") {{
 			requirements(Category.power, BuildVisibility.sandboxOnly, ItemStack.empty);
 			health = 1000;
 			armor = 10f;
 			powerProduction = 10000000f / 60f;
+			alwaysUnlocked = true;
 		}};
 		reinforcedPayloadSource = new PayloadSource2("reinforced-payload-source") {{
 			requirements(Category.units, BuildVisibility.sandboxOnly, ItemStack.empty);
@@ -6695,6 +6705,22 @@ public final class Blocks2 {
 			armor = 10f;
 			placeableLiquid = true;
 			floating = true;
+			alwaysUnlocked = true;
+		}};
+		reinforcedHeatSource = new HeatProducer("reinforced-heat-source") {{
+			requirements(Category.crafting, BuildVisibility.sandboxOnly, ItemStack.empty);
+			drawer = new DrawMulti(new DrawDefault(), new DrawHeatOutput());
+			rotateDraw = false;
+			size = 1;
+			health = 1000;
+			armor = 10f;
+			heatOutput = 10000f;
+			warmupRate = 10000f;
+			regionRotated1 = 1;
+			itemCapacity = 0;
+			ambientSound = Sounds.none;
+			allDatabaseTabs = true;
+			alwaysUnlocked = true;
 		}};
 		adaptiveSource = new AdaptiveSource("adaptive-source") {{
 			requirements(Category.distribution, BuildVisibility.sandboxOnly, ItemStack.empty);
@@ -6702,6 +6728,7 @@ public final class Blocks2 {
 			armor = 10f;
 			liquidCapacity = 10000f;
 			itemCapacity = 1000;
+			alwaysUnlocked = true;
 		}};
 		randomSource = new RandomSource("random-source") {{
 			requirements(Category.distribution, BuildVisibility.sandboxOnly, ItemStack.empty);
@@ -6710,6 +6737,7 @@ public final class Blocks2 {
 			liquidCapacity = 10000f;
 			itemCapacity = 1000;
 			itemsPerSecond = 2000;
+			alwaysUnlocked = true;
 		}};
 		staticDrill = new Drill("static-drill") {{
 			requirements(Category.production, BuildVisibility.sandboxOnly, ItemStack.empty);
@@ -6722,6 +6750,7 @@ public final class Blocks2 {
 			updateEffect = Fx.none;
 			rotateSpeed = 8;
 			hardnessDrillMultiplier = 0.01f;
+			alwaysUnlocked = true;
 		}};
 		omniNode = new NodeBridge("omni-node") {{
 			requirements(Category.distribution, BuildVisibility.sandboxOnly, ItemStack.empty);
@@ -6736,6 +6765,7 @@ public final class Blocks2 {
 			outputsLiquid = true;
 			transportTime = 1f;
 			squareSprite = false;
+			alwaysUnlocked = true;
 		}};
 		configurableMendProjector = new ConfigurableMendProjector("infini-mender") {{
 			requirements(Category.effect, BuildVisibility.sandboxOnly, ItemStack.empty);
@@ -6743,10 +6773,12 @@ public final class Blocks2 {
 			range = 80f;
 			reload = 30f;
 			healPercent = 2f;
+			alwaysUnlocked = true;
 		}};
 		configurableOverdriveProjector = new ConfigurableOverdriveProjector("infini-overdrive") {{
 			requirements(Category.effect, BuildVisibility.sandboxOnly, ItemStack.empty);
 			health = 1000;
+			alwaysUnlocked = true;
 		}};
 		teamChanger = new CoreBlock("team-changer") {{
 			requirements(Category.effect, BuildVisibility.sandboxOnly, ItemStack.empty);
@@ -6804,6 +6836,7 @@ public final class Blocks2 {
 				}
 			};
 			unitType = UnitTypes2.invincibleShip;
+			alwaysUnlocked = true;
 		}
 			@Override
 			public boolean canBreak(Tile tile) {
@@ -6847,6 +6880,7 @@ public final class Blocks2 {
 					return 0f;
 				}
 			};
+			alwaysUnlocked = true;
 		}
 			@Override
 			protected TextureRegion[] icons() {
@@ -6926,6 +6960,7 @@ public final class Blocks2 {
 				}
 			};
 			itemConsumer = consumeItem(Items.phaseFabric).optional(true, true);
+			alwaysUnlocked = true;
 		}
 			@Override
 			protected TextureRegion[] icons() {
@@ -6937,7 +6972,7 @@ public final class Blocks2 {
 			health = 1000;
 			armor = 10f;
 			absorbLasers = insulated = true;
-			unlocked = false;
+			alwaysUnlocked = true;
 		}};
 		invincibleWallLarge = new IndestructibleWall("invincible-wall-large") {{
 			requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.empty);
@@ -6945,7 +6980,7 @@ public final class Blocks2 {
 			armor = 10f;
 			size = 2;
 			absorbLasers = insulated = true;
-			unlocked = false;
+			alwaysUnlocked = true;
 		}};
 		invincibleWallHuge = new IndestructibleWall("invincible-wall-huge") {{
 			requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.empty);
@@ -6953,7 +6988,7 @@ public final class Blocks2 {
 			armor = 10f;
 			size = 3;
 			absorbLasers = insulated = true;
-			unlocked = false;
+			alwaysUnlocked = true;
 		}};
 		invincibleWallGigantic = new IndestructibleWall("invincible-wall-gigantic") {{
 			requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.empty);
@@ -6961,26 +6996,30 @@ public final class Blocks2 {
 			armor = 10f;
 			size = 4;
 			absorbLasers = insulated = true;
-			unlocked = false;
+			alwaysUnlocked = true;
 		}};
 		dpsWall = new DPSWall("dps-wall") {{
 			requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.empty);
 			health = 1000;
+			alwaysUnlocked = true;
 		}};
 		dpsWallLarge = new DPSWall("dps-wall-large") {{
 			requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.empty);
 			size = 2;
 			health = 4000;
+			alwaysUnlocked = true;
 		}};
 		dpsWallHuge = new DPSWall("dps-wall-huge") {{
 			requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.empty);
 			size = 3;
 			health = 9000;
+			alwaysUnlocked = true;
 		}};
 		dpsWallGigantic = new DPSWall("dps-wall-gigantic") {{
 			requirements(Category.defense, BuildVisibility.sandboxOnly, ItemStack.empty);
 			size = 4;
 			health = 16000;
+			alwaysUnlocked = true;
 		}};
 		mustDieTurret = new PlatformTurret("must-die-turret") {{
 			requirements(Category.turret, BuildVisibility.sandboxOnly, ItemStack.empty);
@@ -7116,6 +7155,7 @@ public final class Blocks2 {
 					return 0;
 				}
 			};
+			alwaysUnlocked = true;
 		}};
 		oneShotTurret = new PlatformTurret("one-shot-turret") {{
 			requirements(Category.turret, BuildVisibility.sandboxOnly, ItemStack.empty);
@@ -7166,6 +7206,7 @@ public final class Blocks2 {
 					return 0f;
 				}
 			};
+			alwaysUnlocked = true;
 		}};
 		pointTurret = new PlatformTurret("point-turret") {{
 			requirements(Category.turret, BuildVisibility.sandboxOnly, ItemStack.empty);
@@ -7267,17 +7308,20 @@ public final class Blocks2 {
 					}
 				}
 			};
+			alwaysUnlocked = true;
 		}};
 		nextWave = new NextWave("next-wave") {{
 			requirements(Category.effect, BuildVisibility.sandboxOnly, ItemStack.empty);
 			size = 2;
 			health = 1000;
 			armor = 10f;
+			alwaysUnlocked = true;
 		}};
 		testBlock = new TestBlock("test-block") {{
 			requirements(Category.effect, BuildVisibility.sandboxOnly, ItemStack.empty);
 			health = 1000;
 			armor = 10f;
+			alwaysUnlocked = true;
 		}};
 	}
 }

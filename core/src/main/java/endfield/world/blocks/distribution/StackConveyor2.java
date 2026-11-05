@@ -62,7 +62,7 @@ public class StackConveyor2 extends StackConveyor {
 	public void load() {
 		super.load();
 		edge2Region = Core.atlas.find(name + "-edge-d");
-		topRegions = Sprites.splitArray(Core.atlas.find(name + "-top"), 32, 1);
+		topRegions = Sprites.splitArray(name + "-top", 32, 1);
 	}
 
 	public class StackConveyorBuild2 extends StackConveyorBuild {

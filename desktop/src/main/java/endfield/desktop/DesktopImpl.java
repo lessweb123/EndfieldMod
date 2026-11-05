@@ -6,8 +6,7 @@ import endfield.util.FieldAccessor;
 import endfield.util.MethodAccessor;
 import endfield.util.MethodHandleConstructorAccessor;
 import endfield.util.MethodHandleInvoker;
-import endfield.util.MethodHandleStaticMethodAccessor;
-import endfield.util.MethodHandleVirtualMethodAccessor;
+import endfield.util.MethodHandleMethodAccessor;
 import endfield.util.MethodInvoker;
 import endfield.util.PlatformImpl;
 import endfield.util.aspector.accesses.PackageAccessHandler;
@@ -21,7 +20,7 @@ import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.util.Collection;
 import java.util.Objects;
 
 import static endfield.Vars2.accessibleHelper;
@@ -96,9 +95,7 @@ public class DesktopImpl implements PlatformImpl {
 
 	@Override
 	public MethodAccessor methodAccessor(Method method) {
-		return (method.getModifiers() & Modifier.STATIC) != 0 ?
-				new MethodHandleStaticMethodAccessor(method) :
-				new MethodHandleVirtualMethodAccessor(method);
+		return new MethodHandleMethodAccessor(method);
 	}
 
 	@Override
@@ -132,5 +129,14 @@ public class DesktopImpl implements PlatformImpl {
 		Objects.requireNonNull(dst);
 
 		unsafe.copyMemory(src, srcOffset, dst, dstOffset, bytes);
+	}
+
+	@Override
+	public <T extends Collection<? super String>> T getSystemPackages(T packages) {
+		for (Module module : ModuleLayer.boot().modules()) {
+			packages.addAll(module.getPackages());
+		}
+
+		return packages;
 	}
 }
