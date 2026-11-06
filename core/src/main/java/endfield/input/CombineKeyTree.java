@@ -7,7 +7,7 @@ import arc.func.Cons2;
 import arc.input.KeyCode;
 import arc.struct.ObjectMap;
 import arc.util.Nullable;
-import endfield.util.Arrays2;
+import endfield.util.Collections2;
 import kotlin.Pair;
 
 public class CombineKeyTree<T> {
@@ -76,14 +76,14 @@ public class CombineKeyTree<T> {
 
 		Boolf<ObjectMap.Entry<CombinedKeys, T>> func = k -> k.key.key == key;
 
-		return Arrays2.any(normalBindings, func)
-				|| Arrays2.any(ctrlBindings, func)
-				|| Arrays2.any(altBindings, func)
-				|| Arrays2.any(shiftBindings, func)
-				|| Arrays2.any(altCtrlBindings, func)
-				|| Arrays2.any(ctrlShiftBindings, func)
-				|| Arrays2.any(altShiftBindings, func)
-				|| Arrays2.any(altCtrlShiftBindings, func);
+		return Collections2.any(normalBindings, func)
+				|| Collections2.any(ctrlBindings, func)
+				|| Collections2.any(altBindings, func)
+				|| Collections2.any(shiftBindings, func)
+				|| Collections2.any(altCtrlBindings, func)
+				|| Collections2.any(ctrlShiftBindings, func)
+				|| Collections2.any(altShiftBindings, func)
+				|| Collections2.any(altCtrlShiftBindings, func);
 	}
 
 	public final ObjectMap<CombinedKeys, T> getTargetBindings(Input input) {

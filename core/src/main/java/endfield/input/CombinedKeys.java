@@ -3,7 +3,7 @@ package endfield.input;
 import arc.Input;
 import arc.input.KeyCode;
 import arc.util.Structs;
-import endfield.util.Arrays2;
+import endfield.util.Collections2;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -81,16 +81,16 @@ public class CombinedKeys implements Serializable {
 	public static String toString(Iterable<KeyCode> res) {
 		StringBuilder builder = new StringBuilder();
 
-		if (Arrays2.contains(res, KeyCode.controlLeft) || Arrays2.contains(res, KeyCode.controlRight))
+		if (Collections2.contains(res, KeyCode.controlLeft) || Collections2.contains(res, KeyCode.controlRight))
 			builder.append("Ctrl")
 					.append(" + ");
-		if (Arrays2.contains(res, KeyCode.altLeft) || Arrays2.contains(res, KeyCode.altRight))
+		if (Collections2.contains(res, KeyCode.altLeft) || Collections2.contains(res, KeyCode.altRight))
 			builder.append("Alt").append(" + ");
-		if (Arrays2.contains(res, KeyCode.shiftLeft) || Arrays2.contains(res, KeyCode.shiftRight))
+		if (Collections2.contains(res, KeyCode.shiftLeft) || Collections2.contains(res, KeyCode.shiftRight))
 			builder.append("Shift")
 					.append(" + ");
 
-		KeyCode controllerKey = Arrays2.find(res, CombinedKeys::isControllerKey);
+		KeyCode controllerKey = Collections2.find(res, CombinedKeys::isControllerKey);
 		builder.append(controllerKey == null ? "" : controllerKey.value);
 
 		return builder.toString();

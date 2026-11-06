@@ -44,12 +44,7 @@ public class LineMarkingOverlay extends RuneOverlay {
 			edges = Core.atlas.find(name + "-edge").split(tsize, tsize);
 			if (edges.length != 3 || edges[0].length != 3) {
 				//edges must be 3x3
-				TextureRegion error = Core.atlas.find("error");
-				edges = new TextureRegion[][]{
-						new TextureRegion[]{error, error, error},
-						new TextureRegion[]{error, error, error},
-						new TextureRegion[]{error, error, error},
-				};
+				edges = Sprites.errors(3, 3);
 			}
 		}
 		region = variantRegions[0];

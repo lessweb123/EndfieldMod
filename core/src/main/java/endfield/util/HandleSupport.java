@@ -10,6 +10,9 @@ import java.lang.reflect.Method;
 
 import static endfield.Vars2.invokers;
 
+/**
+ * @since 1.0.10
+ */
 public final class HandleSupport {
 	private HandleSupport() {}
 
@@ -17,10 +20,22 @@ public final class HandleSupport {
 		return invokers.lookup(clazz);
 	}
 
+	/**
+	 * @param refc the class from which the method is accessed
+	 * @param name the name of the method
+	 * @param type the type of the method
+	 * @return the desired method handle
+	 */
 	public static MethodHandle findStatic(Class<?> refc, String name, MethodType type) {
 		return invokers.findStatic(refc, name, type);
 	}
 
+	/**
+	 * @param refc the class or interface from which the method is accessed
+	 * @param name the name of the method
+	 * @param type the type of the method, with the receiver argument omitted
+	 * @return the desired method handle
+	 */
 	public static MethodHandle findVirtual(Class<?> refc, String name, MethodType type) {
 		return invokers.findVirtual(refc, name, type);
 	}

@@ -29,6 +29,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 /**
@@ -672,7 +673,23 @@ public class CollectionList<E> extends AbstractList<E> implements Eachable<E>, C
 
 	@Override
 	public boolean remove(Object o) {
-		return remove(o, false);
+		E[] es = items;
+		if (o == null) {
+			for (int i = 0, n = size; i < n; i++) {
+				if (es[i] == null) {
+					remove(i);
+					return true;
+				}
+			}
+		} else {
+			for (int i = 0, n = size; i < n; i++) {
+				if (o.equals(es[i])) {
+					remove(i);
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	public boolean remove(Boolf<E> value) {
@@ -765,6 +782,20 @@ public class CollectionList<E> extends AbstractList<E> implements Eachable<E>, C
 				iter.remove();
 			}
 		}
+	}
+
+	@Override
+	public boolean removeIf(Predicate<? super E> filter) {
+		boolean removed = false;
+
+		Iterator<E> iter = iterator();
+		while (iter.hasNext()) {
+			if (filter.test(iter.next())) {
+				iter.remove();
+				removed = true;
+			}
+		}
+		return removed;
 	}
 
 	public E pop(Prov<? extends E> constructor) {
@@ -914,7 +945,12 @@ public class CollectionList<E> extends AbstractList<E> implements Eachable<E>, C
 	}
 
 	public void retainAll(Boolf<E> predicate) {
-		removeAll(e -> !predicate.get(e));
+		Iterator<E> iter = iterator();
+		while (iter.hasNext()) {
+			if (!predicate.get(iter.next())) {
+				iter.remove();
+			}
+		}
 	}
 
 	@Override

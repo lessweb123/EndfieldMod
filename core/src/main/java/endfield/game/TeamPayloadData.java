@@ -1,11 +1,11 @@
 package endfield.game;
 
+import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import endfield.io.ICustomChunk;
-import endfield.util.CollectionObjectMap;
 import mindustry.Vars;
 import mindustry.ctype.Content;
 import mindustry.ctype.UnlockableContent;
@@ -17,7 +17,7 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 public class TeamPayloadData implements ICustomChunk {
-	public CollectionObjectMap<Team, PayloadSeq> teamPayloadData = new CollectionObjectMap<>(Team.class, PayloadSeq.class);
+	public ObjectMap<Team, PayloadSeq> teamPayloadData = new ObjectMap<>();
 
 	public TeamPayloadData() {}
 

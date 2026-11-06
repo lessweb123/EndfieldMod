@@ -43,10 +43,6 @@ public class BitReadWriter {
 		return (short) (readByte() | (readByte() << 8));
 	}
 
-	public char readChar() {
-		return (char) (readByte());
-	}
-
 	protected void expand() {
 		byte[] newRaw = new byte[raw.length * 2];
 		System.arraycopy(raw, 0, newRaw, 0, raw.length);
