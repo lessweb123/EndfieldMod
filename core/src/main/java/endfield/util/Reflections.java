@@ -409,7 +409,7 @@ public final class Reflections {
 
 	public static String getGetMessage(Field field, String type) {
 		return "Attempt to get " + field.getType().getName() + " field \"" +
-				field.getDeclaringClass().getName() + "." + field.getName() + "\" with illegal data type conversion to " + type;
+				field.getDeclaringClass().getName() + '.' + field.getName() + "\" with illegal data type conversion to " + type;
 	}
 
 	public static String getSetMessage(Field field, @Nullable Object object) {
@@ -424,9 +424,9 @@ public final class Reflections {
 			err.append(" static");
 		if ((modifiers & Modifier.FINAL) != 0)
 			err.append(" final");
-		err.append(" ").append(field.getType().getName()).append(" field ").append(field.getDeclaringClass().getName()).append(".").append(field.getName()).append(" to ");
+		err.append(' ').append(field.getType().getName()).append(" field ").append(field.getDeclaringClass().getName()).append('.').append(field.getName()).append(" to ");
 		if (!attemptedValue.isEmpty()) {
-			err.append("(").append(attemptedType).append(")").append(attemptedValue);
+			err.append('(').append(attemptedType).append(')').append(attemptedValue);
 		} else {
 			if (!attemptedType.isEmpty())
 				err.append(attemptedType);

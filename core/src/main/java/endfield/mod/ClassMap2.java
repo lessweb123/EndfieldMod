@@ -158,6 +158,8 @@ public final class ClassMap2 {
 		classes.put("PatternProp", endfield.world.blocks.environment.PatternProp.class);
 		classes.put("PatternStaticWall", endfield.world.blocks.environment.PatternStaticWall.class);
 		classes.put("CustomShapeProp", endfield.world.blocks.environment.CustomShapeProp.class);
+		classes.put("TestBlock", endfield.world.blocks.TestBlock.class);
+		classes.put("TestBuild", endfield.world.blocks.TestBlock.TestBuild.class);
 		classes.put("MultiBlock", endfield.world.blocks.MultiBlock.class);
 		classes.put("MultiBuild", endfield.world.blocks.MultiBlock.MultiBuild.class);
 		classes.put("GenericPressureBlock", endfield.world.blocks.GenericPressureBlock.class);

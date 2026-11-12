@@ -1,7 +1,6 @@
 package endfield.world.blocks.sandbox;
 
 import arc.Core;
-import arc.func.Cons2;
 import arc.scene.ui.layout.Table;
 import mindustry.Vars;
 import mindustry.gen.Building;
@@ -13,11 +12,6 @@ import mindustry.ui.Styles;
 import mindustry.world.Block;
 
 public class NextWave extends Block {
-	public Cons2<Building, Table> buildConfig = (build, table) -> {
-		table.button(Icon.upOpen, Styles.cleari, () -> build.configure(1)).size(50f).tooltip(Core.bundle.get("text.next-wave-1"));
-		table.button(Icon.warningSmall, Styles.cleari, () -> build.configure(10)).size(50f).tooltip(Core.bundle.get("text.next-wave-10"));
-	};
-
 	public NextWave(String name) {
 		super(name);
 
@@ -31,7 +25,8 @@ public class NextWave extends Block {
 	public class NextWaveBuild extends Building {
 		@Override
 		public void buildConfiguration(Table table) {
-			buildConfig.get(this, table);
+			table.button(Icon.upOpen, Styles.cleari, () -> configure(1)).size(50f).tooltip(Core.bundle.get("text.next-wave-1"));
+			table.button(Icon.warningSmall, Styles.cleari, () -> configure(10)).size(50f).tooltip(Core.bundle.get("text.next-wave-10"));
 		}
 
 		@Override

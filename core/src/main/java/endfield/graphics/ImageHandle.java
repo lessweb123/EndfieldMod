@@ -2,6 +2,7 @@ package endfield.graphics;
 
 import arc.files.Fi;
 import arc.graphics.Pixmap;
+import arc.util.ArcNativesLoader;
 
 public interface ImageHandle {
 	default Pixmap decode(Fi file) {
@@ -13,6 +14,6 @@ public interface ImageHandle {
 	}
 
 	default boolean isSupported(String mimeType) {
-		return "image/png".equals(mimeType);
+		return "image/png".equals(mimeType) || ArcNativesLoader.loaded && "image/jpeg".equals(mimeType);
 	}
 }

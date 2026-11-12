@@ -54,7 +54,7 @@ public final class Scripts2 {
 
 			if (res instanceof Wrapper w) res = w.unwrap();
 			if (!type.isInstance(res))
-				throw new ClassCastException("Incompatible return type: Expected '" + returnType + "', but got '" + res.getClass() + "'!");
+				throw new ClassCastException("Incompatible return type: Expected '" + returnType.getName() + "', but got '" + res.getClass().getName() + "'!");
 			return (T) res;
 		};
 	}
