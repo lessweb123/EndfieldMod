@@ -198,7 +198,7 @@ public class Test extends @Stub Random {
 		A, B, C
 	}
 
-	public static class TestData implements Cloneable {
+	public static class TestData {
 		public int intValue;
 		public float floatValue;
 		public String stringValue;

@@ -134,7 +134,7 @@ public class FunctionType implements Poolable {
 			b.append(ptypes[i].getName());
 			if (i == max)
 				return b.append(')').toString();
-			b.append(",").append(' ');
+			b.append(',').append(' ');
 		}
 	}
 }

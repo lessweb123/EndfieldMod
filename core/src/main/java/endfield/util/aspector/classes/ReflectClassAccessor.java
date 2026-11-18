@@ -409,7 +409,7 @@ public class ReflectClassAccessor implements ClassAccessor {
 			List<Annotation> list = new ArrayList<>();
 
 			for (KType superClass : JvmClassMappingKt.getKotlinClass(clazz).getSupertypes()) {
-				if (!JvmClassMappingKt.getJavaClass((KClass<?>) superClass.getClassifier()).isInterface()) {
+				if (superClass.getClassifier() instanceof KClass<?> kclass && !JvmClassMappingKt.getJavaClass(kclass).isInterface()) {
 					list.addAll(superClass.getAnnotations());
 					break;
 				}

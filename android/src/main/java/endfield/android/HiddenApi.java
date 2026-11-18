@@ -55,7 +55,7 @@ public final class HiddenApi {
 
 		long address = addressOf(array);
 		long min = Long.MAX_VALUE, minSecond = Long.MAX_VALUE, max = Long.MIN_VALUE;
-		/* Find artMethod  */
+		/* find artMethod  */
 		for (long k = 0; k < length; ++k) {
 			final long addressKBs = address + k * Integer.BYTES;
 			final long addressMethod = unsafe.getInt(addressKBs);

@@ -13,13 +13,12 @@ import endfield.util.aspector.classes.EnumValue;
 import endfield.util.aspector.classes.TypeValue;
 import endfield.util.aspector.generate.AspectFactory;
 import endfield.util.aspector.generate.AspectFactory.AspectResult;
-import kotlin.Pair;
-import kotlin.collections.ArraysKt;
+import endfield.util.holder.ObjectIntHolder;
 import kotlin.collections.CollectionsKt;
-import kotlin.collections.MapsKt;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -35,46 +34,63 @@ public class Aspector {
 	public <T> AspectDecl<T> applyAspect(ClassDecl<T> targetClass, ClassDecl<?>... aspectClasses) {
 		List<List<ClassDecl<?>>> aspectLayers = new ArrayList<>();
 
-		List<Pair<ClassDecl<?>, Integer>> queue = CollectionsKt.toMutableList(ArraysKt.map(aspectClasses, it -> new Pair<>(it, 0)));
+		List<ObjectIntHolder<ClassDecl<?>>> queue = new ArrayList<>(aspectClasses.length);
+		for (ClassDecl<?> it : aspectClasses) queue.add(new ObjectIntHolder<>(it, 0));
+
 		Set<ClassDecl<?>> solved = new HashSet<>();
 
 		while (!queue.isEmpty()) {
-			Pair<ClassDecl<?>, Integer> curr = queue.remove(0);
-			ClassDecl<?> clazz = curr.getFirst();
-			int depth = curr.getSecond();
+			ObjectIntHolder<ClassDecl<?>> curr = queue.remove(0);
+			ClassDecl<?> clazz = curr.key;
+			int depth = curr.value;
 
 			if (solved.add(clazz)) {
 				while (aspectLayers.size() <= depth) aspectLayers.add(new ArrayList<>());
 				aspectLayers.get(depth).add(clazz);
 
 				EAnnotation annotation = clazz.getAnnotation(ClassName.byClass(AspectExtends.class));
-				ArrayValue<Class<?>, TypeValue> value = annotation == null ? null : annotation.getValue("extend");
-				List<ClassName> extensions = value == null ? null : CollectionsKt.map(value.rawValue(), it -> it.rawValue());
 
-				if (extensions != null) {
-					for (ClassName extension : extensions) {
-						ClassDecl<Object> classDecl = aspectFactory.classAccessor.getClassDecl(extension);
-						queue.add(new Pair<>(classDecl, depth + 1));
+				if (annotation != null) {
+					ArrayValue<Class<?>, TypeValue> value = annotation.getValue("extend");
+
+					if (value != null) {
+						for (TypeValue it : value.rawValue()) {
+							ClassName extension = it.rawValue();
+							ClassDecl<?> classDecl = aspectFactory.classAccessor.getClassDecl(extension);
+							queue.add(new ObjectIntHolder<>(classDecl, depth + 1));
+						}
 					}
 				}
 			}
 		}
 
-		List<ClassDecl<?>> flat = CollectionsKt.flatMap(aspectLayers, it -> it);
+		List<ClassDecl<?>> flat = new ArrayList<>();
+		for (List<ClassDecl<?>> it : aspectLayers) flat.addAll(it);
+
 		checkAspectDeclare(targetClass, flat);
 		aspectFactory.checkAspectable(targetClass, flat);
 
 		AspectResult<T> aspectDecl = aspectFactory.makeClass(targetClass, b -> {
-			Map<ClassDecl<?>, EAnnotation> stub = MapsKt.toMap(CollectionsKt.flatMap(flat, i -> CollectionsKt.mapNotNull(CollectionsKt.plus(CollectionsKt.listOfNotNull(i.annotatedSuperClass()), i.annotatedInterfaces()), it -> {
-				EAnnotation stub1 = CollectionsKt.firstOrNull(it.annotations(), a -> a.type.equals(ClassName.byClass(Stub.class)));
-				return stub1 == null ? null : new Pair<>(it.type(), stub1);
-			})));
-			Set<ClassDecl<?>> nonStubInterfaces = CollectionsKt.toSet(CollectionsKt.flatMap(flat, i -> CollectionsKt.map(CollectionsKt.filter(i.annotatedInterfaces(), it -> it.getAnnotation(ClassName.byClass(Stub.class)) == null), it -> it.type())));
+			Map<ClassDecl<?>, EAnnotation> stub = new HashMap<>();
+			Set<ClassDecl<?>> nonStubInterfaces = new HashSet<>();
+			for (ClassDecl<?> decl : flat) {
+				EAnnotatedType<?> annotatedSuperClass = decl.annotatedSuperClass();
+				if (annotatedSuperClass != null) {
+					EAnnotation annotation = annotatedSuperClass.getAnnotation(ClassName.byClass(Stub.class));
+					if (annotation != null) stub.put(annotatedSuperClass.type(), annotation);
+				}
+
+				for (EAnnotatedType<?> it : decl.annotatedInterfaces()) {
+					EAnnotation annotation = it.getAnnotation(ClassName.byClass(Stub.class));
+					if (annotation == null) nonStubInterfaces.add(it.type());
+					else stub.put(it.type(), annotation);
+				}
+			}
 
 			for (var entry : stub.entrySet()) {
 				b.registerStubSpec(
 						entry.getKey().name,
-						((TypeValue) entry.getValue().getValue("attacheTo")).rawValue()
+						entry.getValue().<TypeValue>getValue("attacheTo").rawValue()
 				);
 			}
 
@@ -91,9 +107,9 @@ public class Aspector {
 					}
 				}
 
-				for (EMethod method : CollectionsKt.filter(decl.methods(), method -> Modifier.isPrivate(method.flags)
-						|| Modifier.isStatic(method.flags)
-						|| Modifier.isFinal(method.flags))) {
+				for (EMethod method : decl.methods()) {
+					if ((method.flags & (Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL)) != 0) continue;
+
 					b.registerDeclMethod(method);
 				}
 
@@ -102,27 +118,21 @@ public class Aspector {
 				}
 			}
 
-			for (int layer = 0; layer < aspectLayers.size(); layer++) {
-				List<ClassDecl<?>> decls = aspectLayers.get(layer);
+			for (int i = 0; i < aspectLayers.size(); i++) {
+				List<ClassDecl<?>> decls = aspectLayers.get(i);
 
 				for (ClassDecl<?> decl : decls) {
-					for (Pair<EMethod, Using> entry : CollectionsKt.map(CollectionsKt.filter(decl.methods(), it -> !Modifier.isPrivate(it.flags)
-							&& !Modifier.isStatic(it.flags)
-							&& !Modifier.isFinal(it.flags)), it -> {
-						EAnnotation anno = it.getAnnotation(ClassName.byClass(AspectElement.class));
+					for (EMethod method : decl.methods()) {
+						if ((method.flags & (Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL)) != 0) continue;
+
+						EAnnotation anno = method.getAnnotation(ClassName.byClass(AspectElement.class));
 
 						if (anno != null) {
-							EnumValue<Using> using = anno.getValue("using");
+							EnumValue<Using> usingValue = anno.getValue("using");
+							Using using = usingValue == null ? Using.OVERRIDE : usingValue.value();
 
-							if (using != null) return new Pair<>(it, using.value());
+							b.registerAspectMethod(i, new EAspectMethod(method.declaring, method.name, method.parameters, method.annotatedReturnType, method.flags, using, method.annotations));
 						}
-
-						return new Pair<>(it, Using.OVERRIDE);
-					})) {
-						EMethod method = entry.getFirst();
-						Using using = entry.getSecond();
-
-						b.registerAspectMethod(layer, new EAspectMethod(method.declaring, method.name, method.parameters, method.annotatedReturnType, method.flags, using, method.annotations));
 					}
 				}
 			}

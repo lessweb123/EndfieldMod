@@ -238,7 +238,7 @@ public final class MathRenderer {
 						.append(argsCount[i])
 						.append(" arg")
 						.append(i)
-						.append(";")
+						.append(';')
 						.append(System.lineSeparator());
 			}
 

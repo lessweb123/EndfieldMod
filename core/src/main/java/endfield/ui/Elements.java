@@ -631,9 +631,9 @@ public final class Elements {
 			}
 			obtain.setText(font, texts + " " + words[wordIndex + 1]);
 			if (obtain.width <= maxWidth) {
-				texts.append(" ");
+				texts.append(' ');
 			} else {
-				texts.append("\n");
+				texts.append('\n');
 			}
 			wordIndex++;
 		}

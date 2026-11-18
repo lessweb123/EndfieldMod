@@ -13,7 +13,6 @@ import endfield.util.aspector.classes.EField;
 import endfield.util.aspector.classes.EMethod;
 import endfield.util.aspector.classes.MethodSignature;
 import kotlin.collections.ArraysKt;
-import kotlin.collections.CollectionsKt;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -202,14 +201,20 @@ public abstract class AspectFactory {
 
 		public void registerAspectMethod(int layer, EAspectMethod method) {
 			List<MethodUsing> usings = aspectMethods.computeIfAbsent(method.signature(), s -> new ArrayList<>());
-			MethodUsing using = CollectionsKt.firstOrNull(usings, it -> it.layer == layer);
-			if (using == null) {
-				using = switch (method.using) {
-					case OVERRIDE, REPLACE -> new SingleUsing(method.signature(), layer, method);
-					case BEFORE, BEFORE_RETURN, AFTER, AFTER_RETURN -> new MixinUsing(method.signature(), layer);
-				};
-				usings.add(using);
+
+			for (MethodUsing using : usings) {
+				if (using.layer == layer) {
+					usings.add(using);
+					using.addElement(method);
+					return;
+				}
 			}
+
+			MethodUsing using = switch (method.using) {
+				case OVERRIDE, REPLACE -> new SingleUsing(method.signature(), layer, method);
+				case BEFORE, BEFORE_RETURN, AFTER, AFTER_RETURN -> new MixinUsing(method.signature(), layer);
+			};
+			usings.add(using);
 			using.addElement(method);
 		}
 	}

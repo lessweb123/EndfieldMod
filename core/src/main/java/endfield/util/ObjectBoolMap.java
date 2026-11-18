@@ -456,11 +456,9 @@ public class ObjectBoolMap<K> implements Iterable<ObjectBoolHolder<K>>, Eachable
 
 		public CollectionList<ObjectBoolHolder<K>> toList() {
 			CollectionList<ObjectBoolHolder<K>> out = new CollectionList<>(keyComponentType);
-			for (ObjectBoolHolder<K> entry : this) {
-				ObjectBoolHolder<K> e = new ObjectBoolHolder<>();
-				e.key = entry.key;
-				e.value = entry.value;
-				out.add(e);
+			while (hasNext) {
+				ObjectBoolHolder<K> entry = next();
+				out.add(new ObjectBoolHolder<>(entry.key, entry.value));
 			}
 			return out;
 		}

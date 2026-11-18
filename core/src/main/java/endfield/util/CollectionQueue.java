@@ -451,9 +451,8 @@ public class CollectionQueue<E> extends AbstractQueue<E> implements Eachable<E> 
 
 	@Override
 	public String toString() {
-		if (size == 0) {
-			return "[]";
-		}
+		if (size == 0) return "[]";
+
 		E[] vs = values;
 		int h = head;
 		int t = tail;

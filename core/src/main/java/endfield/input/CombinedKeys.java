@@ -91,7 +91,7 @@ public class CombinedKeys implements Serializable {
 					.append(" + ");
 
 		KeyCode controllerKey = Collections2.find(res, CombinedKeys::isControllerKey);
-		builder.append(controllerKey == null ? "" : controllerKey.value);
+		if (controllerKey != null) builder.append(controllerKey.value);
 
 		return builder.toString();
 	}

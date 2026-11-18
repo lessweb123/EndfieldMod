@@ -269,7 +269,7 @@ public class CharSet implements Cloneable {
 		char[] table = keyTable;
 		int i = table.length;
 		if (hasZeroValue)
-			buffer.append("0");
+			buffer.append('0');
 		else {
 			while (i-- > 0) {
 				int key = table[i];

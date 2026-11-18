@@ -120,6 +120,24 @@ public class FloatCircularQueue {
 		return queue[tail];
 	}
 
+	@Override
+	public String toString() {
+		if (queue.length == 0) return "[]";
+
+		float[] fs = queue;
+		int h = head;
+		int t = tail;
+
+		StringBuilder sb = new StringBuilder(64);
+		sb.append('[');
+		sb.append(fs[h]);
+		for (int i = (h + 1) % fs.length; i != t; i = (i + 1) % fs.length) {
+			sb.append(", ").append(fs[i]);
+		}
+		sb.append(']');
+		return sb.toString();
+	}
+
 	@FunctionalInterface
 	public interface QueueIterator {
 		void get(int i, float f);

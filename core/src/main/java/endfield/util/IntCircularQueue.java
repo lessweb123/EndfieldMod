@@ -72,4 +72,22 @@ public class IntCircularQueue {
 
 		return value;
 	}
+
+	@Override
+	public String toString() {
+		if (queue.length == 0) return "[]";
+
+		int[] is = queue;
+		int h = head;
+		int t = tail;
+
+		StringBuilder sb = new StringBuilder(64);
+		sb.append('[');
+		sb.append(is[h]);
+		for (int i = (h + 1) % is.length; i != t; i = (i + 1) % is.length) {
+			sb.append(", ").append(is[i]);
+		}
+		sb.append(']');
+		return sb.toString();
+	}
 }

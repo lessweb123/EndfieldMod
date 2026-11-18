@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
 
 public final class Collections2 {
 	private Collections2() {}
@@ -120,6 +121,11 @@ public final class Collections2 {
 		return new Chain<>(first, second);
 	}
 
+	@SafeVarargs
+	public static <T> Chains<T> chains(Iterator<T>... iterators) {
+		return new Chains<>(iterators);
+	}
+
 	public static class Single<T> implements Iterable<T>, Iterator<T>, Eachable<T> {
 		protected final T item;
 		protected boolean done;
@@ -211,13 +217,64 @@ public final class Collections2 {
 
 		@Override
 		public T next() {
-			return first.hasNext() ? first.next() : second.next();
+			if (first.hasNext()) return first.next();
+			if (second.hasNext()) return second.next();
+			return null;
 		}
 
 		@Override
 		public void each(Cons<? super T> cons) {
 			while (first.hasNext()) cons.get(first.next());
 			while (second.hasNext()) cons.get(second.next());
+		}
+
+		@Override
+		public void forEach(Consumer<? super T> action) {
+			while (first.hasNext()) action.accept(first.next());
+			while (second.hasNext()) action.accept(second.next());
+		}
+	}
+
+	public static class Chains<T> implements Iterable<T>, Iterator<T>, Eachable<T> {
+		protected final Iterator<T>[] iterators;
+
+		public Chains(Iterator<T>[] iters) {
+			iterators = iters;
+		}
+
+		@Override
+		public Chains<T> iterator() {
+			return this;
+		}
+
+		@Override
+		public boolean hasNext() {
+			for (Iterator<T> iterator : iterators) {
+				if (iterator.hasNext()) return true;
+			}
+			return false;
+		}
+
+		@Override
+		public T next() {
+			for (Iterator<T> iterator : iterators) {
+				if (iterator.hasNext()) return iterator.next();
+			}
+			return null;
+		}
+
+		@Override
+		public void each(Cons<? super T> cons) {
+			for (Iterator<T> iterator : iterators) {
+				while (iterator.hasNext()) cons.get(iterator.next());
+			}
+		}
+
+		@Override
+		public void forEach(Consumer<? super T> action) {
+			for (Iterator<T> iterator : iterators) {
+				while (iterator.hasNext()) action.accept(iterator.next());
+			}
 		}
 	}
 

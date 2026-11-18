@@ -127,7 +127,7 @@ public class PressureSource extends GenericPressureBlock {
 				table.add("@filter.option.amount").padTop(5f).padBottom(5f).row();
 				table.field(
 						"" + targetAmount,
-						(field, c) -> Character.isDigit(c) || ((!field.getText().contains(".")) && c == '.') || (field.getText().isEmpty() && c == '-'),
+						(field, c) -> Character.isDigit(c) || ((field.getText().indexOf('.') < 0) && c == '.') || (field.getText().isEmpty() && c == '-'),
 						s -> configure(new SourceEntry() {{
 							fluid = Vars.content.liquid(liquid);
 							amount = Strings.parseFloat(s, 0f);

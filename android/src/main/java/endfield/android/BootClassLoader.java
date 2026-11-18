@@ -2,7 +2,7 @@ package endfield.android;
 
 import dalvik.system.PathClassLoader;
 
-public final class CoreOjClassLoader extends PathClassLoader {
+public final class BootClassLoader extends PathClassLoader {
 	private final boolean useHelperStubs;
 
 	static String getBootClassPath() {
@@ -15,25 +15,27 @@ public final class CoreOjClassLoader extends PathClassLoader {
 		return getBootClassPath().split(":", 2)[0];
 	}
 
-	CoreOjClassLoader() {
+	BootClassLoader() {
 		this(getCoreOjPath(), null, true);
 	}
 
-	CoreOjClassLoader(String path) {
+	BootClassLoader(String path) {
 		this(path, null, true);
 	}
 
-	CoreOjClassLoader(String path, ClassLoader parent) {
+	BootClassLoader(String path, ClassLoader parent) {
 		this(path, parent, false);
 	}
 
-	private CoreOjClassLoader(String path, ClassLoader parent, boolean useHelperStubs) {
+	private BootClassLoader(String path, ClassLoader parent, boolean useHelperStubs) {
 		super(path, parent);
 		this.useHelperStubs = useHelperStubs;
 	}
 
 	@Override
 	public Class<?> loadClass(String name) throws ClassNotFoundException {
+		if ("java.lang.Object".equals(name)) return Object.class;
+
 		try {
 			return findClass(name);
 		} catch (ClassNotFoundException ignored) {

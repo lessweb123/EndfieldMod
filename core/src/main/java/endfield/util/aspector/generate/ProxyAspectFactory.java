@@ -11,10 +11,7 @@ import endfield.util.aspector.classes.EConstructor;
 import endfield.util.aspector.classes.EField;
 import endfield.util.aspector.classes.EMethod;
 import endfield.util.aspector.classes.MethodSignature;
-import kotlin.Pair;
-import kotlin.collections.ArraysKt;
 import kotlin.collections.CollectionsKt;
-import kotlin.collections.MapsKt;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.FieldVisitor;
@@ -28,7 +25,9 @@ import org.objectweb.asm.tree.MethodNode;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -50,11 +49,16 @@ public class ProxyAspectFactory extends AspectFactory {
 		else if (name.startsWith("jdk.")) name = name.replace("jdk.", "jdk_.");
 		else if (name.startsWith("android.")) name = name.replace("android.", "android_.");
 		else if (name.startsWith("androidx.")) name = name.replace("androidx.", "androidx_.");
+		else if (name.startsWith("dalvik.")) name = name.replace("dalvik.", "dalvik_.");
 		else if (name.startsWith("libcore.")) name = name.replace("libcore.", "libcore_.");
 		else if (name.startsWith("com.sun.")) name = name.replace("com.sun.", "com.sun_.");
 		else if (name.startsWith("com.android.")) name = name.replace("com.android.", "com.android_.");
 
-		return ClassName.byName(name + "$" + Integer.toHexString(ArraysKt.map(aspectClasses, it -> it.name).hashCode()));
+		int hash = 1;
+		for (ClassDecl<?> it : aspectClasses) {
+			hash = 31 * hash + it.name.hashCode();
+		}
+		return ClassName.byName(name + "$" + Integer.toHexString(hash));
 	}
 
 	@Override
@@ -71,17 +75,25 @@ public class ProxyAspectFactory extends AspectFactory {
 		ClassNode superNode = new ClassNode(Opcodes.ASM9);
 		cr.accept(superNode, ClassReader.SKIP_DEBUG);
 
-		List<MethodNode> superConstructors = CollectionsKt.filter(superNode.methods, it -> it.name.equals("<init>") && (it.access & Opcodes.ACC_PRIVATE) == 0);
-
-		Map<ClassName, byte[]> declBytes = CollectionsKt.associateWith(aspectDecl, it -> classAccessor.getBytes(it));
-		Map<ClassName, ClassNode> declNodes = new HashMap<>(declBytes.size());
-		for (var e : declBytes.entrySet()) {
-			ClassReader read = new ClassReader(e.getValue());
-			ClassNode implRoot = new ClassNode(Opcodes.ASM9);
-			read.accept(implRoot, ClassReader.SKIP_DEBUG);
-			declNodes.put(e.getKey(), implRoot);
+		List<MethodNode> superConstructors = new ArrayList<>();
+		for (MethodNode it : superNode.methods) {
+			if (it.name.equals("<init>") && (it.access & Opcodes.ACC_PRIVATE) == 0) superConstructors.add(it);
 		}
-		Map<ClassName, Map<MethodSignature, MethodNode>> declMethods = MapsKt.toMap(MapsKt.map(declNodes, e -> new Pair<>(e.getKey(), CollectionsKt.associateBy(e.getValue().methods, m -> MethodSignature.parse(m.name, m.desc)))));
+
+		Map<ClassName, Map<MethodSignature, MethodNode>> declMethods = new HashMap<>();
+		for (ClassName decl : aspectDecl) {
+			byte[] bytecode = classAccessor.getBytes(decl);
+
+			ClassReader reader = new ClassReader(bytecode);
+			ClassNode implRoot = new ClassNode(Opcodes.ASM9);
+			reader.accept(implRoot, ClassReader.SKIP_DEBUG);
+
+			Map<MethodSignature, MethodNode> map = new HashMap<>();
+
+			for (MethodNode m : implRoot.methods) map.put(MethodSignature.parse(m.name, m.desc), m);
+
+			declMethods.put(decl, map);
+		}
 
 		Map<MethodSignature, List<AspectFactory.MethodUsing>> aspectElements = builder.aspectMethods;
 
@@ -92,9 +104,9 @@ public class ProxyAspectFactory extends AspectFactory {
 		List<EConstructor<?>> constructors = let(builder.declConstructors, map -> {
 			MethodSignature allowedSignature = MethodSignature.parse("<init>", "()V");
 
-			Pair<MethodSignature, List<EConstructor<?>>> p = CollectionsKt.firstOrNull(MapsKt.toList(map), it -> !allowedSignature.equals(it.getFirst()));
-			if (p != null)
-				throw new IllegalArgumentException("Constructors with parameters cannot exist in the context of Aspect declare. decl: " + p.getSecond().get(0).declaring);
+			for (var e : map.entrySet()) {
+				if (!allowedSignature.equals(e.getKey())) throw new IllegalArgumentException("Constructors with parameters cannot exist in the context of Aspect declare. decl: " + e.getValue().get(0).declaring);
+			}
 
 			List<EConstructor<?>> get = map.get(allowedSignature);
 			return get == null ? new ArrayList<>() : get;
@@ -116,24 +128,30 @@ public class ProxyAspectFactory extends AspectFactory {
 		for (var e : aspectElements.entrySet()) {
 			Map<ClassName, MethodSignature> map = methodMapping.computeIfAbsent(e.getKey(), it -> new HashMap<>());
 
-			for (EAspectMethod method : CollectionsKt.flatMap(e.getValue(), it -> it.getElements())) {
-				MethodSignature methodSignature = MethodSignature.parse(
-						method.name + "Aspect$" + Integer.toHexString(method.declaring.name.hashCode()),
-						method.signature().jvmDescriptor()
-				);
+			for (MethodUsing elements : e.getValue()) {
+				for (EAspectMethod method : elements.getElements()) {
+					MethodSignature methodSignature = MethodSignature.parse(
+							method.name + "Aspect$" + Integer.toHexString(method.declaring.name.hashCode()),
+							method.signature().jvmDescriptor()
+					);
 
-				map.put(method.declaring.name, methodSignature);
+					map.put(method.declaring.name, methodSignature);
+				}
 			}
 		}
 
 		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
+
+		String[] inters = new String[interfaces.size()];
+		for (int i = 0; i < inters.length; i++) inters[i] = interfaces.get(i).internalName();
+
 		cw.visit(
 				Opcodes.V1_8,
 				accessFlags | Opcodes.ACC_SUPER,
 				thisClass.internalName(),
 				null,
 				superClass.internalName(),
-				CollectionsKt.map(interfaces, it -> it.internalName()).toArray(Constant.EMPTY_STRING)
+				inters
 		);
 
 		for (EField it : sharedFields.values()) {
@@ -147,20 +165,28 @@ public class ProxyAspectFactory extends AspectFactory {
 			fieldVisitor.visitEnd();
 		}
 
-		Map<String, Map<ClassName, String>> fieldMapping = MapsKt.toMap(MapsKt.map(fields, it -> new Pair<>(it.getKey(), CollectionsKt.associate(it.getValue(), field -> {
-			String fieldName = field.name + "$" + Integer.toHexString(field.declaring.name.hashCode());
-			FieldVisitor fieldVisitor = cw.visitField(
-					field.flags,
-					fieldName,
-					field.type().name.descriptor(),
-					null,
-					field.constant
-			);
-			fieldVisitor.visitEnd();
-			return new Pair<>(field.declaring.name, fieldName);
-		}))));
+		Map<String, Map<ClassName, String>> fieldMapping = new HashMap<>();
+		for (var e : fields.entrySet()) {
+			Map<ClassName, String> map = new HashMap<>();
 
-		List<MethodSignature> constructorList = CollectionsKt.map(constructors, constructor -> {
+			for (EField field : e.getValue()) {
+				String fieldName = field.name + "$" + Integer.toHexString(field.declaring.name.hashCode());
+				FieldVisitor fieldVisitor = cw.visitField(
+						field.flags,
+						fieldName,
+						field.type().name.descriptor(),
+						null,
+						field.constant
+				);
+				fieldVisitor.visitEnd();
+				map.put(field.declaring.name, fieldName);
+			}
+
+			fieldMapping.put(e.getKey(), map);
+		}
+
+		List<MethodSignature> constructorList = new ArrayList<>(constructors.size());
+		for (EConstructor<?> constructor : constructors) {
 			ClassDecl<?> declaring = constructor.declaring;
 			String realName = "init$" + Integer.toHexString(declaring.name.hashCode());
 
@@ -186,37 +212,38 @@ public class ProxyAspectFactory extends AspectFactory {
 			methodVisitor.visitMaxs(0, 0);
 			methodVisitor.visitEnd();
 
-			return MethodSignature.parse(realName, "()V");
-		});
+			constructorList.add(MethodSignature.parse(realName, "()V"));
+		}
 		for (var e : aspectElements.entrySet()) {
 			MethodSignature sign = e.getKey();
-			List<AspectFactory.MethodUsing> elements = e.getValue();
 
-			for (EAspectMethod element : CollectionsKt.flatMap(e.getValue(), it -> it.getElements())) {
-				ClassDecl<?> declaring = element.declaring;
-				MethodSignature realSignature = methodMapping.get(sign).get(declaring.name);
+			for (MethodUsing elements : e.getValue()) {
+				for (EAspectMethod element : elements.getElements()) {
+					ClassDecl<?> declaring = element.declaring;
+					MethodSignature realSignature = methodMapping.get(sign).get(declaring.name);
 
-				Map<MethodSignature, MethodNode> byMethods = declMethods.get(declaring.name);
-				MethodNode byMethod = byMethods == null ? null : byMethods.get(sign);
+					Map<MethodSignature, MethodNode> byMethods = declMethods.get(declaring.name);
+					MethodNode byMethod = byMethods == null ? null : byMethods.get(sign);
 
-				if (byMethod == null)
-					throw new IllegalArgumentException("No such method declared in aspect class " + declaring.name + ".");
+					if (byMethod == null)
+						throw new IllegalArgumentException("No such method declared in aspect class " + declaring.name + ".");
 
-				MethodVisitor methodVisitor = cw.visitMethod(
-						Opcodes.ACC_PRIVATE,
-						realSignature.methodName,
-						sign.jvmDescriptor(),
-						null,
-						null
-				);
-				methodVisitor.visitCode();
-				visitMethodBy(
-						methodVisitor, byMethod,
-						thisClass, superClass, aspectDecl,
-						fieldMapping, methodMapping, stubAttaches
-				);
-				methodVisitor.visitMaxs(0, 0);
-				methodVisitor.visitEnd();
+					MethodVisitor methodVisitor = cw.visitMethod(
+							Opcodes.ACC_PRIVATE,
+							realSignature.methodName,
+							sign.jvmDescriptor(),
+							null,
+							null
+					);
+					methodVisitor.visitCode();
+					visitMethodBy(
+							methodVisitor, byMethod,
+							thisClass, superClass, aspectDecl,
+							fieldMapping, methodMapping, stubAttaches
+					);
+					methodVisitor.visitMaxs(0, 0);
+					methodVisitor.visitEnd();
+				}
 			}
 		}
 
@@ -257,22 +284,28 @@ public class ProxyAspectFactory extends AspectFactory {
 
 			AspectFactory.MethodUsing methodUsing = elements.get(0);
 			if (methodUsing instanceof MixinUsing) {
-				List<EAspectMethod> methods1 = CollectionsKt.sortedBy(CollectionsKt.flatMap(elements, it -> it.getElements()), it -> it.using.ordinal());
+				List<EAspectMethod> aspectMethods = new ArrayList<>();
+				for (MethodUsing element : elements) aspectMethods.addAll(element.getElements());
+				aspectMethods.sort(Comparator.comparing(it -> it.using.ordinal()));
 
 				String desc = sign.jvmDescriptor();
-				MethodNode superMethod = CollectionsKt.firstOrNull(superNode.methods, it -> it.name.equals(sign.methodName) && it.desc.equals(desc));
+				MethodNode superMethod = null;
+				for (MethodNode it : superNode.methods) {
+					if (it.name.equals(sign.methodName) && it.desc.equals(desc)) superMethod = it;
+				}
 
-				int insert = CollectionsKt.indexOfFirst(methods1, it -> it.using == Using.AFTER || it.using == Using.AFTER_RETURN);
-				List<ClassName> mixinList = let(CollectionsKt.map(methods1, it -> it.declaring.name), it -> {
-					if (superMethod == null) return it;
+				int insert = CollectionsKt.indexOfFirst(aspectMethods, it -> it.using == Using.AFTER || it.using == Using.AFTER_RETURN);
+				List<ClassName> mixinList = new ArrayList<>();
+				for (EAspectMethod aspectMethod : aspectMethods) mixinList.add(aspectMethod.declaring.name);
+				if (superMethod != null) {
 					List<ClassName> list = new ArrayList<>(insert + 1 + elements.size());
-					list.addAll(it.subList(0, insert));
+					list.addAll(mixinList.subList(0, insert));
 					list.add(superClass);
-					list.addAll(it.subList(insert, elements.size()));
-					return list;
-				});
+					list.addAll(mixinList.subList(insert, elements.size()));
+					mixinList = list;
+				}
 
-				EAspectMethod method = CollectionsKt.firstOrNull(methods1, it -> it.using == Using.BEFORE_RETURN || it.using == Using.AFTER_RETURN);
+				EAspectMethod method = CollectionsKt.firstOrNull(aspectMethods, it -> it.using == Using.BEFORE_RETURN || it.using == Using.AFTER_RETURN);
 				ClassName returnDeclaring = method != null ? method.declaring.name : superMethod != null ? superClass : null;
 
 				if (returnDeclaring == null && !sign.returnType.equals(ClassName.V))
@@ -319,10 +352,17 @@ public class ProxyAspectFactory extends AspectFactory {
 
 				MethodSignature invokeBridge = methodMapping.get(sign).get(declaring.name);
 
-				if (su.using == Using.REPLACE && CollectionsKt.any(byMethod.instructions, insn -> insn instanceof MethodInsnNode mi
-						&& insn.getOpcode() == Opcodes.INVOKESPECIAL
-						&& aspectDecl.contains(ClassName.byInternalName(mi.owner))))
-					throw new IllegalArgumentException("Method " + method.name + " in aspect declare is not allowed to call super method of aspect declaring classes when using REPLACE strategy.");
+				if (su.using == Using.REPLACE) {
+					for (AbstractInsnNode insn : byMethod.instructions) {
+						if (insn instanceof MethodInsnNode methodInsn
+								&& insn.getOpcode() == Opcodes.INVOKESPECIAL
+								&& aspectDecl.contains(ClassName.byInternalName(methodInsn.owner))) {
+							throw new IllegalArgumentException("Method " +
+									method.name +
+									" in aspect declare is not allowed to call super method of aspect declaring classes when using REPLACE strategy.");
+						}
+					}
+				}
 
 				MethodVisitor methodVisitor = cw.visitMethod(
 						Opcodes.ACC_PUBLIC,
@@ -393,7 +433,7 @@ public class ProxyAspectFactory extends AspectFactory {
 
 	@Override
 	public void checkAspectable(ClassDecl<?> sourceClass, List<ClassDecl<?>> aspectClasses) {
-		if (Modifier.isFinal(sourceClass.flags()) || Modifier.isPrivate(sourceClass.flags()))
+		if ((sourceClass.flags() & (Modifier.PRIVATE | Modifier.FINAL)) != 0)
 			throw new IllegalArgumentException("Source class " + sourceClass.name + " must not be final or private");
 	}
 
@@ -426,7 +466,8 @@ public class ProxyAspectFactory extends AspectFactory {
 	}
 
 	public static void visitMethodBy(MethodVisitor write, MethodNode byMethod, ClassName thisClass, ClassName superClass, List<ClassName> aspectDecl, Map<String, Map<ClassName, String>> fieldMapping, Map<MethodSignature, Map<ClassName, MethodSignature>> methodMapping, Map<ClassName, ClassName> stubAttaches) {
-		Set<String> aspectDeclSet = CollectionsKt.toSet(CollectionsKt.map(aspectDecl, it -> it.internalName()));
+		Set<String> aspectDeclSet = new HashSet<>(aspectDecl.size());
+		for (ClassName decl : aspectDecl) aspectDeclSet.add(decl.internalName());
 
 		MethodVisitor swap = new MethodVisitor(Opcodes.ASM9, write) {
 			@Override
@@ -441,7 +482,7 @@ public class ProxyAspectFactory extends AspectFactory {
 
 				if (opcode == Opcodes.INVOKESPECIAL || opcode == Opcodes.INVOKESTATIC) {
 					ClassName attache = stubAttaches.get(realOwner);
-					ClassName stubAttache = attache == null ? null : attache.equals(ClassName.NOTHING) ? superClass : attache;
+					ClassName stubAttache = attache == null ? null : attache.equals(ClassName.V) ? superClass : attache;
 					if (stubAttache != null) {
 						realOwner = stubAttache;
 						realInterface = false;
@@ -468,7 +509,7 @@ public class ProxyAspectFactory extends AspectFactory {
 				String realField = name;
 
 				ClassName attache = stubAttaches.get(realOwner);
-				ClassName stubAttache = attache == null ? null : attache.equals(ClassName.NOTHING) ? superClass : attache;
+				ClassName stubAttache = attache == null ? null : attache.equals(ClassName.V) ? superClass : attache;
 				if (stubAttache != null) {
 					realOwner = stubAttache;
 				}

@@ -2,6 +2,7 @@ package endfield.util.aspector.classes;
 
 import kotlin.collections.CollectionsKt;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ArrayValue<V, T extends AnnotationValue<V, ?>> extends AnnotationValue<List<V>, List<T>> {
@@ -18,7 +19,10 @@ public class ArrayValue<V, T extends AnnotationValue<V, ?>> extends AnnotationVa
 
 	@Override
 	public List<V> value() {
-		return CollectionsKt.map(values, it -> it.value());
+		List<V> value = new ArrayList<>(values.size());
+		for (T val : values) value.add(val.value());
+
+		return value;
 	}
 
 	@Override

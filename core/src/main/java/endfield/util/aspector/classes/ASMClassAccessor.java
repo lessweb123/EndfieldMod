@@ -188,8 +188,6 @@ public class ASMClassAccessor implements ClassAccessor {
 	}
 
 	static class BytecodeClassDecl<T> extends ClassDecl<T> {
-		static final ClassName metadataT = ClassName.byClass(Metadata.class);
-
 		static final Prov<List<EAnnotation>> prov1 = ArrayList::new;
 		static final Function1<KmAnnotation, EAnnotation> function1 = BytecodeClassDecl::handleKmAnnotation;
 
@@ -280,7 +278,7 @@ public class ASMClassAccessor implements ClassAccessor {
 			classReader.accept(classRoot, ClassReader.SKIP_CODE | ClassReader.SKIP_FRAMES);
 
 			annotations = handleAnnotations(Collections2.plus(classRoot.visibleAnnotations, classRoot.invisibleAnnotations));
-			EAnnotation ktMetadata = CollectionsKt.firstOrNull(annotations, it -> it.type.equals(metadataT));
+			EAnnotation ktMetadata = CollectionsKt.firstOrNull(annotations, it -> it.type.equals(ClassName.byClass(Metadata.class)));
 			Metadata metadata = ktMetadata == null ? null : new Metadata() {
 				@Override
 				public Class<? extends Annotation> annotationType() {
@@ -351,7 +349,17 @@ public class ASMClassAccessor implements ClassAccessor {
 						className = ClassName.V;
 					}
 
-					int index = className.internalName().equals(classRoot.superName) ? -1 : CollectionsKt.indexOfFirst(classRoot.interfaces, it -> it.equals(className.internalName()));
+					int index = -1;
+					if (!className.internalName().equals(classRoot.superName)) {
+						int i = 0;
+						for (String interfaceName : classRoot.interfaces) {
+							if (interfaceName.equals(className.internalName())) {
+								index = i;
+								break;
+							}
+							i++;
+						}
+					}
 
 					for (KmAnnotation kmAnnotation : JvmExtensionsKt.getAnnotations(kmType)) {
 						EAnnotation annotation = handleKmAnnotation(kmAnnotation);
@@ -540,7 +548,9 @@ public class ASMClassAccessor implements ClassAccessor {
 		}
 
 		static List<EAnnotation> handleAnnotations(List<AnnotationNode> nodes) {
-			return CollectionsKt.map(nodes, it -> handleAnnotation(it));
+			List<EAnnotation> annotations = new ArrayList<>();
+			for (AnnotationNode annotation : nodes) annotations.add(handleAnnotation(annotation));
+			return annotations;
 		}
 
 		static EAnnotation handleAnnotation(AnnotationNode node) {

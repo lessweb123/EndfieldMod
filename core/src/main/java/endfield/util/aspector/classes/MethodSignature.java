@@ -23,7 +23,7 @@ public class MethodSignature {
 	public static MethodSignature parse(String methodName, String descriptor) {
 		if (!descriptorMatcher.matcher(descriptor).matches())
 			throw new IllegalArgumentException("Invalid signature string: " + descriptor);
-		if (methodName.contains("(") || methodName.contains(")") || methodName.contains(";"))
+		if (methodName.indexOf('(') >= 0 || methodName.indexOf(')') >= 0 || methodName.indexOf(';') >= 0)
 			throw new IllegalArgumentException("Invalid method name: " + methodName);
 
 		List<ClassName> paramTypes = new ArrayList<>();
@@ -77,11 +77,11 @@ public class MethodSignature {
 						case 'Z' -> ClassName.Z;
 						case 'V' -> ClassName.V;
 						case 'L' -> {
-							var nextSemicolon = descriptor.indexOf(';', index);
+							int nextSemicolon = descriptor.indexOf(';', index);
 							if (nextSemicolon == -1)
 								throw new IllegalArgumentException("Invalid signature string: " + descriptor);
 
-							var className = ClassName.byDescriptor(descriptor.substring(index, nextSemicolon + 1));
+							ClassName className = ClassName.byDescriptor(descriptor.substring(index, nextSemicolon + 1));
 							index = nextSemicolon;
 							yield className;
 						}
@@ -126,10 +126,10 @@ public class MethodSignature {
 	public String jvmDescriptor() {
 		StringBuilder builder = new StringBuilder();
 
+		builder.append('(');
 		for (ClassName type : paramTypes) {
 			builder.append(type.descriptor());
 		}
-
-		return "(" + builder + ")" + returnType.descriptor();
+		return builder.append(')').append(returnType.descriptor()).toString();
 	}
 }

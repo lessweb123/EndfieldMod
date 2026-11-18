@@ -1,7 +1,6 @@
 package endfield.util.aspector.classes;
 
-import kotlin.collections.CollectionsKt;
-
+import java.util.ArrayList;
 import java.util.List;
 
 public class EConstructor<T> extends ClassElement {
@@ -17,17 +16,24 @@ public class EConstructor<T> extends ClassElement {
 
 	public MethodSignature signature() {
 		if (signature == null) {
-			signature = new MethodSignature("<init>", CollectionsKt.map(parameterTypes(), it -> it.name), ClassName.V);
+			List<ClassName> types = new ArrayList<>();
+			for (EParameter parameter : parameters) types.add(parameter.annotatedType().type().name);
+
+			signature = new MethodSignature("<init>", types, ClassName.V);
 		}
 
 		return signature;
 	}
 
 	public List<ClassDecl<?>> parameterTypes() {
-		return CollectionsKt.map(parameters, it -> it.annotatedType().type());
+		List<ClassDecl<?>> types = new ArrayList<>(parameters.size());
+		for (EParameter parameter : parameters) types.add(parameter.annotatedType().type());
+		return types;
 	}
 
 	public List<EAnnotatedType<?>> annotatedParameterTypes() {
-		return CollectionsKt.map(parameters, it -> it.annotatedType());
+		List<EAnnotatedType<?>> types = new ArrayList<>(parameters.size());
+		for (EParameter parameter : parameters) types.add(parameter.annotatedType());
+		return types;
 	}
 }

@@ -38,27 +38,27 @@ public abstract class ClassDecl<T> {
 	}
 
 	public boolean isPublic() {
-		return Modifier.isPublic(flags());
+		return (flags() & Modifier.PUBLIC) != 0;
 	}
 
 	public boolean isProtected() {
-		return Modifier.isProtected(flags());
+		return (flags() & Modifier.PROTECTED) != 0;
 	}
 
 	public boolean isPrivate() {
-		return Modifier.isPrivate(flags());
+		return (flags() & Modifier.PRIVATE) != 0;
 	}
 
 	public boolean isInterface() {
-		return Modifier.isInterface(flags());
+		return (flags() & Modifier.INTERFACE) != 0;
 	}
 
 	public boolean isAbstract() {
-		return Modifier.isAbstract(flags());
+		return (flags() & Modifier.ABSTRACT) != 0;
 	}
 
 	public boolean isFinal() {
-		return Modifier.isFinal(flags());
+		return (flags() & Modifier.FINAL) != 0;
 	}
 
 	public boolean isPrimitive() {

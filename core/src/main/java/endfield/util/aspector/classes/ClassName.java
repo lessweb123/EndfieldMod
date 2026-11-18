@@ -9,6 +9,7 @@ import org.objectweb.asm.Type;
 
 public class ClassName {
 	static final CollectionObjectMap<String, ClassName> nameMap = new CollectionObjectMap<>(String.class, ClassName.class);
+	static final CollectionObjectMap<Class<?>, ClassName> classMap = new CollectionObjectMap<>(Class.class, ClassName.class);
 
 	public static final ClassName V = new ClassName("V");
 	public static final ClassName Z = new ClassName("Z");
@@ -29,7 +30,7 @@ public class ClassName {
 	public static final ClassName LONG = byClass(Long.class);
 	public static final ClassName FLOAT = byClass(Float.class);
 	public static final ClassName DOUBLE = byClass(Double.class);
-	public static final ClassName NOTHING = byClass(Void.class);
+	public static final ClassName VOID = byClass(Void.class);
 	public static final ClassName CLASS = byClass(Class.class);
 	public static final ClassName STRING = byClass(String.class);
 	public static final ClassName ENUM = byClass(Enum.class);
@@ -91,7 +92,7 @@ public class ClassName {
 	}
 
 	public static ClassName byClass(Class<?> clazz) {
-		return byDescriptor(Type.getDescriptor(clazz));
+		return classMap.computeIfAbsent(clazz, t -> byDescriptor(Type.getDescriptor(t)));
 	}
 
 	public static ClassName byDescriptor(String descriptor) {

@@ -89,4 +89,22 @@ public class CircularQueue<T> implements Cloneable {
 
 		return value;
 	}
+
+	@Override
+	public String toString() {
+		if (queue.length == 0) return "[]";
+
+		T[] ts = queue;
+		int h = head;
+		int t = tail;
+
+		StringBuilder sb = new StringBuilder(64);
+		sb.append('[');
+		sb.append(ts[h]);
+		for (int i = (h + 1) % ts.length; i != t; i = (i + 1) % ts.length) {
+			sb.append(", ").append(ts[i]);
+		}
+		sb.append(']');
+		return sb.toString();
+	}
 }
