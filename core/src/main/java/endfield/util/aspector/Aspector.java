@@ -136,7 +136,7 @@ public class Aspector {
 					}
 				}
 			}
-		}, flat.toArray(new ClassDecl[0]));
+		}, flat);
 
 		return aspectDecl;
 	}

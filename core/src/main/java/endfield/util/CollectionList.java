@@ -525,10 +525,6 @@ public class CollectionList<E> extends AbstractList<E> implements Eachable<E>, C
 
 	@Override
 	public void add(int index, E element) {
-		insert(index, element);
-	}
-
-	public void insert(int index, E element) {
 		if (index > size) throw new IndexOutOfBoundsException("index can't be > size: " + index + " > " + size);
 		E[] es = items;
 		if (size == es.length) es = resize(Math.max(8, (int) (size * 1.75f)));

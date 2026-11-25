@@ -40,7 +40,7 @@ public class ProxyAspectFactory extends AspectFactory {
 	}
 
 	@Override
-	public ClassName generateClassName(ClassDecl<?> targetClass, ClassDecl<?>... aspectClasses) {
+	public ClassName generateClassName(ClassDecl<?> targetClass, List<ClassDecl<?>> aspectClasses) {
 		String name = targetClass.name.name();
 
 		if (name.startsWith("java.")) name = name.replace("java.", "java_.");

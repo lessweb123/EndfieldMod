@@ -14,7 +14,7 @@ public class MixinAspectFactory extends AspectFactory {
 	}
 
 	@Override
-	public ClassName generateClassName(ClassDecl<?> targetClass, ClassDecl<?>... aspectClasses) {
+	public ClassName generateClassName(ClassDecl<?> targetClass, List<ClassDecl<?>> aspectClasses) {
 		return targetClass.name;
 	}
 

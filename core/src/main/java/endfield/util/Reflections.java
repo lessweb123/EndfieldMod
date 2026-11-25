@@ -9,15 +9,20 @@ import arc.util.Structs;
 import endfield.util.handler.ClassHandler;
 import mindustry.Vars;
 
+import java.lang.annotation.Annotation;
+import java.lang.annotation.IncompleteAnnotationException;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InaccessibleObjectException;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Proxy;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Set;
 
 import static endfield.Vars2.accessibleHelper;
@@ -373,7 +378,7 @@ public final class Reflections {
 	 * @since 1.0.9
 	 */
 	@SuppressWarnings("deprecation")
-	public static <T extends AccessibleObject & Member> boolean setAccessible(T object) {
+	public static boolean setAccessible(AccessibleObject object) {
 		if (object.isAccessible()) return true;
 
 		try {
@@ -393,6 +398,10 @@ public final class Reflections {
 		}
 
 		return clazz;
+	}
+
+	public static <T extends Annotation> T newAnnotationInstance(Class<T> type, Map<String, Object> values) {
+		return new AnnotationInvocationHandle<>(type, values).newInstance();
 	}
 
 	// --------------------- kotlin only -------------------------
@@ -479,5 +488,70 @@ public final class Reflections {
 		int modifiers = type.getModifiers();
 
 		if ((modifiers & (Modifier.ABSTRACT | Modifier.INTERFACE)) != 0) throw new IllegalArgumentException("Cannot instantiate abstract class or interface");
+	}
+
+	public static class AnnotationInvocationHandle<T extends Annotation> implements InvocationHandler, ExtraVariable {
+		public Class<T> type;
+		public Map<String, Object> values;
+
+		public AnnotationInvocationHandle(Class<T> annoType, Map<String, Object> annoValues) {
+			type = annoType;
+			values = annoValues;
+		}
+
+		@SuppressWarnings("unchecked")
+		public T newInstance() {
+			return (T) Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type}, this);
+		}
+
+		@Override
+		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+			String name = method.getName();
+
+			switch (name) {
+				case "annotationType" -> {
+					return type;
+				}
+				case "hashCode" -> {
+					return values.hashCode();
+				}
+				case "equals" -> {
+					return proxy == args[0];
+				}
+				case "toString" -> {
+					StringBuilder sb = new StringBuilder();
+
+					sb.append('@').append(type.getName());
+
+					var i = values.entrySet().iterator();
+					if (!i.hasNext())
+						return sb.append("()").toString();
+
+					sb.append('(');
+					while (true) {
+						var e = i.next();
+						Object key = e.getKey();
+						Object value = e.getValue();
+						sb.append(key.toString()).append('=').append(value == values ? "(this Map)" : value.toString());
+						if (!i.hasNext()) {
+							return sb.append(')').toString();
+						}
+						sb.append(',').append(' ');
+					}
+				}
+			}
+
+			if (values.containsKey(name)) return values.get(name);
+
+			Object def = method.getDefaultValue();
+			if (def != null) return def;
+
+			throw new IncompleteAnnotationException(type, name);
+		}
+
+		@Override
+		public Map<String, Object> extra() {
+			return values;
+		}
 	}
 }

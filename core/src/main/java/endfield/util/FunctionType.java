@@ -79,16 +79,16 @@ public class FunctionType implements Poolable {
 		recyclePool.free(type);
 	}
 
+	public boolean match(Object... args) {
+		return Reflections.match(ptypes, args);
+	}
+
 	public boolean match(String key, Object... args) {
 		return name.equals(key) && Reflections.match(ptypes, args);
 	}
 
-	public boolean match(String key, Class<?>... types) {
-		return name.equals(key) && Reflections.match(ptypes, types);
-	}
-
-	public boolean match(FunctionType type) {
-		return name.equals(type.name) && Reflections.match(ptypes, type.ptypes);
+	public boolean match(Class<?>... types) {
+		return Reflections.match(ptypes, types);
 	}
 
 	public String name() {

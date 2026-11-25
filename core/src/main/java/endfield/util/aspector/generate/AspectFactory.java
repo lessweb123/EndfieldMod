@@ -12,7 +12,7 @@ import endfield.util.aspector.classes.EConstructor;
 import endfield.util.aspector.classes.EField;
 import endfield.util.aspector.classes.EMethod;
 import endfield.util.aspector.classes.MethodSignature;
-import kotlin.collections.ArraysKt;
+import kotlin.collections.CollectionsKt;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,19 +26,19 @@ public abstract class AspectFactory {
 		classAccessor = accessor;
 	}
 
-	public <T> AspectResult<T> makeClass(ClassDecl<T> targetClass, Cons<AspectBuilder> scope, ClassDecl<?>... aspectClasses) {
+	public <T> AspectResult<T> makeClass(ClassDecl<T> targetClass, Cons<AspectBuilder> scope, List<ClassDecl<?>> aspectClasses) {
 		AspectBuilder builder = new AspectBuilder(
 				generateClassName(targetClass, aspectClasses),
 				targetClass.flags(),
 				targetClass.name,
-				ArraysKt.map(aspectClasses, it -> it.name)
+				CollectionsKt.map(aspectClasses, it -> it.name)
 		);
 		scope.get(builder);
 
 		return new AspectResult<>(builder);
 	}
 
-	public abstract ClassName generateClassName(ClassDecl<?> targetClass, ClassDecl<?>... aspectClasses);
+	public abstract ClassName generateClassName(ClassDecl<?> targetClass, List<ClassDecl<?>> aspectClasses);
 
 	public abstract byte[] generateBytecode(AspectBuilder builder);
 

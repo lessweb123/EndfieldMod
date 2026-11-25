@@ -5,6 +5,7 @@ import endfield.util.Constant;
 import endfield.util.HandleSupport;
 import endfield.util.MethodHandleInvoker;
 import endfield.util.MethodInvoker;
+import endfield.util.Reflections;
 import endfield.util.SpecialMethodAccessor;
 import endfield.util.aspector.AspectExtends;
 import endfield.util.aspector.RuntimeAspector;
@@ -25,13 +26,12 @@ import endfield.util.handler.ObjectHandler;
 import kotlin.NotImplementedError;
 import org.jetbrains.annotations.TestOnly;
 
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.lang.invoke.MethodType;
 import java.lang.invoke.VarHandle.AccessMode;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 
@@ -44,11 +44,12 @@ public class Test extends @Stub Random {
 	public final String str = "";
 
 	public @TestAnno(
+			num = 325,
 			text = "test text",
 			type = Aspect.class,
-			arrayTypes = {Aspect.class, AccessStub.class},
-			arrayEnum = {Using.AFTER_RETURN, Using.OVERRIDE},
-			intArray = {12, 25, 74, 1}
+			types = {Aspect.class, AccessStub.class},
+			enums = {Using.AFTER_RETURN, Using.OVERRIDE},
+			ints = {12, 25, 74, 1}
 	) String test(String a) {
 		return a;
 	}
@@ -157,6 +158,35 @@ public class Test extends @Stub Random {
 		}
 	}
 
+	public static void test9() {
+		try {
+			TestAnno anno = Reflections.newAnnotationInstance(TestAnno.class, Map.of(
+					"num", 325,
+					"text", "oh no",
+					"type", Aspect.class,
+					"types", new Class[]{Aspect.class, AccessStub.class},
+					"enums", new Using[]{Using.AFTER_RETURN, Using.OVERRIDE},
+					"ints", new int[]{17, 25, 74, 1}
+			));
+			Log.info(anno.toString());
+			Log.info(anno.hashCode());
+			Log.info(anno.equals(anno));
+			Log.info(anno.annotationType());
+			Log.info(anno.num());
+			Log.info(anno.text());
+			Log.info(anno.type());
+			Log.info(Arrays.toString(anno.types()));
+			Log.info(Arrays.toString(anno.enums()));
+			Log.info(Arrays.toString(anno.ints()));
+		} catch (Throwable e) {
+			Log.err(e);
+		}
+	}
+
+	public static void test10() {
+		throw null;
+	}
+
 	public static void print() {
 		Log.info("test print");
 	}
@@ -227,18 +257,19 @@ public class Test extends @Stub Random {
 		}
 	}
 
-	@Target(ElementType.TYPE_USE)
 	@Retention(RetentionPolicy.RUNTIME)
 	public @interface TestAnno {
+		int num();
+
 		String text();
 
 		Class<?> type();
 
-		Class<?>[] arrayTypes();
+		Class<?>[] types();
 
-		Using[] arrayEnum();
+		Using[] enums();
 
-		int[] intArray();
+		int[] ints();
 	}
 
 	public interface Aspect {

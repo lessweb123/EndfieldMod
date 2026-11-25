@@ -2721,6 +2721,7 @@ public final class Blocks2 {
 		beamInsulator = new InsulationWall("beam-insulator") {{
 			requirements(Category.power, ItemStack.with(Items.silicon, 10, Items.oxide, 5));
 			health = 90;
+			squareSprite = false;
 		}};
 		reinforcedPowerAnalyzer = new PowerAnalyzer("reinforced-power-analyzer") {{
 			requirements(Category.power, ItemStack.with(Items.beryllium, 25, Items.silicon, 15));

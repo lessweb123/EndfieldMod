@@ -48,10 +48,10 @@ public class CollectionOrderedSet<E> extends CollectionObjectSet<E> {
 	public boolean add(E key, int index) {
 		if (!super.add(key)) {
 			int oldIndex = orderedItems.indexOf(key, true);
-			if (oldIndex != index) orderedItems.insert(index, orderedItems.remove(oldIndex));
+			if (oldIndex != index) orderedItems.add(index, orderedItems.remove(oldIndex));
 			return false;
 		}
-		orderedItems.insert(index, key);
+		orderedItems.add(index, key);
 		return true;
 	}
 

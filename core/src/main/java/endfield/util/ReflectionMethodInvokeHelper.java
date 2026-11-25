@@ -22,7 +22,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 	protected static final Function<Class<?>, Method[]> function2 = Class::getDeclaredMethods;
 	protected static final Function<Class<?>, Constructor<?>[]> function3 = Class::getDeclaredConstructors;
 
-	protected Method getMethod(Class<?> clazz, FunctionType functionType) {
+	protected Method getMethod(Class<?> clazz, FunctionType functionType, Object[] args) {
 		CollectionOrderedMap<FunctionType, Method> map = methodPool.get(clazz, prov2);
 
 		Method res = map.get(functionType);
@@ -30,7 +30,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 		if (res != null) return res;
 
 		for (var entry : map) {
-			if (entry.key.match(functionType)) return entry.value;
+			if (entry.key.match(functionType.name(), args)) return entry.value;
 		}
 
 		Class<?> current = clazz;
@@ -53,7 +53,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 				if (!method.getName().equals(functionType.name())) continue;
 
 				FunctionType type;
-				if ((type = FunctionType.from(method)).match(functionType)) {
+				if ((type = FunctionType.from(method)).match(functionType.name(), args)) {
 					method.setAccessible(true);
 					map.put(type, method);
 					return method;
@@ -68,14 +68,14 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected <T> Constructor<T> getConstructor(Class<T> clazz, FunctionType functionType) {
+	protected <T> Constructor<T> getConstructor(Class<T> clazz, FunctionType functionType, Object[] args) {
 		CollectionOrderedMap<FunctionType, Constructor<?>> map = constructorPool.get(clazz, prov3);
 
 		Constructor<T> res = (Constructor<T>) map.get(functionType);
 		if (res != null) return res;
 
 		for (var entry : map) {
-			if (entry.key.match(functionType)) return (Constructor<T>) entry.value;
+			if (entry.key.match(args)) return (Constructor<T>) entry.value;
 		}
 
 		try {
@@ -87,7 +87,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 
 		for (Constructor<?> constructor : constructorsMap.computeIfAbsent(clazz, function3)) {
 			FunctionType type;
-			if ((type = FunctionType.from(constructor)).match(functionType)) {
+			if ((type = FunctionType.from(constructor)).match(args)) {
 				map.put(type, constructor);
 				res = (Constructor<T>) constructor;
 				res.setAccessible(true);
@@ -116,7 +116,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 	public <T> T invoke(Object object, String name, Object... args) {
 		FunctionType type = FunctionType.args(name, args);
 		try {
-			return (T) getMethod(object.getClass(), type).invoke(object, args);
+			return (T) getMethod(object.getClass(), type, args).invoke(object, args);
 		} catch (IllegalAccessException | InvocationTargetException e) {
 			throw sneakyThrow(e);
 		} finally {
@@ -129,7 +129,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 	public <T> T invokeStatic(Class<?> clazz, String name, Object... args) {
 		FunctionType type = FunctionType.args(name, args);
 		try {
-			return (T) getMethod(clazz, type).invoke(null, args);
+			return (T) getMethod(clazz, type, args).invoke(null, args);
 		} catch (IllegalAccessException | InvocationTargetException e) {
 			throw sneakyThrow(e);
 		} finally {
@@ -141,7 +141,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 	public <T> T newInstance(Class<T> clazz, Object... args) {
 		FunctionType type = FunctionType.args("<init>", args);
 		try {
-			return getConstructor(clazz, type).newInstance(args);
+			return getConstructor(clazz, type, args).newInstance(args);
 		} catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
 			throw sneakyThrow(e);
 		} finally {
@@ -154,7 +154,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 	public <T> T invokeTyped(Object object, String name, Class<?>[] parameterTypes, Object... args) {
 		FunctionType type = FunctionType.inst(name, parameterTypes);
 		try {
-			return (T) getMethod(object.getClass(), type).invoke(object, args);
+			return (T) getMethod(object.getClass(), type, args).invoke(object, args);
 		} catch (IllegalAccessException | InvocationTargetException e) {
 			throw sneakyThrow(e);
 		} finally {
@@ -167,7 +167,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 	public <T> T invokeStaticTyped(Class<?> clazz, String name, Class<?>[] parameterTypes, Object... args) {
 		FunctionType type = FunctionType.inst(name, parameterTypes);
 		try {
-			return (T) getMethod(clazz, type).invoke(null, args);
+			return (T) getMethod(clazz, type, args).invoke(null, args);
 		} catch (IllegalAccessException | InvocationTargetException e) {
 			throw sneakyThrow(e);
 		} finally {
@@ -179,7 +179,7 @@ public class ReflectionMethodInvokeHelper implements MethodInvokeHelper {
 	public <T> T newInstanceTyped(Class<T> clazz, Class<?>[] parameterTypes, Object... args) {
 		FunctionType type = FunctionType.inst("<init>", parameterTypes);
 		try {
-			return getConstructor(clazz, type).newInstance(args);
+			return getConstructor(clazz, type, args).newInstance(args);
 		} catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
 			throw sneakyThrow(e);
 		} finally {

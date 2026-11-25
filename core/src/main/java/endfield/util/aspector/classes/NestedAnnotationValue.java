@@ -1,6 +1,8 @@
 package endfield.util.aspector.classes;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.IncompleteAnnotationException;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
 
 import static endfield.util.GetKt.sneakyThrow;
@@ -18,6 +20,7 @@ public class NestedAnnotationValue extends AnnotationValue<Annotation, EAnnotati
 		return ClassName.byClass(Annotation.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Annotation value() {
 		if (value == null) {
@@ -26,7 +29,11 @@ public class NestedAnnotationValue extends AnnotationValue<Annotation, EAnnotati
 				value = (Annotation) Proxy.newProxyInstance(annoType.getClassLoader(), new Class[]{annoType}, (obj, method, args) -> {
 					AnnotationValue<?, ?> annoValue = rawValue.getValue(method.getName());
 
-					return annoValue == null ? method.invoke(obj, args) : annoValue.value();
+					if (annoValue != null) return annoValue.value();
+
+					if ((method.getModifiers() & Modifier.ABSTRACT) == 0) return method.invoke(obj, args);
+
+					throw new IncompleteAnnotationException((Class<? extends Annotation>) method.getDeclaringClass(), method.getName());
 				});
 			} catch (ClassNotFoundException e) {
 				throw sneakyThrow(e);

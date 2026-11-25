@@ -34,8 +34,11 @@ public class InsulationWall extends Wall {
 		consumesTap = true;
 
 		config(Boolean.class, (InsulationWallBuild tile, Boolean open) -> {
-			doorSound.at(tile);
-			tile.effect();
+			if (!Vars.world.isGenerating()) {
+				doorSound.at(tile);
+				tile.effect();
+			}
+
 			tile.open = open;
 			Vars.world.tileChanges++;
 		});

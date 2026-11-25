@@ -1,5 +1,7 @@
 package endfield.util.handler;
 
+import org.jetbrains.annotations.ApiStatus.Obsolete;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
@@ -23,6 +25,7 @@ public final class MethodHandler {
 	 * @param args   List of parameters passed to method
 	 * @return Return value of the target method
 	 */
+	@Obsolete(since = "1.0.10")
 	public static <T> T invoke(Object object, String name, Object... args) {
 		return methodInvokeHelper.invoke(object, name, args);
 	}
@@ -36,6 +39,7 @@ public final class MethodHandler {
 	 * @param args List of parameters passed to method
 	 * @return Return value of the target method
 	 */
+	@Obsolete(since = "1.0.10")
 	public static <T> T invokeStatic(Class<?> clazz, String name, Object... args) {
 		return methodInvokeHelper.invokeStatic(clazz, name, args);
 	}
@@ -47,6 +51,7 @@ public final class MethodHandler {
 	 *
 	 * @param args List of parameters passed to constructor
 	 */
+	@Obsolete(since = "1.0.10")
 	public static <T> T newInstance(Class<T> clazz, Object... args) {
 		return methodInvokeHelper.newInstance(clazz, args);
 	}
